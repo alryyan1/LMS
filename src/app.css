@@ -1,0 +1,25 @@
+body {
+    background:   linear-gradient(to right, #3f50b3, lightblue);
+  font-family: 'Tajawal-Light'!important;
+
+  /* background-repeat: no-repeat; */
+}
+
+.container{
+  transition: 0.3s all ease-in-out;
+
+  display: grid;
+  grid-template-columns: 0.1fr 1fr 0.1fr 2fr 0.1fr;
+}
+@font-face {
+  font-family: 'Tajawal-Light';
+  src: url('font/Tajawal-Regular.ttf');
+  /* IE9 Compat Modes */
+  src:
+      /* IE6-IE8 */
+          url('font/Tajawal-Regular.ttf') format('truetype'),
+              /* Super Modern Browsers */
+          url('font/Tajawal-Regular.ttf') format('woff')
+
+  /* Legacy iOS */
+}

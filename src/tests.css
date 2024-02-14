@@ -1,0 +1,228 @@
+.searchedItemsBox {
+  height: 300px;
+  background-color: #3f51b5;
+  box-shadow: 2px 2px 12px black;
+  border-radius: 6px;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding-left: 6px;
+  width: 389px;
+  overflow: auto;
+  cursor: pointer;
+}
+.search-container div:last-child {
+  margin-right: 10px;
+  flex: 2;
+}
+.search-container input {
+  width: 95%;
+}
+.search-container div:first-child {
+  margin-right: 10px;
+}
+
+.hide {
+  display: none;
+}
+td {
+  cursor: pointer;
+}
+
+.searchContainer {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+td,
+th {
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.351);
+}
+thead {
+  background-color: lightblue;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.form-control {
+  max-width: 400px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  align-items: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #dfdfdf;
+  padding: 5px;
+}
+.form-control select {
+  width: 64%;
+  background-color: cadetblue;
+}
+ul li {
+  padding: 4px;
+  text-transform: capitalize;
+  border-bottom: 1px solid grey;
+}
+li:hover {
+  background-color: #8bc34a;
+  border-radius: 5px;
+}
+.searchContainer input {
+  padding: 5px;
+  border: 1px solid lightseagreen;
+}
+
+.mainTestInfo input {
+  padding: 5px;
+  border: 1px solid lightseagreen;
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid;
+  color: black;
+  font-size: 1.2rem;
+}
+
+.table-children {
+  position: relative;
+}
+.table {
+  height: 60vh;
+  overflow: auto;
+}
+
+.test-options {
+  height: 60vh;
+  min-width: 260px;
+  /* border: 1px solid; */
+  box-shadow: 2px 4px 5px #51a3ebd1, -2px -4px 6px;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #8888d7e6;
+}
+
+.test-options .header {
+  height: 20px;
+  background-color: #3f51b5;
+  /* border-radius: 5px; */
+  display: flex;
+  justify-content: space-between;
+}
+
+.test-options .header {
+  padding: 5px;
+  border: 1px solid;
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  box-shadow: 2px 5px 7px green, -2px -5px 7px lightblue;
+  border-radius: 50%;
+  background-color: rgb(51, 153, 121);
+  animation-duration: 4s;
+  animation-iteration-count: 3;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation: sk-plane 1.2s infinite ease-in-out;
+  animation-fill-mode: both;
+  animation-direction: alternate-reverse;
+  top: 40;
+  right: 40;
+  position: absolute;
+}
+
+@keyframes sk-plane {
+  0% {
+    transform: translate(20px);
+  }
+  50% {
+    transform: translate(-20px);
+  }
+  100% {
+    transform: translate(20px);
+  }
+}
+
+.test-options .body {
+  position: relative;
+  height: calc(100% - 25px);
+  overflow: auto;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dlt {
+  width: 100%;
+  padding: 5px;
+  background-color: #8888d7;
+  border: 1px;
+  box-shadow: 4px 4px 11px black, -4px -4px 11px #fefefe59;
+  border-radius: 8px;
+  text-transform: capitalize;
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+input:focus-visible {
+  outline: none;
+  padding: 5px;
+  border: 1px solid #3f50b3;
+  animation: inputAnimation;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes inputAnimation {
+  0% {
+    background-color: #3f50b3;
+  }
+  100% {
+    background-color: #8bc34a;
+  }
+}
+button {
+  cursor: pointer;
+}
+.btn {
+  cursor: pointer;
+  border: 1px saddlebrown;
+  width: 80px;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 1px 5px 7px white inset, -3px -5px 7px black inset,
+    -3px -3px 10px #3f50b3;
+  background-color: #8bc34a;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.btn1 {
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+  cursor: pointer;
+  border: 1px saddlebrown;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 1px 5px 7px white inset, -3px -5px 7px black inset,
+    -3px -3px 10px #3f50b3;
+  background-color: #8bc34a;
+}
