@@ -4,6 +4,10 @@ body {
 
   /* background-repeat: no-repeat; */
 }
+.app-container{
+  max-width: 95%;
+  margin: auto;
+}
 
 .container{
   transition: 0.3s all ease-in-out;

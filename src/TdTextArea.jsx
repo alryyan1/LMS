@@ -24,7 +24,7 @@ function TdTextArea({ val, col, child }) {
       .then((res) => {
         return res.json();
       })
-      .then((data) => {});
+      
   }
   return (
     <td onClick={(e) => editName(e)}>

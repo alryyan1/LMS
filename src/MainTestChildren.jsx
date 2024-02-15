@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import {  useState } from "react";
+import {useOutletContext} from 'react-router-dom'
 import Td from "./Td";
 import TdSelect from "./TdSelect";
 import TdTextArea from "./TdTextArea";
 import Modal from "./Modal";
 import TestOptions from "./TestOptions";
-import context from "./appContext";
 
 function MainTestChildren({ test, addChildTestHandler }) {
-  const appData = useContext(context);
+  const appData = useOutletContext();
   const [showModal, setShowModal] = useState(false);
   const [activeChild, setActiveChild] = useState();
   const [update, setUpdate] = useState(0);
@@ -58,14 +58,16 @@ function MainTestChildren({ test, addChildTestHandler }) {
 
       <table>
         <thead>
-          <th>Name</th>
-          <th>Unit</th>
-          <th>Default value</th>
-          <th>Normal range</th>
-          <th>Max</th>
-          <th>Lowest</th>
-          <th>Options</th>
-          <th>Delete</th>
+          <tr>
+            <td>Name</td>
+            <td>Unit</td>
+            <td>Default value</td>
+            <td>Normal range</td>
+            <td>Max</td>
+            <td>Lowest</td>
+            <td>Options</td>
+            <td>Delete</td>
+          </tr>
         </thead>
         <tbody>
           {test.children.map((child) => {

@@ -76,10 +76,7 @@ li:hover {
   background-color: #8bc34a;
   border-radius: 5px;
 }
-.searchContainer input {
-  padding: 5px;
-  border: 1px solid lightseagreen;
-}
+
 
 .mainTestInfo input {
   padding: 5px;

@@ -1,5 +1,5 @@
-import { useContext, useState, useRef, useEffect } from "react";
-import context from "./appContext";
+import {  useState, useRef, useEffect } from "react";
+import {useOutletContext} from 'react-router-dom'
 import TdUnit from "./TdUnit";
 
 function UnitList() {
@@ -14,7 +14,7 @@ function UnitList() {
     }
   }, [editChildName]);
 
-  const appData = useContext(context);
+  const appData = useOutletContext();
 
   const addUnitHandler = () => {
     fetch("http://127.0.0.1/projects/bootstraped/new/api.php?addUnit=1")

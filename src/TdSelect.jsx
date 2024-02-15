@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
+import {useOutletContext} from 'react-router-dom'
 import context from "./appContext";
 
 function TdSelect({ selectedUnit, child }) {
-  const val = useContext(context);
+  const val = useOutletContext(context);
   const unit = val.units.find((unit) => unit.id == selectedUnit);
 
   const [editChild, setEditChild] = useState(false);

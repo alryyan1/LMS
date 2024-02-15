@@ -1,15 +1,20 @@
 import * as React from "react";
 import AutoComplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
-const doctors = ["alryyan", "tsabeh"];
-export default function MyAutoComplete({ tests, selectTestHandler }) {
+import {useLoaderData} from 'react-router-dom'
+export default function MyAutoComplete({  selectTestHandler }) {
   const [val, setVal] = React.useState(null);
+  const tests =  useLoaderData()
 
   return (
     <React.Fragment>
-      {tests.length > 0 ? (
+   
         <AutoComplete
-          sx={{ width: "200px" }}
+        
+        size="small"
+        color="secondary"
+          fullWidth={true}
+          sx={{ width: "100%" }}
           options={tests}
           value={val}
           getOptionKey={(option) => option.id}
@@ -20,12 +25,10 @@ export default function MyAutoComplete({ tests, selectTestHandler }) {
             setVal(newValue);
           }}
           renderInput={(params) => {
-            return <TextField label="doctors" {...params} />;
+            return <TextField   label="Tests" {...params} />;
           }}
         />
-      ) : (
-        ""
-      )}
+      
     </React.Fragment>
   );
 }

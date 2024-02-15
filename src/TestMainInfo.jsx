@@ -1,14 +1,16 @@
 import { useState, useRef, useContext, useEffect } from "react";
+import { Button, Stack } from "@mui/material";
 import Loader from "./loader";
 import context from "./appContext";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import {useOutletContext} from 'react-router-dom'
 function TestMainInfo({ test, setActiveTestObj }) {
   const [loading, setIsLoading] = useState(false);
   const nameRef = useRef();
   const priceRef = useRef();
   const packRef = useRef();
   const containerRef = useRef();
-  const AppData = useContext(context);
+  const AppData = useOutletContext(context);
   const deleteTest = (id) => {
     setIsLoading(true);
     const answer = confirm("Test will be deleted permenantly");
@@ -109,9 +111,16 @@ function TestMainInfo({ test, setActiveTestObj }) {
               })}
             </select>
           </div>
-          <button onClick={() => deleteTest(test.id)} className="dlt">
-            delete
-          </button>
+          <Stack>
+            <Button
+              color="info"
+              onClick={() => deleteTest(test.id)}
+              endIcon={<DeleteIcon />}
+              variant="contained"
+            >
+              Delete
+            </Button>
+          </Stack>
         </div>
       )}
     </div>

@@ -1,14 +1,14 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
+import {useOutletContext} from 'react-router-dom'
 import Loader from "./loader";
-import context from "./appContext";
 
-function AddMainTestForm({ packageData, containerData }) {
+function AddMainTestForm() {
   const [loading, setIsLoading] = useState(false);
   const nameRef = useRef();
   const priceRef = useRef();
   const packRef = useRef();
   const containerRef = useRef();
-  const AppData = useContext(context);
+  const AppData = useOutletContext();
   const addTest = () => {
     setIsLoading(true);
     const answer = confirm("A New Test Will Be Added !!");
@@ -47,7 +47,7 @@ function AddMainTestForm({ packageData, containerData }) {
           <div className="form-control">
             <label htmlFor="">Container</label>
             <select ref={containerRef}>
-              {containerData.map((el) => (
+              {AppData.containerData.map((el) => (
                 <option key={el.id} value={el.id}>
                   {el.container_name}
                 </option>
@@ -57,7 +57,7 @@ function AddMainTestForm({ packageData, containerData }) {
           <div className="form-control">
             <label htmlFor="">Department</label>
             <select ref={packRef}>
-              {packageData.map((el) => {
+              {AppData.packageData.map((el) => {
                 // console.log(el)
 
                 return (
