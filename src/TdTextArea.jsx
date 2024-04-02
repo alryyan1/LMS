@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function TdTextArea({ val, col, child }) {
   //  console.log(val)
@@ -18,8 +18,11 @@ function TdTextArea({ val, col, child }) {
   }, [editChildName]);
   function editTest(e) {
     setNr(e.target.value);
-    fetch(
-      `http://127.0.0.1/projects/bootstraped/new/api.php?editChild=1&col=${col}&result=${e.target.value}&childID=${child.child_test_id}`
+    const url = 'http://127.0.0.1/projects/bootstraped/new/api.php';
+    const params = new URLSearchParams( `editChild=1&col=${col}&result=${e.target.value}&childID=${child.child_test_id}`)
+    console.log(params)
+    fetch(url,{method:'POST',headers :{"content-Type":"Application/json"},body :params}
+     
     )
       .then((res) => {
         return res.json();

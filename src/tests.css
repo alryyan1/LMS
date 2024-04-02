@@ -60,7 +60,7 @@ table {
   align-items: center;
   font-size: 1.3rem;
   font-weight: bold;
-  color: #dfdfdf;
+  /* color: #dfdfdf; */
   padding: 5px;
 }
 .form-control select {
@@ -176,8 +176,8 @@ li:hover {
 
 input:focus-visible {
   outline: none;
-  padding: 5px;
-  border: 1px solid #3f50b3;
+  /* padding: 5px; */
+  /* border: 1px solid #3f50b3; */
   animation: inputAnimation;
   animation-duration: 3s;
   animation-iteration-count: infinite;
@@ -187,7 +187,7 @@ input:focus-visible {
 
 @keyframes inputAnimation {
   0% {
-    background-color: #3f50b3;
+    background-color: #abb7ff;
   }
   100% {
     background-color: #8bc34a;

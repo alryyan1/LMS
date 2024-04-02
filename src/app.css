@@ -1,6 +1,8 @@
 body {
+
+
     background:   linear-gradient(to right, #3f50b3, lightblue);
-  font-family: 'Tajawal-Light'!important;
+  font-family: 'Roboto'!important;
 
   /* background-repeat: no-repeat; */
 }
@@ -10,10 +12,7 @@ body {
 }
 
 .container{
-  transition: 0.3s all ease-in-out;
 
-  display: grid;
-  grid-template-columns: 0.1fr 1fr 0.1fr 2fr 0.1fr;
 }
 @font-face {
   font-family: 'Tajawal-Light';

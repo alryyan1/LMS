@@ -4,15 +4,17 @@ import { NavLink } from "react-router-dom";
 const Nav = () => {
   return (
     <>
-      <AppBar sx={{marginBottom:'10px'}} position="static">
+      <AppBar sx={{ marginBottom: "10px" }} position="static">
         <Toolbar>
           <IconButton>
             <CatchingPokemon></CatchingPokemon>
           </IconButton>
           <Stack direction={"row"} spacing={3}>
-            <NavLink to={"/dfljsdkf"}>Home</NavLink>
+            <NavLink to={"/"}>Home</NavLink>
+            <NavLink to={"/add"}>Add</NavLink>
+            <NavLink to={"/doctor"}>الاطباء</NavLink>
 
-            <NavLink to={'/tests'} >Tests</NavLink>
+            <NavLink to={"/tests"}>Tests</NavLink>
             <NavLink>Home</NavLink>
           </Stack>
         </Toolbar>

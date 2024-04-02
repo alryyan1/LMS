@@ -1,5 +1,5 @@
-import {  useState, useRef, useEffect } from "react";
-import {useOutletContext} from 'react-router-dom'
+import { useState, useRef, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import TdUnit from "./TdUnit";
 
 function UnitList() {
@@ -46,7 +46,9 @@ function UnitList() {
       <div className="table">
         <table>
           <thead>
-            <th>Name</th>
+            <tr>
+              <th>Name</th>
+            </tr>
           </thead>
           <tbody>
             {appData.units.map((unit) => {

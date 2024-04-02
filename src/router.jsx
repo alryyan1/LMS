@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Error404 from "./Error404";
 import LabTests from "./pages/LabTests";
+import AddPatient from "./pages/AddPatient";
+import Doctor from "./Doctor";
 export const router = createBrowserRouter([
   {
     element: <App />,
@@ -17,6 +19,16 @@ export const router = createBrowserRouter([
         element: <LabTests />,
         
       },
+      {
+        path:'/add',
+      
+        element : <AddPatient/>
+      }
+      ,
+      {
+        path:'/doctor',
+        element : <Doctor/>
+      }
     ],
   },
 ]);
