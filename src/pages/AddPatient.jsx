@@ -4,12 +4,15 @@ import Patient from "./Patient";
 import PatientForm from "./PatientForm";
 import PatientDetail from "./PatientDetail";
 import {Button} from "@mui/material"
+import TestGroups from "./TestGroups";
 
 function AddPatient() {
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
     form :"1fr",
-    hideForm : false
+    tests :"1fr",
+    hideForm : false,
+    testWidth : "400px"
   });
   const [actviePatient, setActivePatient] = useState(null);
   console.log(actviePatient, "active patient");
@@ -27,8 +30,9 @@ function AddPatient() {
         setPatients(data);
       });
   }, []);
+
   const setActivePatientHandler = (id) => {
-    //set active patient using array map
+    hideForm()
     setPatients(
       patients.map((patient) => {
         if (patient.id === id) {
@@ -44,23 +48,25 @@ function AddPatient() {
 
   const hideForm =()=>{
     setLayout((prev)=>{
-     return {...prev,form:"0fr",hideForm:true}
+     return {...prev,form:"0fr",hideForm:true,tests:"2fr",testWidth:"700px"}
     })
   }
   const showFormHandler =()=>{
+    setActivePatient(null)
     setLayout((prev)=>{
-     return {...prev,form:"1fr",hideForm:false}
+     return {...prev,form:"1fr",hideForm:false,tests:"1fr"}
     })
   }
 
   return (
     <div style={{  transition: "0.3s all ease-in-out",
       display: "grid",
-      gridTemplateColumns:` 0.1fr ${layOut.form} 0.1fr 1fr 0.1fr 3fr  0.1fr`}} className="container">
+      gridTemplateColumns:` 0.1fr ${layOut.form} 0.1fr 1fr 0.1fr ${layOut.tests} 1fr  0.1fr`}} className="container">
       <div>1</div>
       <div>
-        <Button variant='contained' sx={{m:1}} onClick={showFormHandler}>Refresh</Button>
-       {layOut.hideForm ? "" : <PatientForm hideForm={hideForm} setPatients={setPatients} />}
+        <Button className="refresh" variant='contained' sx={{m:1}} onClick={showFormHandler}>Refresh</Button>
+       {layOut.hideForm 
+       || actviePatient ? "" :  <PatientForm  hideForm={hideForm} setPatients={setPatients} />}
       </div>
       <div>3</div>
       <div className="patients">
@@ -69,6 +75,7 @@ function AddPatient() {
         ))}
       </div>
       <div></div>
+      <div style={{maxWidth:layOut.testWidth }}> {actviePatient &&<TestGroups/>}</div>
       <div>
         {/** add card using material   */}
         {actviePatient && <PatientDetail patient={actviePatient} />}

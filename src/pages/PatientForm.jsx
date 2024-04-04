@@ -7,6 +7,8 @@ import { Autocomplete, TextField, Stack } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 function PatientForm({ setPatients, hideForm }) {
+  const [loading, setIsLoading] = useState(false);
+
   const appData = useOutletContext();
 
   const [val, setVal] = useState(null);
@@ -18,7 +20,8 @@ function PatientForm({ setPatients, hideForm }) {
   console.log(isSubmitting, "is submitting");
 
   const sumbitHandler = async (formData)  => {
-
+    //set is loading true
+    setIsLoading(true);
     console.log(formData);
     console.log(val);
     const urlParams = new URLSearchParams(formData);
@@ -36,6 +39,9 @@ function PatientForm({ setPatients, hideForm }) {
       .then((data) => {
         console.log(data);
         if (data.status) {
+          //set is loading to false
+          setIsLoading(false);
+        
           //hide form
           hideForm();
           setPatients((prePatients) => {
@@ -120,7 +126,7 @@ function PatientForm({ setPatients, hideForm }) {
             ""
           ) : (
             <LoadingButton
-              loading={isSubmitting}
+              loading={loading}
               loadingIndicator="loading ..."
               type="submit"
               variant="contained"

@@ -1,7 +1,11 @@
 .patients{
-   display: flex;
-   flex-direction: row;
-   flex-wrap: wrap; 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    
+    
 }
 .patients .active{
     /* add background color using any material design color */
@@ -10,6 +14,7 @@
     
 }
 .patients div {
+    height: 50px;
     cursor: pointer;
     display: flex;
     justify-content: center;

@@ -10,10 +10,18 @@ body {
   max-width: 95%;
   margin: auto;
 }
-
+.refresh{
+  position: absolute !important;
+}
 .container{
 
 }
+.group{
+  flex-wrap: wrap;
+    display: flex;
+    gap: 5px;
+}
+
 @font-face {
   font-family: 'Tajawal-Light';
   src: url('font/Tajawal-Regular.ttf');
