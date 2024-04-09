@@ -3,10 +3,38 @@ import { useEffect, useState } from "react";
 import Patient from "./Patient";
 import PatientForm from "./PatientForm";
 import PatientDetail from "./PatientDetail";
-import {Button} from "@mui/material"
+import {Button,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Dialog,DialogTitle, DialogActions} from "@mui/material"
 import TestGroups from "./TestGroups";
+import RequestedTests from "./RequestedTests";
 
 function AddPatient() {
+  const [packages, setPackages] = useState([]);
+  const [requestedTests, setRequestedTests] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [error,setError] = useState('')
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/packages/all`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data, "packagess");
+        data.forEach((element) => {
+          element.tests.forEach((t) => {
+            // add selected property to t
+            t.selected = false;
+            return t;
+          });
+        });
+        setPackages(data);
+      });
+  }, []);
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
     form :"1fr",
@@ -48,7 +76,7 @@ function AddPatient() {
 
   const hideForm =()=>{
     setLayout((prev)=>{
-     return {...prev,form:"0fr",hideForm:true,tests:"2fr",testWidth:"700px"}
+     return {...prev,form:"0fr",hideForm:true,tests:"2fr",testWidth:"500px"}
     })
   }
   const showFormHandler =()=>{
@@ -61,9 +89,16 @@ function AddPatient() {
   return (
     <div style={{  transition: "0.3s all ease-in-out",
       display: "grid",
-      gridTemplateColumns:` 0.1fr ${layOut.form} 0.1fr 1fr 0.1fr ${layOut.tests} 1fr  0.1fr`}} className="container">
+      gridTemplateColumns:` 0.1fr ${layOut.form} 0.1fr 1fr 0.1fr ${layOut.tests} 1fr 1fr  0.1fr`}} className="container">
       <div>1</div>
       <div>
+        <Dialog  open={open} >
+          <DialogTitle  color={'error'}>Info</DialogTitle>
+          {error}
+          <DialogActions>
+          <Button onClick={handleClose}>ok</Button>
+        </DialogActions>
+        </Dialog>
         <Button className="refresh" variant='contained' sx={{m:1}} onClick={showFormHandler}>Refresh</Button>
        {layOut.hideForm 
        || actviePatient ? "" :  <PatientForm  hideForm={hideForm} setPatients={setPatients} />}
@@ -75,10 +110,15 @@ function AddPatient() {
         ))}
       </div>
       <div></div>
-      <div style={{maxWidth:layOut.testWidth }}> {actviePatient &&<TestGroups/>}</div>
+      <div className="add-tests" style={{maxWidth:layOut.testWidth }}> {actviePatient &&<TestGroups setOpen={setOpen} error={error} setError={setError}  actviePatient={actviePatient} setRequestedTests ={setRequestedTests} setPackages={setPackages} packages={packages}/>}</div>
+      <div>    
+       {actviePatient && <RequestedTests actviePatient={actviePatient}/>}  
+      </div>
       <div>
         {/** add card using material   */}
         {actviePatient && <PatientDetail patient={actviePatient} />}
+   
+     
       </div>
     </div>
   );

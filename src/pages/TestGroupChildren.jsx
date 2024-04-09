@@ -11,7 +11,7 @@ function TestGroupChildren(props) {
         {...other}
       >
         {value === index && (
-          <Box className='group' sx={{ p: 3 }}>
+          <Box  className='group' sx={{ p: 3 }}>
             {children}
           </Box>
         )}

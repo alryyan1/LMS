@@ -2,9 +2,7 @@ import { Paper, Typography } from "@mui/material";
 import React from "react";
 
 function PatientDetail({ patient }) {
-  console.log(patient)
   const date = new Date(patient.created_at)
-  console.log(date)
   return (
     <Paper elevation={3}
      sx={{ padding: "10px" }}>

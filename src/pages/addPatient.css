@@ -13,6 +13,38 @@
     
     
 }
+.add-tests {
+    height: 65vh;
+    overflow: auto;
+}
+.add-tests .active{
+    background-color: #3f51b5 !important;
+}
+.add-tests .test{
+    flex-grow: 1;
+    cursor: pointer;
+}
+.total-price{
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+}
+.sub-price{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+    align-items: center;
+}
+.total-price div{
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 5px 6px lightblue;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+
+}
 .patients div {
     height: 50px;
     cursor: pointer;
