@@ -6,7 +6,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Autocomplete, TextField, Stack } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-function PatientForm({ setPatients, hideForm }) {
+function PatientForm({ setPatients, hideForm ,setOpenSuccessDialog}) {
   const [loading, setIsLoading] = useState(false);
 
   const appData = useOutletContext();
@@ -28,7 +28,7 @@ function PatientForm({ setPatients, hideForm }) {
     urlParams.append("doc_id", val.id);
     // console.log(urlParams)
 
-    fetch(`http://127.0.0.1:8000/api/patients/add`, {
+    fetch(`${url}patients/add`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: urlParams,
@@ -41,6 +41,7 @@ function PatientForm({ setPatients, hideForm }) {
         if (data.status) {
           //set is loading to false
           setIsLoading(false);
+          setOpenSuccessDialog(true)
         
           //hide form
           hideForm();

@@ -4,6 +4,7 @@ import Error404 from "./Error404";
 import LabTests from "./pages/LabTests";
 import AddPatient from "./pages/AddPatient";
 import Doctor from "./Doctor";
+import Inventory from "./pages/Inventory";
 export const router = createBrowserRouter([
   {
     element: <App />,
@@ -26,8 +27,8 @@ export const router = createBrowserRouter([
       }
       ,
       {
-        path:'/doctor',
-        element : <Doctor/>
+        path:'/inventory',
+        element : <Inventory/>
       }
     ],
   },

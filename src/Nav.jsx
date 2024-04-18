@@ -12,7 +12,7 @@ const Nav = () => {
           <Stack direction={"row"} spacing={3}>
             <NavLink to={"/"}>Home</NavLink>
             <NavLink to={"/add"}>Add</NavLink>
-            <NavLink to={"/doctor"}>الاطباء</NavLink>
+            <NavLink to={"/inventory"}>Inventory</NavLink>
 
             <NavLink to={"/tests"}>Tests</NavLink>
             <NavLink>Home</NavLink>
