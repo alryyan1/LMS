@@ -174,16 +174,7 @@ li:hover {
   margin-top: 10px;
 }
 
-input:focus-visible {
-  outline: none;
-  /* padding: 5px; */
-  /* border: 1px solid #3f50b3; */
-  animation: inputAnimation;
-  animation-duration: 3s;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
-  animation-direction: alternate-reverse;
-}
+
 
 @keyframes inputAnimation {
   0% {

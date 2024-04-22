@@ -4,7 +4,12 @@ import Error404 from "./Error404";
 import LabTests from "./pages/LabTests";
 import AddPatient from "./pages/AddPatient";
 import Doctor from "./Doctor";
-import Inventory from "./pages/Inventory";
+import Client from "./pages/inventory/Client";
+import InventoryNav from "./pages/inventory/InventoryNav";
+import Supplier from "./pages/inventory/Supplier";
+import Item from "./pages/inventory/Item";
+import Section from "./pages/inventory/Section";
+import { url } from "./pages/constants";
 export const router = createBrowserRouter([
   {
     element: <App />,
@@ -28,7 +33,31 @@ export const router = createBrowserRouter([
       ,
       {
         path:'/inventory',
-        element : <Inventory/>
+        element : <InventoryNav/>,
+        children :[
+          {
+            path:'client/create',
+            element : <Client/>
+          } ,
+          {
+            path:'supplier/create',
+            element : <Supplier/>
+          }  
+          ,
+          {
+            path:'item/create',
+            loader:({request:{signal}})=>{
+              //fetch all sections
+              return fetch(`${url}sections/all`,{signal})
+            },
+            element : <Item/>
+          }  
+          ,
+          {
+            path:'section/create',
+            element : <Section/>
+          }  
+        ]
       }
     ],
   },

@@ -1,4 +1,5 @@
 import "./app.css";
+import './pages/inventory/inventory.css'
 import "./tests.css";
 import useApp from "./hooks/useApp";
 import {orange} from '@mui/material/colors'

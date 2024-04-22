@@ -1,8 +1,22 @@
-body {
+
+@font-face {
+  font-family: 'Tajawal-Regular';
+  src: url('./font/Tajawal-Regular.ttf');
+  /* IE9 Compat Modes */
+  src:
+      /* IE6-IE8 */
+          url('./font/Tajawal-Regular.ttf') format('truetype'),
+              /* Super Modern Browsers */
+          url('./font/Tajawal-Regular.ttf') format('woff')
+
+  /* Legacy iOS */
+}
+
+* {
 
 
     /* background:   linear-gradient(to right, #3fb35e, lightblue); */
-  font-family: 'Roboto'!important;
+  font-family: 'Tajawal-Regular' 
 
   /* background-repeat: no-repeat; */
 }
@@ -20,17 +34,4 @@ body {
   flex-wrap: wrap;
     display: flex;
     gap: 5px;
-}
-
-@font-face {
-  font-family: 'Tajawal-Light';
-  src: url('font/Tajawal-Regular.ttf');
-  /* IE9 Compat Modes */
-  src:
-      /* IE6-IE8 */
-          url('font/Tajawal-Regular.ttf') format('truetype'),
-              /* Super Modern Browsers */
-          url('font/Tajawal-Regular.ttf') format('woff')
-
-  /* Legacy iOS */
 }
