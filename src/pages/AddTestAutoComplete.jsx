@@ -1,6 +1,6 @@
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, Button, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {url} from './constants'
 
 function AddTestAutoComplete({ actviePatient, fetchTests ,setOpen,setError }) {

@@ -1,4 +1,3 @@
-import {Stack} from '@mui/material'
 import { useOutletContext } from "react-router-dom";
 import { Button } from "@mui/material";
 import SearchDiv from "../parts/SearchDiv";

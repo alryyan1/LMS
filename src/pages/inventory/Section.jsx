@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import { CacheProvider } from "@emotion/react";
+import MyTableCell from "./MyTableCell.jsx";
 
 function Section() {
   const [loading, setLoading] = useState(false);
@@ -60,8 +61,11 @@ function Section() {
         console.log(data);
       });
   };
+  const handleClose = () => {
+    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
+  };
   const deleteSectionHandler = (id) => {
-    fetch(`${url}Sections/${id}`, {
+    fetch(`${url}sections/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
@@ -70,6 +74,10 @@ function Section() {
           //delete Section by id
           setSections(Sections.filter((Section) => Section.id != id));
           //show success dialog
+          setOpenSuccessDialog({
+            open: true,
+            msg: "تم الحذف بنجاح",
+          });
         }
       });
   };
@@ -131,7 +139,7 @@ function Section() {
                   {Sections.map((section) => (
                     <TableRow key={section.id}>
                       <TableCell>{section.id}</TableCell>
-                      <TableCell>{section.name}</TableCell>
+                      <MyTableCell  colName={'name'} table="sections" item={section} setOpenSuccessDialog={setOpenSuccessDialog}>{section.name}</MyTableCell>
                       <TableCell>
                         <IconButton
                           onClick={() => {

@@ -3,13 +3,13 @@ import App from "./App";
 import Error404 from "./Error404";
 import LabTests from "./pages/LabTests";
 import AddPatient from "./pages/AddPatient";
-import Doctor from "./Doctor";
 import Client from "./pages/inventory/Client";
 import InventoryNav from "./pages/inventory/InventoryNav";
 import Supplier from "./pages/inventory/Supplier";
 import Item from "./pages/inventory/Item";
 import Section from "./pages/inventory/Section";
 import { url } from "./pages/constants";
+import InventoryIncome from "./pages/inventory/InventoryIncome";
 export const router = createBrowserRouter([
   {
     element: <App />,
@@ -56,6 +56,15 @@ export const router = createBrowserRouter([
           {
             path:'section/create',
             element : <Section/>
+          } 
+          ,
+          {
+            path:'income/create',
+            loader:({request:{signal}})=>{
+              //fetch all items
+              return fetch(`${url}items/all`,{signal})
+            },
+            element : <InventoryIncome/>
           }  
         ]
       }

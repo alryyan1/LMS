@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 
 function Patient({ onClick,patient}) {
   return (

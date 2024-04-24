@@ -1,8 +1,8 @@
 import { TableCell, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { url } from '../constants'
 
-function MyTableCell({children,setOpenSuccessDialog,item,colName}) {
+function MyTableCell({children,setOpenSuccessDialog,item,colName,table='items'}) {
 
    const [edited , setEdited] =  useState(false)
    const [val , setVal] =  useState(children)
@@ -15,7 +15,7 @@ function MyTableCell({children,setOpenSuccessDialog,item,colName}) {
    }
 
    const updateItemName = (val) => {
-     fetch(`${url}items/${item.id}`,{
+     fetch(`${url}${table}/${item.id}`,{
        headers:{'content-type':'application/json'},
        method:"PATCH",body:JSON.stringify({colName:colName ,val})}).then((res)=>res.json()).then((data)=>{
         if (data.status) {

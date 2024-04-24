@@ -1,7 +1,6 @@
 import {
   Alert,
   Autocomplete,
-  createTheme,
   Divider,
   Grid,
   IconButton,
@@ -21,7 +20,6 @@ import { useForm, Controller } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import { useLoaderData } from "react-router-dom";
-
 import { CacheProvider } from "@emotion/react";
 import MyTableCell from "./MyTableCell.jsx";
 import MyAutoCompeleteTableCell from "./MyAutoCompeleteTableCell.jsx";
@@ -44,6 +42,7 @@ function Item() {
   } = useForm();
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
+    console.log(formData,'formdata')
     setLoading(true);
     fetch(`${url}items/create`, {
       method: "POST",
@@ -82,7 +81,11 @@ function Item() {
         if (data.status) {
           //delete Item by id
           setItems(Items.filter((Item) => Item.id != id));
-          //show success dialog
+          //show dialog
+          setOpenSuccessDialog({
+            open: true,
+            msg: "تم الحذف بنجاح",
+          });
         }
       });
   };
@@ -218,7 +221,7 @@ function Item() {
                       <MyTableCell colName={'name'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}>
                         {item.name}
                       </MyTableCell>
-                      <MyAutoCompeleteTableCell colName={'section_id'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}  sections={sections}>{item.section.name}</MyAutoCompeleteTableCell>
+                      <MyAutoCompeleteTableCell colName={'section_id'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}  sections={sections}>{item?.section?.name}</MyAutoCompeleteTableCell>
                       <MyTableCell colName={'unit_name'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}>
                         {item.unit_name}
                       </MyTableCell>                      <TableCell>

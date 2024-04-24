@@ -1,8 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { Typography, Paper } from "@mui/material";
-
 import "./addPatient.css";
-import LoadingButton from "@mui/lab/LoadingButton";
+import {LoadingButton} from "@mui/lab";
 import { Autocomplete, TextField, Stack } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

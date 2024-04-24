@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 
 function InventoryNav() {
@@ -17,6 +16,15 @@ function InventoryNav() {
         </NavLink>
         <NavLink to={"section/create"}>
           انشاء قسم جديد
+        </NavLink>
+        <NavLink to={"income/create"}>
+          اذن وارد
+        </NavLink>
+        <NavLink to={"section/create"}>
+اذن منصرف        
+</NavLink>
+        <NavLink to={"section/create"}>
+        المخزون
         </NavLink>
       </ul>
       

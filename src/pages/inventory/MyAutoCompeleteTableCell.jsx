@@ -1,5 +1,5 @@
 import { Autocomplete, TableCell, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { url } from '../constants'
 
 function MyAutoCompeleteTableCell({children,setOpenSuccessDialog,item,sections,colName}) {
