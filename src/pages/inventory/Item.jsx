@@ -11,16 +11,14 @@ import {
   TableContainer,
   TableRow,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { cacheRtl, theme, url } from "../constants.js";
+import {  url } from "../constants.js";
 import { useForm, Controller } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
-import { useLoaderData } from "react-router-dom";
-import { CacheProvider } from "@emotion/react";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import MyTableCell from "./MyTableCell.jsx";
 import MyAutoCompeleteTableCell from "./MyAutoCompeleteTableCell.jsx";
 
@@ -29,12 +27,12 @@ function Item() {
   const sections = useLoaderData();
   //create state variable to store all Items
   const [Items, setItems] = useState([]);
-  const [openSuccessDialog, setOpenSuccessDialog] = useState({
-    open: false,
-    msg: "تمت الاضافه بنجاح",
-  });
+  const [ openSuccessDialog, setOpenSuccessDialog] = useOutletContext()
+
+
   const {
     register,
+    setValue,
     formState: { errors, isSubmitting, isSubmitted },
     control,
     reset,
@@ -42,7 +40,7 @@ function Item() {
   } = useForm();
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
-    console.log(formData,'formdata')
+    console.log(formData, "formdata");
     setLoading(true);
     fetch(`${url}items/create`, {
       method: "POST",
@@ -60,6 +58,7 @@ function Item() {
       .then((data) => {
         if (data.status) {
           reset();
+          setValue('section',null)
           setLoading(false);
           //show snackbar
           setOpenSuccessDialog({
@@ -69,15 +68,14 @@ function Item() {
         }
       });
   };
-  const handleClose = () => {
-    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
-  };
+ 
   const deleteItemHandler = (id) => {
     fetch(`${url}items/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         if (data.status) {
           //delete Item by id
           setItems(Items.filter((Item) => Item.id != id));
@@ -100,12 +98,10 @@ function Item() {
       });
   }, [isSubmitted]);
   return (
-    <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
         <Grid container>
           <Grid item xs={4}>
             <Divider>
-              {" "}
+          
               <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
                 اضافه صنف جديد
               </Typography>
@@ -142,6 +138,7 @@ function Item() {
                         sx={{ mb: 1 }}
                         {...field}
                         options={sections}
+                        value={field.value || null}
                         onChange={(e, data) => field.onChange(data)}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => {
@@ -207,24 +204,42 @@ function Item() {
             {/* create table with all Items */}
             <TableContainer>
               <Table dir="rtl" size="small">
-                <TableRow>
-                  <TableCell>رقم</TableCell>
-                  <TableCell>الاسم</TableCell>
-                  <TableCell>القسم</TableCell>
-                  <TableCell>الوحده</TableCell>
-                  <TableCell>حذف</TableCell>
-                </TableRow>
+             <thead>
+                  <TableRow>
+                    <TableCell>رقم</TableCell>
+                    <TableCell>الاسم</TableCell>
+                    <TableCell>القسم</TableCell>
+                    <TableCell>الوحده</TableCell>
+                    <TableCell>حذف</TableCell>
+                  </TableRow>
+                </thead>
                 <TableBody>
                   {Items.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell >{item.id}</TableCell>
-                      <MyTableCell colName={'name'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}>
+                      <TableCell>{item.id}</TableCell>
+                      <MyTableCell
+                        colName={"name"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
                         {item.name}
                       </MyTableCell>
-                      <MyAutoCompeleteTableCell colName={'section_id'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}  sections={sections}>{item?.section?.name}</MyAutoCompeleteTableCell>
-                      <MyTableCell colName={'unit_name'} item={item} setOpenSuccessDialog={setOpenSuccessDialog}>
+                      <MyAutoCompeleteTableCell
+                        colName={"section_id"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                        sections={sections}
+                      >
+                        {item?.section?.name}
+                      </MyAutoCompeleteTableCell>
+                      <MyTableCell
+                        colName={"unit_name"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
                         {item.unit_name}
-                      </MyTableCell>                      <TableCell>
+                      </MyTableCell>
+                      <TableCell>
                         <IconButton
                           onClick={() => {
                             deleteItemHandler(item.id);
@@ -240,23 +255,8 @@ function Item() {
             </TableContainer>
           </Grid>
 
-          <Snackbar
-            open={openSuccessDialog.open}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {openSuccessDialog.msg}{" "}
-            </Alert>
-          </Snackbar>
+        
         </Grid>
-      </ThemeProvider>
-    </CacheProvider>
   );
 }
 

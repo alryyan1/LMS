@@ -1,8 +1,6 @@
 import {
-  Alert,
   Grid,
   IconButton,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -19,18 +17,17 @@ import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import { CacheProvider } from "@emotion/react";
 import MyTableCell from "./MyTableCell.jsx";
+import { useOutletContext } from "react-router-dom";
 
 function Section() {
   const [loading, setLoading] = useState(false);
   //create state variable to store all Items
-  const [openSuccessDialog, setOpenSuccessDialog] = useState({
-    open: false,
-    msg: "تمت الاضافه بنجاح",
-  });
+  const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext()
   //create state variable to store all Sections
   const [Sections, setSections] = useState([]);
   const {
     register,
+    reset,
     formState: { errors, isSubmitting, isSubmitted },
     handleSubmit,
   } = useForm();
@@ -51,6 +48,7 @@ function Section() {
         //setloading false
         setLoading(false)
         if (data.status) {
+          reset()
           //set is loading to false
           setLoading(false);
           setOpenSuccessDialog({
@@ -61,9 +59,7 @@ function Section() {
         console.log(data);
       });
   };
-  const handleClose = () => {
-    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
-  };
+ 
   const deleteSectionHandler = (id) => {
     fetch(`${url}sections/${id}`, {
       method: "DELETE",
@@ -160,20 +156,7 @@ function Section() {
             1
           </Grid>
         </Grid>
-        <Snackbar
-            open={openSuccessDialog.open}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {openSuccessDialog.msg}{" "}
-            </Alert>
-          </Snackbar>
+    
       </CacheProvider>
     </ThemeProvider>
   );

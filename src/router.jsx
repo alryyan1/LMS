@@ -10,64 +10,101 @@ import Item from "./pages/inventory/Item";
 import Section from "./pages/inventory/Section";
 import { url } from "./pages/constants";
 import InventoryIncome from "./pages/inventory/InventoryIncome";
+import DeductInventory from "./pages/inventory/DeductInventory";
+import Balance from "./pages/inventory/Balance";
+import Login from "./pages/Login";
+import GuestLayout from "./GuestLayout";
+import SignUp from "./pages/Singeup";
+import LabLayout from "./LabLayout";
+
 export const router = createBrowserRouter([
   {
     element: <App />,
-    path : '/',
+    path: "/",
     errorElement: <Error404 />,
     children: [
-    
+      
       {
-        path: "/tests",
-        loader :()=>{
-          return fetch("http://127.0.0.1/projects/bootstraped/new/api.php?all_tests=1")
-        },
-        element: <LabTests />,
-        
+        path: "/inventory",
+        element: <InventoryNav />,
+        children: [
+          {
+            path: "client/create",
+            element: <Client />,
+          },
+          {
+            path: "supplier/create",
+            element: <Supplier />,
+          },
+          {
+            path: "item/create",
+            loader: ({ request: { signal } }) => {
+              //fetch all sections
+              return fetch(`${url}sections/all`, { signal });
+            },
+            element: <Item />,
+          },
+          {
+            path: "section/create",
+            element: <Section />,
+          },
+          {
+            path: "income/create",
+            loader: ({ request: { signal } }) => {
+              //fetch all items
+              return fetch(`${url}items/all`, { signal });
+            },
+            element: <InventoryIncome />,
+          },
+          {
+            path: "income/deduct",
+            loader: ({ request: { signal } }) => {
+              //fetch all items
+              return fetch(`${url}items/all`, { signal });
+            },
+            element: <DeductInventory />,
+          },
+          {
+            path: "inventory/balance",
+
+            element: <Balance />,
+          },
+        ],
       },
       {
-        path:'/add',
-      
-        element : <AddPatient/>
-      }
-      ,
-      {
-        path:'/inventory',
-        element : <InventoryNav/>,
+        path: "/laboratory",
+        element: <LabLayout />,
+        
         children :[
           {
-            path:'client/create',
-            element : <Client/>
-          } ,
-          {
-            path:'supplier/create',
-            element : <Supplier/>
-          }  
-          ,
-          {
-            path:'item/create',
-            loader:({request:{signal}})=>{
-              //fetch all sections
-              return fetch(`${url}sections/all`,{signal})
+            path: "tests",
+            loader: () => {
+              return fetch(
+                "http://127.0.0.1/projects/bootstraped/new/api.php?all_tests=1"
+              );
             },
-            element : <Item/>
-          }  
-          ,
+            element: <LabTests />,
+          },
           {
-            path:'section/create',
-            element : <Section/>
-          } 
-          ,
-          {
-            path:'income/create',
-            loader:({request:{signal}})=>{
-              //fetch all items
-              return fetch(`${url}items/all`,{signal})
-            },
-            element : <InventoryIncome/>
-          }  
+            path: "add",
+    
+            element: <AddPatient />,
+          },
         ]
-      }
+      },
+      {
+        element: <GuestLayout />,
+        children: [
+          {
+            path: "/login",
+            element: <Login />,
+          },
+          {
+            path: "/signup",
+            element: <SignUp />,
+          },
+        ],
+      },
     ],
   },
 ]);

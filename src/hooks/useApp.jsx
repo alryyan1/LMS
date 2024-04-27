@@ -35,20 +35,20 @@ const useApp = () => {
         setUnits(data.data);
       });
   }, []);
-  useEffect(() => {
-    console.log("start fetching doctors");
-    fetch("http://127.0.0.1:8000/doctors",{
+  // useEffect(() => {
+  //   console.log("start fetching doctors");
+  //   fetch("http://127.0.0.1:8000/doctors",{
   
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      'Content-Type': 'application/json;',
-  }})
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data, "doctors array");
-        setDoctors(data);
-      });
-  }, []);
+  //   headers: {
+  //     "Access-Control-Allow-Origin": "*",
+  //     'Content-Type': 'application/json;',
+  // }})
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data, "doctors array");
+  //       setDoctors(data);
+  //     });
+  // }, []);
 
   useEffect(() => {
     setIsLoading(true);

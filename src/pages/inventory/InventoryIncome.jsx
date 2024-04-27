@@ -1,52 +1,45 @@
 import {
-  Alert,
   Autocomplete,
-  Button,
   Grid,
   IconButton,
   Paper,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
   TextField,
-  ThemeProvider,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import { cacheRtl, theme, url } from "../constants.js";
+import { url } from "../constants.js";
 import { Controller, useForm } from "react-hook-form";
-import { Delete } from "@mui/icons-material";
-import { CacheProvider } from "@emotion/react";
-import MyTableCell from "./MyTableCell.jsx";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import {
   DateField,
-  DatePicker,
   LocalizationProvider,
 } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { Delete } from "@mui/icons-material";
 
 function InventoryIncome() {
   const items = useLoaderData();
   // console.log(items);
   //create state variable to store all suppliers
-  const [openSuccessDialog, setOpenSuccessDialog] = useState({
-    open: false,
-    msg: "تمت الاضافه بنجاح",
-  });
+  const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext()
   const [suppliers, setSuppliers] = useState([]);
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [incomeComplete, setIncomeComplete] = useState(1);
   const {
+    setValue,
     register,
     reset,
     control,
-    formState: { errors, isSubmitting, isSubmitted },
+    formState: { errors, isSubmitting, isSubmitted  },
     handleSubmit,
   } = useForm();
   console.log(isSubmitting);
@@ -79,26 +72,29 @@ function InventoryIncome() {
         if (data.status) {
           
           setLoading(false);
-          // reset();
-          // setOpenSuccessDialog({
-          //   open: true,
-          //   msg: "تمت الاضافه  بنجاح",
-          // });
+          reset();
+          setValue('expire',dayjs(new Date()))
+          setOpenSuccessDialog({
+            open: true,
+            msg: "تمت الاضافه  بنجاح",
+          });
         }
       });
   };
-  const handleClose = () => {
-    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
-  };
-  const deleteIncomeHandler = (id) => {
-    fetch(`${url}suppliers/${id}`, {
+
+  const deleteIncomeItemHandler = (id) => {
+    setLoading(true)
+    fetch(`${url}inventory/deposit`, {
+      headers :{'content-type':'appliction/json','accept':'application/json'},
+      body :JSON.stringify({item_id:id}),
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.status) {
+          setLoading(false)
           //delete supplier by id
-          setSuppliers(suppliers.filter((supplier) => supplier.id != id));
+          setIncomeItems(incomeItems.filter((item) => item.id != id));
           //show success dialog
           setOpenSuccessDialog({
             open: true,
@@ -117,6 +113,7 @@ function InventoryIncome() {
         // console.log(data);
       });
   }, []);
+
   useEffect(() => {
     //fetch all suppliers
     fetch(`${url}inventory/deposit/last`)
@@ -126,14 +123,27 @@ function InventoryIncome() {
         setIncomeItems(data.items);
         console.log(data.items);
       });
-  }, [isSubmitted]);
+  }, [isSubmitted,incomeComplete]);
   const completeAdditionHandler = ()=>{
-    
+    setLoading(true)
+    fetch(`${url}inventory/deposit/complete`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status) {
+        setLoading(false)
+        setIncomeComplete(incomeComplete+1)
+        //show success dialog
+        setOpenSuccessDialog({
+          open: true,
+          msg: "تمت العمليه  بنجاح",
+        });
+      }
+       console.log(data,'deposit complete')
+    });
 
   }
   return (
-    <ThemeProvider theme={theme}>
-      <CacheProvider value={cacheRtl}>
+ 
         <Grid container>
           <Grid item xs={5}>
             <Paper sx={{p:1}}>
@@ -159,9 +169,11 @@ function InventoryIncome() {
                   ></TextField>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
+                        defaultValue={dayjs(new Date())}
+                        rules={{required:{value:true,message:"يجب ادخال الصلاحيه"}}}
                         control={control}
                          name="expire"
-                          render={({field})=> <DateField onChange={(val)=>field.onChange(val)} {...field}  sx={{mb:1}} label="الصلاحيه" />}
+                          render={({field})=> <DateField {...field} value={field.value} onChange={(val)=>field.onChange(val)}  sx={{mb:1}} label="الصلاحيه" />}
                         />
                    
                   </LocalizationProvider>
@@ -283,17 +295,21 @@ function InventoryIncome() {
             {/* create table with all suppliers */}
             <TableContainer>
               <Table dir="rtl" size="small">
-                <TableRow>
+                <thead>
+                    <TableRow>
                   <TableCell>رقم</TableCell>
                   <TableCell>الصنف</TableCell>
                   <TableCell>المورد</TableCell>
                   <TableCell>الكميه</TableCell>
                   <TableCell>السعر</TableCell>
                   <TableCell>الاجمالي</TableCell>
+                  <TableCell>حذف</TableCell>
                 </TableRow>
+                </thead>
+              
                 <TableBody>
                   {incomeItems.map((income,i) => (
-                    <TableRow key={income.id}>
+                    <TableRow key={i}>
                       <TableCell>{i+1}</TableCell>
                       <TableCell
                       
@@ -318,34 +334,26 @@ function InventoryIncome() {
                       <TableCell>
                        {income.pivot.quantity * income.pivot.price}
                       </TableCell>
+                      <TableCell>
+                        <LoadingButton loading={loading} title="حذف" endIcon={<Delete/>} onClick={()=>{
+                          deleteIncomeItemHandler(income.id)
+                        }}>
+                       </LoadingButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
-            {incomeItems.length > 0 && <Button onClick={completeAdditionHandler} sx={{mt:1}} color="error" variant="contained" fullWidth>تأكيد </Button>}
+            {incomeItems.length > 0 && <LoadingButton  loading={loading} onClick={completeAdditionHandler} sx={{mt:1}} color="success" variant="contained" fullWidth>تأكيد </LoadingButton>}
           </Grid>
 
           <Grid item xs={3}>
             1
           </Grid>
         </Grid>
-        <Snackbar
-          open={openSuccessDialog.open}
-          autoHideDuration={2000}
-          onClose={handleClose}
-        >
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            {openSuccessDialog.msg}{" "}
-          </Alert>
-        </Snackbar>
-      </CacheProvider>
-    </ThemeProvider>
+    
+ 
   );
 }
 
