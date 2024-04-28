@@ -45,7 +45,7 @@ function InventoryIncome() {
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
     console.log(formData);
-    console.log(formData.expire.$d.toLocaleDateString());
+    console.log(formData.expire.$d.toJSON());
     setLoading(true);
     console.log(isSubmitting)
     fetch(`${url}inventory/deposit`, {
@@ -58,7 +58,7 @@ function InventoryIncome() {
         item_id: formData.item.id,
         quantity: formData.amount,
         price: formData.price,
-        expire: formData.expire.$d.toLocaleDateString(),
+        expire: formData.expire.$d.toJSON(),
         notes: formData.notes,
         barcode: formData.barcode,
         batch: formData.batch,

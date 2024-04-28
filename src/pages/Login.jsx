@@ -11,7 +11,6 @@ const Login = () => {
   const [error,setError] =  useState({val:false,msg:''})
   const [loading , setLoading] = useState(false)
   const {setToken,setUser} =   useStateContext()
- console.log(setToken)
   const {
     handleSubmit,
     formState: { errors, isSubmitted },

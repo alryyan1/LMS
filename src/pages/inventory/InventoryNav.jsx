@@ -1,11 +1,13 @@
 import { CacheProvider, ThemeProvider } from "@emotion/react";
-import { Link, Navigate, NavLink, Outlet } from "react-router-dom";
+import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
 import { cacheRtl, theme } from "../constants";
 import { Alert, Snackbar } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStateContext } from "../../appContext";
 import Login from "../Login";
+import axiosClient from "../../../axios-client";
 function InventoryNav() {
+ const {setToken,setUser } =useStateContext()
  const [openSuccessDialog, setOpenSuccessDialog] = useState({
   color:'success',
   open: false,
@@ -13,13 +15,31 @@ function InventoryNav() {
 });
 
 const { token } = useStateContext();
-
+const location = useLocation()
+useEffect(()=>{
+// console.log(location,'location')
+axiosClient.get('/user').then(({data})=>{
+  console.log(data,'setting user data')
+  setUser(data)
+}).catch(({response})=>{
+  if (response.status == 401) {
+    setUser(null)
+    setToken(null)
+  }
+})
+ const token = localStorage.getItem('ACCESS_TOKEN')
+ if (token == null) {
+    setToken(null)
+ }
+},[location])
+console.log(token,'token')
 console.log("lab layout rendered");
 if (!token) {
   console.log("redirect to login");
   return <Navigate to={'/login'}/>
 }
   const handleClose = () => {
+    
     setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
   };
   return (

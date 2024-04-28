@@ -1,6 +1,7 @@
 import {
   Alert,
   Autocomplete,
+  Button,
   Divider,
   Grid,
   IconButton,
@@ -13,6 +14,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useEffect, useState } from "react";
 import {  url } from "../constants.js";
 import { useForm, Controller } from "react-hook-form";
@@ -21,9 +24,13 @@ import { Delete } from "@mui/icons-material";
 import { useLoaderData, useOutletContext } from "react-router-dom";
 import MyTableCell from "./MyTableCell.jsx";
 import MyAutoCompeleteTableCell from "./MyAutoCompeleteTableCell.jsx";
+import axiosClient from "../../../axios-client.js";
+import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 
 function Item() {
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState(null);
+  const [links, setLinks] = useState([]);
   const sections = useLoaderData();
   //create state variable to store all Items
   const [Items, setItems] = useState([]);
@@ -68,6 +75,35 @@ function Item() {
         }
       });
   };
+  const searchHandler = (word)=>{
+    setSearch(word)
+    axiosClient.post('items/all/pagination',{word}).then(({data:{data,links}})=>{
+      console.log(data)
+      console.log(links)
+      setItems(data)
+      // console.log(links)
+      setLinks(links)
+     })
+  }
+  const updateItemsTable = (link,setLoading)=>{
+    console.log(search)
+    setLoading(true)
+   fetch(link.url,{
+     method:  'POST',
+     headers:{
+       'Content-Type':'application/json'
+     },
+     body:search ?  JSON.stringify({word:search}):null
+   }).then((res)=>{
+     return res.json()
+   }).then(({data,links})=>{
+    console.log(data,links)
+    setItems(data)
+    setLinks(links)
+   }).finally(()=>{
+    setLoading(false)
+   })
+  }
  
   const deleteItemHandler = (id) => {
     fetch(`${url}items/${id}`, {
@@ -89,17 +125,107 @@ function Item() {
   };
   useEffect(() => {
     //fetch all Items
-    fetch(`${url}items/all`)
-      .then((res) => res.json())
-      .then((data) => {
-        //set Items
-        console.log(data, "items");
-        setItems(data);
-      });
+   axiosClient.post('items/all/pagination').then(({data:{data,links}})=>{
+    console.log(data)
+    console.log(links)
+    setItems(data)
+    // console.log(links)
+    setLinks(links)
+   })
   }, [isSubmitted]);
+  // useEffect(() => {
+  //   //fetch all Items
+  //   fetch(`${url}items/all`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       //set Items
+  //       console.log(data, "items");
+  //       setItems(data);
+  //     });
+  // }, [isSubmitted]);
   return (
         <Grid container>
+           <Grid item xs={7}>
+            {/* create table with all Items */}
+            <TableContainer sx={{mb:1}}>
+              <Table dir="rtl" size="small">
+             <thead>
+                  <TableRow>
+                    <TableCell>رقم</TableCell>
+                    <TableCell>الاسم</TableCell>
+                    <TableCell>القسم</TableCell>
+                    <TableCell>الوحده</TableCell>
+                    <TableCell>حذف</TableCell>
+                  </TableRow>
+                </thead>
+                <TableBody>
+                  {Items.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.id}</TableCell>
+                      <MyTableCell
+                        colName={"name"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
+                        {item.name}
+                      </MyTableCell>
+                      <MyAutoCompeleteTableCell
+                        colName={"section_id"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                        sections={sections}
+                      >
+                        {item?.section?.name}
+                      </MyAutoCompeleteTableCell>
+                      <MyTableCell
+                        colName={"unit_name"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
+                        {item.unit_name}
+                      </MyTableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => {
+                            deleteItemHandler(item.id);
+                          }}
+                        >
+                          <Delete></Delete>
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Grid sx={{gap:'4px'}} container>
+                    {links.map((link,i)=>{
+                      if (i==0) {
+                        return  <Grid item xs={1} key={i}><MyLoadingButton onClick={(setLoading)=>{
+                         
+                          updateItemsTable(link,setLoading)
+                        }} variant="contained" key={i}><ArrowBackIosIcon/></MyLoadingButton></Grid>
+                      }else if(links.length - 1 == i){
+                        return  <Grid item xs={1} key={i}><MyLoadingButton  onClick={(setLoading)=>{
+                          updateItemsTable(link,setLoading)
+                        }} variant="contained" key={i}><ArrowForwardIosIcon/></MyLoadingButton></Grid>
+
+                      }else
+                      return(
+                        <Grid  item xs={1} key={i}><MyLoadingButton active={link.active} onClick={(setLoading)=>{
+                          updateItemsTable(link,setLoading)
+                        }}>{link.label}</MyLoadingButton></Grid>
+                      )
+                    })}
+            </Grid>
+          </Grid>
+          <Grid item xs={1}></Grid>
+
           <Grid item xs={4}>
+            <TextField value={search} onChange={(e)=>{
+              searchHandler(e.target.value)
+            }} label='بحث'></TextField>
             <Divider>
           
               <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
@@ -199,61 +325,7 @@ function Item() {
               </LoadingButton>
             </form>
           </Grid>
-          <Grid item xs={1}></Grid>
-          <Grid item xs={7}>
-            {/* create table with all Items */}
-            <TableContainer>
-              <Table dir="rtl" size="small">
-             <thead>
-                  <TableRow>
-                    <TableCell>رقم</TableCell>
-                    <TableCell>الاسم</TableCell>
-                    <TableCell>القسم</TableCell>
-                    <TableCell>الوحده</TableCell>
-                    <TableCell>حذف</TableCell>
-                  </TableRow>
-                </thead>
-                <TableBody>
-                  {Items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.id}</TableCell>
-                      <MyTableCell
-                        colName={"name"}
-                        item={item}
-                        setOpenSuccessDialog={setOpenSuccessDialog}
-                      >
-                        {item.name}
-                      </MyTableCell>
-                      <MyAutoCompeleteTableCell
-                        colName={"section_id"}
-                        item={item}
-                        setOpenSuccessDialog={setOpenSuccessDialog}
-                        sections={sections}
-                      >
-                        {item?.section?.name}
-                      </MyAutoCompeleteTableCell>
-                      <MyTableCell
-                        colName={"unit_name"}
-                        item={item}
-                        setOpenSuccessDialog={setOpenSuccessDialog}
-                      >
-                        {item.unit_name}
-                      </MyTableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() => {
-                            deleteItemHandler(item.id);
-                          }}
-                        >
-                          <Delete></Delete>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
+         
 
         
         </Grid>

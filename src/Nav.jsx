@@ -9,7 +9,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 const Nav = () => {
   const { user, setToken, setUser } = useStateContext();
   const [loading,setLoading] =  useState(false)
-  console.log(setToken);
+  // console.log(setToken);
   const logoutHandler = () => {
     setLoading(true)
     axiosClient.post("logout").then((data) => {

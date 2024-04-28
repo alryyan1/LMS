@@ -1,8 +1,4 @@
-.inventroy-nav{
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 15px;
-}
+
 .inventroy-nav a {
     /* color: white; */
     text-decoration: none;
