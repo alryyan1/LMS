@@ -34,8 +34,8 @@ const Nav = () => {
           <NavLink style={{textDecoration:'none'}} to={"/login"}>Login</NavLink>
           <NavLink  style={{textDecoration:'none'}}
            to={"/inventory"}>Inventory</NavLink>
-          <NavLink style={{textDecoration:'none'}}
-           to={"/laboratory"}>laboratory</NavLink>
+          {/* <NavLink style={{textDecoration:'none'}}
+           to={"/laboratory"}>laboratory</NavLink> */}
           <div style={{flexGrow:1}}></div>
        {user &&<LoadingButton color="error" style={{color:"wheat"}} variant="contained" loading={loading}  endIcon={loading ?  "":<ExitToAppIcon/>}   onClick={logoutHandler}>
             {loading ? "...":"Logout"}
