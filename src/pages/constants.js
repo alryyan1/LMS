@@ -9,16 +9,7 @@ export const cacheRtl = createCache({
   });
 export const theme = createTheme({ direction: 'rtl' ,typography :{
     fontFamily: [
-      'Tajwal-Regular',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+    
+ 
     ].join(','),
    } })

@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import GuestLayout from "./GuestLayout";
 import SignUp from "./pages/Singeup";
 import LabLayout from "./LabLayout";
+import Report from "./pages/inventory/Report";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ export const router = createBrowserRouter([
           {
             path: "section/create",
             element: <Section />,
+          },
+          
+          {
+            path: "reports/income",
+            element: <Report />,
           },
           {
             path: "income/create",

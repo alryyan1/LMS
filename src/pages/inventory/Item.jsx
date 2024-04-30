@@ -58,7 +58,7 @@ function Item() {
         name: formData.name,
         section: formData.section.id,
         unit_name: formData.unit_name,
-        balance: formData.balance,
+        require_amount: formData.require_amount,
       }),
     })
       .then((res) => res.json())
@@ -253,7 +253,7 @@ function Item() {
                     required: {
                       value: true,
                       message:
-                        "Please tell us what you're an expert on. It helps us prioritize your referrals",
+                        "اختار القسم",
                     },
                   }}
                   name="section"
@@ -303,17 +303,18 @@ function Item() {
                 <TextField
                   fullWidth
                   sx={{ mb: 1 }}
-                  l
-                  error={errors.balance}
-                  {...register("balance", {
+                  
+                  error={errors.require_amount}
+                  {...register("require_amount", {
                     required: { value: true, message: "يجب ادخال رصيد الصنف" },
                   })}
                   id="outlined-basic"
-                  label="رصيد اول المده"
+                  label="حد الادني للطلب"
                   variant="filled"
                 />
-                {errors.balance && errors.balance.message}
+                {errors.require_amount && errors.require_amount.message}
               </div>
+            
               <div></div>
               <LoadingButton
                 fullWidth
