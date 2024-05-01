@@ -1,10 +1,10 @@
 import {  useState } from "react";
 import {useOutletContext} from 'react-router-dom'
-import Td from "./Td";
-import TdSelect from "./TdSelect";
-import TdTextArea from "./TdTextArea";
+import Td from "./pages/Laboratory/Td";
+import TdSelect from "./pages/Laboratory/TdSelect";
+import TdTextArea from "./pages/Laboratory/TdTextArea";
 import Modal from "./Modal";
-import TestOptions from "./TestOptions";
+import TestOptions from "./pages/Laboratory/TestOptions";
 
 function MainTestChildren({ test, addChildTestHandler }) {
   const appData = useOutletContext();

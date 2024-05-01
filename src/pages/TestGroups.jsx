@@ -2,15 +2,13 @@ import React from "react";
 import { Tabs, Tab, Box, Card } from "@mui/material";
 import TestGroupChildren from "./TestGroupChildren";
 import { url } from "./constants";
+import { useOutletContext } from "react-router-dom";
 function TestGroups({
   fetchTests,
   setPackages,
-  packages,
-  setTests,
-  actviePatient,
-  setError,
-  setOpen,
+  
 }) {
+const {packages,actviePatient,setError,setOpen} =  useOutletContext()
 
   const handleTestAdd = (p,t) => {
     setPackages((prevPack) => {

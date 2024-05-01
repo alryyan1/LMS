@@ -1,11 +1,11 @@
 import { Select, MenuItem } from "@mui/material";
 import { useState } from "react";
-import { url } from "./constants";
-const DiscountSelect = ({ id, disc, activePatient, setTests }) => {
+import { url } from "../constants";
+const DiscountSelect = ({ id, disc, actviePatient, setTests }) => {
   const [discount, setDiscount] = useState(disc);
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const response = await fetch(`${url}labRequest/${activePatient.id}`, {
+    const response = await fetch(`${url}labRequest/${actviePatient.id}`, {
       headers: { "content-type": "application/json" },
       method: "PATCH",
       body: JSON.stringify({ test_id: id, discount: dis }),
@@ -24,8 +24,8 @@ const DiscountSelect = ({ id, disc, activePatient, setTests }) => {
   };
 
   return (
-    <Select
-      disabled={activePatient.is_lab_paid == 1}
+    <Select fullWidth sx={{border:'none'}}
+      disabled={actviePatient.is_lab_paid == 1}
       onChange={(e) => {
         changeDiscountHandler(id, e.target.value);
       }}

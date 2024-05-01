@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Error404 from "./Error404";
-import LabTests from "./pages/LabTests";
-import AddPatient from "./pages/AddPatient";
+import LabTests from "./pages/Laboratory/LabTests";
+import AddPatient from "./pages/Laboratory/AddPatient";
 import Client from "./pages/inventory/Client";
 import InventoryNav from "./pages/inventory/InventoryNav";
 import Supplier from "./pages/inventory/Supplier";
@@ -17,6 +17,7 @@ import GuestLayout from "./GuestLayout";
 import SignUp from "./pages/Singeup";
 import LabLayout from "./LabLayout";
 import Report from "./pages/inventory/Report";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -24,10 +25,28 @@ export const router = createBrowserRouter([
     path: "/",
     errorElement: <Error404 />,
     children: [
-      
+    
+      {
+        element: <GuestLayout />,
+        children: [
+          {
+            path: "/login",
+            element: <Login />,
+          },
+          {
+            path: "/signup",
+            element: <SignUp />,
+          },
+        ],
+      },
+
       {
         path: "/inventory",
-        element: <InventoryNav />,
+        element: (
+          <ProtectedRoute>
+            <InventoryNav />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "client/create",
@@ -49,7 +68,7 @@ export const router = createBrowserRouter([
             path: "section/create",
             element: <Section />,
           },
-          
+
           {
             path: "reports/income",
             element: <Report />,
@@ -79,9 +98,9 @@ export const router = createBrowserRouter([
       },
       {
         path: "/laboratory",
-        element: <LabLayout />,
-        
-        children :[
+        element: <ProtectedRoute><LabLayout /></ProtectedRoute>,
+
+        children: [
           {
             path: "tests",
             loader: () => {
@@ -93,24 +112,12 @@ export const router = createBrowserRouter([
           },
           {
             path: "add",
-    
+
             element: <AddPatient />,
-          },
-        ]
-      },
-      {
-        element: <GuestLayout />,
-        children: [
-          {
-            path: "/login",
-            element: <Login />,
-          },
-          {
-            path: "/signup",
-            element: <SignUp />,
           },
         ],
       },
+     
     ],
   },
 ]);

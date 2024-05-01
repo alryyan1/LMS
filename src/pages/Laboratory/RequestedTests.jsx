@@ -7,21 +7,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import DiscountSelect from "./discountSelect";
+import DiscountSelect from "./DiscountSelect";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ArrowBack } from "@mui/icons-material";
-import { url } from "./constants";
+import { url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
-function RequestedTests({
-  setActivePatient,
-  actviePatient,
-  tests,
-  setTests,
-  setLayOout,
-  setOpenSuccessDialog,
-}) {
+import { useOutletContext } from "react-router-dom";
+function RequestedTests() {
+  const  {setActivePatient,actviePatient,tests,setTests,setOpenSuccessDialog} = useOutletContext()
   const [loading, setLoading] = useState(false);
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
@@ -41,7 +35,7 @@ function RequestedTests({
         if (data.status) {
           setLoading(false);
           //show success dialog
-          setOpenSuccessDialog((pre) => ({
+          setOpenSuccessDialog(() => ({
             msg: "تمت عمليه السداد بنجاح",
             open: true,
           }));
@@ -65,7 +59,7 @@ function RequestedTests({
         if (data.status) {
           setLoading(false);
           //show success dialog
-          setOpenSuccessDialog((pre) => ({
+          setOpenSuccessDialog(() => ({
             msg: "تمت الغاء السداد بنجاح",
             open: true,
           }));
@@ -105,21 +99,9 @@ function RequestedTests({
     <>
       <div className="requested-tests">
         <div className="requested-table">
-          <IconButton
-            onClick={() => {
-              setLayOout((pre) => {
-                return {
-                  ...pre,
-                  showTestPanel: true,
-                  tests: "",
-                  requestedDiv: "2fr",
-                };
-              });
-            }}
-          >
-            <ArrowBack></ArrowBack>
-          </IconButton>
-          <TableContainer sx={{ p: 1 }}>
+   
+     
+          <TableContainer sx={{border:'none',textAlign:"left" }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -133,25 +115,25 @@ function RequestedTests({
               <TableBody>
                 {tests.map((test) => {
                   return (
-                    <TableRow key={test.id}>
-                      <TableCell component="th" scope="row">
+                    <TableRow sx={{borderBottom:'1px solid rgba(224, 224, 224, 1)'}} key={test.id}>
+                      <TableCell sx={{border:'none'}} component="th" scope="row">
                         {test.main_test_name}
                       </TableCell>
-                      <TableCell align="right">{test.price}</TableCell>
-                      <TableCell align="right">
+                      <TableCell  sx={{border:'none'}} align="right">{test.price}</TableCell>
+                      <TableCell sx={{border:'none'}} align="right">
                         <DiscountSelect 
                         
                           setTests={setTests}
                           id={test.id}
                           disc={test.pivot.discount_per}
-                          activePatient={actviePatient}
+                          actviePatient={actviePatient}
                         />
                       </TableCell>
-                      <TableCell align="right">
-                        < MyCheckBox isbankak={test.pivot.is_bankak} activePatient={actviePatient}  id={test.id}></MyCheckBox>
+                      <TableCell sx={{border:'none'}} align="right">
+                        < MyCheckBox isbankak={test.pivot.is_bankak} actviePatient={actviePatient}  id={test.id}></MyCheckBox>
                       </TableCell>
-                      <TableCell align="right">
-                        <IconButton  disabled={actviePatient.is_lab_paid}
+                      <TableCell sx={{border:'none'}} align="right">
+                        <IconButton  disabled={actviePatient?.is_lab_paid == 1}
                           aria-label="delete"
                           onClick={() => deleteTest(test.id)}
                         >
@@ -178,7 +160,7 @@ function RequestedTests({
               الغاء السداد
             </LoadingButton>:<LoadingButton
             loading={loading}
-            disabled={actviePatient.is_lab_paid}
+            disabled={actviePatient.is_lab_paid == 1}
             color={actviePatient.is_lab_paid ? "success" : "primary"}
             onClick={payHandler}
             sx={{ textAlign: "center",mb:1 }}
@@ -192,9 +174,7 @@ function RequestedTests({
                 <div className="title">Total</div>
                 <div>
                   {tests.reduce((accum, test) => {
-                    console.log(
-                      Number((test.pivot.discount_per * test.price) / 100)
-                    );
+                 
                     const discount = Number(
                       (test.pivot.discount_per * test.price) / 100
                     );

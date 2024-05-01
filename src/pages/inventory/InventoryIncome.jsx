@@ -34,9 +34,11 @@ function InventoryIncome() {
   const [suppliers, setSuppliers] = useState([]);
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(true);
   const [income, setIncome] = useState(null);
   const [update, setUpdate] = useState(0);
-  console.log(update,'update')
+  console.log(income,'is equal to null',income === null)
+  console.log(show,'show')
   const {
     setValue,
     register,
@@ -53,9 +55,13 @@ function InventoryIncome() {
   } = useForm();
   useEffect(() => {
     axiosClient.get('inventory/deposit/last').then(({data:data})=>{
-      setIncome(data)
-      console.log(data)
-      setIncomeItems(data.items)
+      if (data != '') {
+        console.log(data , 'is data')
+        setIncome(data)
+        console.log(data)
+        setIncomeItems(data.items)
+      }
+    
     })
   },[isSubmitSuccessful,isSubmitSuccessful1,update])
   const finishInvoice =(id)=>{
@@ -63,6 +69,8 @@ function InventoryIncome() {
     axiosClient.patch(`inventory/deposit/finish/${id}`).then(({data})=>{
       console.log(data)
       if (data.status) {
+    setShow(true)
+
         console.log('set updating function')
         setUpdate((pev)=>pev+1)
         setOpenSuccessDialog({
@@ -154,6 +162,8 @@ function InventoryIncome() {
       })
       .then((data) => {
         if (data.status) {
+    setShow(false)
+
           setUpdate((previous)=>previous + 1)
           setLoading(false);
           //show success dialog
@@ -168,7 +178,7 @@ function InventoryIncome() {
   return (
     <Grid container>
       <Grid item xs={5}>
-    {!income?.complete ?      <Paper sx={{ p: 1 }}>
+    {income && !income?.complete ?      <Paper sx={{ p: 1 }}>
           <Typography
             sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
             variant="h5"
@@ -299,7 +309,7 @@ function InventoryIncome() {
         <Link to={"/inventory/reports/income"}>reports</Link>
 
         {/* create table with all suppliers */}
-        {!income?.complete && incomeItems.length > 0 ? (
+        {income && !income?.complete && incomeItems.length > 0 ? (
           <TableContainer>
             <Typography align="center" variant="h4" sx={{mb:1}}>{income.supplier.name}</Typography>
             <Table dir="rtl" size="small">
@@ -347,8 +357,7 @@ function InventoryIncome() {
           ""
         )}
         
-          {income?.complete&&
-            <form
+          {  show == true && <form
               style={{ margin: "5px" }}
               noValidate
               onSubmit={handleSubmit2(completeAdditionHandler)}

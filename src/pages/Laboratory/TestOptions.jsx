@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TestOption from "./TestOption";
-import Loading from "./loader";
+import Loading from "../../loader";
 
 function TestOptions({ activeChild, update, setUpdate }) {
   const [data, setData] = useState([]);

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button, Stack } from "@mui/material";
-import Loader from "./loader";
+import Loader from "../../loader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useOutletContext} from 'react-router-dom'
 function TestMainInfo({ test, setActiveTestObj }) {

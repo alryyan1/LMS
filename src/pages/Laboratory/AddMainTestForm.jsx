@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import {useOutletContext} from 'react-router-dom'
-import Loader from "./loader";
+import Loader from "../../loader";
 
 function AddMainTestForm() {
   const [loading, setIsLoading] = useState(false);

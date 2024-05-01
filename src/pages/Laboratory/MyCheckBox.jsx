@@ -1,6 +1,6 @@
 import { Checkbox } from '@mui/material'
 import React from 'react'
-import { url } from './constants';
+import { url } from '../constants';
 
 function MyCheckBox({activePatient,id,isbankak}) {
     const [checked, setChecked] = React.useState(isbankak == 0 ? false : true);
