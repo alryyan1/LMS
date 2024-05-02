@@ -57,8 +57,8 @@ function Item() {
       body: new URLSearchParams({
         name: formData.name,
         section: formData.section.id,
-        unit_name: formData.unit_name,
         require_amount: formData.require_amount,
+        initial_balance:formData.initial_balance
       }),
     })
       .then((res) => res.json())
@@ -154,7 +154,7 @@ function Item() {
                     <TableCell>رقم</TableCell>
                     <TableCell>الاسم</TableCell>
                     <TableCell>القسم</TableCell>
-                    <TableCell>الوحده</TableCell>
+                    <TableCell>رصيد اول المده</TableCell>
                     <TableCell>حذف</TableCell>
                   </TableRow>
                 </thead>
@@ -178,11 +178,11 @@ function Item() {
                         {item?.section?.name}
                       </MyAutoCompeleteTableCell>
                       <MyTableCell
-                        colName={"unit_name"}
+                        colName={"initial_balance"}
                         item={item}
                         setOpenSuccessDialog={setOpenSuccessDialog}
                       >
-                        {item.unit_name}
+                        {item.initial_balance}
                       </MyTableCell>
                       <TableCell>
                         <IconButton
@@ -283,22 +283,7 @@ function Item() {
                 />
                 {errors.section && errors.section.message}
               </div>
-              <div>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  sx={{ mb: 1 }}
-                  label={"اسم الوحده"}
-                  error={errors.unit_name}
-                  {...register("unit_name", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال اسم الوحده",
-                    },
-                  })}
-                ></TextField>
-                {errors.unit_name && errors.unit_name.message}
-              </div>
+             
               <div>
                 <TextField
                   fullWidth
@@ -314,7 +299,21 @@ function Item() {
                 />
                 {errors.require_amount && errors.require_amount.message}
               </div>
-            
+              <div>
+                <TextField
+                  fullWidth
+                  sx={{ mb: 1 }}
+                  
+                  error={errors.require_amount}
+                  {...register("initial_balance", {
+                    required: { value: true, message: "يجب ادخال رصيد اول المده " },
+                  })}
+                  id="outlined-basic"
+                  label="رصيد اول المده"
+                  variant="filled"
+                />
+                {errors.initial_balance && errors.initial_balance.message}
+              </div>
               <div></div>
               <LoadingButton
                 fullWidth

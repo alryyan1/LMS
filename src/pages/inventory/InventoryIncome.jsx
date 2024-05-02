@@ -183,7 +183,7 @@ function InventoryIncome() {
             sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
             variant="h5"
           >
-            {" "}
+           
             اضافه للمخزون
           </Typography>
           <form noValidate onSubmit={handleSubmit(submitHandler)}>

@@ -2,9 +2,11 @@ import {  Outlet } from "react-router-dom";
 import useApp from "./hooks/useApp";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
+import { Alert, Snackbar } from "@mui/material";
 
 function LabLayout() {
   const [openSuccessDialog, setOpenSuccessDialog] = useState({
+    color:'success',
     open: false,
     msg: "تمت الاضافه بنجاح",
   });
@@ -109,6 +111,23 @@ function LabLayout() {
           }}
         />
       }
+         <Snackbar
+            open={openSuccessDialog.open}
+            autoHideDuration={2000}
+            onClose={()=>setOpenSuccessDialog((prev)=>({...prev,open:false}))
+          
+          }
+          >
+            <Alert
+               
+              severity={openSuccessDialog.color}
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {openSuccessDialog.msg}
+          
+            </Alert>
+          </Snackbar>
     </div>
   );
 }

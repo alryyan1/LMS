@@ -14,9 +14,11 @@ import { url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
-function RequestedTests() {
+import axiosClient from "../../../axios-client";
+function RequestedTests({setPatients}) {
   const  {setActivePatient,actviePatient,tests,setTests,setOpenSuccessDialog} = useOutletContext()
   const [loading, setLoading] = useState(false);
+  console.log(actviePatient,'active patient',setActivePatient)
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
     const totalPaid = tests.reduce((accum, test) => {
@@ -25,15 +27,24 @@ function RequestedTests() {
       return accum + (test.price - discount);
     }, 0);
     setLoading(true);
-    fetch(`${url}labRequest/payment/${actviePatient.id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ paid: totalPaid }),
-      headers: { "content-type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.patch(`labRequest/payment/${actviePatient.id}`,{ paid: totalPaid })
+      .then(({data:data}) => {
+        console.log(data)
         if (data.status) {
           setLoading(false);
+          setPatients((prevPatients)=>{
+            return prevPatients.map((p) => {
+              if (p.id === actviePatient.id) {
+                return {
+                 ...p,
+                  is_lab_paid: true,
+                  lab_paid: totalPaid,
+                };
+              } else {
+                return p;
+              }
+            });
+          })
           //show success dialog
           setOpenSuccessDialog(() => ({
             msg: "تمت عمليه السداد بنجاح",
@@ -42,6 +53,7 @@ function RequestedTests() {
           setActivePatient((p) => {
             return { ...p, is_lab_paid: true ,lab_paid:totalPaid};
           });
+          
         }
       });
   };
@@ -58,6 +70,19 @@ function RequestedTests() {
         console.log(data,'data from cancel')
         if (data.status) {
           setLoading(false);
+          setPatients((prevPatients)=>{
+            return prevPatients.map((p) => {
+              if (p.id === actviePatient.id) {
+                return {
+                 ...p,
+                  is_lab_paid: false,
+                  lab_paid: 0,
+                };
+              } else {
+                return p;
+              }
+            });
+          })
           //show success dialog
           setOpenSuccessDialog(() => ({
             msg: "تمت الغاء السداد بنجاح",
@@ -130,7 +155,7 @@ function RequestedTests() {
                         />
                       </TableCell>
                       <TableCell sx={{border:'none'}} align="right">
-                        < MyCheckBox isbankak={test.pivot.is_bankak} actviePatient={actviePatient}  id={test.id}></MyCheckBox>
+                        < MyCheckBox isbankak={test.pivot.is_bankak}   id={test.id}></MyCheckBox>
                       </TableCell>
                       <TableCell sx={{border:'none'}} align="right">
                         <IconButton  disabled={actviePatient?.is_lab_paid == 1}

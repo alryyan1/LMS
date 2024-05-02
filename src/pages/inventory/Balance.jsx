@@ -42,7 +42,7 @@ function Balance() {
   useEffect(() => {
 
     axiosClient.post('items/all/balance/paginate',{"word":""}).then(({data:{data,links}})=>{
-      console.log(data)
+      console.log(data,'items data')
       console.log(links)
       setItems(data)
   ///    setItems(data)
@@ -75,6 +75,11 @@ function Balance() {
         <>
       
       <TableContainer>
+      <a
+              href={`http://127.0.0.1/laravel-react-app/public/balance`}
+            >
+              pdf
+            </a>
         <div style={{textAlign:'right',marginBottom:"5px"}}>
         <TextField value={search} onChange={(e)=>{
               searchHandler(e.target.value)
@@ -86,9 +91,9 @@ function Balance() {
               <TableRow>
                 <TableCell>رقم</TableCell>
                 <TableCell>الاسم</TableCell>
-                <TableCell>وحده القياس</TableCell>
+                <TableCell> رصيد اول المده</TableCell>
                 <TableCell>القسم </TableCell>
-                <TableCell>رصيد أول المده </TableCell>
+                <TableCell> الحد الادني</TableCell>
                 <TableCell>الوارد</TableCell>
                 <TableCell>المنصرف </TableCell>
                 <TableCell>الرصيد </TableCell>
@@ -100,9 +105,9 @@ function Balance() {
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
                   <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.unit_name}</TableCell>
-                  <TableCell>{item.section.name}</TableCell>
                   <TableCell>{item.initial_balance}</TableCell>
+                  <TableCell>{item.section.name}</TableCell>
+                  <TableCell>{item.require_amount}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
                   <TableCell>{item.totaldeduct}</TableCell>
                   <TableCell>{item.remaining}</TableCell>

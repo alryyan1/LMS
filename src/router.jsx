@@ -21,11 +21,15 @@ import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
+  
     element: <App />,
     path: "/",
     errorElement: <Error404 />,
     children: [
-    
+      {
+        path: "*",
+        element: <Login />,
+      },
       {
         element: <GuestLayout />,
         children: [

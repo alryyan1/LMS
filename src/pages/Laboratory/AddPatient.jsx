@@ -18,6 +18,7 @@ import {
   Stack,
   styled,
   Paper,
+  Skeleton,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
@@ -201,12 +202,14 @@ function AddPatient() {
                 key={p.id}
               />
             ))}
+                <Skeleton variant="rectangular" width={210} height={118} />
+
           </div>
         </div>
 
         <div>
           {actviePatient && actviePatient.labrequests.length > 0 &&   (
-            <RequestedTests
+            <RequestedTests setPatients={setPatients}
             />
           )}
         </div>
