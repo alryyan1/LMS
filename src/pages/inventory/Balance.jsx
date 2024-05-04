@@ -114,7 +114,7 @@ function Balance() {
                   <TableCell>{item.require_amount}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
                   <TableCell>{item.totaldeduct}</TableCell>
-                  <TableCell>{item.remaining}</TableCell>
+                  <TableCell>{item.remaining + item.initial_balance }</TableCell>
                 </TableRow>
               ))}
             </TableBody>
