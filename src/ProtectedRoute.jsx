@@ -6,13 +6,13 @@ import axiosClient from '../axios-client';
 function ProtectedRoute({children}) {
     const { token ,setUser,setToken} = useStateContext();
     const location = useLocation()
-    console.log(token,'from protected route');
+    // console.log(token,'from protected route');
   
  
     useEffect(()=>{
     // console.log(location,'location')
     axiosClient.get('/user').then(({data})=>{
-      console.log(data,'setting user data')
+      // console.log(data,'setting user data')
       setUser(data)
     }).catch(({response})=>{
       if (response.status == 401) {
@@ -25,10 +25,10 @@ function ProtectedRoute({children}) {
         setToken(null)
      }
     },[location])
-    console.log(token,'token')
-    console.log("lab layout rendered");
+    // console.log(token,'token')
+    // console.log("lab layout rendered");
     if (!token) {
-      console.log("redirect to login");
+      // console.log("redirect to login");
       return <Navigate to={'/login'}/>
     }
    

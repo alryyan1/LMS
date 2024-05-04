@@ -6,6 +6,7 @@ import {
   Grid,
   IconButton,
   Snackbar,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -29,6 +30,7 @@ import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 
 function Item() {
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(5);
   const [search, setSearch] = useState(null);
   const [links, setLinks] = useState([]);
   const sections = useLoaderData();
@@ -58,7 +60,8 @@ function Item() {
         name: formData.name,
         section: formData.section.id,
         require_amount: formData.require_amount,
-        initial_balance:formData.initial_balance
+        initial_balance:formData.initial_balance,
+        initial_price:formData.initial_price
       }),
     })
       .then((res) => res.json())
@@ -73,11 +76,11 @@ function Item() {
             msg: "تمت الاضافه بنجاح",
           });
         }
-      });
+      }).catch((err)=>console.log(err));
   };
   const searchHandler = (word)=>{
     setSearch(word)
-    axiosClient.post('items/all/pagination',{word}).then(({data:{data,links}})=>{
+    axiosClient.get(`items/all/pagination/${page}?word=${word}`).then(({data:{data,links}})=>{
       console.log(data)
       console.log(links)
       setItems(data)
@@ -89,7 +92,7 @@ function Item() {
     console.log(search)
     setLoading(true)
    fetch(link.url,{
-     method:  'POST',
+     method:  'GET',
      headers:{
        'Content-Type':'application/json'
      },
@@ -125,14 +128,14 @@ function Item() {
   };
   useEffect(() => {
     //fetch all Items
-   axiosClient.post('items/all/pagination').then(({data:{data,links}})=>{
-    console.log(data)
+   axiosClient.get(`items/all/pagination/${page}`).then(({data:{data,links}})=>{
+    console.log(data,'items')
     console.log(links)
     setItems(data)
-    // console.log(links)
+    console.log(links)
     setLinks(links)
    })
-  }, [isSubmitted]);
+  }, [isSubmitted,page]);
   // useEffect(() => {
   //   //fetch all Items
   //   fetch(`${url}items/all`)
@@ -146,6 +149,16 @@ function Item() {
   return (
         <Grid container>
            <Grid item xs={7}>
+            <select onChange={(val)=>{
+              setPage(val.target.value)
+            }}>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
             {/* create table with all Items */}
             <TableContainer sx={{mb:1}}>
               <Table dir="rtl" size="small">
@@ -155,6 +168,8 @@ function Item() {
                     <TableCell>الاسم</TableCell>
                     <TableCell>القسم</TableCell>
                     <TableCell>رصيد اول المده</TableCell>
+                    <TableCell>   الحد الادني  </TableCell>
+                    <TableCell> سعر الوحده المبدئي </TableCell>
                     <TableCell>حذف</TableCell>
                   </TableRow>
                 </thead>
@@ -183,6 +198,20 @@ function Item() {
                         setOpenSuccessDialog={setOpenSuccessDialog}
                       >
                         {item.initial_balance}
+                      </MyTableCell>
+                      <MyTableCell
+                        colName={"require_amount"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
+                        {item.require_amount}
+                      </MyTableCell>
+                      <MyTableCell
+                        colName={"initial_price"}
+                        item={item}
+                        setOpenSuccessDialog={setOpenSuccessDialog}
+                      >
+                        {item.initial_price}
                       </MyTableCell>
                       <TableCell>
                         <IconButton
@@ -284,7 +313,8 @@ function Item() {
                 {errors.section && errors.section.message}
               </div>
              
-              <div>
+              <Stack direction={'row'} gap={3}>
+                <div>
                 <TextField
                   fullWidth
                   sx={{ mb: 1 }}
@@ -298,8 +328,9 @@ function Item() {
                   variant="filled"
                 />
                 {errors.require_amount && errors.require_amount.message}
-              </div>
-              <div>
+                </div>
+              
+                <div>
                 <TextField
                   fullWidth
                   sx={{ mb: 1 }}
@@ -311,8 +342,27 @@ function Item() {
                   id="outlined-basic"
                   label="رصيد اول المده"
                   variant="filled"
+                  
                 />
                 {errors.initial_balance && errors.initial_balance.message}
+                </div>
+               
+              </Stack>
+             
+              <div>
+                <TextField
+                  fullWidth
+                  sx={{ mb: 1 }}
+                  
+                  error={errors.require_amount}
+                  {...register("initial_price", {
+                    required: { value: true, message: "يجب ادخال  السعر  " },
+                  })}
+                  id="outlined-basic"
+                  label="سعر الوحده "
+                  variant="filled"
+                />
+                {errors.initial_price && errors.initial_price.message}
               </div>
               <div></div>
               <LoadingButton

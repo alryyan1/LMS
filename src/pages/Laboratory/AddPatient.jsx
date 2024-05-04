@@ -36,9 +36,11 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function AddPatient() {
+  const { setTests, actviePatient, setActivePatient, setOpen } =
+    useOutletContext();
+  const [patientsLoading, setPatientsLoading] = useState(false);
 
-  const {setTests,actviePatient,setActivePatient,setOpen} =   useOutletContext()
-  console.log(actviePatient)
+  console.log(actviePatient);
   const { setOpenDrawer, openDrawer } = useStateContext();
   const [patients, setPatients] = useState([]);
   const [update, setUpdate] = useState(0);
@@ -51,7 +53,6 @@ function AddPatient() {
     showTestPanel: false,
   });
   console.log(openDrawer, "open drawer");
-
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation">
@@ -80,6 +81,7 @@ function AddPatient() {
   );
 
   useEffect(() => {
+    setPatientsLoading(true);
     axiosClient.get(`patients`).then(({ data: data }) => {
       console.log(data, "today patients");
       //add activeProperty to patient object
@@ -87,6 +89,8 @@ function AddPatient() {
         patient.active = false;
       });
       console.log(data);
+      setPatientsLoading(false);
+
       setPatients(data);
     });
   }, [update]);
@@ -124,15 +128,6 @@ function AddPatient() {
       return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
     });
   };
-  const fetchTests = () => {
-    fetch(`${url}labRequest/${actviePatient.id}`, {
-      headers: { "content-type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setTests(data.labrequests);
-      });
-  };
 
   return (
     <>
@@ -147,12 +142,10 @@ function AddPatient() {
         }}
       >
         <div>
-          <AddDoctorDialog/>
+          <AddDoctorDialog />
 
-        
-         
-        <Stack
-        sx={{mr:1}}
+          <Stack
+            sx={{ mr: 1 }}
             gap={"5px"}
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
@@ -164,9 +157,12 @@ function AddPatient() {
               </IconButton>
             </Item>
             <Item>
-              <IconButton variant="contained" onClick={()=>{
-                setOpen(true)
-              }}>
+              <IconButton
+                variant="contained"
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
                 <PersonAdd />
               </IconButton>
             </Item>
@@ -178,48 +174,38 @@ function AddPatient() {
           </Stack>
         </div>
         <div>
-   
-          
-
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <PatientForm
-              setUpdate={setUpdate}
-              hideForm={hideForm}
-            />
+            <PatientForm setUpdate={setUpdate} hideForm={hideForm} />
           )}
         </div>
         <div style={{ overflow: "auto" }}>
-          <AddTestAutoComplete
-          setPatients = {setPatients}
-          />
+          <AddTestAutoComplete setPatients={setPatients} />
           <div className="patients">
-            {patients.map((p) => (
-              <Patient
-                patient={p}
-                onClick={setActivePatientHandler}
-                key={p.id}
-              />
-            ))}
-                <Skeleton variant="rectangular" width={210} height={118} />
-
+            {patientsLoading ? (
+              <Skeleton animation="wave" variant="rectangular" width={"100%"} height={400} />
+            ) : (
+              patients.map((p) => (
+                <Patient
+                  patient={p}
+                  onClick={setActivePatientHandler}
+                  key={p.id}
+                />
+              ))
+            )}
           </div>
         </div>
 
         <div>
-          {actviePatient && actviePatient.labrequests.length > 0 &&   (
-            <RequestedTests setPatients={setPatients}
-            />
+          {actviePatient && actviePatient.labrequests.length > 0 && (
+            <RequestedTests setPatients={setPatients} />
           )}
         </div>
         <div>
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
-              setActivePatient={setActivePatient}
-              patients={patients}
-              setPatients={setPatients}
               key={actviePatient.id}
               patient={actviePatient}
             />

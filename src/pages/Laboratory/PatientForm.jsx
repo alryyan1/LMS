@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { Typography, Paper, Divider, styled } from "@mui/material";
+import { Typography, Paper, Divider, styled, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import "./addPatient.css";
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, TextField, Stack } from "@mui/material";
@@ -63,6 +63,7 @@ function PatientForm({  hideForm,setUpdate }) {
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
           <TextField
+          autoFocus
             error={errors?.phone && errors.phone.message}
             {...register("phone", {
               required: {
@@ -127,13 +128,14 @@ function PatientForm({  hideForm,setUpdate }) {
             }}
             control={control}
             render={({ field }) => (
+
               <Autocomplete
+              ref={field.ref}
               
                 onChange={(e, newVal) => field.onChange(newVal)}
                 getOptionKey={(op) => op.id}
                 getOptionLabel={(option) => option.name}
                 options={appData.doctors}
-
                 renderInput={(params) => {
                   // console.log(params)
 
@@ -142,6 +144,29 @@ function PatientForm({  hideForm,setUpdate }) {
               ></Autocomplete>
             )}
           />
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">النوع</InputLabel>
+        <Controller
+        name="gender"
+        control={control}
+        render={({field})=>{
+          return    <Select
+          
+        
+          value={field.value}
+          onChange= {(data)=>{
+            console.log(data.target.value)
+            return field.onChange(data.target.value)
+          }}
+          label="النوع"
+        >
+          <MenuItem value={'ذكر'}>ذكر</MenuItem>
+          <MenuItem value={'اثني'}>اثني</MenuItem>
+        </Select>
+        }}
+        />
+     
+      </FormControl>
               {/* {errors.doctor && errors.doctor.message} */}
 
 

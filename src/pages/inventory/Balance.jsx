@@ -92,6 +92,8 @@ function Balance() {
                 <TableCell>رقم</TableCell>
                 <TableCell>الاسم</TableCell>
                 <TableCell> رصيد اول المده</TableCell>
+                <TableCell>   سعر الوحده</TableCell>
+                <TableCell> الاجمالي </TableCell>
                 <TableCell>القسم </TableCell>
                 <TableCell> الحد الادني</TableCell>
                 <TableCell>الوارد</TableCell>
@@ -106,6 +108,8 @@ function Balance() {
                   <TableCell>{item.id}</TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.initial_balance}</TableCell>
+                  <TableCell>{item.initial_price}</TableCell>
+                  <TableCell>{item.initial_price * item.initial_balance}</TableCell>
                   <TableCell>{item.section.name}</TableCell>
                   <TableCell>{item.require_amount}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
