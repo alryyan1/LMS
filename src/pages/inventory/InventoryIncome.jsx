@@ -28,59 +28,86 @@ import axiosClient from "../../../axios-client.js";
 function InventoryIncome() {
   const items = useLoaderData();
 
+  const [layOut, setLayout] = useState({
+    addToInventoryStyleObj:{},
+    incomeItemsStyleObj:{},
+  });
   // console.log(items);
   //create state variable to store all suppliers
   const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext();
   const [suppliers, setSuppliers] = useState([]);
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [income, setIncome] = useState(null);
   const [update, setUpdate] = useState(0);
-  console.log(income,'is equal to null',income === null)
-  console.log(show,'show')
+  console.log(income, "is equal to null", income === null);
+  console.log(show, "show");
   const {
     setValue,
     register,
     reset,
     control,
-    formState: { errors, isSubmitting, isSubmitSuccessful:isSubmitSuccessful1 },
+    formState: {
+      errors,
+      isSubmitting,
+      isSubmitSuccessful: isSubmitSuccessful1,
+    },
     handleSubmit,
   } = useForm();
   const {
     register: register2,
     control: control2,
-    formState: { errors: errors2,isSubmitSuccessful },
+    formState: { errors: errors2, isSubmitSuccessful },
     handleSubmit: handleSubmit2,
   } = useForm();
   useEffect(() => {
-    axiosClient.get('inventory/deposit/last').then(({data:data})=>{
-      if (data != '') {
-        console.log(data , 'is data')
-        setIncome(data)
-        console.log(data)
-        setIncomeItems(data.items)
+    axiosClient.get("inventory/deposit/last").then(({ data: data }) => {
+      if (data != "") {
+        console.log(data, "is data");
+        setIncome(data);
+        console.log(data);
+        setLayout((prev)=>{
+          return {
+           ...prev,
+            incomeItemsStyleObj: {gridColumnStart:1,gridRowStart:1,gridColumnEnd:3},
+            addToInventoryStyleObj: {gridColumnStart:3},
+          }
+        })
+        setIncomeItems(data.items);
+        if (data.complete) {
+          setLayout((prev)=>{
+            return {...prev,incomeItemsStyleObj:{},addToInventoryStyleObj:{}}
+           
+         })
+          setShow(true)
+        }
       }
-    
-    })
-  },[isSubmitSuccessful,isSubmitSuccessful1,update])
-  const finishInvoice =(id)=>{
-    setLoading(true)
-    axiosClient.patch(`inventory/deposit/finish/${id}`).then(({data})=>{
-      console.log(data)
-      if (data.status) {
-    setShow(true)
+    });
+  }, [isSubmitSuccessful, isSubmitSuccessful1, update]);
+  const finishInvoice = (id) => {
+    setLoading(true);
+    axiosClient
+      .patch(`inventory/deposit/finish/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          setShow(true);
+          setLayout((prev)=>{
+             return {...prev,incomeItemsStyleObj:{},addToInventoryStyleObj:{}}
+            
+          })
 
-        console.log('set updating function')
-        setUpdate((pev)=>pev+1)
-        setOpenSuccessDialog({
-          open: true,
-          msg: "تمت العمليه  بنجاح",
-        });    
-      }
-    
-    }).finally(()=>setLoading(false))
-  }
+          console.log("set updating function");
+          setUpdate((pev) => pev + 1);
+          setOpenSuccessDialog({
+            open: true,
+            msg: "تمت العمليه  بنجاح",
+          });
+        }
+      })
+      .finally(() => setLoading(false));
+  };
   const submitHandler = async (formData) => {
     const payload = {
       item_id: formData.item.id,
@@ -150,21 +177,26 @@ function InventoryIncome() {
       });
   }, []);
 
-
-  const completeAdditionHandler = (formData) => {
+  const newInvoiceHandler = (formData) => {
     setLoading(true);
     axiosClient
       .post(`inventory/deposit/complete`, {
         bill_date: formData.bill_date.$d.toJSON(),
         bill_number: formData.bill_number,
-      supplier_id: formData.supplier.id,
-
+        supplier_id: formData.supplier.id,
       })
       .then((data) => {
         if (data.status) {
-    setShow(false)
+          setShow(false);
+          setLayout((prev)=>{
+            return {
+             ...prev,
+              incomeItemsStyleObj: {gridColumnStart:1,gridRowStart:1,gridColumnEnd:3},
+              addToInventoryStyleObj: {gridColumnStart:1},
+            }
+          })
 
-          setUpdate((previous)=>previous + 1)
+          setUpdate((previous) => previous + 1);
           setLoading(false);
           //show success dialog
           setOpenSuccessDialog({
@@ -176,142 +208,154 @@ function InventoryIncome() {
       });
   };
   return (
-    <Grid container>
-      <Grid item xs={5}>
-    {income && !income?.complete ?      <Paper sx={{ p: 1 }}>
-          <Typography
-            sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
-            variant="h5"
-          >
-           
-            اضافه للمخزون
-          </Typography>
-          <form noValidate onSubmit={handleSubmit(submitHandler)}>
-            <Grid container>
-              <Grid sx={{ gap: "5px" }} item xs={6}>
-                <TextField
-                  {...register("batch")}
-                  sx={{ mb: 1 }}
-                  label={"الباتش"}
-                ></TextField>
-                <TextField
-                  {...register("barcode")}
-                  sx={{ mb: 1 }}
-                  label={"الباركود"}
-                ></TextField>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <div
+      style={{
+        gap: "15px",
+        transition: "0.3s all ease-in-out",
+        height: "90vh",
+        display: "grid",
+        gridTemplateColumns: `  1fr     1fr   1fr    `,
+      }}
+    >
+      <div style={layOut.addToInventoryStyleObj}>
+        {income && !income?.complete ? (
+          <Paper sx={{p:1}} >
+            <Typography
+              sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
+              variant="h5"
+            >
+              اضافه للمخزون
+            </Typography>
+            <form noValidate onSubmit={handleSubmit(submitHandler)}>
+              <Grid container>
+                <Grid sx={{ gap: "5px" }} item xs={6}>
+                  <TextField
+                    {...register("batch")}
+                    sx={{ mb: 1 }}
+                    label={"الباتش"}
+                  ></TextField>
+                  <TextField
+                    {...register("barcode")}
+                    sx={{ mb: 1 }}
+                    label={"الباركود"}
+                  ></TextField>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Controller
+                      defaultValue={dayjs(new Date())}
+                      rules={{
+                        required: {
+                          value: true,
+                          message: "يجب ادخال تاريخ الانتهاء",
+                        },
+                      }}
+                      control={control}
+                      name="expire"
+                      render={({ field }) => (
+                        <DateField
+                          {...field}
+                          value={field.value}
+                          onChange={(val) => field.onChange(val)}
+                          sx={{ mb: 1 }}
+                          label="تاريخ الانتهاء"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                  <TextField
+                    multiline
+                    rows={3}
+                    {...register("notes")}
+                    sx={{ mb: 1 }}
+                    label={"الملاحظات"}
+                  ></TextField>
+                </Grid>
+                <Grid item xs={6}>
                   <Controller
-                    defaultValue={dayjs(new Date())}
+                    name="item"
                     rules={{
                       required: {
                         value: true,
-                        message: "يجب ادخال تاريخ الانتهاء",
+                        message: "يجب اختيار الصنف",
                       },
                     }}
                     control={control}
-                    name="expire"
-                    render={({ field }) => (
-                      <DateField
-                        {...field}
-                        value={field.value}
-                        onChange={(val) => field.onChange(val)}
-                        sx={{ mb: 1 }}
-                        label="تاريخ الانتهاء"
-                      />
-                    )}
+                    render={({ field }) => {
+                      return (
+                        <Autocomplete
+                          sx={{ mb: 1 }}
+                          {...field}
+                          value={field.value || null}
+                          options={items}
+                          isOptionEqualToValue={(option, val) =>
+                            option.id === val.id
+                          }
+                          getOptionLabel={(option) => option.name}
+                          onChange={(e, data) => field.onChange(data)}
+                          renderInput={(params) => {
+                            return <TextField label={"الصنف"} {...params} />;
+                          }}
+                        ></Autocomplete>
+                      );
+                    }}
                   />
-                </LocalizationProvider>
-                <TextField
-                  multiline
-                  rows={3}
-                  {...register("notes")}
-                  sx={{ mb: 1 }}
-                  label={"الملاحظات"}
-                ></TextField>
+                  {errors.item && errors.item.message}
+
+                  <div >
+                    <TextField
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      error={errors.amount}
+                      {...register("amount", {
+                        required: { value: true, message: "يجب ادخال الكميه" },
+                      })}
+                      id="outlined-basic"
+                      label="الكميه"
+                      variant="filled"
+                    />
+                    {errors.amount && errors.amount.message}
+                  </div>
+                  <div>
+                    <TextField
+                      sx={{ mb: 1 }}
+                      fullWidth
+                      error={errors.price}
+                      {...register("price", {
+                        required: {
+                          value: true,
+                          message: "يجب ادخال السعر",
+                        },
+                      })}
+                      id="outlined-basic"
+                      label="سعر الوحده"
+                      variant="filled"
+                    />
+                    {errors.price && errors.price.message}
+                  </div>
+                </Grid>
+                <LoadingButton
+                  fullWidth
+                  loading={loading}
+                  variant="contained"
+                  type="submit"
+                >
+                  اضافه للمخزون
+                </LoadingButton>
               </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name="item"
-                  rules={{
-                    required: {
-                      value: true,
-                      message: "يجب اختيار الصنف",
-                    },
-                  }}
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Autocomplete
-                        sx={{ mb: 1 }}
-                        {...field}
-                        value={field.value || null}
-                        options={items}
-                        isOptionEqualToValue={(option, val) =>
-                          option.id === val.id
-                        }
-                        getOptionLabel={(option) => option.name}
-                        onChange={(e, data) => field.onChange(data)}
-                        renderInput={(params) => {
-                          return <TextField label={"الصنف"} {...params} />;
-                        }}
-                      ></Autocomplete>
-                    );
-                  }}
-                />
-                {errors.item && errors.item.message}
-        
-                <div>
-                  <TextField
-                    fullWidth
-                    sx={{ mb: 1 }}
-                    error={errors.amount}
-                    {...register("amount", {
-                      required: { value: true, message: "يجب ادخال الكميه" },
-                    })}
-                    id="outlined-basic"
-                    label="الكميه"
-                    variant="filled"
-                  />
-                  {errors.amount && errors.amount.message}
-                </div>
-                <div>
-                  <TextField
-                    sx={{ mb: 1 }}
-                    fullWidth
-                    error={errors.price}
-                    {...register("price", {
-                      required: {
-                        value: true,
-                        message: "يجب ادخال السعر",
-                      },
-                    })}
-                    id="outlined-basic"
-                    label="سعر الوحده"
-                    variant="filled"
-                  />
-                  {errors.price && errors.price.message}
-                </div>
-              </Grid>
-              <LoadingButton
-                fullWidth
-                loading={loading}
-                variant="contained"
-                type="submit"
-              >
-                اضافه للمخزون
-              </LoadingButton>
-            </Grid>
-          </form>
-        </Paper>
- :''}
-      </Grid>
-      <Grid item xs={7}>
+            </form>
+          </Paper>
+        ) : (
+          ""
+        )}
+      </div>
+      <div style={layOut.incomeItemsStyleObj}>
         <Link to={"/inventory/reports/income"}>reports</Link>
 
         {/* create table with all suppliers */}
-        {income && !income?.complete && incomeItems.length > 0 ? (
+        {!show &&  incomeItems.length > 0 &&
           <TableContainer>
-            <Typography align="center" variant="h4" sx={{mb:1}}>{income.supplier.name}</Typography>
+            <Typography align="center" variant="h4" sx={{ mb: 1 }}>
+              {income.supplier.name}
+            </Typography>
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
@@ -348,25 +392,36 @@ function InventoryIncome() {
                 ))}
               </TableBody>
             </Table>
-            <LoadingButton loading={loading} color="success" variant="contained" sx={{mt:1}} onClick={()=>{
-              finishInvoice(income.id)
-            }}>انهاء الفاتوره</LoadingButton>
-          </TableContainer>
-
-        ) : (
-          ""
-        )}
-        
-          {  show == true && <form
-              style={{ margin: "5px" }}
-              noValidate
-              onSubmit={handleSubmit2(completeAdditionHandler)}
+            <LoadingButton
+              loading={loading}
+              color="success"
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={() => {
+                finishInvoice(income.id);
+              }}
             >
-            <Typography variant="h3" align="center">انشاء فاتوره جديده</Typography>
-              <Grid container >
+              انهاء الفاتوره
+            </LoadingButton>
+          </TableContainer>
+        
+            }
+    
+      </div>
+      <div>
+      {show && (
+          <form
+            style={{ margin: "5px" }}
+            noValidate
+            onSubmit={handleSubmit2(newInvoiceHandler)}
+          >
+            <Typography variant="h3" align="center">
+              انشاء فاتوره جديده
+            </Typography>
+            <Grid container>
               <Grid item xs={3}></Grid>
 
-                <Grid item xs={6}>
+              <Grid item xs={6}>
                 <div>
                   <Controller
                     name="supplier"
@@ -380,7 +435,6 @@ function InventoryIncome() {
                     render={({ field }) => {
                       return (
                         <Autocomplete
-                        
                           isOptionEqualToValue={(option, val) =>
                             option.id === val.id
                           }
@@ -399,69 +453,65 @@ function InventoryIncome() {
                   />
                   {errors2.supplier && errors2.supplier.message}
                 </div>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Controller
-                      defaultValue={dayjs(new Date())}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: "يجب ادخال تاريخ الفاتوره",
-                        },
-                      }}
-                      control={control2}
-                      name="bill_date"
-                      render={({ field }) => (
-                        <DateField
-                        fullWidth
-                          {...field}
-                          value={field.value}
-                          onChange={(val) => field.onChange(val)}
-                          sx={{ mb: 1 }}
-                          label="تاريخ الفاتوره"
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
-                  <TextField
-                  fullWidth
-                    error={errors2.bill_number != null}
-                    sx={{ mb: 1 }}
-                    variant="filled"
-                    {...register2("bill_number", {
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Controller
+                    defaultValue={dayjs(new Date())}
+                    rules={{
                       required: {
                         value: true,
-                        message: "يجب ادخال رقم الفاتوره",
+                        message: "يجب ادخال تاريخ الفاتوره",
                       },
-                    })}
-                    label="رقم الفاتوره"
-                  ></TextField>
-                
-                  {errors2.bill_number && <Alert color="error" sx={{textAlign:'right'}}>
-                    { errors2.bill_number.message}</Alert>}
-                  <LoadingButton
-                type="submit"
-                loading={loading}
-                sx={{ mt: 1 }}
-                color="success"
-                variant="contained"
-                fullWidth
-              >
-                انشاء
-              </LoadingButton>
-                </Grid>
-                <Grid item xs={3}></Grid>
+                    }}
+                    control={control2}
+                    name="bill_date"
+                    render={({ field }) => (
+                      <DateField
+                        fullWidth
+                        {...field}
+                        value={field.value}
+                        onChange={(val) => field.onChange(val)}
+                        sx={{ mb: 1 }}
+                        label="تاريخ الفاتوره"
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+                <TextField
+                  fullWidth
+                  error={errors2.bill_number != null}
+                  sx={{ mb: 1 }}
+                  variant="filled"
+                  {...register2("bill_number", {
+                    required: {
+                      value: true,
+                      message: "يجب ادخال رقم الفاتوره",
+                    },
+                  })}
+                  label="رقم الفاتوره"
+                ></TextField>
+
+                {errors2.bill_number && (
+                  <Alert color="error" sx={{ textAlign: "right" }}>
+                    {errors2.bill_number.message}
+                  </Alert>
+                )}
+                <LoadingButton
+                  type="submit"
+                  loading={loading}
+                  sx={{ mt: 1 }}
+                  color="success"
+                  variant="contained"
+                  fullWidth
+                >
+                  انشاء
+                </LoadingButton>
               </Grid>
-
-             
-            </form>
-          }
-        
-      </Grid>
-
-      <Grid item xs={3}>
-        1
-      </Grid>
-    </Grid>
+              <Grid item xs={3}></Grid>
+            </Grid>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
 

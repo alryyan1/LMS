@@ -5,9 +5,13 @@ import axiosClient from "../axios-client";
 import { Alert, Snackbar } from "@mui/material";
 
 function LabLayout() {
-  const [openSuccessDialog, setOpenSuccessDialog] = useState({
+  const [dialog, setDialog] = useState({
+    showMoneyDialog:false,
+    title:'',
     color:'success',
     open: false,
+    openError: false,
+    openLabReport: false,
     msg: "تمت الاضافه بنجاح",
   });
   const [containerData, setContainersData] = useState([]);
@@ -101,10 +105,12 @@ function LabLayout() {
             doctors,
             actviePatient,
             setActivePatient,
-            setOpenSuccessDialog,
+            setOpenSuccessDialog: setDialog,
             setOpen,
             setError,
             open,
+            dialog,
+            setDialog,
             setPackages,
             specialists,
             setDoctors
@@ -112,19 +118,19 @@ function LabLayout() {
         />
       }
          <Snackbar
-            open={openSuccessDialog.open}
+            open={dialog.open}
             autoHideDuration={2000}
-            onClose={()=>setOpenSuccessDialog((prev)=>({...prev,open:false}))
+            onClose={()=>setDialog((prev)=>({...prev,open:false}))
           
           }
           >
             <Alert
                
-              severity={openSuccessDialog.color}
+              severity={dialog.color}
               variant="filled"
               sx={{ width: "100%" }}
             >
-              {openSuccessDialog.msg}
+              {dialog.msg}
           
             </Alert>
           </Snackbar>

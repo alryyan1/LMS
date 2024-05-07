@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Patient from "./Patient";
 import PatientForm from "./PatientForm";
 import PatientDetail from "./PatientDetail";
-import { url } from "../constants";
+import { url, webUrl } from "../constants";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import {
   Drawer,
@@ -22,11 +22,13 @@ import {
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
-import { Calculate, Mail, PersonAdd } from "@mui/icons-material";
+import { Calculate, Mail, PersonAdd, Print } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
+import ErrorDialog from "../Dialogs/ErrorDialog";
+import MoneyDialog from "../Dialogs/MoneyDialog";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -36,7 +38,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function AddPatient() {
-  const { setTests, actviePatient, setActivePatient, setOpen } =
+  const { setTests, actviePatient, setActivePatient, setOpen ,setDialog} =
     useOutletContext();
   const [patientsLoading, setPatientsLoading] = useState(false);
 
@@ -97,17 +99,25 @@ function AddPatient() {
 
   const setActivePatientHandler = (id) => {
     hideForm();
-    setPatients(
-      patients.map((patient) => {
-        if (patient.id === id) {
-          setActivePatient(patient);
-          patient.active = true;
-        } else {
-          patient.active = false;
-        }
-        return patient;
-      })
-    );
+    console.log('start active patient clicked')
+     const data = patients.find((p)=>p.id ===id)
+   // axiosClient.get(`patient/${id}`).then(({data})=>{
+      console.log(data,'patient from db')
+      setActivePatient({...data,active:true});
+      setPatients((prePatients) => {
+        return prePatients.map((patient) => {
+          if (patient.id === id) {
+            console.log('founded')
+            return {...data,active:true}
+          } else {
+            return {...patient,active:false};
+  
+          }
+        });
+      });
+    //}//).catch((error)=>console.log(error))
+    // setActivePatient({...foundedPatient,active:true});
+  
   };
 
   const hideForm = () => {
@@ -129,6 +139,15 @@ function AddPatient() {
     });
   };
 
+  const showShiftMoney = () => {
+    setDialog((prev)=>{
+      return {
+       ...prev,
+       showMoneyDialog:true
+      };
+    })
+  };
+
   return (
     <>
       <Drawer open={openDrawer}>{DrawerList}</Drawer>
@@ -138,7 +157,7 @@ function AddPatient() {
           transition: "0.3s all ease-in-out",
           height: "90vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} 0.5fr    `,
+          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} 0.7fr    `,
         }}
       >
         <div>
@@ -166,9 +185,14 @@ function AddPatient() {
                 <PersonAdd />
               </IconButton>
             </Item>
-            <Item>
-              <IconButton variant="contained" onClick={showFormHandler}>
+            <Item> 
+              <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
+              </IconButton>
+            </Item>
+            <Item>
+              <IconButton href={`${webUrl}lab/report`} variant="contained" >
+                <Print />
               </IconButton>
             </Item>
           </Stack>
@@ -184,7 +208,12 @@ function AddPatient() {
           <AddTestAutoComplete setPatients={setPatients} />
           <div className="patients">
             {patientsLoading ? (
-              <Skeleton animation="wave" variant="rectangular" width={"100%"} height={400} />
+              <Skeleton
+                animation="wave"
+                variant="rectangular"
+                width={"100%"}
+                height={400}
+              />
             ) : (
               patients.map((p) => (
                 <Patient
@@ -199,7 +228,7 @@ function AddPatient() {
 
         <div>
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <RequestedTests setPatients={setPatients} />
+            <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
         </div>
         <div>
@@ -208,9 +237,12 @@ function AddPatient() {
             <PatientDetail
               key={actviePatient.id}
               patient={actviePatient}
+              setPatients={setPatients}
             />
           )}
         </div>
+        <MoneyDialog/>
+        <ErrorDialog />
       </div>
     </>
   );

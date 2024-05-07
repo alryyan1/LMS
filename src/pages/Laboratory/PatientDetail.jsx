@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 
-function PatientDetail({ patient }) {
+function PatientDetail({ patient,setPatients }) {
   console.log(patient, "patient in patient details");
   const [open, setOpen] = useState();
   const date = new Date(patient.created_at);
@@ -97,7 +97,7 @@ function PatientDetail({ patient }) {
           </Grid>
         </Grid>
        
-       <EditPatientDialog open={open} setOpen={setOpen} patient={patient}  />
+       <EditPatientDialog open={open} setOpen={setOpen} patient={patient} setPatients={setPatients} />
       </Paper>
     </>
   );

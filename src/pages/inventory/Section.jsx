@@ -127,7 +127,6 @@ function Section() {
                     <TableCell>رقم</TableCell>
                     <TableCell>الاسم</TableCell>
 
-                    <TableCell>حذف</TableCell>
                   </TableRow>
                 </thead>
 
@@ -136,15 +135,7 @@ function Section() {
                     <TableRow key={section.id}>
                       <TableCell>{section.id}</TableCell>
                       <MyTableCell  colName={'name'} table="sections" item={section} setOpenSuccessDialog={setOpenSuccessDialog}>{section.name}</MyTableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() => {
-                            deleteSectionHandler(section.id);
-                          }}
-                        >
-                          <Delete></Delete>
-                        </IconButton>
-                      </TableCell>
+                    
                     </TableRow>
                   ))}
                 </TableBody>

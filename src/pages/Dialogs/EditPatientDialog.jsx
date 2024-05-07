@@ -25,8 +25,8 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient, setOpen, open }) {
-  const { setPatients, doctors } = useOutletContext();
+function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
+  const { doctors ,setActivePatient } = useOutletContext();
   // console.log(patient);
   // console.log(appData.doctors, "doctors");
   const [loading, setLoading] = useState();
@@ -53,7 +53,7 @@ function EditPatientDialog({ patient, setOpen, open }) {
             });
           });
           setOpen(false);
-          // setActivePatient();
+          setActivePatient(newPatient);
         }
       })
       .finally(() => setLoading(false));
@@ -185,6 +185,7 @@ function EditPatientDialog({ patient, setOpen, open }) {
               control={control}
               render={({ field }) => (
                 <Autocomplete
+                sx={{mb:1}}
                   {...field}
                   ref={field.ref}
                   value={field.value}
@@ -224,7 +225,6 @@ function EditPatientDialog({ patient, setOpen, open }) {
         >
           close
         </Button>
-        <Button type="submit">Save</Button>
       </DialogActions>
     </Dialog>
   );

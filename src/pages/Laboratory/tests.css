@@ -53,12 +53,12 @@ table {
   border-collapse: collapse;
 }
 .form-control {
+  text-align: right;
   max-width: 400px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
   align-items: center;
-  font-size: 1.3rem;
   font-weight: bold;
   /* color: #dfdfdf; */
   padding: 5px;

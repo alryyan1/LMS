@@ -1,26 +1,37 @@
 import { Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { url } from "../constants";
-const DiscountSelect = ({ id, disc, actviePatient, setTests }) => {
+import axiosClient from "../../../axios-client";
+const DiscountSelect = ({ id, disc, actviePatient,setPatients }) => {
   const [discount, setDiscount] = useState(disc);
+  
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const response = await fetch(`${url}labRequest/${actviePatient.id}`, {
-      headers: { "content-type": "application/json" },
-      method: "PATCH",
-      body: JSON.stringify({ test_id: id, discount: dis }),
-    });
-    const data = await response.json();
+    const {status} = await axiosClient.patch(`labRequest/${actviePatient.id}`,{ test_id: id, discount: dis });
+    if (status == 200) {
+        setPatients((prev)=>{
+          return prev.map((p)=>{
 
-    setTests((prev) => {
-      return prev.map((t) => {
-        if (t.id == id) {
-          console.log(t, "test");
-          t.pivot.discount_per = dis;
-        }
-        return t;
-      });
-    });
+            if (p.id === actviePatient.id) {
+              console.log('founed')
+              const editedPatient = {...actviePatient}
+              editedPatient.labrequests.map((test)=>{
+                console.log(test,'test')
+                if (test.id === id) {
+                  test.pivot.discount_per = dis;
+                  return test
+                }else{
+                  return test
+                }
+              })
+              console.log(editedPatient,'edited patient')
+              return editedPatient
+            }
+            return p;
+          })
+        })
+    }
+
   };
 
   return (

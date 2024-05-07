@@ -4,6 +4,7 @@ import { router } from "./router";
 import { UserContextProvider } from "./appContext";
 import { CacheProvider, ThemeProvider } from "@emotion/react";
 import { cacheRtl, theme } from "./pages/constants";
+// console.log = function() {}
 
 createRoot(document.querySelector("#root")).render(
   <UserContextProvider>

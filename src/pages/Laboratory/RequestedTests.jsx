@@ -15,13 +15,16 @@ import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import Patient from "./Patient";
 function RequestedTests({setPatients}) {
+  console.log('requested tests rendered')
   const  {setActivePatient,actviePatient,tests,setTests,setOpenSuccessDialog} = useOutletContext()
+  console.log(actviePatient,'active patient in requested tests')
   const [loading, setLoading] = useState(false);
   console.log(actviePatient,'active patient',setActivePatient)
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
-    const totalPaid = tests.reduce((accum, test) => {
+    const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
       console.log(Number((test.pivot.discount_per * test.price) / 100));
       const discount = Number((test.pivot.discount_per * test.price) / 100);
       return accum + (test.price - discount);
@@ -94,16 +97,15 @@ function RequestedTests({setPatients}) {
         }
       });
   };
-  useEffect(() => {
-    fetch(`${url}labRequest/${actviePatient.id}`, {
-      headers: { "content-type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data, "lab requestes");
-        setTests(data.labrequests);
-      });
-  }, [actviePatient]);
+  // useEffect(() => {
+  //   axiosClient.get(`labRequest/${actviePatient.id}`)
+  //     .then(({data}) => {
+  //       console.log(data)
+  //       console.log(data, "lab requestes");
+  //       setTests(data.labrequests);
+  //       // setActivePatient(data)
+  //     }).catch((err)=>console.log(err));
+  // }, [actviePatient]);
 
 
   const deleteTest = (id) => {
@@ -116,7 +118,27 @@ function RequestedTests({setPatients}) {
       .then((res) => res.json())
       .then((data) => {
         if (data.status) {
-          setTests(tests.filter((test) => test.id != id));
+
+          setActivePatient((patient)=>{
+            return {
+             ...patient,
+              labrequests: patient.labrequests.filter((t) => t.id!= id),
+            };
+          })
+          setPatients((prev)=>{
+            return prev.map((p)=>{
+              if (p.id === actviePatient.id) {
+                return {
+                 ...p,
+                  labrequests: p.labrequests.filter((t) => t.id!= id),
+                };
+              } else {
+                return p;
+              }
+            })
+            
+
+          })
         }
       });
   };
@@ -138,7 +160,9 @@ function RequestedTests({setPatients}) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tests.map((test) => {
+                {actviePatient.labrequests.map((test) => {
+                  console.log('test.pivot.is_bankak',typeof(test.pivot.is_bankak))
+                  console.log('test.pivot.is_bankak = ',test.pivot.is_bankak)
                   return (
                     <TableRow sx={{borderBottom:'1px solid rgba(224, 224, 224, 1)'}} key={test.id}>
                       <TableCell sx={{border:'none'}} component="th" scope="row">
@@ -148,14 +172,14 @@ function RequestedTests({setPatients}) {
                       <TableCell sx={{border:'none'}} align="right">
                         <DiscountSelect 
                         
-                          setTests={setTests}
+                        setPatients={setPatients}
                           id={test.id}
                           disc={test.pivot.discount_per}
                           actviePatient={actviePatient}
                         />
                       </TableCell>
-                      <TableCell sx={{border:'none'}} align="right">
-                        < MyCheckBox isbankak={test.pivot.is_bankak}   id={test.id}></MyCheckBox>
+                      <TableCell  sx={{border:'none'}} align="right">
+                        < MyCheckBox setPatients={setPatients}  key={actviePatient.id} isbankak={test.pivot.is_bankak == 1}   id={test.id}></MyCheckBox>
                       </TableCell>
                       <TableCell sx={{border:'none'}} align="right">
                         <IconButton  disabled={actviePatient?.is_lab_paid == 1}
@@ -198,7 +222,7 @@ function RequestedTests({setPatients}) {
               <div className="sub-price">
                 <div className="title">Total</div>
                 <div>
-                  {tests.reduce((accum, test) => {
+                  {actviePatient.labrequests.reduce((accum, test) => {
                  
                     const discount = Number(
                       (test.pivot.discount_per * test.price) / 100

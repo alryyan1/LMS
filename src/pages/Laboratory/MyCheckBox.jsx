@@ -1,20 +1,83 @@
-import { Checkbox } from '@mui/material'
-import React from 'react'
-import { useOutletContext } from 'react-router-dom';
-import axiosClient from '../../../axios-client';
+import { Checkbox } from "@mui/material";
+import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../../axios-client";
 
-function MyCheckBox({id,isbankak}) {
-  const {actviePatient} =useOutletContext()
-  console.log(actviePatient)
-    const [checked, setChecked] = React.useState(isbankak == 0 ? false : true);
-    const bankakChangeHandler = (val)=>{
-        console.log(val.target.checked)
-        setChecked(val.target.checked)
-        axiosClient.patch(`labRequest/bankak/${actviePatient.id}`,{id,val:val.target.checked}).then((res)=>res.json()).then((data)=>console.log(data))
-      }
+function MyCheckBox({ id, isbankak, setPatients }) {
+  console.log(isbankak, "checked before");
+  const [isChecked, setIsChecked] = useState(isbankak);
+  console.log(isChecked, "checked after");
+  const { actviePatient ,setActivePatient} = useOutletContext();
+  const bankakChangeHandler = (val) => {
+    console.log(val.target.checked, "checked handler");
+    setIsChecked(val.target.checked);
+    axiosClient
+      .patch(`labRequest/bankak/${actviePatient.id}`, {
+        id,
+        val: val.target.checked,
+      })
+      .then(({ status }) => {
+        if (status == 200) {
+          setActivePatient((patient)=>{
+            return {
+             ...patient,
+              labrequests: patient.labrequests.map((request) => {
+                if (request.id == id) {
+                  console.log("setting the test", request);
+                  return {
+                   ...request,
+                    pivot: {
+                     ...request.pivot,
+                      is_bankak: val.target.checked,
+                    },
+                  };
+                } else {
+                  return request;
+                }
+              }),
+            }
+           })
+          setPatients((prev) => {
+
+      
+            return prev.map((p) => {
+              if (p.id === actviePatient.id) {
+                const editedPatient = {
+                  ...actviePatient,
+                  labrequests: actviePatient.labrequests.map((request) => {
+                    if (request.id == id) {
+                      console.log("setting the test", request);
+                      return {
+                        ...request,
+                        pivot: {
+                          ...request.pivot,
+                          is_bankak: val.target.checked,
+                        },
+                      };
+                    } else {
+                      return request;
+                    }
+                  }),
+                };
+                return editedPatient;
+              } else {
+                return p;
+              }
+            });
+          });
+        }
+        // if (status > 400) {
+        // }
+      });
+  };
   return (
-    <Checkbox onChange={bankakChangeHandler} checked={checked}></Checkbox>
-  )
+    <Checkbox
+      disabled={actviePatient.is_lab_paid === 0}
+      key={actviePatient.id}
+      onChange={bankakChangeHandler}
+      checked={isChecked}
+    ></Checkbox>
+  );
 }
 
-export default MyCheckBox
+export default MyCheckBox;
