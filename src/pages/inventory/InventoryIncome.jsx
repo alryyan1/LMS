@@ -82,6 +82,8 @@ function InventoryIncome() {
          })
           setShow(true)
         }
+      }else{
+        setShow(true)
       }
     });
   }, [isSubmitSuccessful, isSubmitSuccessful1, update]);
