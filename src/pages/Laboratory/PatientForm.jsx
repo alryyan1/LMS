@@ -12,7 +12,7 @@ import {
 import "./addPatient.css";
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, TextField, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { useStateContext } from "../../appContext";
@@ -28,17 +28,32 @@ const Item = styled(Paper)(({ theme }) => ({
 function PatientForm({ hideForm, setUpdate }) {
   const { setToken, setUser } = useStateContext();
   const [loading, setIsLoading] = useState(false);
-  const appData = useOutletContext();
+  const {setDialog,setFoundedPatients,doctors} = useOutletContext();
   // console.log(appData.doctors,'doctors')
   const {
-    setFocus,
+    watch,
     control,
     handleSubmit,
     register,
     reset,
     formState: { errors },
   } = useForm();
-
+  const name =   watch('name')
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log("searchByName", name);
+      axiosClient
+        .post("patient/search", { name: name })
+        .then(({ data }) => {
+          console.log(data,'founded patients')
+          setFoundedPatients(data);
+        });
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [name]);
   const sumbitHandler = async (formData) => {
     setIsLoading(true);
     console.log(formData);
@@ -49,7 +64,7 @@ function PatientForm({ hideForm, setUpdate }) {
         if (data.data.status) {
           //set is loading to false
           setIsLoading(false);
-          appData.setOpenSuccessDialog(true);
+       setDialog(true);
           //hide form
           reset();
           hideForm();
@@ -75,6 +90,7 @@ function PatientForm({ hideForm, setUpdate }) {
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
           <TextField
+        
             autoFocus
             error={errors?.phone && errors.phone.message}
             {...register("phone", {
@@ -91,11 +107,11 @@ function PatientForm({ hideForm, setUpdate }) {
                 message: "يجب ان يكون رقم الهاتف مكون من 10 ارقام",
               },
             })}
-            variant="filled"
             label="رقم الهاتف "
           />
           {errors?.phone && errors.phone.message}
           <TextField
+          
             error={errors?.name}
             {...register("name", {
               required: {
@@ -103,13 +119,12 @@ function PatientForm({ hideForm, setUpdate }) {
                 message: "يجب ادخال اسم المريض",
               },
             })}
-            variant="filled"
             label="اسم المريض"
           />
           {errors.name && errors.name.message}
           <Stack
             direction={"row"}
-            gap={4}
+            gap={2}
             divider={<Divider orientation="vertical" flexItem />}
           >
             <Item>
@@ -167,13 +182,12 @@ function PatientForm({ hideForm, setUpdate }) {
             }}
             control={control}
             render={({ field }) => {
-              const fieldWithoutRef = { ...field, ref: undefined };
               return (
                 <Autocomplete
                   onChange={(e, newVal) => field.onChange(newVal)}
                   getOptionKey={(op) => op.id}
                   getOptionLabel={(option) => option.name}
-                  options={appData.doctors}
+                  options={doctors}
                   renderInput={(params) => {
                     // console.log(params)
 

@@ -46,16 +46,17 @@ const Login = () => {
               sx={{ mb: 1 }}
               variant="standard"
               label="Username"
+              helperText={errors?.username?.message}
             ></TextField>
-            {errors.username && errors.username.message}
             <TextField
             error={errors.password !=null}
               sx={{ mb: 1 }}
               {...register('password',{required:{value:true,message:"password is required"},minLength:{value:8,message:"password must be 8 chrachters long"}})}
               variant="standard"
               label="Password"
+              type="password"
+              helperText={errors?.password?.message}
             ></TextField>
-            {errors.password && errors.password.message}
             <LoadingButton  loading={loading} type="submit" sx={{m:1}} variant="contained">تسجيل دخول</LoadingButton>
             <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link>
           </div>

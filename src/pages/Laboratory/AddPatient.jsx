@@ -19,16 +19,19 @@ import {
   styled,
   Paper,
   Skeleton,
+  Grow,
+  Slide,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
-import { Calculate, Mail, PersonAdd, Print } from "@mui/icons-material";
+import { Calculate, Mail, PersonAdd, Print, Search } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
 import MoneyDialog from "../Dialogs/MoneyDialog";
+import SearchDialog from "../Dialogs/SearchDialog";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -38,10 +41,18 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function AddPatient() {
-  const { setTests, actviePatient, setActivePatient, setOpen ,setDialog} =
-    useOutletContext();
+  const {
+    setTests,
+    actviePatient,
+    setActivePatient,
+    setOpen,
+    setDialog,
+    searchByName,
+    setFoundedPatients,
+    foundedPatients,
+  } = useOutletContext();
+  console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
-
   console.log(actviePatient);
   const { setOpenDrawer, openDrawer } = useStateContext();
   const [patients, setPatients] = useState([]);
@@ -53,6 +64,7 @@ function AddPatient() {
     testWidth: "400px",
     requestedDiv: "1.5fr",
     showTestPanel: false,
+    patientDetails:'0.7fr',
   });
   console.log(openDrawer, "open drawer");
 
@@ -99,26 +111,37 @@ function AddPatient() {
 
   const setActivePatientHandler = (id) => {
     hideForm();
-    console.log('start active patient clicked')
-     const data = patients.find((p)=>p.id ===id)
-   // axiosClient.get(`patient/${id}`).then(({data})=>{
-      console.log(data,'patient from db')
-      setActivePatient({...data,active:true});
-      setPatients((prePatients) => {
-        return prePatients.map((patient) => {
-          if (patient.id === id) {
-            console.log('founded')
-            return {...data,active:true}
-          } else {
-            return {...patient,active:false};
-  
-          }
-        });
+    console.log("start active patient clicked");
+    const data = patients.find((p) => p.id === id);
+    // axiosClient.get(`patient/${id}`).then(({data})=>{
+    console.log(data, "patient from db");
+    setActivePatient({ ...data, active: true });
+    setPatients((prePatients) => {
+      return prePatients.map((patient) => {
+        if (patient.id === id) {
+          console.log("founded");
+          return { ...data, active: true };
+        } else {
+          return { ...patient, active: false };
+        }
       });
+    });
     //}//).catch((error)=>console.log(error))
     // setActivePatient({...foundedPatient,active:true});
-  
   };
+
+  useEffect(()=>{
+    if(foundedPatients.length>0){
+      setLayout((prev)=>{
+        return {
+         ...prev,
+         patientDetails: "2fr",
+       
+        };
+      })
+    }
+    
+  },[foundedPatients.length])
 
   const hideForm = () => {
     setLayout((prev) => {
@@ -129,23 +152,25 @@ function AddPatient() {
         tests: "2fr",
         testWidth: "500px",
         showTestPanel: false,
+        patientDetails:'0.7fr'
       };
     });
   };
   const showFormHandler = () => {
     setActivePatient(null);
+    setFoundedPatients([])
     setLayout((prev) => {
       return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
     });
   };
 
   const showShiftMoney = () => {
-    setDialog((prev)=>{
+    setDialog((prev) => {
       return {
-       ...prev,
-       showMoneyDialog:true
+        ...prev,
+        showMoneyDialog: true,
       };
-    })
+    });
   };
 
   return (
@@ -157,7 +182,7 @@ function AddPatient() {
           transition: "0.3s all ease-in-out",
           height: "90vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} 0.7fr    `,
+          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
       >
         <div>
@@ -185,14 +210,19 @@ function AddPatient() {
                 <PersonAdd />
               </IconButton>
             </Item>
-            <Item> 
+            <Item>
               <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
               </IconButton>
             </Item>
             <Item>
-              <IconButton href={`${webUrl}lab/report`} variant="contained" >
+              <IconButton href={`${webUrl}lab/report`} variant="contained">
                 <Print />
+              </IconButton>
+            </Item>
+            <Item>
+              <IconButton variant="contained">
+                <Search />
               </IconButton>
             </Item>
           </Stack>
@@ -206,7 +236,7 @@ function AddPatient() {
         </div>
         <div style={{ overflow: "auto" }}>
           <AddTestAutoComplete setPatients={setPatients} />
-          <div className="patients">
+          <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
               <Skeleton
                 animation="wave"
@@ -215,11 +245,12 @@ function AddPatient() {
                 height={400}
               />
             ) : (
-              patients.map((p) => (
+              patients.map((p, i) => (
                 <Patient
+                  delay={i * 100}
+                  key={p.id}
                   patient={p}
                   onClick={setActivePatientHandler}
-                  key={p.id}
                 />
               ))
             )}
@@ -240,9 +271,15 @@ function AddPatient() {
               setPatients={setPatients}
             />
           )}
+          {!actviePatient &&  foundedPatients.length > 0 && <Slide direction="up" in mountOnEnter unmountOnExit>
+          <div>
+            <SearchDialog />
+          </div>
+        </Slide>}
         </div>
-        <MoneyDialog/>
+        <MoneyDialog />
         <ErrorDialog />
+      
       </div>
     </>
   );

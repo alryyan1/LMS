@@ -24,7 +24,7 @@ function DeductInventory() {
   const items = useLoaderData();
   // console.log(items);
   //create state variable to store all suppliers
-  const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext();
+  const {dialog, setDialog} = useOutletContext();
   const [deductedItems, setDeductedItems] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ function DeductInventory() {
         if (data.status) {
           setLoading(false);
           reset();
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت الاضافه  بنجاح",
           });
@@ -83,7 +83,7 @@ function DeductInventory() {
           //delete supplier by id
           setDeductedItems(deductedItems.filter((item) => item.id != id));
           //show success dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تم الحذف بنجاح",
           });
@@ -120,7 +120,7 @@ function DeductInventory() {
           setLoading(false);
           setDeductComplete(deductComplete + 1);
           //show success dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت العمليه  بنجاح",
           });

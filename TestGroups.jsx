@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs, Tab, Box, Card } from "@mui/material";
-import TestGroupChildren from "./TestGroupChildren";
-import { url } from "./constants";
+import TestGroupChildren from "./src/pages/TestGroupChildren";
+import { url } from "./src/pages/constants";
 import { useOutletContext } from "react-router-dom";
 function TestGroups({
   fetchTests,

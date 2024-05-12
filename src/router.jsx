@@ -18,6 +18,14 @@ import SignUp from "./pages/Singeup";
 import LabLayout from "./LabLayout";
 import Report from "./pages/inventory/Report";
 import ProtectedRoute from "./ProtectedRoute";
+import AddInsurance from "./pages/insurance/AddInsurance";
+
+import InsuranceNav from "./pages/insurance/InsuranceNav";
+import LabList from "./pages/insurance/LabList";
+import ServiceNav from "./pages/services/ServiceNav";
+import AddService from "./pages/services/AddService";
+import AddServiceGroup from "./pages/services/addServiceGroup";
+import ServiceList from "./pages/insurance/ServiceList";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +107,43 @@ export const router = createBrowserRouter([
             element: <Balance />,
           },
         ],
+      },
+      {
+        path:"/insurance",
+        element: 
+            <InsuranceNav/>
+            ,
+            children:[
+              {
+                path:'create',
+                element:<AddInsurance/>
+              },
+              {
+                path:'lab',
+                element:<LabList/>
+              }
+              ,
+              {
+                path:'service',
+                element:<ServiceList/>
+              }
+            ]
+      },
+      {
+        path:"/services",
+        element: 
+            <ServiceNav/>
+            ,
+            children:[
+              {
+                path:'create',
+                element:<AddService/>
+              },
+              {
+                path:'serviceGroup/create',
+                element:<AddServiceGroup/>
+              }
+            ]
       },
       {
         path: "/laboratory",

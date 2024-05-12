@@ -1,8 +1,6 @@
 import {
-  Alert,
   Grid,
   IconButton,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +19,7 @@ import { useOutletContext } from "react-router-dom";
 
 function Supplier() {
   //create state variable to store all suppliers
-  const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext();
+  const {dialog, setDialog} = useOutletContext();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
   const {
@@ -47,7 +45,7 @@ function Supplier() {
         if (data.status) {
           setLoading(false);
           reset();
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت الاضافه  بنجاح",
           });
@@ -55,7 +53,7 @@ function Supplier() {
       });
   };
   const handleClose = () => {
-    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
+    setDialog((prev) => ({ ...prev, open: false }));
   };
   const deleteSupplierHandler = (id) => {
     fetch(`${url}suppliers/${id}`, {
@@ -67,7 +65,7 @@ function Supplier() {
           //delete supplier by id
           setSuppliers(suppliers.filter((supplier) => supplier.id != id));
           //show success dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تم الحذف بنجاح",
           });
@@ -99,8 +97,9 @@ function Supplier() {
               id="outlined-basic"
               label="اسم المورد"
               variant="filled"
+              helperText={errors.name && errors.name.message}
             />
-            {errors.name && errors.name.message}
+            
           </div>
           <div>
             <TextField
@@ -112,8 +111,8 @@ function Supplier() {
               id="outlined-basic"
               label="رقم الهاتف"
               variant="filled"
+              helperText={errors.phone && errors.phone.message}
             />
-            {errors.phone && errors.phone.message}
           </div>
           <div>
             <TextField
@@ -125,8 +124,8 @@ function Supplier() {
               id="outlined-basic"
               label="العنوان"
               variant="filled"
+              helperText={errors.address && errors.address.message}
             />
-            {errors.address && errors.address.message}
           </div>
           <div>
             <TextField
@@ -137,8 +136,8 @@ function Supplier() {
               id="outlined-basic"
               label="الايميل"
               variant="filled"
+              helperText={errors.email && errors.email.message}
             />
-            {errors.email && errors.email.message}
           </div>
           <div></div>
           <LoadingButton
@@ -172,7 +171,6 @@ function Supplier() {
                 <TableRow key={supplier.id}>
                   <TableCell>{supplier.id}</TableCell>
                   <MyTableCell
-                    setOpenSuccessDialog={setOpenSuccessDialog}
                     item={supplier}
                     colName={"name"}
                     table="suppliers"
@@ -180,7 +178,6 @@ function Supplier() {
                     {supplier.name}
                   </MyTableCell>
                   <MyTableCell
-                    setOpenSuccessDialog={setOpenSuccessDialog}
                     item={supplier}
                     colName={"phone"}
                     table="suppliers"
@@ -188,7 +185,6 @@ function Supplier() {
                     {supplier.phone}
                   </MyTableCell>
                   <MyTableCell
-                    setOpenSuccessDialog={setOpenSuccessDialog}
                     item={supplier}
                     colName={"address"}
                     table="suppliers"
@@ -196,7 +192,6 @@ function Supplier() {
                     {supplier.address}
                   </MyTableCell>
                   <MyTableCell
-                    setOpenSuccessDialog={setOpenSuccessDialog}
                     item={supplier}
                     colName={"email"}
                     table="suppliers"

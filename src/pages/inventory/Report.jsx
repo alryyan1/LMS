@@ -15,6 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
+import { webUrl } from "../constants";
 
 function Report() {
   const [date, setDate] = useState(null);
@@ -98,7 +99,7 @@ function Report() {
         {incomeItems.length > 0 ? (
           <TableContainer>
             <a
-              href={`http://127.0.0.1/laravel-react-app/public/pdf?id=${selectIncome}`}
+              href={`${webUrl}pdf?id=${selectIncome}`}
             >
               pdf
             </a>

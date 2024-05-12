@@ -1,11 +1,13 @@
 import { Autocomplete, TableCell, TextField } from '@mui/material'
 import { useState } from 'react'
 import { url } from '../constants'
+import { useOutletContext } from 'react-router-dom'
 
-function MyAutoCompeleteTableCell({children,setOpenSuccessDialog,item,sections,colName}) {
+function MyAutoCompeleteTableCell({children,item,sections,colName,val,table='items'}) {
 
    const [edited , setEdited] =  useState(false)
-   const [selectedSection , setSelectedSection] =  useState(item.section)
+   const {dialog,setDialog} = useOutletContext()
+   const [selectedSection , setSelectedSection] =  useState(val)
    const clickHandler = ()=>{
      setEdited(true)
    }
@@ -17,7 +19,7 @@ function MyAutoCompeleteTableCell({children,setOpenSuccessDialog,item,sections,c
    }
 
    const updateItemSectionId = (val) => {
-     fetch(`${url}items/${item.id}`,{
+     fetch(`${url}${table}/${item.id}`,{
        headers:{'content-type':'application/json'},
        method:"PATCH",body:JSON.stringify({colName:colName , val:selectedSection.id })}).then((res)=>res.json()).then((data)=>console.log(data))
    }
@@ -33,8 +35,8 @@ function MyAutoCompeleteTableCell({children,setOpenSuccessDialog,item,sections,c
    const blurHandler = ()=>{
     setEdited(false)
     setEdited(false)
-    setOpenSuccessDialog((prev)=>{
-        return {...prev,open:true,msg:'تم التعديل بنجاح'}
+    setDialog((prev)=>{
+        return {...prev,open:true,msg:'تم التعديل بنجاح',color:'success'}
     })
     updateItemSectionId(selectedSection.id)
 

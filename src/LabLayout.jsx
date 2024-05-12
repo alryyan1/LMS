@@ -14,6 +14,9 @@ function LabLayout() {
     openLabReport: false,
     msg: "تمت الاضافه بنجاح",
   });
+  const [foundedPatients, setFoundedPatients] = useState([]);
+  const [searchByName, setSearchByName] = useState(null);
+  const [searchByPhone, setSearchByPhone] = useState(null);
   const [containerData, setContainersData] = useState([]);
   const [packageData, setPackageData] = useState([]);
   const [testsIsLoading, setTestsIsLoading] = useState(false);
@@ -105,15 +108,21 @@ function LabLayout() {
             doctors,
             actviePatient,
             setActivePatient,
-            setOpenSuccessDialog: setDialog,
+             setDialog,
             setOpen,
             setError,
             open,
             dialog,
-            setDialog,
+       
             setPackages,
             specialists,
-            setDoctors
+            setDoctors,
+            searchByName,
+            setSearchByName,
+            searchByPhone,
+            setSearchByPhone,
+            foundedPatients,
+            setFoundedPatients
           }}
         />
       }

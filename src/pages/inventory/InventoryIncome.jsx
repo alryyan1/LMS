@@ -34,7 +34,7 @@ function InventoryIncome() {
   });
   // console.log(items);
   //create state variable to store all suppliers
-  const [openSuccessDialog, setOpenSuccessDialog] = useOutletContext();
+  const {dialog, setDialog} = useOutletContext();
   const [suppliers, setSuppliers] = useState([]);
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);

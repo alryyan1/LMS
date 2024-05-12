@@ -35,7 +35,14 @@ const DiscountSelect = ({ id, disc, actviePatient,setPatients }) => {
   };
 
   return (
-    <Select fullWidth sx={{border:'none'}}
+    <Select fullWidth sx={{
+   '& .MuiSelect-select': {
+      paddingRight: 0.5,
+      paddingLeft: 0.5,
+      paddingTop: 0.5,
+      paddingBottom: 0.5,
+   }
+ }}
       disabled={actviePatient.is_lab_paid == 1}
       onChange={(e) => {
         changeDiscountHandler(id, e.target.value);

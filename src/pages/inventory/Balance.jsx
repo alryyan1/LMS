@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { url } from "../constants.js";
+import { url, webUrl } from "../constants.js";
 import PDF from "./Pdf.jsx";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import axiosClient from "../../../axios-client.js";
@@ -76,7 +76,7 @@ function Balance() {
       
       <TableContainer>
       <a
-              href={`http://127.0.0.1/laravel-react-app/public/balance`}
+              href={`${webUrl}balance`}
             >
               pdf
             </a>

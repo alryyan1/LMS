@@ -1,4 +1,5 @@
 import {
+  Collapse,
   IconButton,
   Table,
   TableBody,
@@ -7,6 +8,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { TransitionGroup } from "react-transition-group";
+
 import DiscountSelect from "./DiscountSelect";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,12 +19,17 @@ import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import Patient from "./Patient";
-function RequestedTests({setPatients}) {
-  console.log('requested tests rendered')
-  const  {setActivePatient,actviePatient,tests,setTests,setOpenSuccessDialog} = useOutletContext()
-  console.log(actviePatient,'active patient in requested tests')
+function RequestedTests({ setPatients }) {
+  console.log("requested tests rendered");
+  const {
+    setDialog,
+    setActivePatient,
+    actviePatient,
+    tests,
+  } = useOutletContext();
+  console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
-  console.log(actviePatient,'active patient',setActivePatient)
+  console.log(actviePatient, "active patient", setActivePatient);
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
     const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
@@ -30,16 +38,17 @@ function RequestedTests({setPatients}) {
       return accum + (test.price - discount);
     }, 0);
     setLoading(true);
-    axiosClient.patch(`labRequest/payment/${actviePatient.id}`,{ paid: totalPaid })
-      .then(({data:data}) => {
-        console.log(data)
+    axiosClient
+      .patch(`labRequest/payment/${actviePatient.id}`, { paid: totalPaid })
+      .then(({ data: data }) => {
+        console.log(data);
         if (data.status) {
           setLoading(false);
-          setPatients((prevPatients)=>{
+          setPatients((prevPatients) => {
             return prevPatients.map((p) => {
               if (p.id === actviePatient.id) {
                 return {
-                 ...p,
+                  ...p,
                   is_lab_paid: true,
                   lab_paid: totalPaid,
                 };
@@ -47,37 +56,35 @@ function RequestedTests({setPatients}) {
                 return p;
               }
             });
-          })
+          });
           //show success dialog
-          setOpenSuccessDialog(() => ({
+          setDialog(() => ({
             msg: "تمت عمليه السداد بنجاح",
             open: true,
           }));
           setActivePatient((p) => {
-            return { ...p, is_lab_paid: true ,lab_paid:totalPaid};
+            return { ...p, is_lab_paid: true, lab_paid: totalPaid };
           });
-          
         }
       });
   };
   const cancelPayHandler = () => {
-   
     setLoading(true);
     fetch(`${url}labRequest/cancelPayment/${actviePatient.id}`, {
       method: "PATCH",
-    
+
       headers: { "content-type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data,'data from cancel')
+        console.log(data, "data from cancel");
         if (data.status) {
           setLoading(false);
-          setPatients((prevPatients)=>{
+          setPatients((prevPatients) => {
             return prevPatients.map((p) => {
               if (p.id === actviePatient.id) {
                 return {
-                 ...p,
+                  ...p,
                   is_lab_paid: false,
                   lab_paid: 0,
                 };
@@ -85,14 +92,14 @@ function RequestedTests({setPatients}) {
                 return p;
               }
             });
-          })
+          });
           //show success dialog
-          setOpenSuccessDialog(() => ({
+          setDialog(() => ({
             msg: "تمت الغاء السداد بنجاح",
             open: true,
           }));
           setActivePatient((p) => {
-            return { ...p, is_lab_paid:false,lab_paid:0};
+            return { ...p, is_lab_paid: false, lab_paid: 0 };
           });
         }
       });
@@ -107,7 +114,6 @@ function RequestedTests({setPatients}) {
   //     }).catch((err)=>console.log(err));
   // }, [actviePatient]);
 
-
   const deleteTest = (id) => {
     console.log(id);
     fetch(`${url}labRequest/${actviePatient.id}`, {
@@ -118,27 +124,24 @@ function RequestedTests({setPatients}) {
       .then((res) => res.json())
       .then((data) => {
         if (data.status) {
-
-          setActivePatient((patient)=>{
+          setActivePatient((patient) => {
             return {
-             ...patient,
-              labrequests: patient.labrequests.filter((t) => t.id!= id),
+              ...patient,
+              labrequests: patient.labrequests.filter((t) => t.id != id),
             };
-          })
-          setPatients((prev)=>{
-            return prev.map((p)=>{
+          });
+          setPatients((prev) => {
+            return prev.map((p) => {
               if (p.id === actviePatient.id) {
                 return {
-                 ...p,
-                  labrequests: p.labrequests.filter((t) => t.id!= id),
+                  ...p,
+                  labrequests: p.labrequests.filter((t) => t.id != id),
                 };
               } else {
                 return p;
               }
-            })
-            
-
-          })
+            });
+          });
         }
       });
   };
@@ -146,9 +149,7 @@ function RequestedTests({setPatients}) {
     <>
       <div className="requested-tests">
         <div className="requested-table">
-   
-     
-          <TableContainer sx={{border:'none',textAlign:"left" }}>
+          <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -159,71 +160,93 @@ function RequestedTests({setPatients}) {
                   <TableCell align="right">Action</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {actviePatient.labrequests.map((test) => {
-                  console.log('test.pivot.is_bankak',typeof(test.pivot.is_bankak))
-                  console.log('test.pivot.is_bankak = ',test.pivot.is_bankak)
-                  return (
-                    <TableRow sx={{borderBottom:'1px solid rgba(224, 224, 224, 1)'}} key={test.id}>
-                      <TableCell sx={{border:'none'}} component="th" scope="row">
-                        {test.main_test_name}
-                      </TableCell>
-                      <TableCell  sx={{border:'none'}} align="right">{test.price}</TableCell>
-                      <TableCell sx={{border:'none'}} align="right">
-                        <DiscountSelect 
-                        
-                        setPatients={setPatients}
-                          id={test.id}
-                          disc={test.pivot.discount_per}
-                          actviePatient={actviePatient}
-                        />
-                      </TableCell>
-                      <TableCell  sx={{border:'none'}} align="right">
-                        < MyCheckBox setPatients={setPatients}  key={actviePatient.id} isbankak={test.pivot.is_bankak == 1}   id={test.id}></MyCheckBox>
-                      </TableCell>
-                      <TableCell sx={{border:'none'}} align="right">
-                        <IconButton  disabled={actviePatient?.is_lab_paid == 1}
-                          aria-label="delete"
-                          onClick={() => deleteTest(test.id)}
+                <TableBody>
+                  {actviePatient.labrequests.map((test) => {
+                    console.log(
+                      "test.pivot.is_bankak",
+                      typeof test.pivot.is_bankak
+                    );
+                    console.log(
+                      "test.pivot.is_bankak = ",
+                      test.pivot.is_bankak
+                    );
+
+                    return (
+                        <TableRow
+                          sx={{
+                            borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                          }}
+                          key={test.id}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
+                          <TableCell sx={{ border: "none" }} scope="row">
+                            {test.main_test_name}
+                          </TableCell>
+
+                          <TableCell sx={{ border: "none" }} align="right">
+                            {test.price}
+                          </TableCell>
+                          <TableCell sx={{ border: "none" }} align="right">
+                            <DiscountSelect
+                             
+                              setPatients={setPatients}
+                              id={test.id}
+                              disc={test.pivot.discount_per}
+                              actviePatient={actviePatient}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ border: "none" }} align="right">
+                            <MyCheckBox
+                              setPatients={setPatients}
+                              key={actviePatient.id}
+                              isbankak={test.pivot.is_bankak == 1}
+                              id={test.id}
+                            ></MyCheckBox>
+                          </TableCell>
+                          <TableCell sx={{ border: "none" }} align="right">
+                            <IconButton
+                              disabled={actviePatient?.is_lab_paid == 1}
+                              aria-label="delete"
+                              onClick={() => deleteTest(test.id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                    );
+                  })}
+                </TableBody>
             </Table>
           </TableContainer>
         </div>
         <div className="requested-total">
           <div className="money-info">
-          {
-            actviePatient.is_lab_paid ?      <LoadingButton 
-              loading={loading}
-              color="error"
-              onClick={cancelPayHandler}
-              sx={{ textAlign: "center",mb:1 }}
-              variant="contained"
-            >
-              الغاء السداد
-            </LoadingButton>:<LoadingButton
-            loading={loading}
-            disabled={actviePatient.is_lab_paid == 1}
-            color={actviePatient.is_lab_paid ? "success" : "primary"}
-            onClick={payHandler}
-            sx={{ textAlign: "center",mb:1 }}
-            variant="contained"
-          >
-            دفع الرسوم
-          </LoadingButton> 
-          }
+            {actviePatient.is_lab_paid ? (
+              <LoadingButton
+                loading={loading}
+                color="error"
+                onClick={cancelPayHandler}
+                sx={{ textAlign: "center", mb: 1 }}
+                variant="contained"
+              >
+                الغاء السداد
+              </LoadingButton>
+            ) : (
+              <LoadingButton
+                loading={loading}
+                disabled={actviePatient.is_lab_paid == 1}
+                color={actviePatient.is_lab_paid ? "success" : "primary"}
+                onClick={payHandler}
+                sx={{ textAlign: "center", mb: 1 }}
+                variant="contained"
+              >
+                دفع الرسوم
+              </LoadingButton>
+            )}
             <div className="total-price">
               <div className="sub-price">
                 <div className="title">Total</div>
                 <div>
                   {actviePatient.labrequests.reduce((accum, test) => {
-                 
                     const discount = Number(
                       (test.pivot.discount_per * test.price) / 100
                     );

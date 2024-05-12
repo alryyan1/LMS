@@ -8,16 +8,19 @@ import Login from "../Login";
 import axiosClient from "../../../axios-client";
 function InventoryNav() {
  const {setToken,setUser } =useStateContext()
- const [openSuccessDialog, setOpenSuccessDialog] = useState({
+
+ const [dialog, setDialog] = useState({
+  showMoneyDialog:false,
+  title:'',
   color:'success',
   open: false,
+  openError: false,
+  openLabReport: false,
   msg: "تمت الاضافه بنجاح",
 });
-
-
   const handleClose = () => {
     
-    setOpenSuccessDialog((prev) => ({ ...prev, open: false }));
+    setDialog((prev) => ({ ...prev, open: false }));
   };
   return (
     <>
@@ -33,21 +36,21 @@ function InventoryNav() {
       </ul>
 
       <ThemeProvider theme={theme}>
-        <CacheProvider value={cacheRtl}> {<Outlet context={[openSuccessDialog, setOpenSuccessDialog]}></Outlet>}</CacheProvider>
+        <CacheProvider value={cacheRtl}> {<Outlet context={{dialog, setDialog}}></Outlet>}</CacheProvider>
       </ThemeProvider>
       <Snackbar
-            open={openSuccessDialog.open}
+            open={dialog.open}
             autoHideDuration={2000}
             onClose={handleClose}
           >
             <Alert
 
               onClose={handleClose}
-              severity={openSuccessDialog.color}
+              severity={dialog.color}
               variant="filled"
               sx={{ width: "100%" }}
             >
-              {openSuccessDialog.msg}{" "}
+              {dialog.msg}
             </Alert>
           </Snackbar>
     </>
