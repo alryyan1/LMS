@@ -1,4 +1,4 @@
-import {
+  import {
   Alert,
   Autocomplete,
   Button,
@@ -124,7 +124,7 @@ function Item() {
           //delete Item by id
           setItems(Items.filter((Item) => Item.id != id));
           //show dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تم الحذف بنجاح",
           });
@@ -200,7 +200,7 @@ function Item() {
                   <MyTableCell colName={"name"} item={item}>
                     {item.name}
                   </MyTableCell>
-                  <MyAutoCompeleteTableCell
+                  <MyAutoCompeleteTableCell val={item.section}
                     colName={"section_id"}
                     item={item}
                     sections={sections}

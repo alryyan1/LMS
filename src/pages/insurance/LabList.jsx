@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
 import MySelectTableCell from "../inventory/MyselectTableCell";
+import { webUrl } from "../constants";
 
 function LabList() {
   const { companies } = useOutletContext();
@@ -38,7 +39,9 @@ function LabList() {
     <Grid spacing={2} container>
       <Grid item xs={9}>
     {activeCompany &&     <TableContainer >
+
       <TextField  label='بحث' size="small" onChange={(e)=>setSearch(e.target.value)} sx={{mb:1}} type="search"></TextField>
+      <a href={`${webUrl}company/test/${activeCompany.id}`}>التقرير</a>
           <Table key={activeCompany.id} size="small">
             <thead>
               <TableRow>
