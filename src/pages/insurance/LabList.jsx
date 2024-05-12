@@ -59,8 +59,8 @@ function LabList() {
                   <TableRow key={test.id}>
                     <TableCell>{test.main_test_name}</TableCell>
                     <MyTableCell show={true} item={activeCompany}  test_id={test.id} colName={'price'} table="company/test">{test?.pivot?.price}</MyTableCell>
-                    <MyTableCell  show={true} item={activeCompany} test_id={test.id}table="company/test" colName={'endurance_percentage'} >{test?.pivot?.endurance_percentage}</MyTableCell>
-                    <MyTableCell show={true} item={activeCompany} test_id={test.id} colName={'endurance_static'} table="company/test"  > {test?.pivot?.endurance_static}</MyTableCell>
+                    <MyTableCell  show={true} item={activeCompany} test_id={test.id} table="company/test" colName={'endurance_percentage'} >{test?.pivot?.endurance_percentage}</MyTableCell>
+                    <MyTableCell show={true} item={activeCompany} test_id={test.id} colName={'endurance_static'} table="company/test"> {test?.pivot?.endurance_static}</MyTableCell>
                     <MySelectTableCell item={activeCompany} myVal={test.pivot.approve} test_id={test.id} table="company/test" colName={'approve'}></MySelectTableCell>
                     <MySelectTableCell item={activeCompany} myVal={test.pivot.status} test_id={test.id} table="company/test" colName={'status'}></MySelectTableCell>
                   </TableRow>
