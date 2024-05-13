@@ -57,6 +57,9 @@ const Nav = () => {
           <NavLink style={{ textDecoration: "none" }} to={"/laboratory/add"}>
             laboratory
           </NavLink>
+          <NavLink style={{ textDecoration: "none" }} to={"/clinic"}>
+            Clinic
+          </NavLink>
           <NavLink style={{ textDecoration: "none" }} to={"/insurance"}>
             Insurance
           </NavLink>

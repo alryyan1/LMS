@@ -9,7 +9,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import "./addPatient.css";
+import "../Laboratory/addPatient.css"
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, TextField, Stack } from "@mui/material";
 import {  useEffect, useState } from "react";
@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function PatientForm({ hideForm, setUpdate }) {
+function ReceptionForm({ hideForm, setUpdate }) {
   const { setToken, setUser } = useStateContext();
   const [loading, setIsLoading] = useState(false);
   const {setDialog,setFoundedPatients,doctors} = useOutletContext();
@@ -85,12 +85,12 @@ function PatientForm({ hideForm, setUpdate }) {
   return (
     <Paper elevation={3} sx={{ padding: "10px" }}>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-        تسجيل مريض للمعمل
+         حجز لطبيب معين 
       </Typography>
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
           <TextField
-          type="number"
+            type="number"
             autoFocus
             error={errors?.phone && errors.phone.message}
             {...register("phone", {
@@ -129,7 +129,6 @@ function PatientForm({ hideForm, setUpdate }) {
           >
             <Item>
               <TextField
-              type="number"
                 onKeyDown={(event) => {
                   if (event.key == "Enter") {
                     console.log("event");
@@ -140,13 +139,13 @@ function PatientForm({ hideForm, setUpdate }) {
                 {...register("age_year", {
                   required: { value: true, message: "يجب ادخال العمر بالسنه" },
                 })}
+                type="number"
                 label="السنه"
                 variant="standard"
               />
             </Item>
             <Item>
               <TextField
-               type="number"
                 onKeyDown={(event) => {
                   if (event.key == "Enter") {
                     console.log("event");
@@ -154,6 +153,7 @@ function PatientForm({ hideForm, setUpdate }) {
                   }
                 }}
                 {...register("age_month")}
+                type="number"
                 label="الشهر"
                 variant="standard"
               />
@@ -175,38 +175,7 @@ function PatientForm({ hideForm, setUpdate }) {
           </Stack>
 
           {errors?.age && errors.age.message}
-          <Controller
-            name="doctor"
-            rules={{
-              required: {
-                value: true,
-                message: "يجب اختيار اسم الطبيب",
-              },
-            }}
-            control={control}
-            render={({ field }) => {
-              return (
-                <Autocomplete
-                  onChange={(e, newVal) => field.onChange(newVal)}
-                  getOptionKey={(op) => op.id}
-                  getOptionLabel={(option) => option.name}
-                  options={doctors}
-                  renderInput={(params) => {
-                    // console.log(params)
-
-                    return (
-                      <TextField
-                        inputRef={field.ref}
-                        error={errors?.doctor}
-                        {...params}
-                        label="الطبيب"
-                      />
-                    );
-                  }}
-                ></Autocomplete>
-              );
-            }}
-          />
+         
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="demo-simple-select-standard-label">
               النوع
@@ -243,4 +212,4 @@ function PatientForm({ hideForm, setUpdate }) {
   );
 }
 
-export default PatientForm;
+export default ReceptionForm;

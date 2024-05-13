@@ -1,9 +1,8 @@
-import "./addPatient.css";
+import "../Laboratory/addpatient.css";
 import { useEffect, useState } from "react";
-import Patient from "./Patient";
-import PatientForm from "./PatientForm";
-import PatientDetail from "./PatientDetail";
-import { url, webUrl } from "../constants";
+import Patient from "../Laboratory/Patient";
+import PatientDetail from "../Laboratory/PatientDetail";
+import {  webUrl } from "../constants";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import {
   Drawer,
@@ -19,12 +18,11 @@ import {
   styled,
   Paper,
   Skeleton,
-  Grow,
   Slide,
 } from "@mui/material";
-import RequestedTests from "./RequestedTests";
-import AddTestAutoComplete from "./AddTestAutoComplete";
-import { Calculate, Mail, PersonAdd, Print, Search } from "@mui/icons-material";
+import RequestedTests from "../Laboratory/RequestedTests";
+import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
+import { Calculate, Group, Mail, PersonAdd, Print, Search } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
@@ -32,6 +30,8 @@ import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
 import MoneyDialog from "../Dialogs/MoneyDialog";
 import SearchDialog from "../Dialogs/SearchDialog";
+import ReceptionForm from "./ReceptionForm";
+import ReceptionDoctorsDialog from "../Dialogs/ReceptionDoctorsDialog";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -40,9 +40,8 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function AddPatient() {
+function Reception() {
   const {
-    setTests,
     actviePatient,
     setActivePatient,
     setOpen,
@@ -172,6 +171,14 @@ function AddPatient() {
       };
     });
   };
+  const showDoctorsDialog = ()=>{
+    setDialog((prev) => {
+      return {
+        ...prev,
+        showDoctorsDialog: true,
+      };
+    });
+  }
 
   return (
     <>
@@ -193,11 +200,18 @@ function AddPatient() {
             gap={"5px"}
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
-          
           >
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
                 <RemoveRedEyeIcon />
+              </IconButton>
+            </Item>
+            <Item>
+              <IconButton
+                variant="contained"
+                onClick={showDoctorsDialog}
+              >
+                <Group />
               </IconButton>
             </Item>
             <Item>
@@ -220,18 +234,14 @@ function AddPatient() {
                 <Print />
               </IconButton>
             </Item>
-            <Item>
-              <IconButton variant="contained">
-                <Search />
-              </IconButton>
-            </Item>
+           
           </Stack>
         </div>
         <div>
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <PatientForm setUpdate={setUpdate} hideForm={hideForm} />
+            <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
           )}
         </div>
         <div style={{ overflow: "auto" }}>
@@ -279,10 +289,11 @@ function AddPatient() {
         </div>
         <MoneyDialog />
         <ErrorDialog />
+        <ReceptionDoctorsDialog/>
       
       </div>
     </>
   );
 }
 
-export default AddPatient;
+export default Reception;

@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 
 import { url } from "../constants.js";
 import { Controller, useForm } from "react-hook-form";
-import { useLoaderData, useOutletContext } from "react-router-dom";
+import { Link, useLoaderData, useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import dayjs from "dayjs";
 import { Delete } from "@mui/icons-material";
@@ -25,7 +25,7 @@ function DeductInventory() {
   // console.log(items);
   //create state variable to store all suppliers
   const {dialog, setDialog} = useOutletContext();
-  const [deductedItems, setDeductedItems] = useState([]);
+  const [deduct, setDeduct] = useState(null);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deductComplete, setDeductComplete] = useState(1);
@@ -81,7 +81,7 @@ function DeductInventory() {
             setDeductComplete(deductComplete + 1);
 
           //delete supplier by id
-          setDeductedItems(deductedItems.filter((item) => item.id != id));
+          setDeduct(deduct.items.filter((item) => item.id != id));
           //show success dialog
           setDialog({
             open: true,
@@ -107,8 +107,8 @@ function DeductInventory() {
     fetch(`${url}inventory/deduct/last`)
       .then((res) => res.json())
       .then((data) => {
-         console.log(data,'deposit data')
-        setDeductedItems(data.items);
+         console.log(data,'deduct')
+        setDeduct(data);
       });
   }, [isSubmitted,deductComplete]);
   const completeAdditionHandler = () => {
@@ -129,8 +129,10 @@ function DeductInventory() {
       });
   };
   return (
-    <Grid container>
+    <Grid container spacing={5}>
       <Grid item xs={5}>
+      <Link to={"/inventory/reports/deduct"}>reports</Link>
+
         <Paper sx={{ p: 1 }}>
           <Typography
             sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
@@ -138,6 +140,7 @@ function DeductInventory() {
           >
             خصم من المخزن
           </Typography>
+          
           <form noValidate onSubmit={handleSubmit(submitHandler)}>
             <Controller
               name="item"
@@ -151,10 +154,16 @@ function DeductInventory() {
               render={({ field }) => {
                 return (
                   <Autocomplete
+                  renderOption={(props,option)=>{
+                    return <li {...props} key={option.id}>
+                      {option.name}
+                    </li>
+                  }}
                     sx={{ mb: 1 }}
                     {...field}
                     value={field.value || null}
                     options={items}
+                    
                     isOptionEqualToValue={(option, val) => option.id === val.id}
                     getOptionLabel={(option) => option.name}
                     onChange={(e, data) => field.onChange(data)}
@@ -223,9 +232,14 @@ function DeductInventory() {
         </Paper>
       </Grid>
       <Grid item xs={7}>
+      <Typography textAlign={'center'}>
+          {deduct  && deduct.id}   اذن صرف رقم
+
+          </Typography>
         {/* create table with all suppliers */}
-        <TableContainer>
-          <Table dir="rtl" size="small">
+        <TableContainer >
+          
+          <Table sx={{mb:2}} dir="rtl" size="small">
             <thead>
               <TableRow>
                 <TableCell>رقم</TableCell>
@@ -237,7 +251,7 @@ function DeductInventory() {
             </thead>
 
             <TableBody>
-              {deductedItems.map((deductedItem, i) => (
+              {deduct && deduct.items.map((deductedItem, i) => (
                 <TableRow key={i}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{deductedItem.name}</TableCell>
@@ -250,7 +264,7 @@ function DeductInventory() {
             </TableBody>
           </Table>
         </TableContainer>
-        {deductedItems.length > 0 && (
+        {deduct && deduct.items.length > 0 && (
           <LoadingButton
             loading={loading}
             onClick={completeAdditionHandler}

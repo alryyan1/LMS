@@ -102,7 +102,7 @@ function InventoryIncome() {
 
           console.log("set updating function");
           setUpdate((pev) => pev + 1);
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت العمليه  بنجاح",
           });
@@ -133,7 +133,7 @@ function InventoryIncome() {
           setLoading(false);
           reset();
           setValue("expire", dayjs(new Date()));
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت الاضافه  بنجاح",
           });
@@ -161,7 +161,7 @@ function InventoryIncome() {
           //delete supplier by id
           setIncomeItems(incomeItems.filter((item) => item.id != id));
           //show success dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تم الحذف بنجاح",
           });
@@ -201,7 +201,7 @@ function InventoryIncome() {
           setUpdate((previous) => previous + 1);
           setLoading(false);
           //show success dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تمت العمليه  بنجاح",
           });
