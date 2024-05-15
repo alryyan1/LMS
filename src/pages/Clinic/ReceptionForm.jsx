@@ -25,10 +25,10 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function ReceptionForm({ hideForm, setUpdate }) {
+function ReceptionForm({ hideForm }) {
   const { setToken, setUser } = useStateContext();
   const [loading, setIsLoading] = useState(false);
-  const {setDialog,setFoundedPatients,doctors} = useOutletContext();
+  const {setDialog,setFoundedPatients,doctors,activeShift,setActiveShift,setUpdate} = useOutletContext();
   // console.log(appData.doctors,'doctors')
   const {
     watch,
@@ -41,35 +41,43 @@ function ReceptionForm({ hideForm, setUpdate }) {
   const name =   watch('name')
   
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("searchByName", name);
-      axiosClient
-        .post("patient/search", { name: name })
-        .then(({ data }) => {
-          console.log(data,'founded patients')
-          setFoundedPatients(data);
-        });
-    }, 300);
-    return () => {
-      clearTimeout(timer);
-    };
+    if (name != undefined) {
+      console.log(name,'name')
+      const timer = setTimeout(() => {
+        console.log("searchByName", name);
+        axiosClient
+          .post("patient/search", { name: name })
+          .then(({ data }) => {
+            console.log(data,'founded patients')
+            setFoundedPatients(data);
+          });
+      }, 300);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+   
+    
   }, [name]);
   const sumbitHandler = async (formData) => {
     setIsLoading(true);
-    console.log(formData);
+    console.log(formData,'form data');
     axiosClient
-      .post(`patients/add`, { ...formData, doctor_id: formData.doctor.id })
+      .post(`patients/reception/add/${activeShift.doctor.id}`, { ...formData, doctor_id: activeShift.doctor.id })
       .then((data) => {
-        console.log(data, "added patiets");
-        if (data.data.status) {
+        console.log(data, "reception added");
+        if (data.status) {
           //set is loading to false
           setIsLoading(false);
-       setDialog(true);
+       setDialog((prev) => ({...prev, msg: 'تمت الاضافه بنجاح', color: "success", open:true}));
           //hide form
           reset();
           hideForm();
           //this update patient list
-          setUpdate((prev) => prev + 1);
+          setUpdate((prev) =>{
+            console.log('inside update')
+            return prev + 1
+          });
         }
       })
       .catch((data) => {
@@ -184,10 +192,11 @@ function ReceptionForm({ hideForm, setUpdate }) {
               name="gender"
               control={control}
               render={({ field }) => {
-                return (
+                return ( 
                   <Select
+                 
                     defaultValue={""}
-                    value={field.value}
+                    value={'ذكر'}
                     onChange={(data) => {
                       console.log(data.target.value);
                       return field.onChange(data.target.value);
@@ -203,7 +212,7 @@ function ReceptionForm({ hideForm, setUpdate }) {
           </FormControl>
           {/* {errors.doctor && errors.doctor.message} */}
 
-          <LoadingButton loading={loading} type="submit" variant="contained">
+          <LoadingButton disabled = {activeShift ? false:true} loading={loading} type="submit" variant="contained">
             حفظ
           </LoadingButton>
         </Stack>

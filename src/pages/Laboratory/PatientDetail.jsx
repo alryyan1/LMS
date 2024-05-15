@@ -84,18 +84,18 @@ function PatientDetail({ patient,setPatients }) {
           </div>
           <div>العمر</div>
         </div>
-        <Grid container sx={{ m: 2, p: 2 }}>
-          <Grid item xs={6}>
+        <div style={{display:'grid',gridTemplateColumns:"repeat(auto-fit,minmax(50px,1fr))"}}>
+          <div>
             <Button onClick={handleEdit} variant="contained">
               Edit
             </Button>
-          </Grid>
-          <Grid item xs={6}>
+          </div>
+          <div>
             <Button color="warning" variant="contained">
               Print
             </Button>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
        
        <EditPatientDialog open={open} setOpen={setOpen} patient={patient} setPatients={setPatients} />
       </Paper>

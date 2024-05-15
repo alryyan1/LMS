@@ -17,41 +17,85 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
 function ReceptionDoctorsDialog() {
-    const [page,setPage] = useState(0)
-    const [search,setSearch] = useState(null)
-    const [searchedDoctors,setSearchedDoctors] = useState([])
-  const { dialog, setDialog, doctors } = useOutletContext();
-  console.log(doctors,'doctors from dialog')
-  useEffect(()=>{
+  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState(null);
+  const [searchedDoctors, setSearchedDoctors] = useState([]);
+  const { dialog, setDialog, doctors, setOpenedDoctors,openedDoctors } = useOutletContext();
+  console.log(doctors, "doctors from dialog");
+  useEffect(() => {
     if (doctors) {
-        
-        setSearchedDoctors(doctors)
+      setSearchedDoctors(doctors);
     }
-  },[doctors])
-  console.log(dialog);
-  const searchHandler = (val)=>{
-    setSearchedDoctors((prev)=>{
-        return doctors.filter((doctor)=>{
-            return doctor.name.toLowerCase().includes(val.toLowerCase())
+  }, [doctors]);
+  
+  const searchHandler = (val) => {
+    setSearchedDoctors((prev) => {
+      return doctors.filter((doctor) => {
+        return doctor.name.toLowerCase().includes(val.toLowerCase());
+      });
+    });
+  };
+  const openDoctorShiftHandler = (doctor) => {
+    console.log(openedDoctors)
+    console.log(doctor);
+    axiosClient.get(`doctor/shift/open/${doctor.id}`).then(({ data }) => {
+      if (data.status) {
+        console.log(data)
+        setOpenedDoctors((prev) => {
+          return [
+            ...prev,
+            data.shift
+          ];
+        });
+        setSearchedDoctors((prev)=>{
+         return prev.map((d)=>{
+           if(d.id === doctor.id){
+             return {...d,last_shift:{...data.shift}}
+           }else{
+             return d
+           }
+         })
         })
-
-    })
-  }
-  const openDoctorShiftHandler = (doctorId) => {
-    axiosClient.get(`doctor/shift/open/${doctorId}`).then((res)=>{
-        console.log(res)
-    }); 
-  }
+      }else{
+      setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
+      }
+    });
+  };
+  const closeDoctorShift = (doctor) => {
+    axiosClient.get(`doctor/shift/close/${doctor.id}`).then(({ data }) => {
+      if (data.status) {
+        setOpenedDoctors((prev) => {
+          return prev.filter((shift) => {
+            return shift.doctor.id !== doctor.id;
+          });
+        });
+        setSearchedDoctors((prev)=>{
+           return prev.map((d)=>{
+             if(d.id === doctor.id){
+               return {...d,last_shift:{...d.last_shift,status:0}};
+             }else{
+               return d
+             }
+           })
+        })
+      }
+    });
+  };
   return (
     <div>
-      <Dialog  open={dialog.showDoctorsDialog}>
-        <Stack justifyContent={'end'} sx={{p:1}} direction={"row"} gap={3}>
-          <TextField onChange={(e)=>searchHandler(e.target.value)} size="small" label="بحث" type="search"></TextField>
+      <Dialog open={dialog.showDoctorsDialog}>
+        <Stack justifyContent={"end"} sx={{ p: 1 }} direction={"row"} gap={3}>
+          <TextField
+            onChange={(e) => searchHandler(e.target.value)}
+            size="small"
+            label="بحث"
+            type="search"
+          ></TextField>
         </Stack>
 
         <DialogContent>
           <TableContainer>
-            <Table style={{direction:'rtl'}} size="small">
+            <Table style={{ direction: "rtl" }} size="small">
               <thead>
                 <TableRow>
                   <TableCell>اسم الطبيب</TableCell>
@@ -60,17 +104,34 @@ function ReceptionDoctorsDialog() {
                 </TableRow>
               </thead>
               <tbody>
-                { searchedDoctors.slice(page, page + 10).map((doctor) => {
+                {searchedDoctors.slice(page, page + 10).map((doctor) => {
                   return (
                     <TableRow key={doctor.id}>
                       <TableCell>{doctor.name}</TableCell>
                       <TableCell>
-                        <Button disabled={doctor.shifts.length > 0 && doctor.shifts[0].status === 1} onClick={()=>openDoctorShiftHandler(doctor.id)} variant="contained">فتح ورديه</Button>
+                        <Button
+                          disabled={
+                            doctor.last_shift &&
+                            doctor.last_shift.status === 1
+                          }
+                          onClick={() => openDoctorShiftHandler(doctor)}
+                          variant="contained"
+                        >
+                          فتح ورديه
+                        </Button>
                       </TableCell>
                       <TableCell>
-                        <Button variant="contained" color="error">
+                        <Button
+                          disabled={
+                            doctor.last_shift &&
+                            doctor.last_shift.status === 0
+                          }
+                          onClick={() => closeDoctorShift(doctor)}
+                          variant="contained"
+                          color="error"
+                        >
                           قفل ورديه
-                        </Button>{" "}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );
@@ -78,7 +139,12 @@ function ReceptionDoctorsDialog() {
               </tbody>
             </Table>
           </TableContainer>
-          <Pagination  shape="rounded"  onChange={(e,number)=>setPage((number  * 10)- 10)} count={(doctors.length /10 ).toFixed(0) }  variant="outlined" />
+          <Pagination
+            shape="rounded"
+            onChange={(e, number) => setPage(number * 10 - 10)}
+            count={+(doctors.length / 10).toFixed(0)}
+            variant="outlined"
+          />
         </DialogContent>
         <DialogActions>
           <Button
