@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
 import MySelectTableCell from "../inventory/MyselectTableCell";
+import { webUrl } from "../constants";
 
 function LabList() {
   const { companies } = useOutletContext();
@@ -38,7 +39,9 @@ function LabList() {
     <Grid spacing={2} container>
       <Grid item xs={9}>
     {activeCompany &&     <TableContainer >
+
       <TextField  label='بحث' size="small" onChange={(e)=>setSearch(e.target.value)} sx={{mb:1}} type="search"></TextField>
+      <a href={`${webUrl}company/test/${activeCompany.id}`}>التقرير</a>
           <Table key={activeCompany.id} size="small">
             <thead>
               <TableRow>
@@ -56,8 +59,8 @@ function LabList() {
                   <TableRow key={test.id}>
                     <TableCell>{test.main_test_name}</TableCell>
                     <MyTableCell show={true} item={activeCompany}  test_id={test.id} colName={'price'} table="company/test">{test?.pivot?.price}</MyTableCell>
-                    <MyTableCell  show={true} item={activeCompany} test_id={test.id}table="company/test" colName={'endurance_percentage'} >{test?.pivot?.endurance_percentage}</MyTableCell>
-                    <MyTableCell show={true} item={activeCompany} test_id={test.id} colName={'endurance_static'} table="company/test"  > {test?.pivot?.endurance_static}</MyTableCell>
+                    <MyTableCell  show={true} item={activeCompany} test_id={test.id} table="company/test" colName={'endurance_percentage'} >{test?.pivot?.endurance_percentage}</MyTableCell>
+                    <MyTableCell show={true} item={activeCompany} test_id={test.id} colName={'endurance_static'} table="company/test"> {test?.pivot?.endurance_static}</MyTableCell>
                     <MySelectTableCell item={activeCompany} myVal={test.pivot.approve} test_id={test.id} table="company/test" colName={'approve'}></MySelectTableCell>
                     <MySelectTableCell item={activeCompany} myVal={test.pivot.status} test_id={test.id} table="company/test" colName={'status'}></MySelectTableCell>
                   </TableRow>

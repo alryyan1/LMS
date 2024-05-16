@@ -12,7 +12,7 @@ import axiosClient from "../../../axios-client";
 function MoneyDialog() {
   const { dialog, setDialog } = useOutletContext();
   const [money,setMoney] = useState()
-  console.log(dialog);
+  // console.log(dialog);
   useEffect(() => {
     axiosClient.get("lab/money").then(({data:{total}})=>{
         console.log(total)

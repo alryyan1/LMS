@@ -7,6 +7,9 @@
     
     
 }
+.d{
+    grid-template-columns: repeat(auto-fit);
+}
 .patients .active{
     /* add background color using any material design color */
     background-color: #3f51b5 !important;

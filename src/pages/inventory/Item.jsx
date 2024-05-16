@@ -1,4 +1,4 @@
-import {
+  import {
   Alert,
   Autocomplete,
   Button,
@@ -61,6 +61,7 @@ function Item() {
         require_amount: formData.require_amount,
         initial_balance: formData.initial_balance,
         initial_price: formData.initial_price,
+        tests: formData.tests,
       }),
     })
       .then((res) => res.json())
@@ -124,7 +125,7 @@ function Item() {
           //delete Item by id
           setItems(Items.filter((Item) => Item.id != id));
           //show dialog
-          setOpenSuccessDialog({
+          setDialog({
             open: true,
             msg: "تم الحذف بنجاح",
           });
@@ -200,7 +201,7 @@ function Item() {
                   <MyTableCell colName={"name"} item={item}>
                     {item.name}
                   </MyTableCell>
-                  <MyAutoCompeleteTableCell
+                  <MyAutoCompeleteTableCell val={item.section}
                     colName={"section_id"}
                     item={item}
                     sections={sections}
@@ -345,6 +346,19 @@ function Item() {
                   })}
                   id="outlined-basic"
                   label="حد الادني للطلب"
+                  variant="filled"
+                />
+              </div>
+              <div>
+                <TextField
+                  fullWidth
+                  helperText={
+                    errors.tests && errors.tests.message
+                  }
+                  error={errors.tests}
+                  {...register("tests")}
+                  id="outlined-basic"
+                  label="عدد التحاليل"
                   variant="filled"
                 />
               </div>

@@ -26,10 +26,13 @@ import ServiceNav from "./pages/services/ServiceNav";
 import AddService from "./pages/services/AddService";
 import AddServiceGroup from "./pages/services/addServiceGroup";
 import ServiceList from "./pages/insurance/ServiceList";
+import DeductReport from "./pages/inventory/DeductReport";
+import Reception from "./pages/Clinic/Reception";
+import ReceptionLayout from "./pages/Clinic/RecptionLayout";
+
 
 export const router = createBrowserRouter([
   {
-  
     element: <App />,
     path: "/",
     errorElement: <Error404 />,
@@ -86,6 +89,10 @@ export const router = createBrowserRouter([
             element: <Report />,
           },
           {
+            path: "reports/deduct",
+            element: <DeductReport />,
+          },
+          {
             path: "income/create",
             loader: ({ request: { signal } }) => {
               //fetch all items
@@ -109,45 +116,58 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path:"/insurance",
-        element: 
-            <InsuranceNav/>
-            ,
-            children:[
-              {
-                path:'create',
-                element:<AddInsurance/>
-              },
-              {
-                path:'lab',
-                element:<LabList/>
-              }
-              ,
-              {
-                path:'service',
-                element:<ServiceList/>
-              }
-            ]
+        path: "clinic",
+        element:<ReceptionLayout/>,
+        children: [
+          {
+            index:true ,
+            element: (
+              <ProtectedRoute>
+                <Reception />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
       {
-        path:"/services",
-        element: 
-            <ServiceNav/>
-            ,
-            children:[
-              {
-                path:'create',
-                element:<AddService/>
-              },
-              {
-                path:'serviceGroup/create',
-                element:<AddServiceGroup/>
-              }
-            ]
+        path: "/insurance",
+        element: <InsuranceNav />,
+        children: [
+          {
+            path: "create",
+            element: <AddInsurance />,
+          },
+          {
+            path: "lab",
+            element: <LabList />,
+          },
+          {
+            path: "service",
+            element: <ServiceList />,
+          },
+        ],
+      },
+      {
+        path: "/services",
+        element: <ServiceNav />,
+        children: [
+          {
+            path: "create",
+            element: <AddService />,
+          },
+          {
+            path: "serviceGroup/create",
+            element: <AddServiceGroup />,
+          },
+        ],
       },
       {
         path: "/laboratory",
-        element: <ProtectedRoute><LabLayout /></ProtectedRoute>,
+        element: (
+          <ProtectedRoute>
+            <LabLayout />
+          </ProtectedRoute>
+        ),
 
         children: [
           {
@@ -166,7 +186,6 @@ export const router = createBrowserRouter([
           },
         ],
       },
-     
     ],
   },
 ]);

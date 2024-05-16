@@ -193,7 +193,7 @@ function AddPatient() {
             gap={"5px"}
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
-            style={{ position: "absolute", left: "0" }}
+          
           >
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
