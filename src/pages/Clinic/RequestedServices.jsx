@@ -1,4 +1,5 @@
 import {
+  Button,
   IconButton,
   Table,
   TableBody,
@@ -18,49 +19,17 @@ import axiosClient from "../../../axios-client";
 import DiscountSelectService from "./DiscountSelectService";
 import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
+import MyCheckboxReception from "./MycheckboxReception";
 function RequestedServices({ setPatients }) {
-  const { setDialog, setActivePatient, actviePatient } = useOutletContext();
+  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices} = useOutletContext();
   const [loading, setLoading] = useState(false);
-  const payHandler = () => {
-    const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
-      const discount = Number((test.pivot.discount_per * test.price) / 100);
-      return accum + (test.price - discount);
-    }, 0);
-    setLoading(true);
-    axiosClient
-      .patch(`labRequest/payment/${actviePatient.id}`, { paid: totalPaid })
-      .then(({ data: data }) => {
-        if (data.status) {
-          setLoading(false);
-          setPatients((prevPatients) => {
-            return prevPatients.map((p) => {
-              if (p.id === actviePatient.id) {
-                return {
-                  ...p,
-                  is_lab_paid: true,
-                  lab_paid: totalPaid,
-                };
-              } else {
-                return p;
-              }
-            });
-          });
-          //show success dialog
-          setDialog(() => ({
-            msg: "تمت عمليه السداد بنجاح",
-            open: true,
-          }));
-          setActivePatient((p) => {
-            return { ...p, is_lab_paid: true, lab_paid: totalPaid };
-          });
-        }
-      });
-  };
+
   const pay = (id,setLoading) => {
     setLoading(true);
     axiosClient
       .get(`patient/service/pay/${actviePatient.id}?service_id=${id}`)
       .then(({ data }) => {
+        console.log(data)
         setActivePatient(data.patient);
       }).finally(() => {setLoading(false);});
   };
@@ -68,6 +37,7 @@ function RequestedServices({ setPatients }) {
     setLoading(true);
      axiosClient.get(`patient/service/cancel/${actviePatient.id}?service_id=${id}`).then(({ data }) => {
       if(data.status) {
+       
         setDialog((prev)=>{
           return{
            ...prev,
@@ -102,6 +72,9 @@ function RequestedServices({ setPatients }) {
     <>
       <div className="requested-tests">
         <div className="requested-table">
+          <Button onClick={()=>{
+            setShowPatientServices(false)
+            setShowServicePanel(true)}}>عرض قائمه الخدمات</Button>
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small" style={{ direction: "rtl" }}>
               <TableHead>
@@ -139,19 +112,19 @@ function RequestedServices({ setPatients }) {
                       <TableCell sx={{ border: "none" }} align="right">
                         <DiscountSelectService
                           service={service}
-                          setPatients={setPatients}
                           id={service.id}
-                          disc={service.pivot.discount}
                           actviePatient={actviePatient}
                         />
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
-                        <MyCheckBox
+                        <MyCheckboxReception
                           setPatients={setPatients}
                           key={actviePatient.id}
-                          isbankak={service.pivot.bank == 1}
+                          disabled={service.pivot.is_paid == 0}
+                          checked={service.pivot.bank == 1}
+                          
                           id={service.id}
-                        ></MyCheckBox>
+                        ></MyCheckboxReception>
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         {service.pivot.user.username}
@@ -179,7 +152,7 @@ function RequestedServices({ setPatients }) {
                       <TableCell sx={{ border: "none" }} align="right">
                         <MyLoadingButton
                         active={service.pivot.is_paid}
-                        disabled={service.pivot.is_paid}
+                        disabled={service.pivot.is_paid === 1}
 
                         loading={loading}
                          
@@ -213,7 +186,10 @@ function RequestedServices({ setPatients }) {
               <div className="sub-price">
                 <div className="title">Paid</div>
                 <div>
-                  {actviePatient.is_lab_paid ? actviePatient.lab_paid : 0}
+                {actviePatient.services.reduce((accum, service) => {
+                   
+                    return accum + service.pivot.amount_paid ;
+                  }, 0)}
                 </div>
               </div>
             </div>

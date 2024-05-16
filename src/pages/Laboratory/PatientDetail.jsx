@@ -84,7 +84,7 @@ function PatientDetail({ patient,setPatients }) {
           </div>
           <div>العمر</div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:"repeat(auto-fit,minmax(50px,1fr))"}}>
+        <div style={{display:'grid',gridTemplateColumns:"repeat(auto-fit,minmax(50px,1fr))",justifyContent:'space-around'}}>
           <div>
             <Button onClick={handleEdit} variant="contained">
               Edit

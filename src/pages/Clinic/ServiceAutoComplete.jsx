@@ -8,7 +8,7 @@ import axiosClient from "../../../axios-client";
 function AddServiceAutocomplete({ patients, setPatients }) {
   const [autoCompleteServices, setAutoComleteServices] = useState([]);
 
-  const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift } = useOutletContext();
+  const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  } = useOutletContext();
   const [loading, setLoading] = useState(false);
   const addServiceHandler = async () => {
     setLoading(true);
@@ -20,6 +20,8 @@ function AddServiceAutocomplete({ patients, setPatients }) {
       );
       console.log(data)
       if (data.status) {
+        setShowPatientServices(true)
+        setShowServicePanel (false)
         console.log(data.patient, "from db");
         setLoading(false);
         setActivePatient(data.patient);

@@ -29,6 +29,9 @@ function ReceptionLayout() {
   const [activeShift, setActiveShift] = useState(null);
   const [serviceCategories, setServiceCategories] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [showPatientServices, setShowPatientServices] = useState(false);
+  const [showServicePanel, setShowServicePanel] = useState(true);
+  
   useEffect(() => {
     Promise.all([
       axiosClient
@@ -62,6 +65,10 @@ function ReceptionLayout() {
       {
         <Outlet
           context={{
+            showPatientServices,
+            setShowPatientServices,
+            showServicePanel,
+            setShowServicePanel,
             selectedServices,
             setSelectedServices,
             serviceCategories,

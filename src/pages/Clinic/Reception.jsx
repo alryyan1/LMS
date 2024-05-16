@@ -20,13 +20,7 @@ import {
   Slide,
   Badge,
 } from "@mui/material";
-import {
-  Calculate,
-  Group,
-  Mail,
-  PersonAdd,
-  Print,
-} from "@mui/icons-material";
+import { Calculate, Group, Mail, PersonAdd, Print } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
@@ -58,14 +52,18 @@ function Reception() {
     openedDoctors,
     setOpenedDoctors,
     activeShift,
-    setActiveShift ,
+    setActiveShift,
     update,
-    setUpdate
+    setUpdate,
+    showPatientServices,
+    setShowPatientServices,
+    showServicePanel,
+    setShowServicePanel,
   } = useOutletContext();
   console.log(activeShift, "active doctor");
   console.log(searchByName, "searchByname");
   const { setOpenDrawer, openDrawer } = useStateContext();
-  
+
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -74,7 +72,7 @@ function Reception() {
     requestedDiv: "1.5fr",
     showTestPanel: false,
     patientDetails: "0.7fr",
-    patients : "1fr",
+    patients: "1fr",
   });
   // console.log(openDrawer, "open drawer");
 
@@ -104,9 +102,6 @@ function Reception() {
     </Box>
   );
 
- 
-
-
   useEffect(() => {
     if (foundedPatients.length > 0) {
       setLayout((prev) => {
@@ -124,24 +119,20 @@ function Reception() {
         ...prev,
         form: "0fr",
         hideForm: true,
-        tests: "2fr",
-        testWidth: "500px",
-        showTestPanel: false,
         patientDetails: "0.7fr",
-        patients: "2fr",
-
-        
       };
     });
   };
   const showFormHandler = () => {
     setActivePatient(null);
+    setShowPatientServices(false);
+    setShowServicePanel(false);
     setFoundedPatients([]);
     setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false, tests: "1fr",patients: "1fr" };
+      return { ...prev, form: "1fr", hideForm: false };
     });
   };
-  console.log('update count',update);
+  console.log("update count", update);
   const showShiftMoney = () => {
     setDialog((prev) => {
       return {
@@ -162,32 +153,41 @@ function Reception() {
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
       setOpenedDoctors(data);
-      console.log(data,'opened doctors');
+      console.log(data, "opened doctors");
     });
   }, [update]);
-  console.log(actviePatient,'active patient')
+  console.log(actviePatient, "active patient");
 
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         {openedDoctors.map((shift, index) => {
-          console.log(shift,'shift')
+          console.log(shift, "shift");
           return (
             <Item
-              sx={activeShift && activeShift.id === shift.id ? {
-                backgroundColor: (theme) => {
-                  console.log(theme, "theme");
-                  return theme.palette.primary.main;
-                },
-                color: "white",
-                cursor: "pointer",
-                flexGrow:1,
-              
-              }:{cursor: "pointer",transition: "0.3s all ease-in-out" ,transform:"scale(1.1)"}}
+              sx={
+                activeShift && activeShift.id === shift.id
+                  ? {
+                      backgroundColor: (theme) => {
+                        console.log(theme, "theme");
+                        return theme.palette.primary.main;
+                      },
+                      color: "white",
+                      cursor: "pointer",
+                      flexGrow: 1,
+                    }
+                  : {
+                      cursor: "pointer",
+                      transition: "0.3s all ease-in-out",
+                      transform: "scale(1.1)",
+                    }
+              }
               onClick={() => {
                 // console.log('activeShift',doctor.id);
                 setActiveShift(shift);
-                setActivePatient(null)
+                setActivePatient(null);
+                setShowPatientServices(false);
+                setShowServicePanel(false);
                 hideForm();
               }}
               key={index}
@@ -257,35 +257,73 @@ function Reception() {
           )}
         </div>
         <div style={{ overflow: "auto" }}>
-          <Stack flexDirection={'row'} flexWrap={'wrap'} gap={2}  style={{ padding: "15px" ,display:'flex'}}>
-            {activeShift && activeShift.visits.map((visit, index) => {
-              return  <Badge  color="primary" badgeContent={index+1} key={visit.id}> <Item onClick={()=>{
-                console.log(visit)
-                // console.log(setActivePatient)
-                setActivePatient(visit);
-              }} sx={{minWidth:"185px",cursor:'pointer', color :()=>{
-              return   actviePatient &&  actviePatient.id === visit.id ? 'white' : "black"
-              },   backgroundColor:(theme)=>{
-                
-          return      actviePatient &&  actviePatient.id === visit.id ? theme.palette.primary.main : ""
-
-              }}} >{visit.name}</Item></Badge> 
-             
-            })}
+          <Stack
+            flexDirection={"row"}
+            flexWrap={"wrap"}
+            gap={2}
+            style={{ padding: "15px", display: "flex" }}
+          >
+            {activeShift &&
+              activeShift.visits.map((visit, index) => {
+                return (
+                  <Badge
+                    color="primary"
+                    badgeContent={index + 1}
+                    key={visit.id}
+                  >
+                    {" "}
+                    <Item
+                      onClick={() => {
+                        if (actviePatient) {
+                          /** this because if was same patient */
+                          if (actviePatient.id == visit.id) {
+                            console.log("same patient");
+                          } else {
+                            setActivePatient(visit);
+                          }
+                        } else {
+                          setActivePatient(visit);
+                        }
+                        if (visit.services.length > 0) {
+                          if (!showServicePanel) {
+                            setShowPatientServices(true);
+                          }
+                        } else {
+                          setShowServicePanel(true);
+                        }
+                        hideForm();
+                      }}
+                      sx={{
+                        minWidth: "185px",
+                        cursor: "pointer",
+                        color: () => {
+                          return actviePatient && actviePatient.id === visit.id
+                            ? "white"
+                            : "black";
+                        },
+                        backgroundColor: (theme) => {
+                          return actviePatient && actviePatient.id === visit.id
+                            ? theme.palette.primary.main
+                            : "";
+                        },
+                      }}
+                    >
+                      {visit.name}
+                    </Item>
+                  </Badge>
+                );
+              })}
           </Stack>
         </div>
 
         <div>
-          {actviePatient && <ServiceGroup/>}
-          {actviePatient && <RequestedServices/>}
+          {actviePatient && showServicePanel && <ServiceGroup />}
+          {showPatientServices && <RequestedServices />}
         </div>
         <div>
           {/** add card using material   */}
           {actviePatient && (
-            <PatientDetail
-              key={actviePatient.id}
-              patient={actviePatient}
-            />
+            <PatientDetail key={actviePatient.id} patient={actviePatient} />
           )}
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>

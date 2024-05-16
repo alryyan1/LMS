@@ -1,16 +1,20 @@
 import { Select, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
-const DiscountSelectService = ({ id, disc, actviePatient ,service}) => {
-  const [discount, setDiscount] = useState(disc);
-  const {setActivePatient,setActiveShift,setUpdate} = useOutletContext()
+const DiscountSelectService = ({ id, actviePatient ,service}) => {
+  const [discount, setDiscount] = useState(service.pivot.discount);
+  const {setActivePatient,setActiveShift} = useOutletContext()
+  console.log('discount select rendered ')
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const data = await axiosClient.patch(`patient/service/discount/${actviePatient.id}`,{ service_id: id, discount: dis });
+    const {data} = await axiosClient.patch(`patient/service/discount/${actviePatient.id}`,{ service_id: id, discount: dis });
     console.log(data)
-    setUpdate(prev => prev + 1)
+    if (data.status) {
+      console.log(data.patient);
+      setActivePatient(data.patient);
+    }
 
   
     
@@ -18,7 +22,7 @@ const DiscountSelectService = ({ id, disc, actviePatient ,service}) => {
   };
 
   return (
-    <Select fullWidth sx={{
+    <Select  fullWidth sx={{
    '& .MuiSelect-select': {
       paddingRight: 0.5,
       paddingLeft: 0.5,
@@ -30,7 +34,7 @@ const DiscountSelectService = ({ id, disc, actviePatient ,service}) => {
       onChange={(e) => {
         changeDiscountHandler(id, e.target.value);
       }}
-      value={discount}
+      value={service.pivot.discount}
     >
       <MenuItem value={0}>0%</MenuItem>
       <MenuItem value={10}>10%</MenuItem>
