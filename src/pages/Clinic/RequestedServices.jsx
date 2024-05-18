@@ -31,6 +31,15 @@ function RequestedServices({ setPatients }) {
       .then(({ data }) => {
         console.log(data)
         setActivePatient(data.patient);
+       
+        setDialog((prev)=>{
+          return{
+           ...prev,
+            open:true,
+            msg:"تم  السداد بنجاح",
+            color:"success"
+          }
+        })
       }).finally(() => {setLoading(false);});
   };
   const cancelPayHandler = (id,setLoading) => {

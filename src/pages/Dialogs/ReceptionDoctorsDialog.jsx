@@ -142,7 +142,7 @@ function ReceptionDoctorsDialog() {
           <Pagination
             shape="rounded"
             onChange={(e, number) => setPage(number * 10 - 10)}
-            count={+(doctors.length / 10).toFixed(0)}
+            count={Math.ceil(doctors.length/10)}
             variant="outlined"
           />
         </DialogContent>

@@ -33,6 +33,8 @@ import ReceptionForm from "./ReceptionForm";
 import ReceptionDoctorsDialog from "../Dialogs/ReceptionDoctorsDialog";
 import ServiceGroup from "./ServiceGroups";
 import RequestedServices from "./RequestedServices";
+import ServiceMoneyDialog from "../Dialogs/ServiceMoneyDialog";
+import PatientReception from "./PatientReception";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -63,16 +65,14 @@ function Reception() {
   } = useOutletContext();
   console.log(activeShift, "active doctor");
   console.log(searchByName, "searchByname");
-  const { setOpenDrawer, openDrawer } = useStateContext();
+  const { setOpenDrawer, openDrawer,user } = useStateContext();
 
   const [layOut, setLayout] = useState({
     form: "1fr",
-    tests: "1fr",
     hideForm: false,
-    testWidth: "400px",
-    requestedDiv: "1.5fr",
+    requestedDiv: "minmax(0,2.4fr)",
     showTestPanel: false,
-    patientDetails: "0.7fr",
+    patientDetails: "0.8fr",
     patients: "1fr",
   });
   // console.log(openDrawer, "open drawer");
@@ -120,7 +120,10 @@ function Reception() {
         ...prev,
         form: "0fr",
         hideForm: true,
-        patientDetails: "0.7fr",
+      requestedDiv: "minmax(0,2.4fr)",
+
+        patientDetails: "0.8fr",
+        patients: "1fr",
       };
     });
   };
@@ -130,7 +133,7 @@ function Reception() {
     setShowServicePanel(false);
     setFoundedPatients([]);
     setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false };
+      return { ...prev, form: "1fr", hideForm: false,requestedDiv:"minmax(0,1.3fr)" };
     });
   };
   console.log("update count", update);
@@ -165,42 +168,49 @@ function Reception() {
         {openedDoctors.map((shift, index) => {
           console.log(shift, "shift");
           return (
-            <Item
-              sx={
-                activeShift && activeShift.id === shift.id
-                  ? {
-                      backgroundColor: (theme) => {
-                        console.log(theme, "theme");
-                        return theme.palette.primary.main;
-                      },
-                      color: "white",
-                      cursor: "pointer",
-                      flexGrow: 1,
-                    }
-                  : {
-                      cursor: "pointer",
-                      transition: "0.3s all ease-in-out",
-                      transform: "scale(1.1)",
-                    }
-              }
-              onClick={() => {
-                // console.log('activeShift',doctor.id);
-                setActiveShift(shift);
-                setActivePatient(null);
-                setShowPatientServices(false);
-                setShowServicePanel(false);
-                hideForm();
-                setLayout((prev)=>{
-                  return {
-                   ...prev,
-                    patients: "1.3fr",
+            <Badge color="secondary" badgeContent={shift.visits.length} key={shift.id}>
+              <Item
+                sx={
+                  activeShift && activeShift.id === shift.id
+                    ? {
+                        backgroundColor: (theme) => {
+                          console.log(theme, "theme");
+                          return theme.palette.primary.main;
+                        },
+                        color: "white",
+                        cursor: "pointer",
+                        flexGrow: 1,
+                      }
+                    : {
+                        cursor: "pointer",
+                        transition: "0.3s all ease-in-out",
+                        transform: "scale(1.1)",
+                      }
+                }
+                onClick={() => {
+                  // console.log('activeShift',doctor.id);
+                
+                  setActiveShift(shift);
+                  setActivePatient(null);
+                  setShowPatientServices(false);
+                  setShowServicePanel(false);
+                  if (shift.visits.length == 0) {
+                 showFormHandler()
+                  }else{
+
+                    hideForm();
                   }
-                })
-              }}
-              key={index}
-            >
-              {shift.doctor.name}
-            </Item>
+                  setLayout((prev) => {
+                    return {
+                      ...prev,
+                      patients: "2.4fr",
+                    };
+                  });
+                }}
+              >
+                {shift.doctor.name}
+              </Item>
+            </Badge>
           );
         })}
       </Stack>
@@ -250,7 +260,7 @@ function Reception() {
               </IconButton>
             </Item>
             <Item>
-              <IconButton href={`${webUrl}lab/report`} variant="contained">
+              <IconButton href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
                 <Print />
               </IconButton>
             </Item>
@@ -263,80 +273,49 @@ function Reception() {
             <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
           )}
         </div>
-        <div style={{ overflow: "auto" }}>
-          <Stack
-            flexDirection={"row"}
-            flexWrap={"wrap"}
-            gap={2}
-            style={{ padding: "15px", display: "flex" }}
-          >
-            {activeShift &&
-              activeShift.visits.map((visit, index) => {
-                return (
-                  <Badge
-                    color="primary"
-                    badgeContent={index + 1}
-                    key={visit.id}
-                  >
-                   
-                    <Item
-                    
-                      onClick={() => {
-                        if (actviePatient) {
-                          /** this because if was same patient */
-                          if (actviePatient.id == visit.id) {
-                            console.log("same patient");
-                          } else {
-                            setActivePatient(visit);
-                          }
-                        } else {
-                          setActivePatient(visit);
-                        }
-                        if (visit.services.length > 0) {
-                          if (!showServicePanel) {
-                            setShowPatientServices(true);
-                          }
-                        } else {
-                          setShowServicePanel(true);
-                        }
-                        hideForm();
-                      }}
-                      sx={{
-                        display:'flex',
-                        justifyContent:"space-between",
-                        minWidth: "185px",
-                        cursor: "pointer",
-                        color: () => {
-                          return actviePatient && actviePatient.id === visit.id
-                            ? "white"
-                            : "black";
-                        },
-                        backgroundColor: (theme) => {
-                          return actviePatient && actviePatient.id === visit.id
-                            ? theme.palette.primary.main
-                            : "";
-                        },
-                      }}
-                    > 
-                      {visit.totalservicebank > 0 &&   <Chip label="bank" sx={{color:'red'}} size="small" /> }
-                  
-
-                      {visit.name}
-                    </Item>
-                  </Badge>
-                );
-              })}
-          </Stack>
-        </div>
+        <Paper>
+          <div style={{ overflow: "auto" }}>
+            <Stack
+              flexDirection={"row"}
+              flexWrap={"wrap"}
+              gap={2}
+              style={{ padding: "15px", display: "flex" }}
+            >
+              {activeShift &&
+                activeShift.visits.map((visit, index) => {
+                  return (
+                    <PatientReception
+                      key={visit.id}
+                      hideForm={hideForm}
+                      visit={visit}
+                      index={index}
+                    ></PatientReception>
+                  );
+                })}
+            </Stack>
+          </div>
+        </Paper>
 
         <div>
           {actviePatient && showServicePanel && <ServiceGroup />}
-          {showPatientServices && <RequestedServices />}
+          {showPatientServices && (
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <Paper sx={{ p: 1 }}>
+                <div>
+                  <RequestedServices />
+                </div>
+              </Paper>
+            </Slide>
+          )}
         </div>
         <div>
           {/** add card using material   */}
           {actviePatient && (
-            <PatientDetail key={actviePatient.id} patient={actviePatient} />
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <div>
+                <PatientDetail key={actviePatient.id} patient={actviePatient} />
+              </div>
+            </Slide>
           )}
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
@@ -346,7 +325,7 @@ function Reception() {
             </Slide>
           )}
         </div>
-        <MoneyDialog />
+        <ServiceMoneyDialog />
         <ErrorDialog />
         <ReceptionDoctorsDialog />
       </div>

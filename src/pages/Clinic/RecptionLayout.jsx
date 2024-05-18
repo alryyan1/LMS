@@ -52,9 +52,6 @@ function ReceptionLayout() {
         setServiceCategories(data);
       })
       .catch((err) => console.log(err)),
-    
-
-      
     ]).finally(() => {});
   }, []);
 

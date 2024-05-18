@@ -19,11 +19,12 @@ function PatientDetail({ patient,setPatients }) {
   };
   return (
     <>
-      <Paper elevation={3} sx={{ padding: "10px" }}>
+      <Paper elevation={3} sx={{ padding: "10px" , }}>
         <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography>
         {/** add card body   */}
+           <div className="patientId">{patient.id}</div>
         <div className="form-control">
           <div>{patient.name}</div>
           <div>اسم </div>
