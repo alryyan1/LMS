@@ -2,7 +2,10 @@ import "../Laboratory/addpatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "../Laboratory/PatientDetail";
 import { webUrl } from "../constants";
+import   YourSvg  from './doctor-svgrepo-com.svg'
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+
 import {
   Drawer,
   Box,
@@ -133,7 +136,7 @@ function Reception() {
     setShowServicePanel(false);
     setFoundedPatients([]);
     setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false,requestedDiv:"minmax(0,1.3fr)" };
+      return { ...prev, form: "1fr", hideForm: false,requestedDiv:"minmax(0,1.3fr)",patients:"1fr" };
     });
   };
   console.log("update count", update);
@@ -157,6 +160,13 @@ function Reception() {
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
       setOpenedDoctors(data);
+      if (activeShift) {
+        const findedActiveDoctorShift = data.find((shift)=>shift.id == activeShift.id)
+        setActiveShift(findedActiveDoctorShift)
+        
+        console.log(findedActiveDoctorShift,'findedActiveDoctorShift')
+      }
+      // setActiveShift()
       console.log(data, "opened doctors");
     });
   }, [update]);
@@ -169,8 +179,9 @@ function Reception() {
           console.log(shift, "shift");
           return (
             <Badge color="secondary" badgeContent={shift.visits.length} key={shift.id}>
-              <Item
+              <Item 
                 sx={
+
                   activeShift && activeShift.id === shift.id
                     ? {
                         backgroundColor: (theme) => {
@@ -180,8 +191,11 @@ function Reception() {
                         color: "white",
                         cursor: "pointer",
                         flexGrow: 1,
+                        minWidth:'200px',
+
                       }
                     : {
+                        minWidth:'200px',
                         cursor: "pointer",
                         transition: "0.3s all ease-in-out",
                         transform: "scale(1.1)",
@@ -236,7 +250,7 @@ function Reception() {
           >
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
-                <RemoveRedEyeIcon />
+                <CreateOutlinedIcon />
               </IconButton>
             </Item>
             <Item>
@@ -260,10 +274,15 @@ function Reception() {
               </IconButton>
             </Item>
             <Item>
-              <IconButton href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
+             {user && <IconButton href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
                 <Print />
-              </IconButton>
+              </IconButton>}
             </Item>
+            {activeShift &&<Item>
+             <IconButton color="info" title="التقرير الخاص" href={`${webUrl}clinics/doctor/report?user=${user.id}&doctorshift=${activeShift.id}`} variant="contained">
+                <Print  />
+              </IconButton>
+            </Item>}
           </Stack>
         </div>
         <div>

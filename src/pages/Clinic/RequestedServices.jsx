@@ -21,7 +21,7 @@ import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 function RequestedServices({ setPatients }) {
-  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices} = useOutletContext();
+  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate} = useOutletContext();
   const [loading, setLoading] = useState(false);
 
   const pay = (id,setLoading) => {
@@ -31,7 +31,8 @@ function RequestedServices({ setPatients }) {
       .then(({ data }) => {
         console.log(data)
         setActivePatient(data.patient);
-       
+        setUpdate((prev)=>prev+1)
+
         setDialog((prev)=>{
           return{
            ...prev,
@@ -46,7 +47,8 @@ function RequestedServices({ setPatients }) {
     setLoading(true);
      axiosClient.get(`patient/service/cancel/${actviePatient.id}?service_id=${id}`).then(({ data }) => {
       if(data.status) {
-       
+        setUpdate((prev)=>prev+1)
+
         setDialog((prev)=>{
           return{
            ...prev,
@@ -66,6 +68,7 @@ function RequestedServices({ setPatients }) {
       .then(({ data }) => {
         if (data.status) {
           setActivePatient(data.patient);
+          setUpdate((prev)=>prev+1)
           setDialog((prev) => {
             return {
               ...prev,
@@ -127,8 +130,6 @@ function RequestedServices({ setPatients }) {
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
-                          setPatients={setPatients}
-                          key={actviePatient.id}
                           disabled={service.pivot.is_paid == 0}
                           checked={service.pivot.bank == 1}
                           
@@ -136,7 +137,11 @@ function RequestedServices({ setPatients }) {
                         ></MyCheckboxReception>
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
-                        {service.pivot.user.username}
+                        <DiscountSelectService
+                          service={service}
+                          id={service.id}
+                          actviePatient={actviePatient}
+                        />
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
@@ -160,6 +165,7 @@ function RequestedServices({ setPatients }) {
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         <MyLoadingButton
+                        
                         active={service.pivot.is_paid}
                         disabled={service.pivot.is_paid === 1}
 

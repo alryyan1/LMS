@@ -36,6 +36,9 @@ function PatientReception({visit,hideForm,index}) {
           if (visit.services.length > 0) {
             if (!showServicePanel) {
               setShowPatientServices(true);
+            }else{
+              setShowServicePanel(false);
+              setShowPatientServices(true);
             }
           } else {
             setShowServicePanel(true);
@@ -61,13 +64,14 @@ function PatientReception({visit,hideForm,index}) {
           backgroundColor: (theme) => {
             return actviePatient &&
               actviePatient.id === visit.id
-              ? theme.palette.primary.main
+              ? theme.palette.primary.light
               : "";
           },
         }}
       >
         {visit.totalservicebank > 0 && (
           <Chip
+          
             label="bank"
             sx={{ backgroundColor:(theme)=>theme.palette.error.light}}
             size="small"
