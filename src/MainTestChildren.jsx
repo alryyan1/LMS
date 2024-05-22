@@ -1,42 +1,42 @@
-import {  useState } from "react";
-import {useOutletContext} from 'react-router-dom'
+import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import Td from "./pages/Laboratory/Td";
 import TdSelect from "./pages/Laboratory/TdSelect";
 import TdTextArea from "./pages/Laboratory/TdTextArea";
 import Modal from "./Modal";
 import TestOptions from "./pages/Laboratory/TestOptions";
+import axiosClient from "../axios-client";
+import { Button, Stack, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import MyTableCell from "./pages/inventory/MyTableCell";
+import MyAutoCompeleteTableCell from "./pages/inventory/MyAutoCompeleteTableCell";
 
-function MainTestChildren({ test, addChildTestHandler }) {
-  const appData = useOutletContext();
+function MainTestChildren() {
+  const { activeTestObj, addChildTestHandler, setActiveTestObj, units } =
+    useOutletContext();
   const [showModal, setShowModal] = useState(false);
   const [activeChild, setActiveChild] = useState();
   const [update, setUpdate] = useState(0);
 
   const addTestOptionHandler = () => {
-    fetch(
-      "http://127.0.0.1/projects/bootstraped/new/api.php?addTestOption=1&child=" +
-        activeChild.child_test_id
-    ).finally(() => {
+    axiosClient.post(`childTestOption/${activeChild.id}`).then((data)=>console.log(data)).finally(() => {
       setUpdate((prev) => prev + 1);
     });
   };
   function showModalHandler(child) {
     setShowModal(true);
     setActiveChild(child);
+    console.log(activeChild,'activeChild')
     setUpdate((prev) => prev + 1);
   }
 
   const deleteChild = (argChild) => {
     const result = confirm("one parameter will be deleted !!");
     if (result) {
-      fetch(
-        "http://127.0.0.1/projects/bootstraped/new/api.php?deleteChild=1&child=" +
-          argChild.child_test_id
-      ).finally(() => {
-        const filterredChildren = appData.activeTestObj.children.filter(
-          (child) => child.child_test_id != argChild.child_test_id
+      axiosClient.delete(`childTest/${activeChild.id}`).finally(() => {
+        const filterredChildren = activeTestObj.children.filter(
+          (child) => child.id != argChild.id
         );
-        appData.setActiveTestObj((prev) => {
+        setActiveTestObj((prev) => {
           return { ...prev, children: [...filterredChildren] };
         });
       });
@@ -50,57 +50,100 @@ function MainTestChildren({ test, addChildTestHandler }) {
       <button
         className="btn"
         onClick={() => {
-          addChildTestHandler(test.id);
+          addChildTestHandler(activeChild.id);
         }}
       >
         +
       </button>
 
-      <table>
+      <Table  size="small">
         <thead>
-          <tr>
-            <td>Name</td>
-            <td>Unit</td>
-            <td>Default value</td>
-            <td>Normal range</td>
-            <td>Max</td>
-            <td>Lowest</td>
-            <td>Options</td>
-            <td>Delete</td>
-          </tr>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Unit</TableCell>
+            <TableCell>Default value</TableCell>
+            <TableCell>Normal range</TableCell>
+            <TableCell>Max</TableCell>
+            <TableCell>Lowest</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
         </thead>
-        <tbody>
-          {test.children.map((child) => {
+        <TableBody>
+          {activeTestObj.child_tests.map((child) => {
             // console.log(child.normalRange)
             return (
-              <tr key={child.child_test_id}>
-                <Td
-                  child={child}
-                  col={"child_test_name"}
-                  val={child.child_test_name}
+              <tr key={child.id}>
+                <MyTableCell
+                  table="child_tests"
+                  colName={"child_test_name"}
+                  item={activeTestObj}
+                  child_id={child.id}
+                >
+                  {child.child_test_name}
+                </MyTableCell>
+                <MyAutoCompeleteTableCell
+                child_id={child.id}
+                  sections={units}
+                  colName={"unit_id"}
+                  item={activeTestObj}
+                  val={child.unit}
+                  table="child_tests"
+                  
                 />
-                <TdSelect child={child} selectedUnit={child.Unit} />
-                <Td child={child} col={"defval"} val={child.defval} />
-                <TdTextArea
-                  child={child}
-                  col={"normalRange"}
-                  val={child.normalRange}
-                />
-                <Td child={child} col={"max"} val={child.max} />
-                <Td child={child} col={"lowest"} val={child.lowest} />
-                <td>
-                  <button onClick={() => showModalHandler(child)}>
+                <MyTableCell
+                  table="child_tests"
+                  colName={"defval"}
+                  item={activeTestObj}
+                  child_id={child.id}
+                >
+                  {child.defval}
+                </MyTableCell>
+                <MyTableCell
+                  multiline={true}
+                  table="child_tests"
+                  colName={"normalRange"}
+                  item={activeTestObj}
+                  child_id={child.id}
+                >
+                  {child.normalRange}
+                </MyTableCell>
+                <MyTableCell
+                 table="child_tests"
+                 colName={'max'}
+                 item={activeTestObj}
+                 
+                 child_id={child.id}
+
+                >
+                  {child.max}
+                </MyTableCell>  
+                <MyTableCell
+                 table="child_tests"
+                 colName={'lowest'}
+                 item={activeTestObj}
+                 
+                 child_id={child.id}
+
+                >
+                  {child.lowest}
+                </MyTableCell>  
+                <TableCell width={'13%'} >
+                  <Stack direction={'row'} justifyContent={'space-around'} spacing={2}>
+                  <Button size="small" variant="contained" onClick={() => showModalHandler(child)}>
                     options
-                  </button>
-                </td>
-                <td>
-                  <button onClick={() => deleteChild(child)}>delete</button>
-                </td>
+                  </Button>
+                  <Button size="small" variant="contained" onClick={() => deleteChild(child)}>
+                    delete
+                  </Button>
+                  </Stack>
+                 
+                </TableCell>
+               
               </tr>
             );
           })}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {activeChild && (
         <Modal
           addHandler={addTestOptionHandler}

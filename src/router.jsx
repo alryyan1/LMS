@@ -29,6 +29,10 @@ import ServiceList from "./pages/insurance/ServiceList";
 import DeductReport from "./pages/inventory/DeductReport";
 import Reception from "./pages/Clinic/Reception";
 import ReceptionLayout from "./pages/Clinic/RecptionLayout";
+import SettingsNav from "./pages/settings/SettingsNav";
+import Doctors from "./pages/settings/Doctors";
+import Specialists from "./pages/settings/Specialists";
+import ItemState from "./pages/inventory/ItemState";
 
 
 export const router = createBrowserRouter([
@@ -54,6 +58,27 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path:'/settings',
+        element: (
+          <ProtectedRoute>
+              <SettingsNav />
+          </ProtectedRoute>
+        ),children:[
+          {
+            path:'doctors',
+            element:<Doctors/>
+          },
+          {
+            path:'specialists',
+            element:<Specialists/>
+          },
+          {
+            path:'tests',
+            element:<Specialists/>
+          }
+        ]
+      },
 
       {
         path: "/inventory",
@@ -66,6 +91,15 @@ export const router = createBrowserRouter([
           {
             path: "client/create",
             element: <Client />,
+          },
+          {
+
+            path: "item/state",
+            element: <ItemState />,
+            loader: ({ request: { signal } }) => {
+              //fetch all items
+              return fetch(`${url}items/all`, { signal });
+            },
           },
           {
             path: "supplier/create",
@@ -172,11 +206,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "tests",
-            loader: () => {
-              return fetch(
-                "http://127.0.0.1/projects/bootstraped/new/api.php?all_tests=1"
-              );
-            },
+          
             element: <LabTests />,
           },
           {

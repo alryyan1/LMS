@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TestOption from "./TestOption";
 import Loading from "../../loader";
+import axiosClient from "../../../axios-client";
 
 function TestOptions({ activeChild, update, setUpdate }) {
   const [data, setData] = useState([]);
@@ -9,11 +10,13 @@ function TestOptions({ activeChild, update, setUpdate }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(
-      `http://127.0.0.1/projects/bootstraped/new/api.php?options=1&child=${activeChild.child_test_id}`
+    axiosClient.get(
+      `childTestOption/${activeChild.id}`
     )
-      .then((res) => res.json())
-      .then(setData)
+      .then((data)=>{
+        console.log(data)
+        setData(data.data);
+      })
       .finally(() => {
         setLoading(false);
       });

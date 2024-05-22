@@ -213,13 +213,14 @@ function Reception() {
                   }else{
 
                     hideForm();
+                    setLayout((prev) => {
+                      return {
+                        ...prev,
+                        patients: "2.4fr",
+                      };
+                    });
                   }
-                  setLayout((prev) => {
-                    return {
-                      ...prev,
-                      patients: "2.4fr",
-                    };
-                  });
+                
                 }}
               >
                 {shift.doctor.name}

@@ -1,5 +1,4 @@
-import {  Outlet } from "react-router-dom";
-import useApp from "./hooks/useApp";
+import { NavLink, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { Alert, Snackbar } from "@mui/material";
@@ -19,7 +18,7 @@ function LabLayout() {
   const [searchByPhone, setSearchByPhone] = useState(null);
   const [containerData, setContainersData] = useState([]);
   const [packageData, setPackageData] = useState([]);
-  const [testsIsLoading, setTestsIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
   const [specialists, setSpecialists] = useState([]);
@@ -27,79 +26,91 @@ function LabLayout() {
   const [tests, setTests] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [actviePatient, setActivePatient] = useState(null);
+  const [showUnitList, setShowUnitList] = useState(false);
+  const [searchedTest, setSearchedTest] = useState("");
+  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [units, setUnits] = useState([]);
+  const [showAddTest, setShowAddTest] = useState(false);
+  const [activeTestObj, setActiveTestObj] = useState();
   useEffect(() => {
     Promise.all([
-      axiosClient.get(`specialists/all`)
-      .then(({data:data}) => {
-        console.log(data,'specialists ')
-        setSpecialists(data);
-      }).catch((err)=>console.log(err)),
-      axiosClient.get('doctors').then(({data:data})=>{
-        setDoctors(data)
+      axiosClient
+        .get(`specialists/all`)
+        .then(({ data: data }) => {
+          console.log(data, "specialists ");
+          setSpecialists(data);
+        })
+        .catch((err) => console.log(err)),
+      axiosClient.get("doctors").then(({ data: data }) => {
+        setDoctors(data);
       }),
-      fetch("http://127.0.0.1/projects/bootstraped/new/api.php?containers")
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setContainersData(data.data);
-        }),
+      axiosClient.get("containers/all").then((data) => {
+        console.log(data, "containers data");
+        setContainersData(data.data);
+      }),
 
-      fetch("http://127.0.0.1/projects/bootstraped/new/api.php?packages")
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setPackageData(data.data);
-        }),
-    ]).finally(() => {
-    });
+      axiosClient.get("packages/all").then((data) => {
+        console.log(data);
+        setPackageData(data.data);
+      }),
+      axiosClient.get("tests").then((data) => {
+        console.log(data,'test data');
+        setTests(data.data);
+      }),
+    ]).finally(() => {});
   }, []);
- 
-    // useEffect(() => {
-    //   axiosClient.get(`packages/all`)
-    //     .then((dataPacks) => {
-    //       dataPacks.forEach((element) => {
-    //         element.tests.forEach((t) => {
-    //           tests.forEach((requested) => {
-    //             if (t.id == requested.id) {
-    //               t.selected = true;
-    //             }
-    //           });
-    //           return t;
-    //         });
-    //       });
-    //       setPackages(dataPacks);
-    //     });
-    // }, [tests]);
+  useEffect(() => {
+    console.log("start fetching units");
+    axiosClient.get("units/all")
+      .then((data) => {
+        console.log(data, "unists array");
+        setUnits(data.data);
+      });
+  }, []);
+
+
+
+  const searchHandler = (e) => {
+    if (e.target.value != "") {
+      setShowSearchBox(true);
+      setShowAddTest(false);
+    } else {
+      setShowSearchBox(false);
+    }
+    setSearchedTest(e.target.value);
+  };
   
-  const {
-    
-    selectTestHandler,
-    units,
-    setActiveTestObj,
-    activeTestObj,
-    inputRef,
-    setShowAddTest,
-    setUnits,
-    showUnitList,
-    setShowUnitList,
-    showAddTest,
-  } = useApp();
+  function addChildTestHandler() {
+    fetch(
+      `http://127.0.0.1/projects/bootstraped/new/api.php?addChild=1&main=${activeTestObj.id}`
+    )
+      .then((res) => res.json())
+      .then((results) => {
+        // console.log(data)
+        // console.log(results.data)
+
+        setActiveTestObj((prev) => {
+          return { ...prev, children: [...prev.children, results.data] };
+        });
+      })
+      .catch(() => {})
+      .finally(() => {});
+  }
   return (
     <div>
+      
       {
         <Outlet
           context={{
             tests,
             setTests,
             showAddTest,
-            selectTestHandler,
             showUnitList,
-            testsIsLoading,
+            loading,
             setShowUnitList,
             units,
             setActiveTestObj,
             activeTestObj,
-            searchInput: inputRef.current,
             containerData,
             packageData,
             setShowAddTest,
@@ -108,12 +119,12 @@ function LabLayout() {
             doctors,
             actviePatient,
             setActivePatient,
-             setDialog,
+            setDialog,
             setOpen,
             setError,
             open,
             dialog,
-       
+
             setPackages,
             specialists,
             setDoctors,
@@ -122,27 +133,19 @@ function LabLayout() {
             searchByPhone,
             setSearchByPhone,
             foundedPatients,
-            setFoundedPatients
+            setFoundedPatients,
           }}
         />
       }
-         <Snackbar
-            open={dialog.open}
-            autoHideDuration={2000}
-            onClose={()=>setDialog((prev)=>({...prev,open:false}))
-          
-          }
-          >
-            <Alert
-               
-              severity={dialog.color}
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {dialog.msg}
-          
-            </Alert>
-          </Snackbar>
+      <Snackbar
+        open={dialog.open}
+        autoHideDuration={2000}
+        onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
+      >
+        <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>
+          {dialog.msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import { useStateContext } from "../../appContext";
 import Login from "../Login";
 import axiosClient from "../../../axios-client";
-function InventoryNav() {
+function SettingsNav() {
  const {setToken,setUser } =useStateContext()
+ const [doctors, setDoctors] = useState([]);
+ const [updateSpecialists, setUpdateSpecialists] = useState([]);
+ const [specialists, setSpecialists] = useState([]);
 
  const [dialog, setDialog] = useState({
   showMoneyDialog:false,
@@ -18,6 +21,22 @@ function InventoryNav() {
   openLabReport: false,
   msg: "تمت الاضافه بنجاح",
 });
+useEffect(() => {
+  Promise.all([
+    axiosClient
+      .get(`specialists/all`)
+      .then(({ data: data }) => {
+        console.log(data, "specialists ");
+        setSpecialists(data);
+      })
+      .catch((err) => console.log(err)),
+    axiosClient.get("doctors").then(({ data: data }) => {
+      setDoctors(data);
+    })
+
+  ]).finally(() => {});
+}, [updateSpecialists]);
+
   const handleClose = () => {
     
     setDialog((prev) => ({ ...prev, open: false }));
@@ -25,19 +44,14 @@ function InventoryNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"client/create"}>انشاءعميل جديد</NavLink>
+        <NavLink to={"doctors"}>الاطباء</NavLink>
+        <NavLink to={"specialists"}>التخصصات الطبيه</NavLink>
+        <NavLink to={"users"}>المتسخدمين</NavLink>
 
-        <NavLink to={"supplier/create"}>انشاء مورد جديد</NavLink>
-        <NavLink to={"item/create"}>انشاء صنف جديد</NavLink>
-        <NavLink to={"item/state"}> حركه الاصناف</NavLink>
-        <NavLink to={"section/create"}>انشاء قسم جديد</NavLink>
-        <NavLink to={"income/create"}>اذن وارد</NavLink>
-        <NavLink to={"income/deduct"}>اذن منصرف</NavLink>
-        <NavLink to={"inventory/balance"}>المخزون</NavLink>
       </ul>
 
       <ThemeProvider theme={theme}>
-        <CacheProvider value={cacheRtl}> {<Outlet context={{dialog, setDialog}}></Outlet>}</CacheProvider>
+        <CacheProvider value={cacheRtl}> {<Outlet context={{dialog, setDialog,doctors,specialists,setDoctors,setUpdateSpecialists,setSpecialists}}></Outlet>}</CacheProvider>
       </ThemeProvider>
       <Snackbar
             open={dialog.open}
@@ -58,4 +72,4 @@ function InventoryNav() {
   );
 }
 
-export default InventoryNav;
+export default SettingsNav;

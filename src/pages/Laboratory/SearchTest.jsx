@@ -1,10 +1,10 @@
 import * as React from "react";
 import AutoComplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
-import {useLoaderData} from 'react-router-dom'
-export default function MyAutoComplete({  selectTestHandler }) {
+import { useOutletContext} from 'react-router-dom'
+export default function MyAutoComplete() {
   const [val, setVal] = React.useState(null);
-  const tests =  useLoaderData()
+  const {selectTestHandler ,tests,setActiveTestObj} =  useOutletContext()
 
   return (
     <React.Fragment>
@@ -20,7 +20,7 @@ export default function MyAutoComplete({  selectTestHandler }) {
           getOptionKey={(option) => option.id}
           getOptionLabel={(option) => option.main_test_name}
           onChange={(e, newValue) => {
-            selectTestHandler(newValue);
+            setActiveTestObj(newValue);
             console.log(newValue);
             setVal(newValue);
           }}

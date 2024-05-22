@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 const ServiceCountSelect = ({ id, actviePatient ,service,disabled}) => {
-  const [count, setCount] = useState(service.pivot.discount);
-  const {setActivePatient,setActiveShift} = useOutletContext()
-  console.log('discount select rendered ')
+  const [count, setCount] = useState(service.pivot.count);
+  const {setActivePatient,setActiveShift,setUpdate} = useOutletContext()
+  console.log('servce in count select',service)
   
   const changeHandler = async (id, count) => {
     setCount(count);
@@ -14,6 +14,7 @@ const ServiceCountSelect = ({ id, actviePatient ,service,disabled}) => {
     if (data.status) {
       console.log(data.patient);
       setActivePatient(data.patient);
+      setUpdate((prev)=>prev+1)
     }
 
   
@@ -34,7 +35,7 @@ const ServiceCountSelect = ({ id, actviePatient ,service,disabled}) => {
       onChange={(e) => {
         changeHandler(id, e.target.value);
       }}
-      value={service.pivot.discount}
+      value={service.pivot.count}
     >
       <MenuItem value={1}>1</MenuItem>
       <MenuItem value={2}>2</MenuItem>

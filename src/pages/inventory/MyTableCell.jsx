@@ -12,7 +12,10 @@ function MyTableCell({
   test_id = null,
   show = false,
   service_id = null,
-  type=null
+  type=null,
+  multiline=false,
+  child_id = null,
+ 
 }) {
   const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
@@ -37,7 +40,7 @@ function MyTableCell({
     console.log("val", val, "init val", iniVal);
     if (val != iniVal) {
       console.log("diffent value");
-      axiosClient.patch(`${table}/${item.id}`,{ colName: colName, val, test_id ,service_id})
+      axiosClient.patch(`${table}/${item.id}`,{ colName: colName, val, test_id ,service_id,child_id})
         .then((data) => {
           console.log(data,'data')
           if (data.status) {
@@ -77,11 +80,12 @@ function MyTableCell({
     >
       {show || edited ? (
         <TextField
-          
+        multiline={multiline}
+          fullWidth
           inputProps={{
             style: {
               textAlign:'center',
-              width: "90%",
+              // width: "90%",
               padding: 0,
             },
           }}

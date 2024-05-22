@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 axiosClient;
 import { Alert, Snackbar } from "@mui/material";
-import useApp from "../../hooks/useApp";
 import axiosClient from "../../../axios-client";
 
 function ReceptionLayout() {

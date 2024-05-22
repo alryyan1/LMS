@@ -75,7 +75,7 @@ function AddPatient() {
           { title: "تسجيل مريض", to: "/laboratory/add" },
           { title: "ادخال النتائج ", to: "" },
           { title: "سحب العينات", to: "" },
-          { title: " اداره التحاليل", to: "" },
+          { title: " اداره التحاليل", to: "/laboratory/tests" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton

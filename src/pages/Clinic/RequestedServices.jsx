@@ -20,6 +20,7 @@ import DiscountSelectService from "./DiscountSelectService";
 import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
+import ServiceCountSelect from "./ServiceCountSelect";
 function RequestedServices({ setPatients }) {
   const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate} = useOutletContext();
   const [loading, setLoading] = useState(false);
@@ -96,7 +97,7 @@ function RequestedServices({ setPatients }) {
                   <TableCell align="right">paid</TableCell>
                   <TableCell align="right">Discount</TableCell>
                   <TableCell align="right">Bankak</TableCell>
-                  <TableCell align="right">user</TableCell>
+                  <TableCell align="right">count</TableCell>
                   <TableCell align="right">delete</TableCell>
                   <TableCell align="right">cancel</TableCell>
                   <TableCell align="right">pay</TableCell>
@@ -137,10 +138,11 @@ function RequestedServices({ setPatients }) {
                         ></MyCheckboxReception>
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
-                        <DiscountSelectService
+                        <ServiceCountSelect
                           service={service}
                           id={service.id}
                           actviePatient={actviePatient}
+                          disabled={service.pivot.is_paid == 1}
                         />
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
@@ -191,10 +193,12 @@ function RequestedServices({ setPatients }) {
                 <div className="title">Total</div>
                 <div>
                   {actviePatient.services.reduce((accum, service) => {
+                    console.log(service.pivot.count,'service.pivot.count)')
+                    const total = service.price * service.pivot.count;
                     const discount = Number(
-                      (service.pivot.discount * service.price) / 100
+                      (service.pivot.discount * total ) / 100
                     );
-                    return accum + (service.price - discount);
+                    return accum + (total - discount);
                   }, 0)}
                 </div>
               </div>

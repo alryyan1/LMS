@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
+import axiosClient from "../../../axios-client";
 
 function PatientDetail({ patient,setPatients }) {
   console.log(patient, "patient in patient details");
@@ -92,7 +93,9 @@ function PatientDetail({ patient,setPatients }) {
             </Button>
           </div>
           <div>
-            <Button color="warning" variant="contained">
+            <Button onClick={()=>{
+              axiosClient.get(`print`, {})
+            }} color="warning" variant="contained">
               Print
             </Button>
           </div>

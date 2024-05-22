@@ -66,6 +66,9 @@ const Nav = () => {
           <NavLink style={{ textDecoration: "none" }} to={"/services"}>
             Services
           </NavLink>
+          <NavLink style={{ textDecoration: "none" }} to={"/settings"}>
+            Settings
+          </NavLink>
           <div style={{ flexGrow: 1 }}></div>
           {user && (
             <LoadingButton

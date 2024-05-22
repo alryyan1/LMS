@@ -1,10 +1,10 @@
 import Search from '../pages/Laboratory/SearchTest'
 import TestMainInfo from '../pages/Laboratory/TestMainInfo'
 import AddMainTestForm from '../pages/Laboratory/AddMainTestForm'
-function SearchDiv({selectTestHandler,data,activeTestObj,setActiveTestObj,showAddTest,packageData,containerData}) {
+function SearchDiv({activeTestObj,setActiveTestObj,showAddTest,packageData,containerData}) {
   return (
     <div className="searchContainer">
-    <Search selectTestHandler={selectTestHandler} tests={data} />
+    <Search  />
     <div className="mainTestInfo">
       {activeTestObj && (
         <h1 style={{ textAlign: "center" }}>Main Test Info</h1>
