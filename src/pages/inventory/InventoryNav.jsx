@@ -25,15 +25,16 @@ function InventoryNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"client/create"}>انشاءعميل جديد</NavLink>
+        <NavLink to={"client/create"}>عميل جديد</NavLink>
 
-        <NavLink to={"supplier/create"}>انشاء مورد جديد</NavLink>
-        <NavLink to={"item/create"}>انشاء صنف جديد</NavLink>
+        <NavLink to={"supplier/create"}> مورد جديد</NavLink>
+        <NavLink to={"item/create"}> صنف جديد</NavLink>
         <NavLink to={"item/state"}> حركه الاصناف</NavLink>
-        <NavLink to={"section/create"}>انشاء قسم جديد</NavLink>
+        <NavLink to={"section/create"}> قسم جديد</NavLink>
         <NavLink to={"income/create"}>اذن وارد</NavLink>
         <NavLink to={"income/deduct"}>اذن منصرف</NavLink>
         <NavLink to={"inventory/balance"}>المخزون</NavLink>
+        <NavLink to={"item/statistics"}>الرسم البياني</NavLink>
       </ul>
 
       <ThemeProvider theme={theme}>

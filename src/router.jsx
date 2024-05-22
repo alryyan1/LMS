@@ -33,7 +33,10 @@ import SettingsNav from "./pages/settings/SettingsNav";
 import Doctors from "./pages/settings/Doctors";
 import Specialists from "./pages/settings/Specialists";
 import ItemState from "./pages/inventory/ItemState";
-
+import ItemStatistics from "./pages/inventory/ItemStatisticsLine";
+import ItemNavStatistics from "./pages/inventory/ItemNavStatistics";
+import ItemStatisticsLine from "./pages/inventory/ItemStatisticsLine";
+import ItemStatisticsPie from "./pages/inventory/ItemStatisticsPie";
 
 export const router = createBrowserRouter([
   {
@@ -59,25 +62,26 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path:'/settings',
+        path: "/settings",
         element: (
           <ProtectedRoute>
-              <SettingsNav />
+            <SettingsNav />
           </ProtectedRoute>
-        ),children:[
+        ),
+        children: [
           {
-            path:'doctors',
-            element:<Doctors/>
+            path: "doctors",
+            element: <Doctors />,
           },
           {
-            path:'specialists',
-            element:<Specialists/>
+            path: "specialists",
+            element: <Specialists />,
           },
           {
-            path:'tests',
-            element:<Specialists/>
-          }
-        ]
+            path: "tests",
+            element: <Specialists />,
+          },
+        ],
       },
 
       {
@@ -93,7 +97,6 @@ export const router = createBrowserRouter([
             element: <Client />,
           },
           {
-
             path: "item/state",
             element: <ItemState />,
             loader: ({ request: { signal } }) => {
@@ -127,6 +130,31 @@ export const router = createBrowserRouter([
             element: <DeductReport />,
           },
           {
+            path: "item/statistics",
+            element: <ItemNavStatistics />,
+            children: [
+              {
+                path: "line",
+                element: <ItemStatisticsLine />,
+                loader: ({ request: { signal } }) => {
+                  //fetch all items
+                  return fetch(`${url}items/all`, { signal });
+                },
+                
+              },
+              {
+                path: "pie",
+                element: <ItemStatisticsPie />,
+                loader: ({ request: { signal } }) => {
+                  //fetch all sections
+                  return fetch(`${url}sections/all`, { signal });
+                },
+              
+                
+              },
+            ],
+          },
+          {
             path: "income/create",
             loader: ({ request: { signal } }) => {
               //fetch all items
@@ -151,10 +179,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "clinic",
-        element:<ReceptionLayout/>,
+        element: <ReceptionLayout />,
         children: [
           {
-            index:true ,
+            index: true,
             element: (
               <ProtectedRoute>
                 <Reception />
@@ -206,7 +234,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "tests",
-          
+
             element: <LabTests />,
           },
           {

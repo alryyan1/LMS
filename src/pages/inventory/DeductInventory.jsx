@@ -129,7 +129,7 @@ function DeductInventory() {
       });
   };
   return (
-    <Grid container spacing={5}>
+    <Grid container spacing={1}>
       <Grid item xs={5}>
       <Link to={"/inventory/reports/deduct"}>reports</Link>
 
@@ -278,9 +278,7 @@ function DeductInventory() {
         )}
       </Grid>
 
-      <Grid item xs={3}>
-        1
-      </Grid>
+     
     </Grid>
   );
 }

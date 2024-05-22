@@ -42,6 +42,8 @@ function InventoryIncome() {
   const [income, setIncome] = useState(null);
   const [update, setUpdate] = useState(0);
   console.log(income, "is equal to null", income === null);
+  const dayJsObj = dayjs(new Date())
+  console.log(`${dayJsObj.date()}/${dayJsObj.month() + 1}/${dayJsObj.year()}`)
   console.log(show, "show");
   const {
     setValue,
@@ -111,11 +113,14 @@ function InventoryIncome() {
       .finally(() => setLoading(false));
   };
   const submitHandler = async (formData) => {
+    const dayJsObj = formData.expire;
+
     const payload = {
       item_id: formData.item.id,
       quantity: formData.amount,
       price: formData.price,
-      expire: formData.expire.$d.toJSON(),
+      expire:   `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
+
       notes: formData.notes,
       barcode: formData.barcode,
       batch: formData.batch,
@@ -181,9 +186,10 @@ function InventoryIncome() {
 
   const newInvoiceHandler = (formData) => {
     setLoading(true);
+    const dayJsObj = formData.bill_date;
     axiosClient
       .post(`inventory/deposit/complete`, {
-        bill_date: formData.bill_date.$d.toJSON(),
+        bill_date: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
         bill_number: formData.bill_number,
         supplier_id: formData.supplier.id,
       })
@@ -284,17 +290,19 @@ function InventoryIncome() {
                     render={({ field }) => {
                       return (
                         <Autocomplete
+                        getOptionKey={(option) => option.id}
                           sx={{ mb: 1 }}
                           {...field}
                           value={field.value || null}
                           options={items}
+                          
                           isOptionEqualToValue={(option, val) =>
                             option.id === val.id
                           }
                           getOptionLabel={(option) => option.name}
                           onChange={(e, data) => field.onChange(data)}
                           renderInput={(params) => {
-                            return <TextField label={"الصنف"} {...params} />;
+                            return <TextField helperText={errors2.name && errors2.name.message} error={errors2.name !=null} label={"الصنف"} {...params} />;
                           }}
                         ></Autocomplete>
                       );
@@ -447,7 +455,7 @@ function InventoryIncome() {
                           getOptionLabel={(option) => option.name}
                           onChange={(e, data) => field.onChange(data)}
                           renderInput={(params) => {
-                            return <TextField label={"المورد"} {...params} />;
+                            return <TextField error={errors2.supplier !=null} helperText={errors2.supplier && errors2.supplier.message} label={"المورد"} {...params} />;
                           }}
                         ></Autocomplete>
                       );
@@ -482,6 +490,7 @@ function InventoryIncome() {
                   fullWidth
                   error={errors2.bill_number != null}
                   sx={{ mb: 1 }}
+                  helperText ={errors2.bill_number && errors2.bill_number.message}
                   variant="filled"
                   {...register2("bill_number", {
                     required: {
@@ -492,11 +501,7 @@ function InventoryIncome() {
                   label="رقم الفاتوره"
                 ></TextField>
 
-                {errors2.bill_number && (
-                  <Alert color="error" sx={{ textAlign: "right" }}>
-                    {errors2.bill_number.message}
-                  </Alert>
-                )}
+             
                 <LoadingButton
                   type="submit"
                   loading={loading}
