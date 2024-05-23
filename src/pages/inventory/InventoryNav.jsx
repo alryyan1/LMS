@@ -31,6 +31,7 @@ function InventoryNav() {
         <NavLink to={"item/create"}> صنف جديد</NavLink>
         <NavLink to={"item/state"}> حركه الاصناف</NavLink>
         <NavLink to={"section/create"}> قسم جديد</NavLink>
+        <NavLink to={"income/request"}>اذن طلب</NavLink>
         <NavLink to={"income/create"}>اذن وارد</NavLink>
         <NavLink to={"income/deduct"}>اذن منصرف</NavLink>
         <NavLink to={"inventory/balance"}>المخزون</NavLink>

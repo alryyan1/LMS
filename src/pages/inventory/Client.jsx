@@ -118,6 +118,7 @@ function Client() {
               id="outlined-basic"
               label="رقم الهاتف"
               variant="standard"
+              type="number"
               helperText ={errors.phone && errors.phone.message}
             />
           </div>

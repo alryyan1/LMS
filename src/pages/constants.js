@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material"
+import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
@@ -14,3 +14,12 @@ export const theme = createTheme({ direction: 'rtl' ,typography :{
  
     ].join(','),
    } })
+
+
+  export const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));

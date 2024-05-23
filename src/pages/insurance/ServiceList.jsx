@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
 import MySelectTableCell from "../inventory/MyselectTableCell";
-import { webUrl } from "../constants";
+import { Item, webUrl } from "../constants";
 
 function ServiceList() {
   const { companies } = useOutletContext();
@@ -146,7 +146,8 @@ function ServiceList() {
         <List>
           {companies.map((company) => {
             return (
-              <ListItemButton
+             <Item key={company.id}>
+               <ListItemButton
                 sx={
                   activeCompany?.id == company.id
                     ? { backgroundColor: (theme) => theme.palette.primary.main }
@@ -165,6 +166,7 @@ function ServiceList() {
               >
                 <ListItemText>{company.name}</ListItemText>
               </ListItemButton>
+             </Item>
             );
           })}
         </List>

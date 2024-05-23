@@ -54,12 +54,19 @@ import {
     useEffect(() => {
       setDate(dayjs(new Date()));
     }, []);
-  
+  const deleteDeductHandler = (deduct) => {
+    axiosClient
+     .delete(`inventory/deduct/${deduct.id}`)
+     .then(({ data }) => {
+      setDeduct((prev)=>prev.filter(item=>item.id!==deduct.id))
+        console.log(data);
+      });
+  }
     return (
       <Grid container sx={{ gap: "5px" }}>
         <Grid item xs={5}>
           <Typography variant="h4" align="center" sx={{ mb: 1 }}>
-            استعلام فاتوره اذن صرف
+            استعلام اذن صرف
           </Typography>
           {deductItems.length > 0 ? (
             <TableContainer>
@@ -124,6 +131,7 @@ import {
                 <TableRow>
                   <TableCell>رقم البند</TableCell>
                   <TableCell>عرض</TableCell>
+                  <TableCell>حذف</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
@@ -140,6 +148,17 @@ import {
                           }}
                         >
                           show
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                        variant="contained"
+                        color="error"
+                          onClick={() => {
+                          deleteDeductHandler(item);
+                          }}
+                        >
+                          حذف
                         </Button>
                       </TableCell>
                     </TableRow>

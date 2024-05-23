@@ -103,7 +103,7 @@ function ItemStatisticsLine() {
         </Grid>
       </Grid>
 
-      <Stack direction={"row"} justifyContent={"space-around"} spacing={1}>
+      <Stack key={selectedItem} direction={"row"} justifyContent={"space-around"} spacing={1}>
         <div>
           <Typography textAlign={"center"}>الوارد</Typography>
           <Icon color="red">

@@ -68,7 +68,6 @@ function MyTableCell({
   const blurHandler = () => {
     setEdited(false);
     // updateItemName(iniVal);
-    setEdited(false);
   };
 
   return (

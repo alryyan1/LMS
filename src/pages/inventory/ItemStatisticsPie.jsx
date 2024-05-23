@@ -56,28 +56,41 @@ function ItemStatisticsPie() {
       {items.length > 0 && (
           <PieChart
           title="المخزن"
-        
-            series={[
+         
+          slotProps={{
+            legend: {
+              itemMarkWidth: 20,
+              itemMarkHeight: 20,
+              markGap: -25,
+              itemGap: 30,
+              labelStyle: {
+                fontSize: 18,
+                fill: 'black',
+              },
+            },
+          }}
+            series={
+              
+              [
               {
                 outerRadius: 100,
+              markGap: 20,
+                
 
                 cx: -200,
                 data: items.map((item) => {
                   return {
                     id: item.id,
                     value: item.remaining,
-                    label: item.name,
+                    label: `${item.name} (${item.remaining})`,
                   };
                 }),
-                //   [
-                //     { id: 0, value: 60, label: "series A" },
-                //     { id: 1, value: 15, label: "series B" },
-                //     { id: 2, value: 20, label: "series C" },
-                //   ]
+              
               },
             ]}
             width={1000}
             height={400}
+           
           />
         )}
       </Grid>

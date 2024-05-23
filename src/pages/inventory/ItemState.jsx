@@ -82,7 +82,7 @@ function ItemState() {
           ></Autocomplete>
         </Grid>
       </Grid>
-      <Grid spacing={2} container>
+      <Grid key={selectedItem} spacing={2} container>
         <Grid item xs={6}>
           <Table size="small" style={{ direction: "rtl" }}>
             <thead>

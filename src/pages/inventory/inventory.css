@@ -5,9 +5,11 @@
 }
 .inventroy-nav a{
     padding: 10px;
-
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
 }
 .inventroy-nav a.active{
     background-color: #8bc34a;
     border-radius: 5px;
+    box-shadow: none;
+
 }

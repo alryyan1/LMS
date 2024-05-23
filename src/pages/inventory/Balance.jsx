@@ -8,9 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { url, webUrl } from "../constants.js";
-import PDF from "./Pdf.jsx";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import {  webUrl } from "../constants.js";
 import axiosClient from "../../../axios-client.js";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
@@ -19,7 +17,7 @@ function Balance() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState(null);
   const [links, setLinks] = useState([]);
-  const [page, setPage] = useState(5);
+  const [page, setPage] = useState(10);
 
   const updateBalanceTable = (link, setLoading) => {
     console.log(search);

@@ -37,6 +37,7 @@ import ItemStatistics from "./pages/inventory/ItemStatisticsLine";
 import ItemNavStatistics from "./pages/inventory/ItemNavStatistics";
 import ItemStatisticsLine from "./pages/inventory/ItemStatisticsLine";
 import ItemStatisticsPie from "./pages/inventory/ItemStatisticsPie";
+import DeductRequest from "./pages/inventory/DeductRequest";
 
 export const router = createBrowserRouter([
   {
@@ -128,6 +129,14 @@ export const router = createBrowserRouter([
           {
             path: "reports/deduct",
             element: <DeductReport />,
+          },
+          {
+            path: "income/request",
+            loader: ({ request: { signal } }) => {
+              //fetch all items
+              return fetch(`${url}items/all`, { signal });
+            },
+            element: <DeductRequest />,
           },
           {
             path: "item/statistics",

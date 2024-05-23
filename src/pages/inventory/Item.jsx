@@ -30,7 +30,7 @@ import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 
 function Item() {
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(5);
+  const [page, setPage] = useState(9);
   const [search, setSearch] = useState(null);
   const [links, setLinks] = useState([]);
   const sections = useLoaderData();
@@ -336,6 +336,7 @@ function Item() {
             <Stack direction={"row"} justifyContent={'space-between'} gap={2}>
               <div>
                 <TextField
+                type="number"
                   fullWidth
                   helperText={
                     errors.require_amount && errors.require_amount.message
@@ -352,6 +353,7 @@ function Item() {
               <div>
                 <TextField
                   fullWidth
+                  type="number"
                   helperText={
                     errors.tests && errors.tests.message
                   }
@@ -365,6 +367,7 @@ function Item() {
 
               <div>
                 <TextField
+                type="number"
                   fullWidth
                   error={errors.initial_balance}
                   {...register("initial_balance", {
@@ -384,6 +387,7 @@ function Item() {
             </Stack>
 
             <TextField
+            type="number"
               fullWidth
               error={errors.initial_price}
               {...register("initial_price", {

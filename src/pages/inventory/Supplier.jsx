@@ -111,6 +111,7 @@ function Supplier() {
               id="outlined-basic"
               label="رقم الهاتف"
               variant="filled"
+              type="number"
               helperText={errors.phone && errors.phone.message}
             />
           </div>
