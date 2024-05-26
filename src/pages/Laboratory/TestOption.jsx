@@ -1,4 +1,6 @@
+import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import axiosClient from "../../../axios-client";
 
 function TestOption({ testOptionId, name: optionName, setUpdate }) {
   console.log(optionName);
@@ -8,9 +10,11 @@ function TestOption({ testOptionId, name: optionName, setUpdate }) {
   useEffect(() => {
     if (started) {
       const timer = setTimeout(() => {
-        fetch(
-          `http://127.0.0.1/projects/bootstraped/new/api.php?editOption=1&testOptionId=${testOptionId}&val=${name}`
-        );
+        axiosClient.patch(
+          `childTestOption/${testOptionId}`,{val:name}
+        ).then((data)=>{
+          console.log(data)
+        })
       }, 300);
       return () => {
         clearTimeout(timer);
@@ -20,19 +24,27 @@ function TestOption({ testOptionId, name: optionName, setUpdate }) {
     setStarted(true);
   }, [name]);
   function deleteHandler(id) {
-    fetch(
-      `http://127.0.0.1/projects/bootstraped/new/api.php?deleteOption=1&testOptionId=${id}}`
+    axiosClient.delete(
+      `childTestOption/${id}`
     ).finally(() => {
       setUpdate((prev) => prev + 1);
     });
   }
   return (
-    <li onClick={() => setEdited(true)}>
+    <li >
       <div className="flex">
-        <div>
+        <div style={{cursor:"pointer"}} onClick={() => setEdited(true)}>
           {" "}
           {edited ? (
-            <input
+            <TextField
+            onFocus={
+              (e) => {
+                e.target.select();
+              
+              }
+            }
+            multiline
+            autoFocus
               onChange={(e) => setName(e.target.value)}
               type="text"
               value={name}

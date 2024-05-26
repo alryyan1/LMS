@@ -33,10 +33,10 @@ function TestOptions({ activeChild, update, setUpdate }) {
             ? "No Test Options"
             : data.map((option) => {
                 return (
-                  <TestOption
+                  <TestOption 
                     setUpdate={setUpdate}
                     key={option.id}
-                    name={option.result_option}
+                    name={option.name}
                     testOptionId={option.id}
                   />
                 );

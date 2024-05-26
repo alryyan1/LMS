@@ -14,6 +14,7 @@ function LabLayout() {
     msg: "تمت الاضافه بنجاح",
   });
   const [foundedPatients, setFoundedPatients] = useState([]);
+  const [childGroups, setChildGroups] = useState([]);
   const [searchByName, setSearchByName] = useState(null);
   const [searchByPhone, setSearchByPhone] = useState(null);
   const [containerData, setContainersData] = useState([]);
@@ -32,7 +33,10 @@ function LabLayout() {
   const [units, setUnits] = useState([]);
   const [showAddTest, setShowAddTest] = useState(false);
   const [activeTestObj, setActiveTestObj] = useState();
+  const [updateTests, setUpdateTests] = useState(0);
+
   useEffect(() => {
+
     Promise.all([
       axiosClient
         .get(`specialists/all`)
@@ -53,10 +57,11 @@ function LabLayout() {
         console.log(data);
         setPackageData(data.data);
       }),
-      axiosClient.get("tests").then((data) => {
-        console.log(data,'test data');
-        setTests(data.data);
+      axiosClient.get("childGroup").then((data) => {
+        setChildGroups(data.data);
       }),
+     
+     
     ]).finally(() => {});
   }, []);
   useEffect(() => {
@@ -69,7 +74,15 @@ function LabLayout() {
   }, []);
 
 
+useEffect(()=>{
+  setLoading(true)
+  axiosClient.get("tests").then((data) => {
+    console.log(data,'test data');
+    setTests(data.data);
+    setLoading(false)
 
+  })
+},[updateTests])
   const searchHandler = (e) => {
     if (e.target.value != "") {
       setShowSearchBox(true);
@@ -80,21 +93,21 @@ function LabLayout() {
     setSearchedTest(e.target.value);
   };
   
-  function addChildTestHandler() {
-    fetch(
-      `http://127.0.0.1/projects/bootstraped/new/api.php?addChild=1&main=${activeTestObj.id}`
+  function addChildTestHandler(id) {
+    setLoading(true)
+    axiosClient.post(
+      `childTest/create/${id}`
     )
-      .then((res) => res.json())
-      .then((results) => {
-        // console.log(data)
-        // console.log(results.data)
-
+      .then(({data}) => {
+        console.log(data)
         setActiveTestObj((prev) => {
-          return { ...prev, children: [...prev.children, results.data] };
+          return { ...prev, child_tests: [...prev.child_tests, data] };
         });
       })
       .catch(() => {})
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false)
+      });
   }
   return (
     <div>
@@ -102,6 +115,9 @@ function LabLayout() {
       {
         <Outlet
           context={{
+            childGroups,
+            setChildGroups,
+            addChildTestHandler,
             tests,
             setTests,
             showAddTest,
@@ -134,6 +150,7 @@ function LabLayout() {
             setSearchByPhone,
             foundedPatients,
             setFoundedPatients,
+            updateTests,setUpdateTests
           }}
         />
       }

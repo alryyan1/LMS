@@ -1,5 +1,5 @@
 import { TableCell, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
@@ -12,13 +12,14 @@ function MyTableCell({
   test_id = null,
   show = false,
   service_id = null,
-  type=null,
-  multiline=false,
+  type = null,
+  multiline = false,
   child_id = null,
- 
+  stateUpdater = null,
 }) {
   const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
+  const [intial, setInitialVal] = useState(children);
   const [iniVal, setInitVal] = useState(children);
   const clickHandler = () => {
     if (!show) {
@@ -26,41 +27,58 @@ function MyTableCell({
     }
   };
   const changeHandler = (e) => {
-
-
-    
     console.log("val", e.target.value, "init val", iniVal);
 
-    console.log(e.target.value);
     setInitVal(e.target.value);
-    updateItemName(e.target.value);
   };
+  useEffect(() => {
 
+    console.log("useeffect", iniVal);
+    const timer = setTimeout(() => {
+      updateItemName(iniVal);
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [iniVal]);
   const updateItemName = (val) => {
-    console.log("val", val, "init val", iniVal);
-    if (val != iniVal) {
+    console.log("update function started");
+    if (intial != iniVal) {
       console.log("diffent value");
-      axiosClient.patch(`${table}/${item.id}`,{ colName: colName, val, test_id ,service_id,child_id})
+      axiosClient
+        .patch(`${table}/${item.id}`, {
+          colName: colName,
+          val,
+          test_id,
+          service_id,
+          child_id,
+        })
         .then((data) => {
-          console.log(data,'data')
+          console.log(data, "data");
           if (data.status) {
+            stateUpdater((prev) => prev + 1);
             setDialog((prev) => {
-              return { ...prev, open: true, msg: "تم التعديل بنجاح",color:'success' };
+              return {
+                ...prev,
+                open: true,
+                msg: "تم التعديل بنجاح",
+                color: "success",
+              };
             });
           }
-        
-        }).catch(({response:{data,status}})=>{
+        })
+        .catch(({ response: { data, status } }) => {
           if (status == 406) {
-            setDialog((prev)=>{
+            setDialog((prev) => {
               return {
-               ...prev,
+                ...prev,
                 open: true,
                 color: "error",
                 msg: data.msg,
               };
-            })
+            });
           }
-          console.log(data,'err in axios',status)
+          console.log(data, "err in axios", status);
         });
     }
   };
@@ -79,11 +97,11 @@ function MyTableCell({
     >
       {show || edited ? (
         <TextField
-        multiline={multiline}
+          multiline={multiline}
           fullWidth
           inputProps={{
             style: {
-              textAlign:'center',
+              textAlign: "left",
               // width: "90%",
               padding: 0,
             },

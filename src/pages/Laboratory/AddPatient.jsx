@@ -76,6 +76,7 @@ function AddPatient() {
           { title: "ادخال النتائج ", to: "" },
           { title: "سحب العينات", to: "" },
           { title: " اداره التحاليل", to: "/laboratory/tests" },
+          { title: "قائمه الاسعار", to: "/laboratory/price" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton

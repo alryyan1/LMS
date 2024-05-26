@@ -11,9 +11,8 @@ function MyAutoCompeleteTableCell({
   val,
   table = "items",
   child_id = null,
+  stateUpdater = null
 }) {
-  console.log(val, "val");
-  console.log(item, "item");
   const [edited, setEdited] = useState(false);
   const { dialog, setDialog } = useOutletContext();
   const [selectedSection, setSelectedSection] = useState(val);
@@ -33,7 +32,9 @@ function MyAutoCompeleteTableCell({
       body: JSON.stringify({ colName: colName, val: selectedSection.id ,child_id}),
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => console.log(data)).finally(()=>{
+        stateUpdater((prev)=>prev+1)
+      });
   };
 
   //  const inputHandler = (e)=>{

@@ -38,6 +38,7 @@ import ItemNavStatistics from "./pages/inventory/ItemNavStatistics";
 import ItemStatisticsLine from "./pages/inventory/ItemStatisticsLine";
 import ItemStatisticsPie from "./pages/inventory/ItemStatisticsPie";
 import DeductRequest from "./pages/inventory/DeductRequest";
+import PriceList from "./pages/Laboratory/PriceList";
 
 export const router = createBrowserRouter([
   {
@@ -250,6 +251,11 @@ export const router = createBrowserRouter([
             path: "add",
 
             element: <AddPatient />,
+          },
+          {
+            path: "price",
+
+            element: < PriceList/>,
           },
         ],
       },

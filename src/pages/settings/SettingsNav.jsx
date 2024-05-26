@@ -7,38 +7,37 @@ import { useStateContext } from "../../appContext";
 import Login from "../Login";
 import axiosClient from "../../../axios-client";
 function SettingsNav() {
- const {setToken,setUser } =useStateContext()
- const [doctors, setDoctors] = useState([]);
- const [updateSpecialists, setUpdateSpecialists] = useState([]);
- const [specialists, setSpecialists] = useState([]);
+  const { setToken, setUser } = useStateContext();
+  const [doctors, setDoctors] = useState([]);
+  const [updateSpecialists, setUpdateSpecialists] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
+  const [doctorUpdater, setDoctorUpdater] = useState(0);
 
- const [dialog, setDialog] = useState({
-  showMoneyDialog:false,
-  title:'',
-  color:'success',
-  open: false,
-  openError: false,
-  openLabReport: false,
-  msg: "تمت الاضافه بنجاح",
-});
-useEffect(() => {
-  Promise.all([
-    axiosClient
-      .get(`specialists/all`)
-      .then(({ data: data }) => {
-        console.log(data, "specialists ");
-        setSpecialists(data);
-      })
-      .catch((err) => console.log(err)),
-    axiosClient.get("doctors").then(({ data: data }) => {
-      setDoctors(data);
-    })
-
-  ]).finally(() => {});
-}, [updateSpecialists]);
+  const [dialog, setDialog] = useState({
+    showMoneyDialog: false,
+    title: "",
+    color: "success",
+    open: false,
+    openError: false,
+    openLabReport: false,
+    msg: "تمت الاضافه بنجاح",
+  });
+  useEffect(() => {
+    Promise.all([
+      axiosClient
+        .get(`specialists/all`)
+        .then(({ data: data }) => {
+          console.log(data, "specialists ");
+          setSpecialists(data);
+        })
+        .catch((err) => console.log(err)),
+      axiosClient.get("doctors").then(({ data: data }) => {
+        setDoctors(data);
+      }),
+    ]).finally(() => {});
+  }, [updateSpecialists]);
 
   const handleClose = () => {
-    
     setDialog((prev) => ({ ...prev, open: false }));
   };
   return (
@@ -47,27 +46,42 @@ useEffect(() => {
         <NavLink to={"doctors"}>الاطباء</NavLink>
         <NavLink to={"specialists"}>التخصصات الطبيه</NavLink>
         <NavLink to={"users"}>المتسخدمين</NavLink>
-
       </ul>
 
       <ThemeProvider theme={theme}>
-        <CacheProvider value={cacheRtl}> {<Outlet context={{dialog, setDialog,doctors,specialists,setDoctors,setUpdateSpecialists,setSpecialists}}></Outlet>}</CacheProvider>
+        <CacheProvider value={cacheRtl}>
+          {" "}
+          {
+            <Outlet
+              context={{
+                doctorUpdater,
+                setDoctorUpdater,
+                dialog,
+                setDialog,
+                doctors,
+                specialists,
+                setDoctors,
+                setUpdateSpecialists,
+                setSpecialists,
+              }}
+            ></Outlet>
+          }
+        </CacheProvider>
       </ThemeProvider>
       <Snackbar
-            open={dialog.open}
-            autoHideDuration={2000}
-            onClose={handleClose}
-          >
-            <Alert
-
-              onClose={handleClose}
-              severity={dialog.color}
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {dialog.msg}
-            </Alert>
-          </Snackbar>
+        open={dialog.open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={dialog.color}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {dialog.msg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
