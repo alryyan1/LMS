@@ -29,8 +29,8 @@ const Nav = () => {
   console.log(user);
   return (
     <>
-      <AppBar
-        sx={{ marginBottom: "10px", p: 1, justifyContent: "" }}
+      <AppBar color='primary' 
+        sx={{ marginBottom: "10px", p: 1, justifyContent: "" ,borderRadius:7,mt:1}}
         position="static"
       >
         <Stack
@@ -48,26 +48,29 @@ const Nav = () => {
           >
             <FormatListBulletedIcon />
           </IconButton>
-          <NavLink style={{ textDecoration: "none" }} to={"/login"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black" }} to={"/login"}>
             Login
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/inventory"}>
+          <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
             Inventory
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/laboratory/add"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/laboratory/add"}>
             laboratory
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/clinic"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/clinic"}>
             Clinic
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/insurance"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/insurance"}>
             Insurance
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/services"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/services"}>
             Services
           </NavLink>
-          <NavLink style={{ textDecoration: "none" }} to={"/settings"}>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/settings"}>
             Settings
+          </NavLink>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/dashboard"}>
+            dashboard
           </NavLink>
           <div style={{ flexGrow: 1 }}></div>
           {user && (

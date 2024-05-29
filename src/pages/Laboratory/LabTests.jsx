@@ -1,8 +1,8 @@
 import { useOutletContext } from "react-router-dom";
 import { Button } from "@mui/material";
-import SearchDiv from "../../parts/SearchDiv";
 import UnitList from "./UnitList";
 import MainTestChildren from "../../MainTestChildren";
+import SearchDiv from "./SearchDiv";
 
 function LabTests() {
   const appData = useOutletContext();

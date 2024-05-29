@@ -7,6 +7,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import DiscountSelect from "../Laboratory/DiscountSelect";
 import { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import ServiceCountSelect from "./ServiceCountSelect";
 function RequestedServices({ setPatients }) {
-  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate} = useOutletContext();
+  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift} = useOutletContext();
   const [loading, setLoading] = useState(false);
 
   const pay = (id,setLoading) => {
@@ -84,8 +85,8 @@ function RequestedServices({ setPatients }) {
   return (
     <>
       <div className="requested-tests">
-        <div className="requested-table">
-          <Button onClick={()=>{
+        <div style={{position:'relative'}}  className="requested-table">
+          <Button sx={{position:'absolute',top:'-40px',left:'0px'}} onClick={()=>{
             setShowPatientServices(false)
             setShowServicePanel(true)}}>عرض قائمه الخدمات</Button>
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
@@ -104,7 +105,9 @@ function RequestedServices({ setPatients }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {actviePatient.services.map((service) => {
+                {actviePatient.services.filter((service)=>{
+                  return service.pivot.doctor_id ==activeShift.doctor.id
+                }).map((service) => {
                   return (
                     <TableRow
                       sx={{
@@ -191,8 +194,10 @@ function RequestedServices({ setPatients }) {
             <div className="total-price">
               <div className="sub-price">
                 <div className="title">Total</div>
-                <div>
-                  {actviePatient.services.reduce((accum, service) => {
+                <Typography  variant="h3">
+                  {actviePatient.services.filter((service)=>{
+                  return service.pivot.doctor_id == activeShift.doctor.id
+                }).reduce((accum, service) => {
                     console.log(service.pivot.count,'service.pivot.count)')
                     const total = service.price * service.pivot.count;
                     const discount = Number(
@@ -200,16 +205,18 @@ function RequestedServices({ setPatients }) {
                     );
                     return accum + (total - discount);
                   }, 0)}
-                </div>
+                </Typography>
               </div>
               <div className="sub-price">
                 <div className="title">Paid</div>
-                <div>
-                {actviePatient.services.reduce((accum, service) => {
+                <Typography  variant="h3">
+                {actviePatient.services.filter((service)=>{
+                  return service.pivot.doctor_id ==activeShift.doctor.id
+                }).reduce((accum, service) => {
                    
                     return accum + service.pivot.amount_paid ;
                   }, 0)}
-                </div>
+                </Typography>
               </div>
             </div>
           </div>

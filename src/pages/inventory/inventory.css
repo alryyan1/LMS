@@ -1,15 +1,25 @@
 
+
 .inventroy-nav a {
     /* color: white; */
     text-decoration: none;
 }
-.inventroy-nav a{
+.inventroy-nav .active div{
     padding: 10px;
     box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
-}
-.inventroy-nav a.active{
-    background-color: #8bc34a;
-    border-radius: 5px;
-    box-shadow: none;
+    
+    background-color:  #2b97df;
+
 
 }
+
+.inventroy-nav a.active{
+    /* background-color: #8bc34a;
+    border-radius: 5px;
+    box-shadow: none;
+    color: white;
+    font-weight: bolder;
+    font-size: 1rem; */
+
+}
+

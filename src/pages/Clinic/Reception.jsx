@@ -24,7 +24,7 @@ import {
   Badge,
   Chip,
 } from "@mui/material";
-import { Calculate, Group, Mail, PersonAdd, Print } from "@mui/icons-material";
+import { Add, Calculate, Group, Mail, PersonAdd, Print } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
@@ -156,6 +156,7 @@ function Reception() {
       };
     });
   };
+ 
   //get opened doctors
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
@@ -180,14 +181,12 @@ function Reception() {
           return (
             <Badge color="secondary" badgeContent={shift.visits.length} key={shift.id}>
               <Item 
+              className={ activeShift && activeShift.id === shift.id ? 'active' : ''}
                 sx={
 
                   activeShift && activeShift.id === shift.id
                     ? {
-                        backgroundColor: (theme) => {
-                          console.log(theme, "theme");
-                          return theme.palette.primary.main;
-                        },
+                       
                         color: "white",
                         cursor: "pointer",
                         flexGrow: 1,
@@ -235,7 +234,7 @@ function Reception() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "90vh",
+          height: "75vh",
           display: "grid",
           gridTemplateColumns: `0.1fr   ${layOut.form}  ${layOut.patients}    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
@@ -274,8 +273,10 @@ function Reception() {
                 <Calculate />
               </IconButton>
             </Item>
+           
             <Item>
-             {user && <IconButton href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
+              
+             {user && <IconButton title="التقرير العام" href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
                 <Print />
               </IconButton>}
             </Item>
@@ -333,7 +334,7 @@ function Reception() {
           {actviePatient && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
-                <PatientDetail key={actviePatient.id} patient={actviePatient} />
+                <PatientDetail key={actviePatient.id} patient={actviePatient}  copyPatient = {true}/>
               </div>
             </Slide>
           )}

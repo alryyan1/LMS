@@ -21,6 +21,7 @@ function PatientReception({visit,hideForm,index}) {
     color="primary"
     badgeContent={visit.services.length}
     key={visit.id}
+    
   >
     <Stack  sx={{cursor:'pointer'}}  onClick={() => {
           if (actviePatient) {
@@ -49,24 +50,15 @@ function PatientReception({visit,hideForm,index}) {
           hideForm();
         }} direction={'row'} gap={1}>
       <Item
-      
+        className={actviePatient &&
+          actviePatient.id === visit.id ? 'active' : ''}
         sx={{
           display: "flex",
           justifyContent: "space-between",
           minWidth: "185px",
           cursor: "pointer",
-          color: () => {
-            return actviePatient &&
-              actviePatient.id === visit.id
-              ? "white"
-              : "black";
-          },
-          backgroundColor: (theme) => {
-            return actviePatient &&
-              actviePatient.id === visit.id
-              ? theme.palette.primary.light
-              : "";
-          },
+          color:'black',
+       
         }}
       >
         {visit.totalservicebank > 0 && (

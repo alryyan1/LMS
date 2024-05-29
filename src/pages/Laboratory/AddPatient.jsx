@@ -270,6 +270,7 @@ function AddPatient() {
               key={actviePatient.id}
               patient={actviePatient}
               setPatients={setPatients}
+              
             />
           )}
           {!actviePatient &&  foundedPatients.length > 0 && <Slide direction="up" in mountOnEnter unmountOnExit>

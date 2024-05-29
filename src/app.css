@@ -1,15 +1,13 @@
 
+@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900");
+body {
+  font-family: "Tajawal", sans-serif;
+}
 @font-face {
-  font-family: 'Tajawal-Regular';
-  src: url('./font/Tajawal-Regular.ttf');
-  /* IE9 Compat Modes */
-  src:
-      /* IE6-IE8 */
-          url('./font/Tajawal-Regular.ttf') format('truetype'),
-              /* Super Modern Browsers */
-          url('./font/Tajawal-Regular.ttf') format('woff')
-
-  /* Legacy iOS */
+  font-family: 'Public Sans';
+  src: local('Public Sans'), url(./fonts/PublicSans-Regular.woff) format('woff');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
 }
 .inventroy-nav{
   display: flex;
@@ -25,14 +23,7 @@
 .nav .active{
   color: white;
 }
-* {
 
-
-    /* background:   linear-gradient(to right, #3fb35e, lightblue); */
-  font-family: 'Tajawal-Regular' 
-
-  /* background-repeat: no-repeat; */
-}
 .app-container{
   max-width: 95%;
   margin: auto;
@@ -49,4 +40,25 @@
   flex-wrap: wrap;
     display: flex;
     gap: 5px;
+}
+
+.MuiPaper-root{
+
+background-color: #ffffffbb!important;
+}
+
+.active {
+  color: white!important;
+  padding: 8px;
+  background-color: #1976d2!important;
+}
+
+.MuiDialog-paper{
+  background-color: white!important;
+}
+
+td{
+  color: black;
+    font-size: 1rem!important;
+    font-weight: 500!important;
 }

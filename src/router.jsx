@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Error404 from "./Error404";
 import LabTests from "./pages/Laboratory/LabTests";
 import AddPatient from "./pages/Laboratory/AddPatient";
 import Client from "./pages/inventory/Client";
@@ -39,6 +38,9 @@ import ItemStatisticsLine from "./pages/inventory/ItemStatisticsLine";
 import ItemStatisticsPie from "./pages/inventory/ItemStatisticsPie";
 import DeductRequest from "./pages/inventory/DeductRequest";
 import PriceList from "./pages/Laboratory/PriceList";
+import LoginCardInventory from "./loginCardInventory";
+import Error404 from "./pages/Dialogs/Error404";
+import Dashboard from "./Dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -85,13 +87,19 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      {
+
+        element : <Dashboard/>,
+        path:"/dashboard",
+
+      },
 
       {
         path: "/inventory",
         element: (
           <ProtectedRoute>
             <InventoryNav />
-          </ProtectedRoute>
+           </ProtectedRoute>
         ),
         children: [
           {
@@ -105,6 +113,13 @@ export const router = createBrowserRouter([
               //fetch all items
               return fetch(`${url}items/all`, { signal });
             },
+            
+          },
+          {
+            path: "item/login",
+            element: <LoginCardInventory />,
+           
+            
           },
           {
             path: "supplier/create",

@@ -8,7 +8,6 @@ import { LoadingButton } from "@mui/lab";
 function AddDoctorForm() {
   const { specialists, setDoctorUpdater ,setDoctors} = useOutletContext();
   const [loading, setLoading] = useState(false);
-  console.log(setDoctors,'function')
 
   const {
     register,

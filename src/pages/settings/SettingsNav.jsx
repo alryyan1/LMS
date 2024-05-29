@@ -70,14 +70,15 @@ function SettingsNav() {
       </ThemeProvider>
       <Snackbar
         open={dialog.open}
-        autoHideDuration={2000}
+        autoHideDuration={4000}
         onClose={handleClose}
       >
         <Alert
           onClose={handleClose}
           severity={dialog.color}
           variant="filled"
-          sx={{ width: "100%" }}
+          
+          sx={{ width: "100%" ,color: "black" }}
         >
           {dialog.msg}
         </Alert>

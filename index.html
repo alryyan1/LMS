@@ -2,19 +2,34 @@
 <html lang="en" dir="">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-   
-      body {
-        margin: 0;
-        @font-face {
-          font-family: "Tajwal-Regular";
-          src: local("Tajwal-Regular"), url(./font/MyFont.woff) format("woff");
-          /* other formats include: 'woff2', 'truetype, 'opentype',
-                            'embedded-opentype', and 'svg' */
+      .cascading-right {
+        margin-right: -50px;
+      }
+
+      .cascading-right {
+        margin-right: -50px;
+      }
+
+      @media (max-width: 900px) {
+        .cascading-right {
+          margin-right: 0;
         }
+      }
+      body {
+        /* arabic */
+    
+        background-image: url("./public/images/subtle-prism.svg");
+
       }
     </style>
   </head>

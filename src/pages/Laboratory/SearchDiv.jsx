@@ -1,6 +1,6 @@
-import Search from '../pages/Laboratory/SearchTest'
-import TestMainInfo from '../pages/Laboratory/TestMainInfo'
-import AddMainTestForm from '../pages/Laboratory/AddMainTestForm'
+import Search from './SearchTest'
+import TestMainInfo from './TestMainInfo'
+import AddMainTestForm from './AddMainTestForm'
 function SearchDiv({activeTestObj,setActiveTestObj,showAddTest,packageData,containerData}) {
   return (
     <div className="searchContainer">

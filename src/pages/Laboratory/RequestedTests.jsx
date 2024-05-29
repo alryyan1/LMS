@@ -116,13 +116,9 @@ function RequestedTests({ setPatients }) {
 
   const deleteTest = (id) => {
     console.log(id);
-    fetch(`${url}labRequest/${actviePatient.id}`, {
-      method: "DELETE",
-      body: new URLSearchParams({ id }),
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.delete(`labRequest/${actviePatient.id}?id=${id}`)
+      .then(({data}) => {
+        console.log(data)
         if (data.status) {
           setActivePatient((patient) => {
             return {

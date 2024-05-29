@@ -1,8 +1,11 @@
 import {
+  Autocomplete,
   Button,
   Divider,
   Grid,
   Paper,
+  Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
@@ -10,9 +13,10 @@ import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import axiosClient from "../../../axios-client";
 
-function PatientDetail({ patient,setPatients }) {
+function PatientDetail({ patient,setPatients,copyPatient = false }) {
   console.log(patient, "patient in patient details");
   const [open, setOpen] = useState();
+  const {openedDoctors,setUpdate,activeShift} = useOutletContext()
   const date = new Date(patient.created_at);
   const handleEdit = () =>
      {
@@ -86,21 +90,46 @@ function PatientDetail({ patient,setPatients }) {
           </div>
           <div>العمر</div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:"repeat(auto-fit,minmax(50px,1fr))",justifyContent:'space-around'}}>
-          <div>
-            <Button onClick={handleEdit} variant="contained">
+        <Stack direction={'row'} gap={2}>
+            <Button sx={{flexGrow:1}}  onClick={handleEdit} variant="contained">
               Edit
             </Button>
-          </div>
-          <div>
-            <Button onClick={()=>{
+            <Button  sx={{flexGrow:1}} onClick={()=>{
               axiosClient.get(`print`, {})
             }} color="warning" variant="contained">
               Print
             </Button>
-          </div>
-        </div>
-       
+        </Stack>
+      <Divider sx={{m:1}}/>
+                {copyPatient && patient.doctor_id == activeShift.doctor.id && <Autocomplete
+                  onChange={ (e,data)=>{
+                    axiosClient.patch(`patient/copy/${patient.id}`,{doctor_id:data.id}).then(({data})=>{
+                      if (data.status) {
+                        setUpdate((prev=>prev+1))
+                      }
+                    })
+                  }}
+                  getOptionDisabled={
+                    (option)=>{
+                        return option.id == patient.doctor.id
+                    }
+                  } 
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={openedDoctors.map((shift)=>{
+                  return shift.doctor
+                  })}
+                  //fill isOptionEqualToValue
+
+                  isOptionEqualToValue={(option, val) => option.id === val.id}
+                  renderInput={(params) => {
+                    // console.log(params)
+
+                    return <TextField {...params} label="نسخ المريض" />;
+                  }}
+               />}
+           
+            
        <EditPatientDialog open={open} setOpen={setOpen} patient={patient} setPatients={setPatients} />
       </Paper>
     </>

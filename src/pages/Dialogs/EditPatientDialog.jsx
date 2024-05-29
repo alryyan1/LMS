@@ -25,10 +25,11 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
-  const { doctors ,setActivePatient } = useOutletContext();
+function EditPatientDialog({ patient, setOpen, open }) {
+  const { doctors ,setActivePatient,setUpdate,openedDoctors } = useOutletContext();
   // console.log(patient);
   // console.log(appData.doctors, "doctors");
+  console.log(openedDoctors,'open doctors')
   const [loading, setLoading] = useState();
   function editDoctorHandler(formData) {
     setLoading(true);
@@ -36,22 +37,17 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
 
     console.log(formData, "formData");
     axiosClient
-      .patch(`patients/edit/${patient.id}`, {
-        ...formData,
-        doctor_id: formData.doctor.id,
-      })
+      .patch(`patients/edit/${patient.id}`, 
+      formData
+      )
       .then((data) => {
+        console.log(data)
         if (data.status) {
+          setUpdate((prev)=>{
+            return prev+1
+          })
           console.log(newPatient, "new patient");
-          setPatients((prePaitients) => {
-            return prePaitients.map((p) => {
-              if (p.id === patient.id) {
-                return newPatient;
-              } else {
-                return p;
-              }
-            });
-          });
+          
           setOpen(false);
           setActivePatient(newPatient);
         }
@@ -67,7 +63,6 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
     defaultValues: {
       name: patient.name,
       phone: patient.phone,
-      doctor: patient.doctor,
       gender: patient.gender,
       age_day: patient.age_day,
       age_month: patient.age_month,
@@ -76,8 +71,9 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
   });
   return (
     <Dialog
+    
       key={patient.id}
-      sx={{ p: 2 }}
+     
       open={open == undefined ? false : open}
     >
       <DialogTitle>تعديل البيانات</DialogTitle>
@@ -94,7 +90,7 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
               })}
               defaultValue={patient.name}
               error={errors.name != null}
-              variant="standard"
+              variant="outlined"
               label={"اسم المريض"}
             ></TextField>
             <Stack direction={"row"} gap={5} justifyContent={"space-around"}>
@@ -116,7 +112,7 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
                 })}
                 defaultValue={patient.phone}
                 error={errors.phone != null}
-                variant="standard"
+                variant="outlined"
                 label={"رقم الهاتف"}
               ></TextField>
               <Controller
@@ -180,33 +176,9 @@ function EditPatientDialog({ patient, setOpen, open ,setPatients}) {
             </Stack>
 
             {errors?.age && errors.age.message}
-            <Controller
-              name="doctor"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                sx={{mb:1}}
-                  {...field}
-                  ref={field.ref}
-                  value={field.value}
-                  defaultValue={patient.doctor}
-                  onChange={(e, newVal) => field.onChange(newVal)}
-                  getOptionKey={(op) => op.id}
-                  getOptionLabel={(option) => option.name}
-                  options={doctors}
-                  //fill isOptionEqualToValue
-
-                  isOptionEqualToValue={(option, val) => option.id === val.id}
-                  renderInput={(params) => {
-                    // console.log(params)
-
-                    return <TextField {...params} label="الطبيب" />;
-                  }}
-                ></Autocomplete>
-              )}
-            />
+           
           </Stack>
-          <LoadingButton
+          <LoadingButton sx={{m:1}}
             loading={loading}
             type="submit"
             fullWidth

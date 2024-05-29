@@ -10,6 +10,7 @@ function AddTestAutoComplete({ patients, setPatients }) {
   const [selectedTests, setSelectedTests] = useState([]);
   const { actviePatient, setActivePatient, setDialog } = useOutletContext();
   const [loading, setLoading] = useState(false);
+  console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
 
     if (actviePatient.is_lab_paid) {
@@ -61,9 +62,9 @@ function AddTestAutoComplete({ patients, setPatients }) {
     setSelectedTests([]);
   };
   useEffect(() => {
-    fetch(`${url}tests`)
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.get(`tests`)
+      .then(({data}) => {
+        console.log(data,'autocomplete tests')
         setAutoCompleteTests(data);
       });
   }, []);

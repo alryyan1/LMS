@@ -1,6 +1,6 @@
 import { CacheProvider, ThemeProvider } from "@emotion/react";
 import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
-import { cacheRtl, theme } from "../constants";
+import { Item, cacheRtl, theme } from "../constants";
 import { Alert, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useStateContext } from "../../appContext";
@@ -25,17 +25,17 @@ function InventoryNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"client/create"}>عميل جديد</NavLink>
+        <NavLink to={"client/create"}><Item>عميل جديد </Item></NavLink>
 
-        <NavLink to={"supplier/create"}> مورد جديد</NavLink>
-        <NavLink to={"item/create"}> صنف جديد</NavLink>
-        <NavLink to={"item/state"}> حركه الاصناف</NavLink>
-        <NavLink to={"section/create"}> قسم جديد</NavLink>
-        <NavLink to={"income/request"}>اذن طلب</NavLink>
-        <NavLink to={"income/create"}>اذن وارد</NavLink>
-        <NavLink to={"income/deduct"}>اذن منصرف</NavLink>
-        <NavLink to={"inventory/balance"}>المخزون</NavLink>
-        <NavLink to={"item/statistics"}>الرسم البياني</NavLink>
+        <NavLink to={"supplier/create"}> <Item>مورد جديد</Item> </NavLink>
+        <NavLink to={"item/create"}><Item> صنف جديد</Item></NavLink>
+        <NavLink to={"item/state"}> <Item>حركه الاصناف</Item></NavLink>
+        <NavLink to={"section/create"}> <Item>قسم جديد</Item></NavLink>
+        <NavLink to={"income/request"}><Item>اذن  طلب</Item></NavLink>
+        <NavLink to={"income/create"}><Item>اذن وارد</Item></NavLink>
+        <NavLink to={"income/deduct"}><Item>اذن منصرف</Item></NavLink>
+        <NavLink to={"inventory/balance"}><Item>المخزون</Item></NavLink>
+        <NavLink to={"item/statistics"}><Item>الرسم البياني</Item></NavLink>
       </ul>
 
       <ThemeProvider theme={theme}>

@@ -3,7 +3,7 @@ import { Tabs, Tab, Box, Card, Paper, Autocomplete, Button } from "@mui/material
 import TestGroupChildren from "../TestGroupChildren"
 import { useOutletContext } from "react-router-dom";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
-import AddServiceAutocomplete from "./ServiceAutoComplete";
+import AddServiceAutocomplete from "./AddServiceAutocomplete";
 function ServiceGroup() {
 const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServices,setShowServicePanel} =  useOutletContext()
 
@@ -53,10 +53,9 @@ const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServ
                 return (
                     //test to add
                     <Card
+                    className={ founedService ? 'active' : ''}
                       onClick={()=>serviceAddHandler(service)}
-                      sx={{cursor:"pointer", p: 1, minWidth: "80px",backgroundColor: (theme)=>{
-                        return founedService ? theme.palette.primary.main : 'white'
-                      }}}
+                      sx={{cursor:"pointer", p: 1, minWidth: "80px"}}
                  
                       key={service.id}
                     >

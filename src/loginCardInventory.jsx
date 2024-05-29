@@ -14,17 +14,15 @@ from 'mdb-react-ui-kit';
 import { Alert, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Link } from 'react-router-dom';
-import { useStateContext } from '../appContext'; 
+import { useStateContext } from './appContext';
 import { useForm } from 'react-hook-form';
-import axiosClient from '../../axios-client';
+import axiosClient from '../axios-client';
 
 function App() {
     console.log('login page')
     const [error,setError] =  useState({val:false,msg:''})
     const [loading , setLoading] = useState(false)
     const {setToken,setUser} =   useStateContext()
-    const [username,setUsername] = useState('starsIntaj')
-    const [password,setPassword] = useState('12345678')
     const {
       handleSubmit,
       formState: { errors, isSubmitted },
@@ -66,8 +64,6 @@ function App() {
               variant="standard"
               label="Username"
               helperText={errors?.username?.message}
-               value={username}
-               onChange={(value)=>setUsername(value.target.value)}
             ></TextField>
             <TextField
             error={errors.password !=null}
@@ -77,9 +73,6 @@ function App() {
               label="Password"
               type="password"
               helperText={errors?.password?.message}
-             value={password}
-             onChange={(value)=>setPassword(value.target.value)}
-              
             ></TextField>
             <LoadingButton  loading={loading} type="submit" sx={{m:1}} variant="contained">تسجيل دخول</LoadingButton>
             <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link>

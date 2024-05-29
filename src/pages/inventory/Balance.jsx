@@ -119,11 +119,9 @@ function Balance() {
             {items.map((item) => {
               const remaining = item.remaining + item.initial_balance;
               return (
-                <TableRow sx={{backgroundColor:(theme)=>{
-               return   remaining === 0 ? theme.palette.error.light : theme.palette.success.light
-                }}}  key={item.id}>
+                <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
-                  <TableCell sx={{color:'white',fontWeight:400}} >{item.name}</TableCell>
+                  <TableCell  >{item.name}</TableCell>
                   <TableCell>{item.initial_balance}</TableCell>
                   <TableCell>{item.initial_price}</TableCell>
                   <TableCell>
