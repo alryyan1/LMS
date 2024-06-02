@@ -50,7 +50,7 @@ function ServiceList() {
               sx={{ mb: 1 }}
               type="search"
             ></TextField>
-                  <a href={`${webUrl}company/service/${activeCompany.id}`}>التقرير</a>
+            <a href={`${webUrl}company/service/${activeCompany.id}`}>التقرير</a>
 
             <Table
               style={{ direction: "rtl" }}
@@ -146,8 +146,12 @@ function ServiceList() {
         <List>
           {companies.map((company) => {
             return (
-             <Item key={company.id}>
-               <ListItemButton
+              <ListItemButton
+                style={{
+                  border: "1px dashed ",
+                  marginBottom: "2px",
+                  color: "black",
+                }}
                 sx={
                   activeCompany?.id == company.id
                     ? { backgroundColor: (theme) => theme.palette.primary.main }
@@ -166,7 +170,6 @@ function ServiceList() {
               >
                 <ListItemText>{company.name}</ListItemText>
               </ListItemButton>
-             </Item>
             );
           })}
         </List>

@@ -170,11 +170,12 @@ function PatientForm({ hideForm, setUpdate }) {
                 {...register("age_day")}
                 label="اليوم"
                 variant="standard"
+                helperText =  {errors?.age && errors.age.message}
               />
             </Item>
           </Stack>
 
-          {errors?.age && errors.age.message}
+         
           <Controller
             name="doctor"
             rules={{
@@ -232,8 +233,38 @@ function PatientForm({ hideForm, setUpdate }) {
               }}
             />
           </FormControl>
-          {/* {errors.doctor && errors.doctor.message} */}
+          <Controller
+            name="doctor"
+            rules={{
+              required: {
+                value: true,
+                message: "يجب اختيار اسم الشركه",
+              },
+            }}
+            control={control}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                  onChange={(e, newVal) => field.onChange(newVal)}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={doctors}
+                  renderInput={(params) => {
+                    // console.log(params)
 
+                    return (
+                      <TextField
+                        inputRef={field.ref}
+                        error={errors?.doctor}
+                        {...params}
+                        label="الشركه"
+                      />
+                    );
+                  }}
+                ></Autocomplete>
+              );
+            }}
+          />
           <LoadingButton loading={loading} type="submit" variant="contained">
             حفظ
           </LoadingButton>

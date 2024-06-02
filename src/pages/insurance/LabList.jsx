@@ -92,7 +92,8 @@ function LabList() {
                         test_id={test.id}
                         colName={"endurance_static"}
                         table="company/test"
-                      >{test?.pivot?.endurance_static}
+                      >
+                        {test?.pivot?.endurance_static}
                       </MyTableCell>
                       <MySelectTableCell
                         item={activeCompany}
@@ -131,30 +132,34 @@ function LabList() {
         <List>
           {companies.map((company) => {
             return (
-              <Item key={company.id}>
-                <ListItemButton
-                  sx={
-                    activeCompany?.id == company.id
-                      ? {
-                          backgroundColor: (theme) =>
-                            theme.palette.primary.main,
-                        }
-                      : null
-                  }
-                  onClick={() => {
-                    const foundedCompany = companies.find(
-                      (c) => company.id === c.id
-                    );
-                    console.log(foundedCompany, "founded");
-                    setActiveCompany(foundedCompany);
-                    setTests(foundedCompany.tests);
-                    console.log(company.id);
-                  }}
-                  key={company.id}
-                >
-                  <ListItemText>{company.name}</ListItemText>
-                </ListItemButton>
-              </Item>
+              <ListItemButton
+                style={{
+                  border: "1px dashed ",
+                  marginBottom: "2px",
+                  color: "black",
+                }}
+                sx={
+                  activeCompany?.id == company.id
+                    ? {
+                        color: "white",
+
+                        backgroundColor: (theme) => theme.palette.primary.main,
+                      }
+                    : null
+                }
+                onClick={() => {
+                  const foundedCompany = companies.find(
+                    (c) => company.id === c.id
+                  );
+                  console.log(foundedCompany, "founded");
+                  setActiveCompany(foundedCompany);
+                  setTests(foundedCompany.tests);
+                  console.log(company.id);
+                }}
+                key={company.id}
+              >
+                <ListItemText>{company.name}</ListItemText>
+              </ListItemButton>
             );
           })}
         </List>

@@ -41,6 +41,7 @@ import PriceList from "./pages/Laboratory/PriceList";
 import LoginCardInventory from "./loginCardInventory";
 import Error404 from "./pages/Dialogs/Error404";
 import Dashboard from "./Dashboard";
+import AddSubcompany from "./pages/insurance/AddSubcompany";
 
 export const router = createBrowserRouter([
   {
@@ -223,6 +224,10 @@ export const router = createBrowserRouter([
           {
             path: "create",
             element: <AddInsurance />,
+          },
+          {
+            path: "subcomapny",
+            element: <AddSubcompany/>,
           },
           {
             path: "lab",

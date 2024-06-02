@@ -39,7 +39,6 @@
 .requested-tests{
     display: flex;
     flex-direction: column;
-    min-height: 600px;
 }
 .requested-tests .requested-table{
     /* flex-grow: 1; */
@@ -47,7 +46,7 @@
 .total-price {
     display: flex;
     justify-content: space-around;
-    padding: 10px;
+    /* padding: 10px; */
     border-radius: 5px;
     /* box-shadow: 2px 5px 6px lightblue; */
     text-align: center;

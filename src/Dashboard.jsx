@@ -69,7 +69,7 @@ function Dashboard() {
                 <Stack justifyContent={"space-between"} direction={"column"}>
                   <Typography>المرضي</Typography>
                   <Divider />
-                  {shift && <Typography variant="h4">{shift?.patients.length}</Typography>}
+                  {shift && <Typography variant="h4">{shift?.patients?.length}</Typography>}
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton>
@@ -105,7 +105,7 @@ function Dashboard() {
                 <Stack justifyContent={"space-between"} direction={"column"}>
                   <Typography>المصروفات</Typography>
                   <Divider />
-                  <Typography variant="h4">1000</Typography>
+                  <Typography variant="h4">0</Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton>
@@ -126,7 +126,7 @@ function Dashboard() {
                 <Stack justifyContent={"space-between"} direction={"column"}>
                   <Typography>الصافي</Typography>
                   <Divider />
-                  <Typography variant="h4">1000</Typography>
+                  <Typography variant="h4">0</Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton>
@@ -147,9 +147,9 @@ function Dashboard() {
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography>حاله الودريه {shift?.is_closed ? 'مغلقه' : 'مفتوحه'}</Typography>
-                  <Typography> زمن قفل الورديه </Typography>
-                  <Typography>    {shift?.closed_at}</Typography>
+                  <Typography>حاله الودريه {  shift?.is_closed ? 'مغلقه' : 'مفتوحه'}</Typography>
+                  <Typography> الزمن   </Typography>
+                  <Typography>   {shift?.is_closed ? new Date( Date.parse(shift.closed_at)).toLocaleTimeString() : new Date( Date.parse(shift?.created_at)).toLocaleTimeString()} </Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton onClick={()=>{
@@ -162,7 +162,7 @@ function Dashboard() {
                         })
                     }
                   }}>
-                   {shift?.is_closed == 0 ?  <Lock color="error" sx={{width:100,height:100}}/> :  <LockOpen color="success" sx={{width:100,height:100}}/>}
+                   {shift?.is_closed == 0 ?  <LockOpen color="success" sx={{width:100,height:100}}/> :  <Lock color="error" sx={{width:100,height:100}}/>}
                   </IconButton>
                 </Stack>
               </Stack>

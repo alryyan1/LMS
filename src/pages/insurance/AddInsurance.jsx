@@ -18,6 +18,7 @@ import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { useOutletContext } from "react-router-dom";
 
 function AddInsurance() {
   const [search, setSearch] = useState(null);
@@ -25,6 +26,7 @@ function AddInsurance() {
   const [companies, setCompanies] = useState([]);
   const [links, setLinks] = useState([]);
   const [page, setPage] = useState(5);
+ const {setDialog} = useOutletContext()
 
   const searchHandler = (word) => {
     setSearch(word);
@@ -69,10 +71,18 @@ function AddInsurance() {
       .post("company/create", data)
       .then((data) => {
         if (data.status) {
+          setLoading(false)
           reset();
+          setDialog((prev)=>{
+            return {...prev, open:true, message:data.message,color:'success'}
+          })
         }
+      }).catch(({data})=>{
+        setDialog((prev)=>{
+          return {...prev, open:true, message:data.message ,color:'error'}
+        })
       })
-      .finally(() => setLoading(false));
+      .finally(()=>{});
   };
   const {
     register,
@@ -163,6 +173,7 @@ function AddInsurance() {
                       table="company"
                       colName={"service_endurance"}
                       item={item}
+
                     >
                       {item.service_endurance}
                     </MyTableCell>
@@ -270,6 +281,7 @@ function AddInsurance() {
                 label="  تحمل المريض في المعمل"
                 variant="filled"
                 helperText={errors.lab_endurance?.message}
+                
               />
 
               <TextField
@@ -299,6 +311,8 @@ function AddInsurance() {
                 label="سقف المعمل"
                 variant="filled"
                 helperText={errors.lab_roof?.message}
+                
+
               />
 
               <TextField
@@ -309,7 +323,7 @@ function AddInsurance() {
                   required: { value: true, message: "يجب ادخال سقف الخدمات " },
                 })}
                 id="outlined-basic"
-                label="  تحمل المريض في الخدمات"
+                label="  سقف المريض في الخدمات"
                 variant="filled"
                 helperText={errors.service_roof?.message}
               />
@@ -325,6 +339,7 @@ function AddInsurance() {
                 label="رقم الهاتف"
                 variant="filled"
                 helperText={errors.phone?.message}
+                
               />
               <TextField
                 fullWidth
@@ -335,6 +350,7 @@ function AddInsurance() {
                 label="ايميل"
                 variant="filled"
                 helperText={errors.email?.message}
+                
               />
             </Stack>
             <LoadingButton

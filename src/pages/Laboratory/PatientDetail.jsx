@@ -85,7 +85,7 @@ function PatientDetail({ patient,setPatients,copyPatient = false }) {
           <div>
             {
               //print iso date
-              patient.age_year
+             ` ${patient.age_year ?? 0} Y ${ patient.age_month == null  ? '' :  ' / ' + patient.age_month +' M '  } ${ patient.age_day == null  ? '' :  ' / ' + patient.age_day +' D '  } `
             }
           </div>
           <div>العمر</div>
@@ -103,7 +103,7 @@ function PatientDetail({ patient,setPatients,copyPatient = false }) {
       <Divider sx={{m:1}}/>
                 {copyPatient && patient.doctor_id == activeShift.doctor.id && <Autocomplete
                   onChange={ (e,data)=>{
-                    axiosClient.patch(`patient/copy/${patient.id}`,{doctor_id:data.id}).then(({data})=>{
+                    axiosClient.post(`patient/copy/${patient.id}/${data.id}`).then(({data})=>{
                       if (data.status) {
                         setUpdate((prev=>prev+1))
                       }

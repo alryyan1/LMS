@@ -2,9 +2,9 @@ import "../Laboratory/addpatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "../Laboratory/PatientDetail";
 import { webUrl } from "../constants";
-import   YourSvg  from './doctor-svgrepo-com.svg'
+import YourSvg from "./doctor-svgrepo-com.svg";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
   Drawer,
@@ -24,7 +24,14 @@ import {
   Badge,
   Chip,
 } from "@mui/material";
-import { Add, Calculate, Group, Mail, PersonAdd, Print } from "@mui/icons-material";
+import {
+  Add,
+  Calculate,
+  Group,
+  Mail,
+  PersonAdd,
+  Print,
+} from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
@@ -38,6 +45,7 @@ import ServiceGroup from "./ServiceGroups";
 import RequestedServices from "./RequestedServices";
 import ServiceMoneyDialog from "../Dialogs/ServiceMoneyDialog";
 import PatientReception from "./PatientReception";
+import CustumSideBar from "../../components/CustumSideBar";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -68,12 +76,12 @@ function Reception() {
   } = useOutletContext();
   console.log(activeShift, "active doctor");
   console.log(searchByName, "searchByname");
-  const { setOpenDrawer, openDrawer,user } = useStateContext();
+  const { setOpenDrawer, openDrawer, user } = useStateContext();
 
   const [layOut, setLayout] = useState({
     form: "1fr",
     hideForm: false,
-    requestedDiv: "minmax(0,2.4fr)",
+    requestedDiv: "minmax(0,2fr)",
     showTestPanel: false,
     patientDetails: "0.8fr",
     patients: "1fr",
@@ -111,7 +119,7 @@ function Reception() {
       setLayout((prev) => {
         return {
           ...prev,
-          patientDetails: "2fr",
+          patientDetails: "1fr",
         };
       });
     }
@@ -123,7 +131,7 @@ function Reception() {
         ...prev,
         form: "0fr",
         hideForm: true,
-      requestedDiv: "minmax(0,2.4fr)",
+        requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
         patients: "1fr",
@@ -136,7 +144,13 @@ function Reception() {
     setShowServicePanel(false);
     setFoundedPatients([]);
     setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false,requestedDiv:"minmax(0,1.3fr)",patients:"1fr" };
+      return {
+        ...prev,
+        form: "1fr",
+        hideForm: false,
+        requestedDiv: "minmax(0,1.3fr)",
+        patients: "1fr",
+      };
     });
   };
   console.log("update count", update);
@@ -156,45 +170,50 @@ function Reception() {
       };
     });
   };
- 
+
   //get opened doctors
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
       setOpenedDoctors(data);
       if (activeShift) {
-        const findedActiveDoctorShift = data.find((shift)=>shift.id == activeShift.id)
-        setActiveShift(findedActiveDoctorShift)
-        
-        console.log(findedActiveDoctorShift,'findedActiveDoctorShift')
+        const findedActiveDoctorShift = data.find(
+          (shift) => shift.id == activeShift.id
+        );
+        setActiveShift(findedActiveDoctorShift);
+
+        console.log(findedActiveDoctorShift, "findedActiveDoctorShift");
       }
       // setActiveShift()
       console.log(data, "opened doctors");
     });
   }, [update]);
   console.log(actviePatient, "active patient");
-
+  let count = (activeShift?.visits?.length ?? 0) + 1;
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         {openedDoctors.map((shift, index) => {
           console.log(shift, "shift");
           return (
-            <Badge color="secondary" badgeContent={shift.visits.length} key={shift.id}>
-              <Item 
-              className={ activeShift && activeShift.id === shift.id ? 'active' : ''}
+            <Badge
+              color="secondary"
+              badgeContent={shift.visits.length}
+              key={shift.id}
+            >
+              <Item
+                className={
+                  activeShift && activeShift.id === shift.id ? "active" : ""
+                }
                 sx={
-
                   activeShift && activeShift.id === shift.id
                     ? {
-                       
                         color: "white",
                         cursor: "pointer",
                         flexGrow: 1,
-                        minWidth:'200px',
-
+                        minWidth: "200px",
                       }
                     : {
-                        minWidth:'200px',
+                        minWidth: "200px",
                         cursor: "pointer",
                         transition: "0.3s all ease-in-out",
                         transform: "scale(1.1)",
@@ -202,15 +221,14 @@ function Reception() {
                 }
                 onClick={() => {
                   // console.log('activeShift',doctor.id);
-                
+
                   setActiveShift(shift);
                   setActivePatient(null);
                   setShowPatientServices(false);
                   setShowServicePanel(false);
                   if (shift.visits.length == 0) {
-                 showFormHandler()
-                  }else{
-
+                    showFormHandler();
+                  } else {
                     hideForm();
                     setLayout((prev) => {
                       return {
@@ -219,7 +237,6 @@ function Reception() {
                       };
                     });
                   }
-                
                 }}
               >
                 {shift.doctor.name}
@@ -228,6 +245,7 @@ function Reception() {
           );
         })}
       </Stack>
+      <AddDoctorDialog />
 
       <Drawer open={openDrawer}>{DrawerList}</Drawer>
       <div
@@ -236,62 +254,47 @@ function Reception() {
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr   ${layOut.form}  ${layOut.patients}    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
+          gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
       >
         <div>
-          <AddDoctorDialog />
+        {!actviePatient && foundedPatients.length > 0 && (
+            <Slide
+              style={{ position: "absolute", left: "0px" }}
+              direction="up"
+              in
+              mountOnEnter
+              unmountOnExit
+            >
+              <div>
+                <SearchDialog />
+              </div>
+            </Slide>
+          )}
+          {actviePatient && (
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <div>
 
-          <Stack
-            sx={{ mr: 1 }}
-            gap={"5px"}
-            divider={<Divider orientation="vertical" flexItem />}
-            direction={"column"}
-          >
-            <Item>
-              <IconButton variant="contained" onClick={showFormHandler}>
-                <CreateOutlinedIcon />
-              </IconButton>
-            </Item>
-            <Item>
-              <IconButton variant="contained" onClick={showDoctorsDialog}>
-                <Group />
-              </IconButton>
-            </Item>
-            <Item>
-              <IconButton
-                variant="contained"
-                onClick={() => {
-                  setOpen(true);
-                }}
-              >
-                <PersonAdd />
-              </IconButton>
-            </Item>
-            <Item>
-              <IconButton variant="contained" onClick={showShiftMoney}>
-                <Calculate />
-              </IconButton>
-            </Item>
-           
-            <Item>
-              
-             {user && <IconButton title="التقرير العام" href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
-                <Print />
-              </IconButton>}
-            </Item>
-            {activeShift &&<Item>
-             <IconButton color="info" title="التقرير الخاص" href={`${webUrl}clinics/doctor/report?user=${user.id}&doctorshift=${activeShift.id}`} variant="contained">
-                <Print  />
-              </IconButton>
-            </Item>}
-          </Stack>
+                <PatientDetail
+                  key={actviePatient.id}
+                  patient={actviePatient}
+                  copyPatient={true}
+                />
+              </div>
+            </Slide>
+          )}
         </div>
+
         <div>
-          {layOut.hideForm || actviePatient ? (
-            ""
-          ) : (
-            <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
+          {actviePatient && showServicePanel && <ServiceGroup />}
+          {showPatientServices && (
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <Paper sx={{ p: 1 }}>
+                <div>
+                  <RequestedServices />
+                </div>
+              </Paper>
+            </Slide>
           )}
         </div>
         <Paper>
@@ -306,46 +309,26 @@ function Reception() {
                 activeShift.visits.map((visit, index) => {
                   return (
                     <PatientReception
-                      key={visit.id}
+                      index={count--}
+                      key={visit.pivot.id}
                       hideForm={hideForm}
                       visit={visit}
-                      index={index}
                     ></PatientReception>
                   );
                 })}
             </Stack>
           </div>
         </Paper>
+        <div>
+          {layOut.hideForm || actviePatient ? (
+            ""
+          ) : (
+            <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
+          )}
+         
+        </div>
+        <CustumSideBar setOpen={setOpen} showShiftMoney={showShiftMoney} showFormHandler={showFormHandler} activeShift={activeShift} user={user} showDoctorsDialog={showDoctorsDialog}/>
 
-        <div>
-          {actviePatient && showServicePanel && <ServiceGroup />}
-          {showPatientServices && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <Paper sx={{ p: 1 }}>
-                <div>
-                  <RequestedServices />
-                </div>
-              </Paper>
-            </Slide>
-          )}
-        </div>
-        <div>
-          {/** add card using material   */}
-          {actviePatient && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div>
-                <PatientDetail key={actviePatient.id} patient={actviePatient}  copyPatient = {true}/>
-              </div>
-            </Slide>
-          )}
-          {!actviePatient && foundedPatients.length > 0 && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div>
-                <SearchDialog />
-              </div>
-            </Slide>
-          )}
-        </div>
         <ServiceMoneyDialog />
         <ErrorDialog />
         <ReceptionDoctorsDialog />

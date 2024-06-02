@@ -1,6 +1,8 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900");
 body {
+  scrollbar-width: 10px;
+
   font-family: "Tajawal", sans-serif;
 }
 @font-face {
@@ -25,6 +27,7 @@ body {
 }
 
 .app-container{
+  /* overflow: hidden; */
   max-width: 95%;
   margin: auto;
   height: 100vh;
@@ -44,7 +47,7 @@ body {
 
 .MuiPaper-root{
 
-background-color: #ffffffbb!important;
+/* background-color: #ffffffbb!important; */
 }
 
 .active {
@@ -54,7 +57,7 @@ background-color: #ffffffbb!important;
 }
 
 .MuiDialog-paper{
-  background-color: white!important;
+  /* background-color: white!important; */
 }
 
 td{

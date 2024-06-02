@@ -15,11 +15,14 @@ function PatientReception({visit,hideForm,index}) {
         setShowPatientServices,
         showServicePanel,
         setShowServicePanel,
+        activeShift
       } = useOutletContext();
   return (
     <Badge
     color="primary"
-    badgeContent={visit.services.length}
+    badgeContent={visit.services.filter((service)=>{
+                  return service.pivot.doctor_id ==activeShift.doctor.id
+                }).length}
     key={visit.id}
     
   >
@@ -34,7 +37,9 @@ function PatientReception({visit,hideForm,index}) {
           } else {
             setActivePatient(visit);
           }
-          if (visit.services.length > 0) {
+          if (visit.services.filter((service)=>{
+                  return service.pivot.doctor_id ==activeShift.doctor.id
+                }).length > 0) {
             if (!showServicePanel) {
               setShowPatientServices(true);
             }else{
@@ -48,14 +53,14 @@ function PatientReception({visit,hideForm,index}) {
           }
           
           hideForm();
-        }} direction={'row'} gap={1}>
+        }} direction={'row'} >
       <Item
         className={actviePatient &&
           actviePatient.id === visit.id ? 'active' : ''}
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          minWidth: "185px",
+          minWidth: "200px",
           cursor: "pointer",
           color:'black',
        
@@ -63,17 +68,18 @@ function PatientReception({visit,hideForm,index}) {
       >
         {visit.totalservicebank > 0 && (
           <Chip
+        
           
             label="bank"
-            sx={{ backgroundColor:(theme)=>theme.palette.error.light}}
+            sx={{ backgroundColor:(theme)=>theme.palette.error.light,fontSize:'smaller'}}
             size="small"
           />
         )}
 
         {visit.name}
       </Item>
-      <Item sx={{width:"26px"}}>
-        {index+1}
+      <Item  sx={{width:"30px",fontSize:'1.2rem',fontWeight:'bolder',backgroundColor:'blue'}}>
+        {index - 1}
       </Item>
     </Stack>
   </Badge>

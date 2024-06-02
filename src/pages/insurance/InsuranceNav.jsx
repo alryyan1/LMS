@@ -23,6 +23,7 @@ function InsuranceNav() {
         <NavLink to={"create"}>تعاقد جديد</NavLink>
         <NavLink to={"lab"}>التحاليل الطبيه</NavLink>
         <NavLink to={"service"}>الخدمات الطبيه</NavLink>
+        <NavLink to={"subcomapny"}> الجهات والعلاقات</NavLink>
         <NavLink to={"section/create"}>نسخ تعاقد</NavLink>
         <NavLink to={"income/create"}>المراجعه والتدقيق</NavLink>
         <NavLink to={"income/deduct"}>المطالبات</NavLink>
@@ -31,6 +32,7 @@ function InsuranceNav() {
 
       <Outlet context={{dialog,setDialog,companies}} />
       <Snackbar
+    
             open={dialog.open}
             autoHideDuration={2000}
             onClose={()=>setDialog((prev)=>({...prev,open:false}))
@@ -38,6 +40,7 @@ function InsuranceNav() {
           }
           >
             <Alert
+            
                
               severity={dialog.color}
               variant="filled"
