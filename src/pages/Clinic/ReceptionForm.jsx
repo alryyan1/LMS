@@ -21,6 +21,8 @@ function ReceptionForm({ hideForm }) {
   const [companies, setCompanies] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedSubCompany, setSelectedSubCompany] = useState(null);
+  const [selectedRelation, setSelectedRelation] = useState(null);
   console.log(selectedCompany, "selected company");
   const { setDialog, setFoundedPatients, activeShift, setUpdate } =
     useOutletContext();
@@ -63,6 +65,8 @@ function ReceptionForm({ hideForm }) {
       .post(`patients/reception/add/${activeShift.doctor.id}`, {
         ...formData,
         doctor_id: activeShift.doctor.id,
+        company_id:selectedCompany?.id,
+        sub_company_id:selectedSubCompany?.id
       })
       .then((data) => {
         console.log(data, "reception added");
@@ -101,7 +105,7 @@ function ReceptionForm({ hideForm }) {
       </Typography>
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
-          <Slide in={selectedCompany } unmountOnExit mountOnEnter>
+          <Slide in={selectedCompany != null } unmountOnExit mountOnEnter>
           <Stack direction={'column'} gap={1}>
             <TextField
               autoFocus
@@ -120,6 +124,42 @@ function ReceptionForm({ hideForm }) {
               {...register("guarantor")}
               label="اسم الضامن"
             />
+          {selectedCompany &&   <Autocomplete
+                  onChange={(e, newVal) => {
+                    setSelectedSubCompany(newVal);
+                  }}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={selectedCompany.sub_companies}
+                  renderInput={(params) => {
+                    // console.log(params)
+
+                    return (
+                      <TextField
+                        {...params}
+                        label="الجهه"
+                      />
+                    );
+                  }}
+                />}
+                {selectedCompany &&   <Autocomplete
+                  onChange={(e, newVal) => {
+                    setSelectedRelation(newVal);
+                  }}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={selectedCompany.relations}
+                  renderInput={(params) => {
+                    // console.log(params)
+
+                    return (
+                      <TextField
+                        {...params}
+                        label="العلاقه"
+                      />
+                    );
+                  }}
+                />}
             <Stack
               direction={"row"}
               gap={2}

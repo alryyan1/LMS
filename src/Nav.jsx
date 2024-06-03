@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Stack, Button } from "@mui/material";
-import { CatchingPokemon, List, Logout } from "@mui/icons-material";
+import { CatchingPokemon, Language, List, Logout } from "@mui/icons-material";
 import { Navigate, NavLink } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
@@ -7,9 +7,11 @@ import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import { useTranslation } from "react-i18next";
 const Nav = () => {
   const { user, setToken, setUser, setOpenDrawer } = useStateContext();
   const [loading, setLoading] = useState(false);
+  const {i18n} = useTranslation()
   // console.log(setToken);
   const logoutHandler = () => {
     setLoading(true);
@@ -27,6 +29,14 @@ const Nav = () => {
     });
   }, []);
   console.log(user);
+  const changeLang = () => {
+    if (i18n.language === "en") {
+      i18n.changeLanguage('ar')
+    }else{
+      i18n.changeLanguage('en')
+
+    }
+  }
   return (
     <>
       <AppBar color='primary' 
@@ -66,6 +76,9 @@ const Nav = () => {
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/services"}>
             Services
           </NavLink>
+          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/ship"}>
+            shipping
+          </NavLink>
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/settings"}>
             Settings
           </NavLink>
@@ -73,6 +86,7 @@ const Nav = () => {
             dashboard
           </NavLink>
           <div style={{ flexGrow: 1 }}></div>
+          <IconButton onClick={changeLang}><Language/></IconButton>
           {user && (
             <LoadingButton
               color="error"

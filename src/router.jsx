@@ -42,6 +42,9 @@ import LoginCardInventory from "./loginCardInventory";
 import Error404 from "./pages/Dialogs/Error404";
 import Dashboard from "./Dashboard";
 import AddSubcompany from "./pages/insurance/AddSubcompany";
+import { AddReaction } from "@mui/icons-material";
+import AddRelation from "./pages/insurance/AddRelation";
+import AddShip from "./pages/shipping/AddShip";
 
 export const router = createBrowserRouter([
   {
@@ -218,6 +221,21 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: "ship",
+        element: <InsuranceNav />,
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoute>
+                <AddShip/>
+              </ProtectedRoute>
+            ),
+          },
+        ],
+      
+      },
+      {
         path: "/insurance",
         element: <InsuranceNav />,
         children: [
@@ -228,6 +246,10 @@ export const router = createBrowserRouter([
           {
             path: "subcomapny",
             element: <AddSubcompany/>,
+          },
+          {
+            path: "relation",
+            element: <AddRelation/>,
           },
           {
             path: "lab",
@@ -277,6 +299,7 @@ export const router = createBrowserRouter([
 
             element: < PriceList/>,
           },
+
         ],
       },
     ],

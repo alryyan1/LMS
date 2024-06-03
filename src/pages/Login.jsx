@@ -24,7 +24,7 @@ function App() {
     const [loading , setLoading] = useState(false)
     const {setToken,setUser} =   useStateContext()
     const [username,setUsername] = useState('starsIntaj')
-    const [password,setPassword] = useState('12345678')
+    const [password,setPassword] = useState('starsIntaj')
     const {
       handleSubmit,
       formState: { errors, isSubmitted },

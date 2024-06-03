@@ -56,10 +56,11 @@ function AddInsurance() {
       .then(({ data, links }) => {
         console.log(data, links);
         // setItems(data)
-        // setLinks(links)
+        // setLinks(links) 
+        setLoading(false);
       })
       .finally(() => {
-        setLoading(false);
+       
       });
   };
   //create state variable to store all Items
@@ -92,7 +93,6 @@ function AddInsurance() {
   } = useForm();
   console.log(isSubmitting);
   useEffect(() => {
-    setLoading(true);
 
     console.log("start of use effect");
     //fetch all Items
@@ -106,7 +106,7 @@ function AddInsurance() {
         setLinks(links);
       })
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      
   }, [page, isSubmitting]);
 
   return (
