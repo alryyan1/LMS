@@ -13,7 +13,10 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 item : "الصنف",
                 date : "التاريخ",
                 state : "الحاله",
-                addShip:'اضافه شحنه'
+                addShip:'اضافه شحنه',
+                nameValidation :'يجب ادخال اسم',
+                phoneValidation :'يجب ادخال الهاتف',
+
             }
         },
         ch:{
@@ -23,7 +26,10 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 item : "物品",
                 date : "日期",
                 state : "状态",
-                addShip:'藝術本身'
+                addShip:'藝術本身',
+                nameValidation :'星空卫视',
+                phoneValidation :'您必须输入电话号码',
+
 
             }
         }
@@ -31,3 +37,4 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     
 
 })
+

@@ -2,6 +2,7 @@ import {
     Autocomplete,
     Divider,
     Grid,
+    Paper,
     Skeleton,
     Stack,
     Table,
@@ -294,7 +295,9 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
         </Grid>
   
         <Grid item xs={3} style={{ flexGrow: "1" }}>
-          <Stack direction={"row"} justifyContent={"center"} spacing={4}>
+          
+    <Paper sx={{p:2}}>
+    <Stack direction={"row"} justifyContent={"center"} spacing={4}>
             <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
               {t('addShip')} 
             </Typography>
@@ -305,11 +308,11 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                 fullWidth
                 error={errors2.name != null}
                 {...register2("name", {
-                  required: { value: true, message: "يجب ادخال اسم " },
+                  required: { value: true, message: t('nameValidation') },
                 })}
                 id="outlined-basic"
                 label={t('name')}
-                variant="filled"
+                variant="outlined"
                 helperText={errors2.name?.message}
               />
   
@@ -318,23 +321,21 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                 type="number"
                 error={errors2.phone != null}
                 {...register2("phone", {
-                  required: { value: true, message: "يجب ادخال  رقم الهاتف" },
+                  required: { value: true, message: t('phoneValidation') },
                 })}
                 id="outlined-basic"
                 label={t('phone')}
-                variant="filled"
+                variant="outlined"
                 helperText={errors2.phone?.message}
               />
   
               <TextField
                 fullWidth
                 error={errors2.express != null}
-                {...register2("express", {
-                  required: { value: true, message: "يجب ادخال تحمل المريض" },
-                })}
+                {...register2("express")}
                 id="outlined-basic"
                 label="express"
-                variant="filled"
+                variant="outlined"
                 helperText={errors2.express?.message}
               />
                 <Stack
@@ -353,10 +354,7 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                   }}
                   error={errors2?.ctn}
                   {...register2("ctn", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال CTN ",
-                    },
+                  
                   })}
                   label="CTN"
                   variant="standard"
@@ -400,6 +398,8 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
               </LoadingButton>
             </Stack>
           </form>
+    </Paper>
+          
         </Grid>
       </Grid>
     );

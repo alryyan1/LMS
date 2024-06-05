@@ -8,10 +8,12 @@ import Button from "@mui/material/Button";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
+import { useTranslation } from "react-i18next";
 
 const filter = createFilterOptions();
 
 export default function ShipItemAutocomplete({Controller,control,errors,setValue}) {
+  const {t} = useTranslation()
   const [ items ,setItems] = React.useState([])
   const [open, toggleOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -60,6 +62,7 @@ export default function ShipItemAutocomplete({Controller,control,errors,setValue
         render = {({field})=>{
 
           return <Autocomplete
+          value={field.value ?? ''}
           getOptionKey={(op) => op.id}
 
           size="small"
@@ -112,7 +115,7 @@ export default function ShipItemAutocomplete({Controller,control,errors,setValue
           
             freeSolo
             renderInput={(params) => (
-              <TextField error={errors.item && errors.item.message}  {...params} label="اسم الصنف" />
+              <TextField error={errors.item && errors.item.message}  {...params} label={t('item')} />
             )}
           />
         }}
@@ -129,7 +132,7 @@ export default function ShipItemAutocomplete({Controller,control,errors,setValue
               id="name"
               value={dialogValue}
               onChange={(event) => setDialogValue(event.target.value)}
-              label="اسم الصنف"
+              label={t('item')}
               type="text"
               variant="standard"
             />
