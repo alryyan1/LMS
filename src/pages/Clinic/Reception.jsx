@@ -74,8 +74,8 @@ function Reception() {
     showServicePanel,
     setShowServicePanel,
   } = useOutletContext();
-  console.log(activeShift, "active doctor");
-  console.log(searchByName, "searchByname");
+  // console.log(activeShift, "active doctor");
+  // console.log(searchByName, "searchByname");
   const { setOpenDrawer, openDrawer, user } = useStateContext();
 
   const [layOut, setLayout] = useState({
@@ -153,7 +153,7 @@ function Reception() {
       };
     });
   };
-  console.log("update count", update);
+  // console.log("update count", update);
   const showShiftMoney = () => {
     setDialog((prev) => {
       return {
@@ -181,19 +181,19 @@ function Reception() {
         );
         setActiveShift(findedActiveDoctorShift);
 
-        console.log(findedActiveDoctorShift, "findedActiveDoctorShift");
+        // console.log(findedActiveDoctorShift, "findedActiveDoctorShift");
       }
       // setActiveShift()
-      console.log(data, "opened doctors");
+      // console.log(data, "opened doctors");
     });
   }, [update]);
-  console.log(actviePatient, "active patient");
+  // console.log(actviePatient, "active patient");
   let count = (activeShift?.visits?.length ?? 0) + 1;
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         {openedDoctors.map((shift, index) => {
-          console.log(shift, "shift");
+          // console.log(shift, "shift");
           return (
             <Badge
               color="secondary"
@@ -297,7 +297,7 @@ function Reception() {
             </Slide>
           )}
         </div>
-        <Paper>
+        <Paper sx={{backgroundColor: '#ffffffbb!important'}}>
           <div style={{ overflow: "auto" }}>
             <Stack
               flexDirection={"row"}

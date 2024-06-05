@@ -18,13 +18,13 @@ import axiosClient from "../../../axios-client";
 import { Item } from "../constants";
 
 function ReceptionForm({ hideForm }) {
-  const [companies, setCompanies] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
   console.log(selectedCompany, "selected company");
-  const { setDialog, setFoundedPatients, activeShift, setUpdate } =
+  console.log(selectedSubCompany, "selected sub company");
+  const { setDialog, setFoundedPatients, activeShift, setUpdate ,companies} =
     useOutletContext();
   // console.log(appData.doctors,'doctors')
   const {
@@ -52,12 +52,7 @@ function ReceptionForm({ hideForm }) {
       };
     }
   }, [name]);
-  useEffect(() => {
-    axiosClient.get("company/all").then(({ data }) => {
-      console.log(data, "comapnies");
-      setCompanies(data);
-    });
-  }, []);
+
   const sumbitHandler = async (formData) => {
     setIsLoading(true);
     console.log(formData, "form data");
@@ -66,7 +61,8 @@ function ReceptionForm({ hideForm }) {
         ...formData,
         doctor_id: activeShift.doctor.id,
         company_id:selectedCompany?.id,
-        sub_company_id:selectedSubCompany?.id
+        subcompany_id:selectedSubCompany?.id,
+        company_relation_id : selectedRelation?.id,
       })
       .then((data) => {
         console.log(data, "reception added");
@@ -89,11 +85,11 @@ function ReceptionForm({ hideForm }) {
           });
         }
       })
-      .catch(({ data }) => {
+      .catch(( {response:{data}} ) => {
         console.log(data, "catch error");
-        // setDialog((prev)=>{
-        //   return {...prev, msg: data.message, color: "error", open:true}
-        // })
+        setDialog((prev)=>{
+          return {...prev, msg: data.message, color: "error", open:true}
+        })
       })
       .finally(() => setIsLoading(false));
   };
@@ -109,15 +105,15 @@ function ReceptionForm({ hideForm }) {
           <Stack direction={'column'} gap={1}>
             <TextField
               autoFocus
-              error={errors?.card_number != null}
-              {...register("card_number", {
+              error={errors?.insurance_no != null}
+              {...register("insurance_no", {
                 required: {
-                  value: true,
+                  value: selectedCompany ? true : false,
                   message: "يجب ادخال رقم البطاقه",
                 }
               })}
               label="رقم البطاقه "
-              helperText={errors?.card_number && errors.card_number.message}
+              helperText={errors?.insurance_no && errors.insurance_no.message}
             />
             <TextField
               error={errors?.guarantor != null}
@@ -127,6 +123,7 @@ function ReceptionForm({ hideForm }) {
           {selectedCompany &&   <Autocomplete
                   onChange={(e, newVal) => {
                     setSelectedSubCompany(newVal);
+                    console.log(newVal)
                   }}
                   getOptionKey={(op) => op.id}
                   getOptionLabel={(option) => option.name}
@@ -315,12 +312,6 @@ function ReceptionForm({ hideForm }) {
           </Slide>
           <Controller
             name="company"
-            rules={{
-              required: {
-                value: true,
-                message: "يجب اختيار اسم الشركه",
-              },
-            }}
             control={control}
             render={({ field }) => {
               return (

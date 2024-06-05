@@ -62,6 +62,7 @@ function Item() {
         initial_balance: formData.initial_balance,
         initial_price: formData.initial_price,
         tests: formData.tests,
+        unit : formData.unit
       }),
     })
       .then((res) => res.json())
@@ -155,8 +156,8 @@ function Item() {
   //     });
   // }, [isSubmitted]);
   return (
-    <Grid container>
-      <Grid item xs={7}>
+    <Grid container spacing={3}>
+      <Grid item xs={8}>
         <Stack sx={{mb:1}} direction={'row'} justifyContent={'space-between'}>
         <select
           onChange={(val) => {
@@ -191,6 +192,7 @@ function Item() {
                 <TableCell>رصيد اول المده</TableCell>
                 <TableCell> الحد الادني </TableCell>
                 <TableCell> سعر الوحده المبدئي </TableCell>
+                <TableCell> الوحده</TableCell>
                 <TableCell>حذف</TableCell>
               </TableRow>
             </thead>
@@ -214,8 +216,11 @@ function Item() {
                   <MyTableCell colName={"require_amount"} item={item}>
                     {item.require_amount}
                   </MyTableCell>
-                  <MyTableCell colName={"initial_price"} item={item}>
+                  <TableCell>
                     {item.initial_price}
+                  </TableCell>
+                  <MyTableCell colName={"unit"} item={item}>
+                    {item.unit}
                   </MyTableCell>
                   <TableCell>
                     <IconButton size="small"
@@ -277,7 +282,6 @@ function Item() {
           })}
         </Grid>
       </Grid>
-      <Grid item xs={1}></Grid>
 
       <Grid item xs={4}>
     
@@ -397,6 +401,18 @@ function Item() {
               label="سعر الوحده "
               variant="filled"
               helperText={errors.initial_price && errors.initial_price.message}
+            />
+            
+            <TextField
+              fullWidth
+              error={errors.unit}
+              {...register("unit", {
+                required: { value: true, message: "يجب ادخال  الوحده  " },
+              })}
+              id="outlined-basic"
+              label="الوحده"
+              variant="filled"
+              helperText={errors.unit && errors.unit.message}
             />
 
             <LoadingButton

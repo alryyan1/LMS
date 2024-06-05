@@ -30,10 +30,10 @@ const Nav = () => {
   }, []);
   console.log(user);
   const changeLang = () => {
-    if (i18n.language === "en") {
-      i18n.changeLanguage('ar')
+    if (i18n.language === "ar") {
+      i18n.changeLanguage('ch')
     }else{
-      i18n.changeLanguage('en')
+      i18n.changeLanguage('ar')
 
     }
   }

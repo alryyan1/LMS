@@ -26,10 +26,11 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 function EditPatientDialog({ patient, setOpen, open }) {
-  const { doctors ,setActivePatient,setUpdate,openedDoctors } = useOutletContext();
+  const { doctors, setActivePatient, setUpdate, openedDoctors, companies } =
+    useOutletContext();
   // console.log(patient);
   // console.log(appData.doctors, "doctors");
-  console.log(openedDoctors,'open doctors')
+  console.log(openedDoctors, "open doctors");
   const [loading, setLoading] = useState();
   function editDoctorHandler(formData) {
     setLoading(true);
@@ -37,17 +38,15 @@ function EditPatientDialog({ patient, setOpen, open }) {
 
     console.log(formData, "formData");
     axiosClient
-      .patch(`patients/edit/${patient.id}`, 
-      formData
-      )
+      .patch(`patients/edit/${patient.id}`, {...formData,company_relation_id:formData.company_relation_id.id,subcompany_id:formData.subcompany_relation_id.id})
       .then((data) => {
-        console.log(data)
+        console.log(data);
         if (data.status) {
-          setUpdate((prev)=>{
-            return prev+1
-          })
+          setUpdate((prev) => {
+            return prev + 1;
+          });
           console.log(newPatient, "new patient");
-          
+
           setOpen(false);
           setActivePatient(newPatient);
         }
@@ -67,15 +66,16 @@ function EditPatientDialog({ patient, setOpen, open }) {
       age_day: patient.age_day,
       age_month: patient.age_month,
       age_year: patient.age_year,
+      insurance_no: patient.insurance_no,
+      company: patient.company,
+      guarantor : patient.guarantor,
+      company_relation_id : patient.relation,
+      subcompany_id:patient.subcompany
+
     },
   });
   return (
-    <Dialog
-    
-      key={patient.id}
-     
-      open={open == undefined ? false : open}
-    >
+    <Dialog key={patient.id} open={open == undefined ? false : open}>
       <DialogTitle>تعديل البيانات</DialogTitle>
       <DialogContent dividers>
         <form onSubmit={handleSubmit(editDoctorHandler)} noValidate>
@@ -174,11 +174,124 @@ function EditPatientDialog({ patient, setOpen, open }) {
                 />
               </Item>
             </Stack>
+            {patient.company_id && <Divider>التامين</Divider>}
+            {patient.company_id && (
+              <Stack direction={"column"} spacing={1}>
+                <Controller
+                  name="company"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    return (
+                      <Autocomplete
+                        value={patient.company}
+                        isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                        getOptionKey={(op) => op.id}
+                        {...field}
+                        getOptionLabel={(op) => op.name}
+                        options={companies}
+                        onChange={(_, val) => {
+                          field.onChange(val);
+                        }}
+                        renderInput={(params) => {
+                          return (
+                            <TextField
+                              label="الشركه"
+                              error={errors.company && errors.company.message}
+                              {...params}
+                            />
+                          );
+                        }}
+                      />
+                    );
+                  }}
+                />
+                <Stack direction={"row"} gap={2}>
+                  <TextField
+                    {...register("insurance_no")}
+                    label="رقم البطاقه"
+                    variant="outlined"
+                  />
+               <TextField
+                    {...register("guarantor")}
+                    label="اسم الضامن"
+                    variant="outlined"
+                  />
+                         
+                 
+                </Stack>
 
-            {errors?.age && errors.age.message}
-           
+                <Stack direction={"row"} gap={2}>
+                  
+              
+                          <Controller
+                        name="subcompany_id"
+                        control={control}
+                        render={({ field }) => {
+                          return (
+                            <Autocomplete
+                            fullWidth
+                            
+                              value={patient.subcompany}
+                              isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                              getOptionKey={(op) => op.id}
+                              {...field}
+                              getOptionLabel={(op) => op.name}
+                              options={patient.company.sub_companies}
+                              onChange={(_, val) => {
+                                field.onChange(val);
+                              }}
+                              renderInput={(params) => {
+                                return (
+                                  <TextField
+                                    label="الجهه"
+                                    error={errors.subcompany_id && errors.subcompany_id.message}
+                                    {...params}
+                                  />
+                                );
+                              }}
+                            />
+                          );
+                        }}
+                      />
+                        
+               
+                      <Controller
+                    name="company_relation_id"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Autocomplete
+                        {...field}
+                        value={field.value}
+                        fullWidth
+                          isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                          getOptionKey={(op) => op.id}
+                          getOptionLabel={(op) => op.name}
+                          options={patient.company.relations}
+                          onChange={(_, val) => {
+                            field.onChange(val);
+                          }}
+                          renderInput={(params) => {
+                            return (
+                              <TextField
+                                label="العلاقه"
+                                {...params}
+                              />
+                            );
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                 
+                </Stack>
+
+              </Stack>
+            )}
           </Stack>
-          <LoadingButton sx={{m:1}}
+          <LoadingButton
+            sx={{ m: 1 }}
             loading={loading}
             type="submit"
             fullWidth

@@ -30,7 +30,14 @@ function ReceptionLayout() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [showPatientServices, setShowPatientServices] = useState(false);
   const [showServicePanel, setShowServicePanel] = useState(true);
-  
+  const [companies, setCompanies] = useState([]);
+
+  useEffect(() => {
+    axiosClient.get("company/all").then(({ data }) => {
+      console.log(data, "comapnies");
+      setCompanies(data);
+    });
+  }, []);
   useEffect(() => {
     Promise.all([
       axiosClient
@@ -61,6 +68,8 @@ function ReceptionLayout() {
       {
         <Outlet
           context={{
+            companies,
+            setCompanies,
             showPatientServices,
             setShowPatientServices,
             showServicePanel,

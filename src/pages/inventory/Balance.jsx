@@ -127,11 +127,11 @@ function Balance() {
                   <TableCell>
                     {item.initial_price * item.initial_balance}
                   </TableCell>
-                  <TableCell>{item.section.name}</TableCell>
+                  <TableCell>{item?.section?.name}</TableCell>
                   <TableCell>{item.require_amount}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
                   <TableCell>{item.totaldeduct}</TableCell>
-                  <TableCell>{item.remaining + item.initial_balance}</TableCell>
+                  <TableCell>{item.remaining }</TableCell>
                 </TableRow>
               );
             })}

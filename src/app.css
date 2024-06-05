@@ -65,3 +65,10 @@ td{
     font-size: 1rem!important;
     font-weight: 500!important;
 }
+.patient-no{
+  color: white!important;
+  margin-left: 4px!important;
+  background-color: burlywood!important;
+  /* padding: 5px!important; */
+  width: 40px!important;
+}

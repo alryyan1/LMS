@@ -20,7 +20,7 @@ import {
   import MyLoadingButton from "../../components/MyLoadingButton";
   import { ArrowBack, ArrowForward } from "@mui/icons-material";
   import { useOutletContext } from "react-router-dom";
-import { Item } from "../constants";
+import { Item, webUrl } from "../constants";
 import ShipItemAutocomplete from "./ShipItemAutocomplete";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import Locales from "./Locale";
@@ -162,26 +162,30 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
           }}
           label="بحث"
         ></TextField>
-       
+        <a href={`${webUrl}shippings`}>pdf</a>
         </Stack>
   
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>{t('hello')}</TableCell>
-                  <TableCell>الهاتف</TableCell>
-                  <TableCell>الصنف</TableCell>
-                  <TableCell>اكسبرس</TableCell>
+                  <TableCell>{t('id')}</TableCell>
+                  <TableCell>{t('name')}</TableCell>
+                  <TableCell>{t('phone')}</TableCell>
+                  <TableCell>{t('item')}</TableCell>
+                  <TableCell>Express</TableCell>
                   <TableCell>CTN</TableCell>
                   <TableCell>CBM</TableCell>
                   <TableCell>KG</TableCell>
-                  <TableCell>التاريخ</TableCell>
-                  <TableCell>الحاله</TableCell>
+                  <TableCell>{t('date')}</TableCell>
+                  <TableCell>{t('state')}</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
                 {shippings.map((item) => (
                   <TableRow key={item.id}>
+                    <TableCell>
+                      {item.id}
+                    </TableCell>
                     <MyTableCell table="shipping" colName={"name"} item={item}>
                       {item.name}
                     </MyTableCell>
@@ -292,7 +296,7 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
         <Grid item xs={3} style={{ flexGrow: "1" }}>
           <Stack direction={"row"} justifyContent={"center"} spacing={4}>
             <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
-              اضافه شحنه 
+              {t('addShip')} 
             </Typography>
           </Stack>
           <form noValidate dir="rtl" onSubmit={handleSubmit2(submitHandler2)}>
@@ -304,7 +308,7 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                   required: { value: true, message: "يجب ادخال اسم " },
                 })}
                 id="outlined-basic"
-                label="اسم "
+                label={t('name')}
                 variant="filled"
                 helperText={errors2.name?.message}
               />
@@ -317,7 +321,7 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                   required: { value: true, message: "يجب ادخال  رقم الهاتف" },
                 })}
                 id="outlined-basic"
-                label="رقم الهاتف"
+                label={t('phone')}
                 variant="filled"
                 helperText={errors2.phone?.message}
               />
@@ -329,7 +333,7 @@ import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
                   required: { value: true, message: "يجب ادخال تحمل المريض" },
                 })}
                 id="outlined-basic"
-                label="اكسبرس"
+                label="express"
                 variant="filled"
                 helperText={errors2.express?.message}
               />

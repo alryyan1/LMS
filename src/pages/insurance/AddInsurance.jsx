@@ -256,6 +256,9 @@ function AddInsurance() {
         <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
           <Stack direction={"column"} gap={3}>
             <TextField
+             InputLabelProps={{
+              style: { color: 'black',fontSize:'1rem' },
+            }}
               fullWidth
               error={errors.name != null}
               {...register("name", {
