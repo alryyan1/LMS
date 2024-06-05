@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
-import MySelectTableCell from "../inventory/MyselectTableCell";
+import MySelectTableCell from "../inventory/MySelectTableCell";
 import { Item, webUrl } from "../constants";
 
 function LabList() {
