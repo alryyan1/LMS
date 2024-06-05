@@ -1,10 +1,7 @@
-import "../Laboratory/addpatient.css";
+import "../Laboratory/addPatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "../Laboratory/PatientDetail";
 import { webUrl } from "../constants";
-import YourSvg from "./doctor-svgrepo-com.svg";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
   Drawer,
@@ -14,30 +11,21 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
-  IconButton,
   Stack,
   styled,
   Paper,
-  Skeleton,
   Slide,
   Badge,
   Chip,
 } from "@mui/material";
 import {
-  Add,
-  Calculate,
-  Group,
   Mail,
-  PersonAdd,
-  Print,
 } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
-import MoneyDialog from "../Dialogs/MoneyDialog";
 import SearchDialog from "../Dialogs/SearchDialog";
 import ReceptionForm from "./ReceptionForm";
 import ReceptionDoctorsDialog from "../Dialogs/ReceptionDoctorsDialog";
@@ -60,7 +48,6 @@ function Reception() {
     setActivePatient,
     setOpen,
     setDialog,
-    searchByName,
     setFoundedPatients,
     foundedPatients,
     openedDoctors,
