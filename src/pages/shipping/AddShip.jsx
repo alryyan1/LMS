@@ -174,7 +174,7 @@ function AddShip() {
                 <TableCell>{t("name")}</TableCell>
                 <TableCell>{t("phone")}</TableCell>
                 <TableCell>{t("item")}</TableCell>
-                <TableCell>Express</TableCell>
+                <TableCell>Track No</TableCell>
                 <TableCell>CTN</TableCell>
                 <TableCell>CBM</TableCell>
                 <TableCell>KG</TableCell>
