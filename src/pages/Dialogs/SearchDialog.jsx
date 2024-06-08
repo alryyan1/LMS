@@ -39,7 +39,7 @@ function SearchDialog() {
         console.log(data);
         setUpdate((prev) => prev + 1);
       })
-      .catch(({data}) => {
+      .catch(({response:{data}}) => {
         console.log(data);
        setDialog((prev)=>{
         return {...prev,open:true,msg:data.message,color:'error'}

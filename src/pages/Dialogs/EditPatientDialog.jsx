@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient, setOpen, open }) {
+function EditPatientDialog({ patient, setOpen, open,doctorVisitId }) {
   const { doctors, setActivePatient, setUpdate, openedDoctors, companies } =
     useOutletContext();
   // console.log(patient);
@@ -38,9 +38,9 @@ function EditPatientDialog({ patient, setOpen, open }) {
 
     console.log(formData, "formData");
     axiosClient
-      .patch(`patients/edit/${patient.id}`, {...formData,company_relation_id:formData.company_relation_id.id,subcompany_id:formData.subcompany_relation_id.id})
+      .patch(`patients/edit/${doctorVisitId}`, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id})
       .then((data) => {
-        console.log(data);
+        console.log(data,'edited data');
         if (data.status) {
           setUpdate((prev) => {
             return prev + 1;
@@ -48,7 +48,7 @@ function EditPatientDialog({ patient, setOpen, open }) {
           console.log(newPatient, "new patient");
 
           setOpen(false);
-          setActivePatient(newPatient);
+          setActivePatient(data.patient);
         }
       })
       .finally(() => setLoading(false));
@@ -67,7 +67,7 @@ function EditPatientDialog({ patient, setOpen, open }) {
       age_month: patient.age_month,
       age_year: patient.age_year,
       insurance_no: patient.insurance_no,
-      company: patient.company,
+      // company: patient.company,
       guarantor : patient.guarantor,
       company_relation_id : patient.relation,
       subcompany_id:patient.subcompany
@@ -77,12 +77,13 @@ function EditPatientDialog({ patient, setOpen, open }) {
   return (
     <Dialog key={patient.id} open={open == undefined ? false : open}>
       <DialogTitle>تعديل البيانات</DialogTitle>
-      <DialogContent dividers>
-        <form onSubmit={handleSubmit(editDoctorHandler)} noValidate>
+      <DialogContent >
+        <form onSubmit={handleSubmit(editDoctorHandler)} >
           <Stack
             // divider={<Divider orientation="horizontal" flexItem />}
             direction={"column"}
-            gap={5}
+            gap={2}
+            sx={{p:1}}
           >
             <TextField
               {...register("name", {
@@ -177,7 +178,7 @@ function EditPatientDialog({ patient, setOpen, open }) {
             {patient.company_id && <Divider>التامين</Divider>}
             {patient.company_id && (
               <Stack direction={"column"} spacing={1}>
-                <Controller
+                {/* <Controller
                   name="company"
                   control={control}
                   rules={{ required: true }}
@@ -205,14 +206,15 @@ function EditPatientDialog({ patient, setOpen, open }) {
                       />
                     );
                   }}
-                />
+                /> */}
                 <Stack direction={"row"} gap={2}>
-                  <TextField
+                  <TextField fullWidth
                     {...register("insurance_no")}
                     label="رقم البطاقه"
                     variant="outlined"
                   />
                <TextField
+               fullWidth
                     {...register("guarantor")}
                     label="اسم الضامن"
                     variant="outlined"

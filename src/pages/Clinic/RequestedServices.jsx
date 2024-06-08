@@ -9,12 +9,8 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import DiscountSelect from "../Laboratory/DiscountSelect";
 import { useEffect, useState } from "react";
-import { url } from "../constants";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { LoadingButton } from "@mui/lab";
-import MyCheckBox from "../Laboratory/MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import DiscountSelectService from "./DiscountSelectService";
@@ -23,15 +19,16 @@ import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import ServiceCountSelect from "./ServiceCountSelect";
 function RequestedServices({ setPatients }) {
-  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift} = useOutletContext();
+  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift,companies} = useOutletContext();
   const [loading, setLoading] = useState(false);
+  console.log(companies,'companies')
 
   const pay = (id,setLoading) => {
     setLoading(true);
     axiosClient
       .get(`patient/service/pay/${actviePatient.id}?service_id=${id}`)
       .then(({ data }) => {
-        console.log(data)
+        console.log(data,'pay service')
         setActivePatient(data.patient);
         setUpdate((prev)=>prev+1)
 
@@ -43,7 +40,16 @@ function RequestedServices({ setPatients }) {
             color:"success"
           }
         })
-      }).finally(() => {setLoading(false);});
+      }).finally(() => {setLoading(false);}).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return{
+           ...prev,
+            open:true,
+            msg:data.message,
+            color:"error"
+          }
+        })
+      });
   };
   const cancelPayHandler = (id,setLoading) => {
     setLoading(true);
@@ -61,7 +67,16 @@ function RequestedServices({ setPatients }) {
         })
         setActivePatient(data.patient);
       }
-     }).finally(() => {setLoading(loading)})
+     }).finally(() => {setLoading(loading)}).catch(({response:{data}})=>{
+      setDialog((prev)=>{
+        return{
+         ...prev,
+          open:true,
+          msg:data.message,
+          color:"error"
+        }
+      })
+    });
   };
 
   const deleteService = (id) => {
@@ -80,8 +95,19 @@ function RequestedServices({ setPatients }) {
             };
           });
         }
+      }).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return{
+           ...prev,
+            open:true,
+            msg:data.message,
+            color:"error"
+          }
+        })
       });
   };
+  let total_endurance = 0
+
   return (
     <>
       <div className="requested-tests">
@@ -95,19 +121,35 @@ function RequestedServices({ setPatients }) {
                 <TableRow>
                   <TableCell> Name</TableCell>
                   <TableCell align="right">Price</TableCell>
+                  { actviePatient.company_id ? <TableCell align="right">Endurance</TableCell>:   "" }
                   <TableCell align="right">paid</TableCell>
-                  <TableCell align="right">Discount</TableCell>
-                  <TableCell align="right">Bankak</TableCell>
+                  { actviePatient.company_id ? "":   <TableCell align="right">Discount</TableCell> }
+                
+                  { actviePatient.company_id ? "": <TableCell align="right">Bankak</TableCell>}
                   <TableCell align="right">count</TableCell>
-                  <TableCell align="right">delete</TableCell>
-                  <TableCell align="right">cancel</TableCell>
-                  <TableCell align="right">pay</TableCell>
+                  <TableCell width={'5%'} align="right">delete</TableCell>
+                  <TableCell width={'5%'} align="right">cancel</TableCell>
+                  <TableCell width={'5%'} align="right">pay</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {actviePatient.services.filter((service)=>{
                   return service.pivot.doctor_id ==activeShift.doctor.id
                 }).map((service) => {
+
+                  let price  
+                  let company
+                  let endurance
+                  if(actviePatient.company_id != null) {
+                     company = companies.find((c)=>c.id == actviePatient.company_id)
+                     price  = company.services.find((s)=>s.id == service.id).pivot.price
+                     endurance =   (price * service.pivot.count) *company.service_endurance /100
+                     total_endurance+= endurance;
+                    console.log(company,'patient company')
+                  }else{
+                    price  = service.pivot.price
+                  }
+                  console.log(price,'price ')
                   return (
                     <TableRow
                       sx={{
@@ -120,26 +162,29 @@ function RequestedServices({ setPatients }) {
                       </TableCell>
 
                       <TableCell sx={{ border: "none" }} align="right">
-                        {service.pivot.price}
+                        {price}
                       </TableCell>
+                      { actviePatient.company_id ?  <TableCell sx={{ border: "none" ,color:'red'}} align="right">
+                       {endurance}
+                      </TableCell>: ""}
                       <TableCell sx={{ border: "none" }} align="right">
                         {service.pivot.amount_paid}
                       </TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
+                      { actviePatient.company_id ? "": <TableCell sx={{ border: "none" }} align="right">
                         <DiscountSelectService
                           service={service}
                           id={service.id}
                           actviePatient={actviePatient}
                         />
-                      </TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
+                      </TableCell>}
+                      { actviePatient.company_id ? "":  <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
                           disabled={service.pivot.is_paid == 0}
                           checked={service.pivot.bank == 1}
                           
                           id={service.id}
                         ></MyCheckboxReception>
-                      </TableCell>
+                      </TableCell>}
                       <TableCell sx={{ border: "none" }} align="right">
                         <ServiceCountSelect
                           service={service}
@@ -194,8 +239,9 @@ function RequestedServices({ setPatients }) {
             <div className="total-price">
               <div className="sub-price">
                 <div className="title">Total</div>
+                
                 <Typography  variant="h3">
-                  {actviePatient.services.filter((service)=>{
+                  {actviePatient.company_id ==null  ? actviePatient.services.filter((service)=>{
                   return service.pivot.doctor_id == activeShift.doctor.id
                 }).reduce((accum, service) => {
                     console.log(service.pivot.count,'service.pivot.count)')
@@ -204,7 +250,7 @@ function RequestedServices({ setPatients }) {
                       (service.pivot.discount * total ) / 100
                     );
                     return accum + (total - discount);
-                  }, 0)}
+                  }, 0) : total_endurance}
                 </Typography>
               </div>
               <div className="sub-price">

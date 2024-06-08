@@ -45,6 +45,14 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
         <Print />
       </IconButton>}
     </Item>
+       
+    <Item>
+      
+     {user && <IconButton title="2 التقرير العام" href={`${webUrl}clinics/all?user=${user.id}`} variant="contained">
+        <Print />
+      </IconButton>}
+    </Item>
+    
     {activeShift &&<Item>
      <IconButton color="info" title="التقرير الخاص" href={`${webUrl}clinics/doctor/report?user=${user.id}&doctorshift=${activeShift.id}`} variant="contained">
         <Print  />

@@ -92,7 +92,7 @@ function PatientReception({ visit, hideForm, index }) {
           </div>
             
 
-          {visit.name}
+          {visit.patient.name}
         </Item>
         <Item className="patient-no">{index - 1}</Item>
       </Stack>

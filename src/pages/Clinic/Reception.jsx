@@ -297,7 +297,7 @@ function Reception() {
                   return (
                     <PatientReception
                       index={count--}
-                      key={visit.pivot.id}
+                      key={visit.id}
                       hideForm={hideForm}
                       visit={visit}
                     ></PatientReception>

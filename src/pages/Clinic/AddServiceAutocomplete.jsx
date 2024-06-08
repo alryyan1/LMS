@@ -10,6 +10,7 @@ function AddServiceAutocomplete({ patients, setPatients }) {
 
   const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate} = useOutletContext();
   const [loading, setLoading] = useState(false);
+  console.log(actviePatient,'active visit')
   const addServiceHandler = async () => {
     setLoading(true);
     try {
@@ -18,7 +19,7 @@ function AddServiceAutocomplete({ patients, setPatients }) {
         `patient/service/add/${actviePatient.id}`,
         { services: payload,doctor_id:activeShift.doctor.id }
       );
-      console.log(data)
+      console.log(data,'result data')
       if (data.status) {
         setShowPatientServices(true)
         setShowServicePanel (false)

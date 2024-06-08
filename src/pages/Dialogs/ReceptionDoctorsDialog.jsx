@@ -59,6 +59,10 @@ function ReceptionDoctorsDialog() {
       }else{
       setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
       }
+    }).catch(({response:{data}})=>{
+      console.log(data)
+      setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
+
     });
   };
   const closeDoctorShift = (doctor) => {

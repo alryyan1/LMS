@@ -114,7 +114,7 @@ function AddInsurance() {
       {loading  ? (
         <Skeleton height={400} style={{flexGrow:"2"} }></Skeleton>
       ) : (
-        <div>
+        <div style={{ flexGrow: "1" }}>
           <TableContainer sx={{ mb: 1 }}>
             <Stack
               sx={{ mb: 1 }}
@@ -247,7 +247,7 @@ function AddInsurance() {
           </Grid>
         </div>
       )}
-      <div style={{ flexGrow: "1" }}>
+      <div >
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
           <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
             اضافه تعاقد جديد

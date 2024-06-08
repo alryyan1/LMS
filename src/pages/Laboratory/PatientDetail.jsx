@@ -13,7 +13,8 @@ import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import axiosClient from "../../../axios-client";
 
-function PatientDetail({ patient, setPatients, copyPatient = false }) {
+function PatientDetail({ patient:{patient,id}, setPatients, copyPatient = false }) {
+  console.log(id,'visit id')
   console.log(patient, "patient in patient details");
   const [open, setOpen] = useState();
   const { openedDoctors, setUpdate, activeShift } = useOutletContext();
@@ -122,7 +123,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false }) {
                   <div>
                     {
                       //print iso date
-                      patient.subcompany.name
+                      patient?.subcompany?.name
                     }
                   </div>
                   <div>الجهه</div>
@@ -192,6 +193,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false }) {
         )}
 
         <EditPatientDialog
+        doctorVisitId={id}
           open={open}
           setOpen={setOpen}
           patient={patient}
