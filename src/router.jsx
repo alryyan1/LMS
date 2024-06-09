@@ -59,6 +59,13 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: 'shipping/:id',
+        element: (
+            <FindShipping/>
+           
+        ),
+      },
+      {
         element: <GuestLayout />,
         children: [
           {
@@ -235,13 +242,7 @@ export const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-          {
-            path: 'find/:id',
-            element: (
-                <FindShipping/>
-               
-            ),
-          },
+         
         ],
       
       },

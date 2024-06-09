@@ -7,7 +7,7 @@ function QRdialog({data,isOpen,setOpen}) {
   <Dialog open={isOpen}>
           <DialogTitle  >QR</DialogTitle>
            <DialogContent >
-            <QRCode value={`https://preeminent-sprite-257d36.netlify.app/find/${data}`}></QRCode>
+            <QRCode value={`https://main--preeminent-sprite-257d36.netlify.app/shipping/${data}`}></QRCode>
            </DialogContent>
           <DialogActions>
           <Button color="error"  onClick={()=>{
