@@ -50,6 +50,15 @@ import FindShipping from "./pages/shipping/FindShipping";
 
 export const router = createBrowserRouter([
   {
+    path: 'shipping/:id',
+    element: (
+        <FindShipping/>
+       
+    ),
+  },
+  {
+
+    
     element: <App />,
     path: "/",
     errorElement: <Error404 />,
@@ -58,13 +67,7 @@ export const router = createBrowserRouter([
         path: "*",
         element: <Login />,
       },
-      {
-        path: 'shipping/:id',
-        element: (
-            <FindShipping/>
-           
-        ),
-      },
+     
       {
         element: <GuestLayout />,
         children: [
