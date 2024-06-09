@@ -46,6 +46,7 @@ import { AddReaction } from "@mui/icons-material";
 import AddRelation from "./pages/insurance/AddRelation";
 import AddShip from "./pages/shipping/AddShip";
 import ShippingNav from "./pages/shipping/ShippingNav";
+import FindShipping from "./pages/shipping/FindShipping";
 
 export const router = createBrowserRouter([
   {
@@ -230,12 +231,21 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <AddShip/>
+               
               </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'find/:id',
+            element: (
+                <FindShipping/>
+               
             ),
           },
         ],
       
       },
+      
       {
         path: "/insurance",
         element: <InsuranceNav />,

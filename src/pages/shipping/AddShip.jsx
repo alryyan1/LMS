@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Divider,
   Grid,
+  IconButton,
   Paper,
   Skeleton,
   Stack,
@@ -19,7 +20,7 @@ import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, QrCode } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import { Item, webUrl } from "../constants";
 import ShipItemAutocomplete from "./ShipItemAutocomplete";
@@ -27,6 +28,7 @@ import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import Locales from "./Locale";
 import { useTranslation } from "react-i18next";
 import ShippingStateAutocomplete from "./ShippingStateAutocomplete";
+import QRdialog from "../Dialogs/QRdialog";
 
 function AddShip() {
   const { t } = useTranslation();
@@ -38,6 +40,9 @@ function AddShip() {
   const [search, setSearch] = useState(null);
   const [links, setLinks] = useState([]);
   const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState(null);
+  const [qrData, setQrData] = useState(null);
+  const [open,setOpen] =  useState(false)
 
   const {
     register: register2,
@@ -73,6 +78,10 @@ function AddShip() {
   };
   const submitHandler2 = (data) => {
     setLoading(true);
+    console.log(data.item, "data item");
+    if (data.item == null) {
+      return;
+    }
 
     console.log(data, "submitted data");
     axiosClient
@@ -85,29 +94,33 @@ function AddShip() {
             return {
               ...prev,
               open: true,
-              message: data.message,
+              msg: "success",
               color: "success",
             };
           });
         }
       })
-      .catch(({ data }) => {
+      .catch(({ response: { data } }) => {
         console.log(data, "error data");
         setDialog((prev) => {
-          return { ...prev, open: true, message: data.message, color: "error" };
+          return { ...prev, open: true, msg: data.message, color: "error" };
         });
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    axiosClient.get("shipping/paginate").then(({ data: { data, links } }) => {
-      console.log(data, "shippings");
-      console.log(links, "links");
-      setLinks(links);
-      setShippings(data);
-    });
-  }, [isSubmitSuccessful2]);
+    axiosClient
+      .get(`shipping/paginate?state_id=${selectedState?.id}`)
+      .then(({ data: { data, links } }) => {
+        console.log(data, "shippings");
+        console.log(links, "links");
+        setLinks(links);
+        setShippings(data);
+      });
+  }, [isSubmitSuccessful2, selectedState]);
   useEffect(() => {
     axiosClient.get("shippingState/all").then(({ data }) => {
       setStates(data);
@@ -135,9 +148,15 @@ function AddShip() {
         setLoading(false);
       });
   };
+ const showQrCodeDialog = (data)=>{
+  setQrData(data)
+  setOpen(true)
+ }
 
   return (
     <Grid container spacing={3}>
+       <QRdialog isOpen={open} setOpen={setOpen} data={qrData}/>
+
       <Grid item xs={12} lg={9}>
         <TableContainer sx={{ mb: 1 }}>
           <Stack
@@ -157,6 +176,17 @@ function AddShip() {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
+            <Autocomplete
+              sx={{ width: "200px" }}
+              onChange={(_, newVal) => {
+                setSelectedState(newVal);
+              }}
+              getOptionLabel={(option) => option.name}
+              options={states}
+              renderInput={(params) => {
+                return <TextField {...params} label="الحاله" />;
+              }}
+            />
             <TextField
               value={search}
               onChange={(e) => {
@@ -179,13 +209,14 @@ function AddShip() {
                 <TableCell>CBM</TableCell>
                 <TableCell>KG</TableCell>
                 <TableCell>{t("date")}</TableCell>
-                <TableCell>{t("state")}</TableCell>
+                <TableCell width={"20%"}>{t("state")}</TableCell>
+                <TableCell>QR</TableCell>
               </TableRow>
             </thead>
             <TableBody>
               {shippings.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.prefix}</TableCell>
                   <MyTableCell table="shipping" colName={"name"} item={item}>
                     {item.name}
                   </MyTableCell>
@@ -223,6 +254,11 @@ function AddShip() {
                       shippingStates={states}
                       shipSate={item.state}
                     />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={()=>{
+                      showQrCodeDialog(item.id)
+                    }}><QrCode/></IconButton>
                   </TableCell>
                 </TableRow>
               ))}

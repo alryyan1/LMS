@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient =  axios.create({
-    baseURL : `http://127.0.0.1/laravel-react-app/public/api`
+    baseURL : `https://intaj-starstechnology.com/shipping/public/api`
 })
 
 axiosClient.interceptors.request.use((config)=>{

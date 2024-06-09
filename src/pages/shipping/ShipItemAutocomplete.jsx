@@ -72,16 +72,17 @@ export default function ShipItemAutocomplete({Controller,control,errors,setValue
                 // timeout to avoid instant validation of the dialog's form.
                 setTimeout(() => {
                   toggleOpen(true);
-                  setDialogValue(newValue);
+                 setDialogValue(newValue);
                 });
               } else if (newValue && newValue.inputValue) {
                 toggleOpen(true);
-                setDialogValue(newValue.inputValue);
+               setDialogValue(newValue.inputValue);
               } else {
               //  setValue(newValue);
                 // axiosClient.patch(`addShipItem`,{id:newValue.id})
+                return field.onChange(newValue);
               }
-              return field.onChange(newValue);
+              
 
             }}
             filterOptions={(options, params) => {
