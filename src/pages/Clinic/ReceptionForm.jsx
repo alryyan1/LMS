@@ -36,13 +36,15 @@ function ReceptionForm({ hideForm }) {
     formState: { errors },
   } = useForm();
   const name = watch("name");
+  const phone = watch("phone");
 
   useEffect(() => {
     if (name != undefined) {
       console.log(name, "name");
       const timer = setTimeout(() => {
         console.log("searchByName", name);
-        axiosClient.post("patient/search", { name: name }).then(({ data }) => {
+        console.log("search by phone", phone);
+        axiosClient.post("patient/search", { name: name ,phone}).then(({ data }) => {
           console.log(data, "founded patients");
           setFoundedPatients(data);
         });
@@ -52,6 +54,22 @@ function ReceptionForm({ hideForm }) {
       };
     }
   }, [name]);
+  useEffect(() => {
+    if (phone != undefined) {
+      console.log(name, "name");
+      const timer = setTimeout(() => {
+        console.log("searchByName", name);
+        console.log("search by phone", phone);
+        axiosClient.post("patient/search/phone", {phone}).then(({ data }) => {
+          console.log(data, "founded patients");
+          setFoundedPatients(data);
+        });
+      }, 300);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [phone]);
 
   const sumbitHandler = async (formData) => {
     setIsLoading(true);

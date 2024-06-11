@@ -42,18 +42,11 @@ import axiosClient from "../../../axios-client.js";
       console.log(formData);
       // console.log(formData.expire.$d.toLocaleDateString());
       setLoading(true);
-      fetch(`${url}inventory/deduct`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          item_id: formData.item.id,
-          quantity: formData.amount,
-          client_id: formData.client.id,
-        }),
+      axiosClient.post(`inventory/deduct`, {
+        item_id: formData.item.id,
+        quantity: formData.amount,
+        client_id: formData.client.id,
       })
-        .then((res) => res.json())
         .then((data) => {
           console.log(data);
           setLoading(false);
@@ -65,6 +58,14 @@ import axiosClient from "../../../axios-client.js";
               msg: "تمت الاضافه  بنجاح",
             });
           }
+        }).catch(({response:{data}}) =>{
+          setLoading(false);
+          console.log(data)
+          setDialog({
+            color:'error',
+            open: true,
+            msg: data.message,
+          })
         });
     };
   
@@ -142,7 +143,7 @@ import axiosClient from "../../../axios-client.js";
         
         <Grid item xs={7}>
         <Typography textAlign={'center'}>
-            {deduct  && deduct.id}   اذن صرف رقم
+            {deduct  && deduct.id}   اذن طلب رقم
   
             </Typography>
           {/* create table with all suppliers */}

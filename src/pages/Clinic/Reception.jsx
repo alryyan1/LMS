@@ -79,9 +79,9 @@ function Reception() {
     <Box sx={{ width: 250 }} role="presentation">
       <List>
         {[
-          { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "" },
-          { title: "سحب العينات", to: "" },
+          { title: "استحقاق الاطباء", to: "/clinic/doctors" },
+          { title: "حساب الفئات", to: "" },
+          { title: "المرضي", to: "" },
           { title: " اداره التحاليل", to: "" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
@@ -121,7 +121,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "1fr",
+        patients: "0.5fr",
       };
     });
   };
@@ -194,10 +194,12 @@ function Reception() {
                 sx={
                   activeShift && activeShift.id === shift.id
                     ? {
-                        color: "white",
+                        color: "black",
                         cursor: "pointer",
                         flexGrow: 1,
                         minWidth: "200px",
+                        borderBottom:"4px solid blue",
+                        fontWeight:"bolder",
                       }
                     : {
                         minWidth: "200px",

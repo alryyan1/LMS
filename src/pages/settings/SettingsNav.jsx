@@ -46,6 +46,7 @@ function SettingsNav() {
         <NavLink to={"doctors"}>الاطباء</NavLink>
         <NavLink to={"specialists"}>التخصصات الطبيه</NavLink>
         <NavLink to={"users"}>المتسخدمين</NavLink>
+        <NavLink to={"permissions"}>الصلاحيات</NavLink>
       </ul>
 
       <ThemeProvider theme={theme}>

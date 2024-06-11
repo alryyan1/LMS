@@ -19,6 +19,7 @@ import { Link, useLoaderData, useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import dayjs from "dayjs";
 import { Delete } from "@mui/icons-material";
+import axiosClient from "../../../axios-client.js";
 
 function DeductInventory() {
   const items = useLoaderData();
@@ -113,8 +114,7 @@ function DeductInventory() {
   }, [isSubmitted,deductComplete]);
   const completeAdditionHandler = () => {
     setLoading(true);
-    fetch(`${url}inventory/deduct/complete`)
-      .then((res) => res.json())
+    axiosClient(`inventory/deduct/complete`)
       .then((data) => {
         if (data.status) {
           setLoading(false);
@@ -126,6 +126,14 @@ function DeductInventory() {
           });
         }
         console.log(data, "deposit complete");
+      }).catch(({response:{data}}) =>{
+        setLoading(false);
+        console.log(data)
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.message,
+        })
       });
   };
   return (
@@ -136,7 +144,7 @@ function DeductInventory() {
      
       </Grid>
       <Grid item xs={7}>
-      <Typography textAlign={'center'}>
+      <Typography variant="h4" textAlign={'center'}>
           {deduct  && deduct.id}   اذن صرف رقم
 
           </Typography>

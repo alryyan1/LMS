@@ -65,12 +65,16 @@ function PatientReception({ visit, hideForm, index }) {
           className={
             actviePatient && actviePatient.id === visit.id ? "active" : ""
           }
+          style={ actviePatient && actviePatient.id === visit.id ? {
+            borderBottom:"4px solid blue",
+            fontWeight:"bolder",
+          }:null}
           sx={{
             display: "flex",
             justifyContent: "space-between",
             minWidth: "200px",
             cursor: "pointer",
-            color: "black",
+       
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>

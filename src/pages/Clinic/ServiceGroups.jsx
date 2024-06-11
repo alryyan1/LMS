@@ -11,7 +11,7 @@ const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServ
     setSelectedServices((prev)=>{
       const founded =   prev.find((s)=>s.id === service.id)
       if (founded) {
-        return prev
+        return prev.filter((s)=>s.id != founded.id)
       }else{
         return [...prev,service]
       }
@@ -53,6 +53,10 @@ const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServ
                 return (
                     //test to add
                     <Card
+                    style={ founedService ? {
+                      borderBottom:"4px solid blue",
+                      fontWeight:"bolder",
+                    }:null}
                     className={ founedService ? 'active' : ''}
                       onClick={()=>serviceAddHandler(service)}
                       sx={{cursor:"pointer", p: 1, minWidth: "80px"}}

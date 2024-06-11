@@ -144,9 +144,15 @@ function InventoryIncome() {
           });
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(({response:{data}}) =>{
+        setLoading(false);
+        console.log(data)
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.message,
+        })
+      })
   };
 
   const deleteIncomeItemHandler = (id) => {
@@ -213,6 +219,14 @@ function InventoryIncome() {
           });
         }
         console.log(data, "deposit complete");
+      }).catch(({response:{data}}) =>{
+        console.log(data)
+        setLoading(false);
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.message,
+        })
       });
   };
   return (

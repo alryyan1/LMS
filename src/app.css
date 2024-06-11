@@ -51,9 +51,9 @@ body {
 }
 
 .active {
-  color: white!important;
-  padding: 8px;
-  background-color: #1976d2!important;
+  /* color: white!important; */
+  /* padding: 8px; */
+  /* background-color: #1976d2!important; */
 }
 
 .MuiDialog-paper{

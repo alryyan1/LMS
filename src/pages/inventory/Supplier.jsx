@@ -16,6 +16,7 @@ import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import MyTableCell from "./MyTableCell.jsx";
 import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../../axios-client.js";
 
 function Supplier() {
   //create state variable to store all suppliers
@@ -33,14 +34,7 @@ function Supplier() {
     console.log(formData);
     setLoading(true);
     // console.log(isSubmitting)
-    fetch(`${url}suppliers/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(formData),
-    })
-      .then((res) => res.json())
+    axiosClient.post(`suppliers/create`, formData)
       .then((data) => {
         if (data.status) {
           setLoading(false);
@@ -50,16 +44,24 @@ function Supplier() {
             msg: "تمت الاضافه  بنجاح",
           });
         }
+      }).catch(({response:{data}}) =>{
+        console.log(data)
+        setLoading(true);
+
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.msg,
+        })
+      }).finally(() => {
+        setLoading(false);
       });
   };
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };
   const deleteSupplierHandler = (id) => {
-    fetch(`${url}suppliers/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
+    axiosClient.delete(`suppliers/${id}`)
       .then((data) => {
         if (data.status) {
           //delete supplier by id
@@ -70,6 +72,13 @@ function Supplier() {
             msg: "تم الحذف بنجاح",
           });
         }
+      }).catch(({response:{data}}) =>{
+        console.log(data)
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.msg,
+        })
       });
   };
   useEffect(() => {

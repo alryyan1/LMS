@@ -16,21 +16,24 @@ import {
   import { useEffect, useState } from "react";
   import axiosClient from "../../../axios-client";
   import { webUrl } from "../constants";
+import { useOutletContext } from "react-router-dom";
   
   function DeductReport() {
     const [date, setDate] = useState(null);
     const [deduct, setDeduct] = useState([]);
     const [deductItems, setDeductItems] = useState([]);
     const [selectDeduct, setSelectedDeduct] = useState(null);
-  
-  
+   const {setDialog} = useOutletContext()
+
+
   
     const searchDeducts = () => {
       axiosClient
         .post("inventory/deduct/getDeductsByDate", {
-          date: date,
+          date: date.format('YYYY-MM-DD'),
         })
         .then(({ data: { data } }) => {
+
         //   setDeductItems([]);
           setDeduct(data);
           console.log(data, "response");
@@ -60,13 +63,20 @@ import {
      .then(({ data }) => {
       setDeduct((prev)=>prev.filter(item=>item.id!==deduct.id))
         console.log(data);
+      }).catch(({response:{data}}) =>{
+        console.log(data)
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.message,
+        })
       });
   }
     return (
       <Grid container sx={{ gap: "5px" }}>
         <Grid item xs={5}>
           <Typography variant="h4" align="center" sx={{ mb: 1 }}>
-            استعلام اذن صرف
+            استعلام اذن طلب
           </Typography>
           {deductItems.length > 0 ? (
             <TableContainer>
@@ -142,6 +152,7 @@ import {
                
                       <TableCell>
                         <Button
+                        size="small"
                           onClick={() => {
                             setSelectedDeduct(item.id);
                             showDeductById(item.id);

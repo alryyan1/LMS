@@ -47,6 +47,9 @@ import AddRelation from "./pages/insurance/AddRelation";
 import AddShip from "./pages/shipping/AddShip";
 import ShippingNav from "./pages/shipping/ShippingNav";
 import FindShipping from "./pages/shipping/FindShipping";
+import Permissions from "./pages/settings/Permissions";
+import Users from "./pages/settings/Users";
+import DoctorsCredits from "./pages/Clinic/DoctorsCredits";
 
 export const router = createBrowserRouter([
   {
@@ -100,6 +103,14 @@ export const router = createBrowserRouter([
           {
             path: "tests",
             element: <Specialists />,
+          },
+          {
+            path: "permissions",
+            element: <Permissions />,
+          },
+          {
+            path: "users",
+            element: <Users />,
           },
         ],
       },
@@ -227,6 +238,14 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <Reception />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "doctors",
+            element: (
+              <ProtectedRoute>
+                <DoctorsCredits />
               </ProtectedRoute>
             ),
           },

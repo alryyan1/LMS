@@ -16,8 +16,11 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import { webUrl } from "../constants";
+import { useOutletContext } from "react-router-dom";
+import { Delete } from "@mui/icons-material";
 
 function Report() {
+  const {setDialog} =  useOutletContext()
   const [date, setDate] = useState(null);
   const [income, setIncome] = useState([]);
   const [incomeItems, setIncomeItems] = useState([]);
@@ -25,19 +28,22 @@ function Report() {
   const [selectIncome, setSelectedIncome] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
+  const [update,setUpdate] = useState(0);
   console.log(selectedSupplier);
 
 
   const searchDeposits = () => {
+    console.log(date.format('YYYY/MM/DD'),'date')
+    console.log(date.$d,'date')
     axiosClient
       .post("inventory/deposit/getDepositsByDate", {
-        date: date,
+        date: date.format('YYYY/MM/DD'),
       })
       .then(({ data: { data } }) => {
         setIncomeItems([]);
         setIncome(data);
 
-        console.log(data, "response");
+        console.log(data, "getDepositsByDate");
       });
   };
   useEffect(() => {
@@ -186,6 +192,7 @@ function Report() {
                 <TableCell>تاريخ الفاتوره </TableCell>
                 <TableCell> المورد </TableCell>
                 <TableCell>عرض</TableCell>
+                <TableCell>-</TableCell>
               </TableRow>
             </thead>
             <TableBody>
@@ -202,12 +209,42 @@ function Report() {
                     <TableCell>{item.supplier.name}</TableCell>
                     <TableCell>
                       <Button
+                      size="small"
+
                         onClick={() => {
                           setSelectedIncome(item.id);
                           showDepositById(item.id);
                         }}
                       >
                         show
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                      size="small"
+                      color="error"
+                        onClick={() => {
+                         axiosClient.delete(`inventory/${item.id}`).then(({data}) => {  //show success dialog
+                          if (data.status) {
+                            setIncome((prev)=>{
+                              return  prev.filter((p)=> p.id != item.id)
+                            })
+                            setDialog({
+                              open: true,
+                              msg: "تمت العمليه  بنجاح",
+                            })
+                          }
+                         }).catch(({response:{data}}) =>{
+                          console.log(data)
+                          setDialog({
+                            color:'error',
+                            open: true,
+                            msg: data.message,
+                          })
+                        });
+                        }}
+                      >
+                        <Delete/>
                       </Button>
                     </TableCell>
                   </TableRow>

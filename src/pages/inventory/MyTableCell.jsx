@@ -78,6 +78,17 @@ function MyTableCell({
               };
             });
           }
+          if (status == 400) {
+            setDialog((prev) => {
+              return {
+                ...prev,
+                open: true,
+                color: "error",
+                msg: data.msg,
+              };
+            });
+          }
+          
           console.log(data, "err in axios", status);
         });
     }

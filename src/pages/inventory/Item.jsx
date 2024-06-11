@@ -31,6 +31,7 @@ import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 function Item() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(9);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState(null);
   const [links, setLinks] = useState([]);
   const sections = useLoaderData();
@@ -50,12 +51,8 @@ function Item() {
   const submitHandler = async (formData) => {
     console.log(formData, "formdata");
     setLoading(true);
-    fetch(`${url}items/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
+    axiosClient.post(`items/create`, 
+ {
         name: formData.name,
         section: formData.section.id,
         require_amount: formData.require_amount,
@@ -63,22 +60,32 @@ function Item() {
         initial_price: formData.initial_price,
         tests: formData.tests,
         unit : formData.unit
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      }
+    )
+      .then(({data}) => {
         if (data.status) {
           reset();
           setValue("section", null);
           setLoading(false);
           //show snackbar
           setDialog({
+            color:'success',
             open: true,
             msg: "تمت الاضافه بنجاح",
           });
         }
       })
-      .catch((err) => console.log(err));
+      .catch(({response:{data}}) =>{
+        console.log(data)
+        setDialog({
+          color:'error',
+          open: true,
+          msg: data.msg,
+        })
+      }).finally(()=>{
+        setLoading(false);
+
+      });
   };
   const searchHandler = (word) => {
     setSearch(word);
@@ -109,6 +116,8 @@ function Item() {
         console.log(data, links);
         setItems(data);
         setLinks(links);
+      }).catch((error)=>{
+        console.log(error)
       })
       .finally(() => {
         setLoading(false);
@@ -116,10 +125,7 @@ function Item() {
   };
 
   const deleteItemHandler = (id) => {
-    fetch(`${url}items/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
+    axiosClient.delete(`items/${id}`)
       .then((data) => {
         console.log(data);
         if (data.status) {
@@ -131,6 +137,15 @@ function Item() {
             msg: "تم الحذف بنجاح",
           });
         }
+      }).catch(({response:{data}})=>{
+        setDialog((prev) => {
+          return {
+            ...prev,
+            open: true,
+            color: "error",
+            msg: data.msg,
+          };
+        });
       });
   };
   useEffect(() => {
@@ -143,6 +158,8 @@ function Item() {
         setItems(data);
         console.log(links);
         setLinks(links);
+      }).catch(({response:{data}}) => {
+        setError(data.msg)
       });
   }, [isSubmitted, page]);
   // useEffect(() => {
@@ -181,9 +198,8 @@ function Item() {
        
         </Stack>
       
-        {/* create table with all Items */}
         <TableContainer sx={{ mb: 1 }}>
-          <Table dir="rtl" size="small">
+         <Table dir="rtl" size="small">
             <thead>
               <TableRow>
                 <TableCell>رقم</TableCell>
@@ -236,6 +252,8 @@ function Item() {
             </TableBody>
           </Table>
         </TableContainer>
+        {error && <Alert color="error">{error}</Alert>}
+
         <Grid sx={{ gap: "4px" }} container>
           {links.map((link, i) => {
             if (i == 0) {
