@@ -23,8 +23,8 @@ function App() {
     const [error,setError] =  useState({val:false,msg:''})
     const [loading , setLoading] = useState(false)
     const {setToken,setUser} =   useStateContext()
-    const [username,setUsername] = useState('starsIntaj')
-    const [password,setPassword] = useState('starsIntaj')
+    const [username,setUsername] = useState('')
+    const [password,setPassword] = useState('')
     const {
       handleSubmit,
       formState: { errors, isSubmitted },
