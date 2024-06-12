@@ -80,7 +80,7 @@ function Reception() {
       <List>
         {[
           { title: "استحقاق الاطباء", to: "/clinic/doctors" },
-          { title: "حساب الفئات", to: "" },
+          { title: "حساب الفئات", to: "/clinic/denos" },
           { title: "المرضي", to: "" },
           { title: " اداره التحاليل", to: "" },
         ].map((item, index) => (

@@ -50,6 +50,7 @@ import FindShipping from "./pages/shipping/FindShipping";
 import Permissions from "./pages/settings/Permissions";
 import Users from "./pages/settings/Users";
 import DoctorsCredits from "./pages/Clinic/DoctorsCredits";
+import CashDenos from "./pages/Clinic/CashDenos";
 
 export const router = createBrowserRouter([
   {
@@ -246,6 +247,14 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <DoctorsCredits />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "denos",
+            element: (
+              <ProtectedRoute>
+                <CashDenos />
               </ProtectedRoute>
             ),
           },

@@ -4,17 +4,20 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/m
 
 function DoctorsCredits() {
     const [doctorShifts,setDoctorShifts] = useState([])
+    const [update,setUpdate] = useState(0)
     
     useEffect(()=>{
         axiosClient.get('/doctor/byLastUnifiedShift').then(({data})=>{
             setDoctorShifts(data)
             console.log(data)
         })
-    },[])
+    },[update])
     const addCost = (id,amount,name)=>{
         axiosClient.post('cost',{id,amount,name}).then(({data})=>{
             console.log(data)
-        }).catch((err)=>console.log(err))
+        }).catch((err)=>console.log(err)).finally(()=>{
+            setUpdate((prev)=>prev+1)
+        })
     }
   return (
     <div>
@@ -38,7 +41,7 @@ function DoctorsCredits() {
                             <TableCell>{shift.visits.length}</TableCell>
                             <TableCell>{shift.doctor_credit_cash}</TableCell>
                             <TableCell>{shift.doctor_credit_company}</TableCell>
-                            <TableCell><Button onClick={()=>{
+                            <TableCell><Button disabled={shift?.cost?.amount > 0} onClick={()=>{
                                 addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name)
                             }} variant='contained'>خصم</Button></TableCell>
                         </TableRow>
