@@ -61,7 +61,7 @@ const Nav = () => {
           <NavLink style={{ textDecoration: "none" ,color:"black" }} to={"/login"}>
             Login
           </NavLink>
-          {/* <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
+          <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
             Inventory
           </NavLink>
           <NavLink style={{ textDecoration: "none",color:"black" }} to={"/todayClinics"}>
@@ -78,16 +78,16 @@ const Nav = () => {
           </NavLink>
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/services"}>
             Services
-          </NavLink>  */}
+          </NavLink> 
            <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/ship"}>
             shipping
           </NavLink>
-           {/* <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/settings"}>
+           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/settings"}>
             Settings
           </NavLink>
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/dashboard"}>
             dashboard
-          </NavLink>  */}
+          </NavLink> 
           <div style={{ flexGrow: 1 }}></div>
           <IconButton onClick={changeLang}><Language/></IconButton>
           {user && (
