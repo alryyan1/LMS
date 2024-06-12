@@ -62,7 +62,7 @@ const Nav = () => {
             Login
           </NavLink>
           {/* <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
-            Inventory
+            Inventory s
           </NavLink>
           <NavLink style={{ textDecoration: "none",color:"black" }} to={"/todayClinics"}>
             today Clincs
