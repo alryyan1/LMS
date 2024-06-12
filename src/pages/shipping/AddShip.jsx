@@ -85,7 +85,7 @@ function AddShip() {
 
     console.log(data, "submitted data");
     axiosClient
-      .post(`addShipping`, { ...data, shipping_item_id: data.item.id })
+      .post(`addShipping`, { ...data, shipping_item_id: data.item.id,shipping_state_id:1 })
       .then((data) => {
         if (data.status) {
           setLoading(false);
