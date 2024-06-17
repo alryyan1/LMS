@@ -58,7 +58,7 @@ function PatientForm({ hideForm, setUpdate }) {
     setIsLoading(true);
     console.log(formData);
     axiosClient
-      .post(`patients/add`, { ...formData, doctor_id: formData.doctor.id })
+      .post(`patients/add/true`, { ...formData, doctor_id: formData.doctor.id })
       .then((data) => {
         console.log(data, "added patiets");
         if (data.data.status) {

@@ -51,6 +51,7 @@ import Permissions from "./pages/settings/Permissions";
 import Users from "./pages/settings/Users";
 import DoctorsCredits from "./pages/Clinic/DoctorsCredits";
 import CashDenos from "./pages/Clinic/CashDenos";
+import Result from "./pages/Laboratory/Result";
 
 export const router = createBrowserRouter([
   {
@@ -336,6 +337,11 @@ export const router = createBrowserRouter([
             path: "add",
 
             element: <AddPatient />,
+          },
+          {
+            path: "result",
+
+            element: <Result />,
           },
           {
             path: "price",

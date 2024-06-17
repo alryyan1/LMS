@@ -7,8 +7,7 @@ import axiosClient from "../../../axios-client";
 
 function AddTestAutoComplete({ patients, setPatients }) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
-  const [selectedTests, setSelectedTests] = useState([]);
-  const { actviePatient, setActivePatient, setDialog } = useOutletContext();
+  const { actviePatient, setActivePatient, setDialog,selectedTests, setSelectedTests } = useOutletContext();
   const [loading, setLoading] = useState(false);
   console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {

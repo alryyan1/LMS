@@ -3,63 +3,23 @@ import { Tabs, Tab, Box, Card } from "@mui/material";
 import TestGroupChildren from "./src/pages/TestGroupChildren";
 import { url } from "./src/pages/constants";
 import { useOutletContext } from "react-router-dom";
-function TestGroups({
-  fetchTests,
-  setPackages,
-  
-}) {
-const {packages,actviePatient,setError,setOpen} =  useOutletContext()
+function TestGroups() {
+const {packageData,actviePatient,setError,setOpen, selectedTests, setSelectedTests} =  useOutletContext()
+console.log(packageData,'packages in groups')
 
   const handleTestAdd = (p,t) => {
-    setPackages((prevPack) => {
-      return prevPack.map((pack) => {
-        if (pack.package_id === p.package_id) {
-          pack.tests.map((test) => {
-            if (test.id === t.id) {
-              let urlParams = new URLSearchParams({
-                main_test_id: test.id,
-                pid: actviePatient.id,
-              });
-              console.log("add test");
-              fetch(
-                `${url}labRequest/add/${actviePatient.id}`,
-                {
-                  method: "POST",
-                  body: urlParams,
-                  headers: {
-                    "Content-Type":
-                      "application/x-www-form-urlencoded",
-                  },
-                }
-              )
-                .then((res) => {
-                  return res.json();
-                })
-                .then((result) => {
-                  if (result.code) {
-                    console.log(result.message);
-                    setError(result.message);
-                    setOpen(true);
-                    throw new Error(result.error);
-                  }
-                 fetchTests()
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
 
-              console.log(
-                "found",
-                `test id is ${test.id} and matching id is${t.id}`
-              );
-              test.selected = !test.selected;
-            }
-            return test;
-          });
-        }
-        return pack;
-      });
-    });
+   
+    setSelectedTests((prev)=>{
+      const founded = prev.find((old)=>old.id==t.id)
+      if (founded) {
+      return [...prev.filter((old)=>old.id != t.id)]
+        
+      }else{
+        return [...prev,t]
+
+      }
+    })
   }
   const [value, setValue] = React.useState(0);
  
@@ -72,6 +32,7 @@ const {packages,actviePatient,setError,setOpen} =  useOutletContext()
 
   return (
     <Box>
+      
       <Tabs
         textColor="secondary"
         indicatorColor="secondary"
@@ -79,24 +40,28 @@ const {packages,actviePatient,setError,setOpen} =  useOutletContext()
         onChange={handleChange}
         variant="scrollable"
       >
-        {packages.map((p) => {
+        {packageData.map((p) => {
           return <Tab key={p.package_id} label={p.package_name} />;
         })}
       </Tabs>
-      {packages.map((p, index) => {
+      {packageData.map((p, index) => {
         return (
           <TestGroupChildren key={p.package_id} index={index} value={value}>
-            {p.tests.map((t) => (
-              //test to add
-              <Card
+            {p.tests.map((t) =>{ 
+             const founded =  selectedTests.find((ts)=>ts.id == t.id)
+
+              return <Card
                 onClick={()=>handleTestAdd(p,t)}
-                sx={{ p: 1, minWidth: "80px" }}
-                className={t.selected ? "active test" : "test"}
+                sx={{ p: 1, minWidth: "80px" ,cursor:'pointer' }}
+                style={  founded ? {
+                  borderBottom:"4px solid blue",
+                  fontWeight:"bolder",
+                }:null}
                 key={t.id}
               >
                 {t.main_test_name}
-              </Card>
-            ))}
+              </Card>}
+            )}
           </TestGroupChildren>
         );
       })}

@@ -17,15 +17,22 @@ import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { Item } from "../constants";
 
-function ReceptionForm({ hideForm }) {
+function ReceptionForm({ hideForm,lab }) {
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
   console.log(selectedCompany, "selected company");
   console.log(selectedSubCompany, "selected sub company");
-  const { setDialog, setFoundedPatients, activeShift, setUpdate ,companies} =
+
+  const { setDialog, setFoundedPatients, activeShift, setUpdate ,companies,doctors} =
     useOutletContext();
+    let btn
+    if (lab){
+      btn = false
+    }else{
+     btn =   activeShift  ? false : true}
+    
   // console.log(appData.doctors,'doctors')
   const {
     watch,
@@ -72,12 +79,13 @@ function ReceptionForm({ hideForm }) {
   }, [phone]);
 
   const sumbitHandler = async (formData) => {
+    const url =  lab ? `patients/add/true` : `patients/reception/add/${activeShift.doctor.id}`
     setIsLoading(true);
     console.log(formData, "form data");
     axiosClient
-      .post(`patients/reception/add/${activeShift.doctor.id}`, {
+      .post(url, {
         ...formData,
-        doctor_id: activeShift.doctor.id,
+        doctor_id: activeShift?.doctor.id ?? formData.doctor.id,
         company_id:selectedCompany?.id,
         subcompany_id:selectedSubCompany?.id,
         company_relation_id : selectedRelation?.id,
@@ -93,9 +101,10 @@ function ReceptionForm({ hideForm }) {
             color: "success",
             open: true,
           }));
-          //hide form
+          //hide form9
           reset();
           hideForm();
+          setFoundedPatients([])
           //this update patient list
           setUpdate((prev) => {
             console.log("inside update");
@@ -115,7 +124,7 @@ function ReceptionForm({ hideForm }) {
   return (
     <Paper elevation={3} sx={{ padding: "10px" }}>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-        حجز لطبيب معين
+        التسجيل
       </Typography>
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
@@ -244,6 +253,39 @@ function ReceptionForm({ hideForm }) {
               label="اسم المريض"
               helperText={errors?.name && errors.name.message}
             />
+                {lab && <Controller
+            name="doctor"
+            rules={{
+              required: {
+                value: true,
+                message: "يجب اختيار اسم الطبيب",
+              },
+            }}
+            control={control}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                  onChange={(e, newVal) => field.onChange(newVal)}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={doctors}
+                  renderInput={(params) => {
+                    // console.log(params)
+
+                    return (
+                      <TextField
+                        inputRef={field.ref}
+                        error={errors?.doctor}
+                        {...params}
+                        label="الطبيب"
+                      />
+                    );
+                  }}
+                ></Autocomplete>
+              );
+            }}
+          />
+}
             <Stack
               direction={"row"}
               gap={2}
@@ -358,7 +400,7 @@ function ReceptionForm({ hideForm }) {
             }}
           />
           <LoadingButton
-            disabled={activeShift ? false : true}
+            disabled={btn}
             loading={loading}
             type="submit"
             variant="contained"

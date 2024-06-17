@@ -1,26 +1,20 @@
 import {
-  Autocomplete,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
-import { Add, PlusOne } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import MyAutocomepleteHistory from "../../components/MyAutocomepleteHistory";
+import MyAutocomepleteHistoryLab from "../../components/MyAutocompleteHistoryLab";
 
-function SearchDialog() {
-  const {foundedPatients, openedDoctors, setUpdate ,setDialog} =
+function SearchDialog({lab=false}) {
+  const {foundedPatients, openedDoctors, setUpdate ,setDialog,doctors} =
     useOutletContext();
   const [doctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -30,10 +24,11 @@ function SearchDialog() {
   };
   const addPatientByHistory = (id, oldDoctor) => {
     setLoading(true);
+    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor?.id ?? oldDoctor.id}`  :`patients/add-patient-by-history/${id}/${doctor?.id ?? oldDoctor.id}`
 
     axiosClient
       .post(
-        `patients/add-patient-by-history/${id}/${doctor?.id ?? oldDoctor.id}`
+        url
       )
       .then(({ data }) => {
         console.log(data);
@@ -52,7 +47,7 @@ function SearchDialog() {
       });
   };
   return (
-    <div>
+    <div style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
       <TableContainer>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>
@@ -71,11 +66,11 @@ function SearchDialog() {
                   {new Date(Date.parse(item.created_at)).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <MyAutocomepleteHistory
+                  {lab  ? <MyAutocomepleteHistoryLab val={item.doctor} setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
                     setDoctor={setDoctor}
                     options={openedDoctors}
                     val={item.doctor}
-                  />
+                  />}
                 </TableCell>
                 <TableCell>
                   <LoadingButton

@@ -1,10 +1,10 @@
 import "./addPatient.css";
 import { useEffect, useState } from "react";
 import Patient from "./Patient";
-import PatientForm from "./PatientForm";
 import PatientDetail from "./PatientDetail";
-import { url, webUrl } from "../constants";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import {  webUrl } from "../constants";
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+
 import {
   Drawer,
   Box,
@@ -19,7 +19,6 @@ import {
   styled,
   Paper,
   Skeleton,
-  Grow,
   Slide,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
@@ -32,6 +31,8 @@ import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
 import MoneyDialog from "../Dialogs/MoneyDialog";
 import SearchDialog from "../Dialogs/SearchDialog";
+import ReceptionForm from "../Clinic/ReceptionForm";
+import TestGroups from "../../../TestGroups";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -42,7 +43,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function AddPatient() {
   const {
-    setTests,
     actviePatient,
     setActivePatient,
     setOpen,
@@ -50,19 +50,20 @@ function AddPatient() {
     searchByName,
     setFoundedPatients,
     foundedPatients,
+    update,
+    setUpdate
   } = useOutletContext();
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
   console.log(actviePatient);
   const { setOpenDrawer, openDrawer } = useStateContext();
   const [patients, setPatients] = useState([]);
-  const [update, setUpdate] = useState(0);
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
     hideForm: false,
     testWidth: "400px",
-    requestedDiv: "1.5fr",
+    requestedDiv: "minmax(0,1.5fr)",
     showTestPanel: false,
     patientDetails:'0.7fr',
   });
@@ -73,11 +74,11 @@ function AddPatient() {
       <List>
         {[
           { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "" },
+          { title: "ادخال النتائج ", to: "/laboratory/result" },
           { title: "سحب العينات", to: "" },
           { title: " اداره التحاليل", to: "/laboratory/tests" },
           { title: "قائمه الاسعار", to: "/laboratory/price" },
-        ].map((item, index) => (
+        ].map((item) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton
               onClick={() => setOpenDrawer(false)}
@@ -97,16 +98,15 @@ function AddPatient() {
 
   useEffect(() => {
     setPatientsLoading(true);
-    axiosClient.get(`patients`).then(({ data: data }) => {
-      console.log(data, "today patients");
+    axiosClient.get(`shift/last`).then(({ data: data }) => {
+      console.log(data.data, "today patients");
       //add activeProperty to patient object
-      data.forEach((patient) => {
+      data.data.patients.forEach((patient) => {
         patient.active = false;
       });
-      console.log(data);
       setPatientsLoading(false);
 
-      setPatients(data);
+      setPatients(data.data.patients);
     });
   }, [update]);
 
@@ -131,18 +131,18 @@ function AddPatient() {
     // setActivePatient({...foundedPatient,active:true});
   };
 
-  useEffect(()=>{
-    if(foundedPatients.length>0){
-      setLayout((prev)=>{
-        return {
-         ...prev,
-         patientDetails: "2fr",
+  // useEffect(()=>{
+  //   if(foundedPatients.length>0){
+  //     setLayout((prev)=>{
+  //       return {
+  //        ...prev,
+  //        form: "1.5fr",
        
-        };
-      })
-    }
+  //       };
+  //     })
+  //   }
     
-  },[foundedPatients.length])
+  // },[foundedPatients.length])
 
   const hideForm = () => {
     setLayout((prev) => {
@@ -198,7 +198,7 @@ function AddPatient() {
           >
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
-                <RemoveRedEyeIcon />
+                <CreateOutlinedIcon />
               </IconButton>
             </Item>
             <Item>
@@ -232,7 +232,7 @@ function AddPatient() {
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <PatientForm setUpdate={setUpdate} hideForm={hideForm} />
+            <ReceptionForm lab={true} setUpdate={setUpdate} hideForm={hideForm} />
           )}
         </div>
         <div style={{ overflow: "auto" }}>
@@ -258,15 +258,17 @@ function AddPatient() {
           </div>
         </div>
 
-        <div>
+        <div style={{height:'85vh',overflow:'auto'}}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
+          {actviePatient?.labrequests.length == 0 && <TestGroups/>}
         </div>
         <div>
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
+            showBtns
               key={actviePatient.id}
               patient={actviePatient}
               setPatients={setPatients}
@@ -274,8 +276,8 @@ function AddPatient() {
             />
           )}
           {!actviePatient &&  foundedPatients.length > 0 && <Slide direction="up" in mountOnEnter unmountOnExit>
-          <div>
-            <SearchDialog />
+          <div style={{position:'relative'}}>
+            <SearchDialog lab={true} />
           </div>
         </Slide>}
         </div>

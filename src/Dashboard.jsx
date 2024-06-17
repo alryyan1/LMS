@@ -87,7 +87,7 @@ function Dashboard() {
                 <Stack justifyContent={"space-between"} direction={"column"}>
                   <Typography>الدخل</Typography>
                   <Divider />
-                  <Typography variant="h4">{shift?.totalPaid}</Typography>
+                  <Typography variant="h4">{shift?.totalPaid + shift?.paidLab}</Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton>

@@ -13,15 +13,21 @@ import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import axiosClient from "../../../axios-client";
 
-function PatientDetail({ patient:{patient,id}, setPatients, copyPatient = false }) {
-  console.log(id,'visit id')
+function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = false}) {
+
+
   console.log(patient, "patient in patient details");
+
   const [open, setOpen] = useState();
+
   const { openedDoctors, setUpdate, activeShift } = useOutletContext();
+
   const date = new Date(patient.created_at);
+
   const handleEdit = () => {
     setOpen(true);
   };
+
   return (
     <>
       <Paper elevation={3} sx={{ padding: "10px" }}>
@@ -146,7 +152,7 @@ function PatientDetail({ patient:{patient,id}, setPatients, copyPatient = false 
             }
           </div>
         )}
-        <Stack direction={"row"} gap={2}>
+        {showBtns && <Stack direction={"row"} gap={2}>
           <Button sx={{ flexGrow: 1 }} onClick={handleEdit} variant="contained">
             Edit
           </Button>
@@ -160,7 +166,7 @@ function PatientDetail({ patient:{patient,id}, setPatients, copyPatient = false 
           >
             Print
           </Button>
-        </Stack>
+        </Stack>}
         <Divider sx={{ m: 1 }} />
         {copyPatient && patient.doctor_id == activeShift.doctor.id && (
           <Autocomplete
@@ -193,7 +199,7 @@ function PatientDetail({ patient:{patient,id}, setPatients, copyPatient = false 
         )}
 
         <EditPatientDialog
-        doctorVisitId={id}
+        doctorVisitId={patient.id}
           open={open}
           setOpen={setOpen}
           patient={patient}

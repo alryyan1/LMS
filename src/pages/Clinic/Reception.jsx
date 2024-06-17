@@ -266,7 +266,7 @@ function Reception() {
 
                 <PatientDetail
                   key={actviePatient.id}
-                  patient={actviePatient}
+                  patient={actviePatient.patient}
                   copyPatient={true}
                 />
               </div>

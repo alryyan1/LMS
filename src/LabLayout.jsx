@@ -23,7 +23,6 @@ function LabLayout() {
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
   const [specialists, setSpecialists] = useState([]);
-  const [packages, setPackages] = useState([]);
   const [tests, setTests] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [actviePatient, setActivePatient] = useState(null);
@@ -34,10 +33,20 @@ function LabLayout() {
   const [showAddTest, setShowAddTest] = useState(false);
   const [activeTestObj, setActiveTestObj] = useState();
   const [updateTests, setUpdateTests] = useState(0);
+  const [companies, setCompanies] = useState([]);
+  const [selectedTests, setSelectedTests] = useState([]);
+
+  const [update, setUpdate] = useState(0);
+
 
   useEffect(() => {
 
     Promise.all([
+
+      axiosClient.get("company/all").then(({ data }) => {
+        console.log(data, "comapnies");
+        setCompanies(data);
+      }),
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
@@ -54,7 +63,7 @@ function LabLayout() {
       }),
 
       axiosClient.get("packages/all").then((data) => {
-        console.log(data);
+        console.log(data,'packages');
         setPackageData(data.data);
       }),
       axiosClient.get("childGroup").then((data) => {
@@ -131,17 +140,19 @@ useEffect(()=>{
             packageData,
             setShowAddTest,
             setUnits,
-            packages,
+            selectedTests,
+            setSelectedTests,
             doctors,
             actviePatient,
             setActivePatient,
             setDialog,
             setOpen,
             setError,
+            update,setUpdate,
             open,
             dialog,
-
-            setPackages,
+            companies,
+            setCompanies,
             specialists,
             setDoctors,
             searchByName,
@@ -159,7 +170,7 @@ useEffect(()=>{
         autoHideDuration={2000}
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
-        <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>
+        <Alert  severity={dialog.color} variant="filled" sx={{ width: "100%" ,direction:'rtl'}}>
           {dialog.msg}
         </Alert>
       </Snackbar>

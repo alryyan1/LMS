@@ -12,7 +12,7 @@ function MyCheckBox({ id, isbankak, setPatients }) {
     console.log(val.target.checked, "checked handler");
     setIsChecked(val.target.checked);
     axiosClient
-      .patch(`labRequest/bankak/${actviePatient.id}`, {
+      .patch(`labRequest/bankak/${id}`, {
         id,
         val: val.target.checked,
       })

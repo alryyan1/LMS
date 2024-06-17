@@ -1,4 +1,5 @@
-import { Badge, Box, Grow } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import { Badge, Box, Grow, Icon } from "@mui/material";
 
 function Patient({ onClick, patient, delay }) {
   return (
@@ -13,22 +14,36 @@ function Patient({ onClick, patient, delay }) {
           color={patient.is_lab_paid == 0 ? "secondary" : "primary"}
         >
           <Box
+            sx= { patient.company ? {
+              backgroundColor :'lightblue!important' 
+    
+            }:null}
             onClick={() => {
               onClick(patient.id);
             }}
-            className={patient.active ? "active" : ""}
+            style={ patient.active ? {
+              borderBottom:"4px solid blue",
+              fontWeight:"bolder",
+            }:null}
           >
-            {patient.id}
+            {patient.visit_number}
           </Box>
         </Badge>
       ) : (
         <Box
+        sx= { patient.company ? {
+          backgroundColor :'lightblue!important' 
+
+        }:null}
           onClick={() => {
             onClick(patient.id);
           }}
-          className={patient.active ? "active" : ""}
-        >
-          {patient.id}
+          style={ patient.active ? {
+            borderBottom:"4px solid blue",
+            fontWeight:"bolder",
+
+          }:null}        >
+          {patient.visit_number}
         </Box>
       )}
     </Grow>

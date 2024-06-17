@@ -26,6 +26,7 @@ function RequestedTests({ setPatients }) {
     setActivePatient,
     actviePatient,
     tests,
+    companies,
   } = useOutletContext();
   console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
@@ -33,25 +34,23 @@ function RequestedTests({ setPatients }) {
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
     const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
-      console.log(Number((test.pivot.discount_per * test.price) / 100));
-      const discount = Number((test.pivot.discount_per * test.price) / 100);
+      console.log(Number((test.discount_per * test.price) / 100));
+      const discount = Number((test.discount_per * test.price) / 100);
       return accum + (test.price - discount);
     }, 0);
     setLoading(true);
     axiosClient
       .patch(`labRequest/payment/${actviePatient.id}`, { paid: totalPaid })
       .then(({ data: data }) => {
-        console.log(data);
+        console.log(data,'patient paid data');
         if (data.status) {
+          setActivePatient(data.data);
+
           setLoading(false);
           setPatients((prevPatients) => {
             return prevPatients.map((p) => {
               if (p.id === actviePatient.id) {
-                return {
-                  ...p,
-                  is_lab_paid: true,
-                  lab_paid: totalPaid,
-                };
+                return  data.data
               } else {
                 return p;
               }
@@ -62,11 +61,8 @@ function RequestedTests({ setPatients }) {
             msg: "تمت عمليه السداد بنجاح",
             open: true,
           }));
-          setActivePatient((p) => {
-            return { ...p, is_lab_paid: true, lab_paid: totalPaid };
-          });
         }
-      });
+      }).finally(()=>setLoading(false));
   };
   const cancelPayHandler = () => {
     setLoading(true);
@@ -116,23 +112,16 @@ function RequestedTests({ setPatients }) {
 
   const deleteTest = (id) => {
     console.log(id);
-    axiosClient.delete(`labRequest/${actviePatient.id}?id=${id}`)
+    axiosClient.delete(`labRequest/${id}`)
       .then(({data}) => {
-        console.log(data)
+
+        console.log(data,'data')
         if (data.status) {
-          setActivePatient((patient) => {
-            return {
-              ...patient,
-              labrequests: patient.labrequests.filter((t) => t.id != id),
-            };
-          });
+          setActivePatient(data.data);
           setPatients((prev) => {
             return prev.map((p) => {
               if (p.id === actviePatient.id) {
-                return {
-                  ...p,
-                  labrequests: p.labrequests.filter((t) => t.id != id),
-                };
+                return data.data
               } else {
                 return p;
               }
@@ -141,6 +130,7 @@ function RequestedTests({ setPatients }) {
         }
       });
   };
+  let total_endurance = 0;
   return (
     <>
       <div className="requested-tests">
@@ -151,20 +141,34 @@ function RequestedTests({ setPatients }) {
                 <TableRow>
                   <TableCell> Name</TableCell>
                   <TableCell align="right">Price</TableCell>
-                  <TableCell align="right">Discount</TableCell>
-                  <TableCell align="right">Bankak</TableCell>
+                  {actviePatient.company ? "": <TableCell align="right">Discount</TableCell>}
+                  {actviePatient.company ? "":   <TableCell align="right">Bankak</TableCell>}
+                  {actviePatient.company ?  <TableCell align="right">Endurance</TableCell>: "" }
                   <TableCell align="right">Action</TableCell>
                 </TableRow>
               </TableHead>
                 <TableBody>
                   {actviePatient.labrequests.map((test) => {
+                    console.log(test,'test')
+                        let price  
+                        let company
+                        let endurance
+                        if(actviePatient.company_id != null) {
+                           company = companies.find((c)=>c.id == actviePatient.company_id)
+                           price  = company.tests.find((t)=>t.id == test.id).pivot.price
+                           endurance =   (price * company.lab_endurance) /100
+                           total_endurance+= endurance;
+                          console.log(company,'patient company')
+                        }else{
+                          price  = test.main_test.price
+                        }
                     console.log(
                       "test.pivot.is_bankak",
-                      typeof test.pivot.is_bankak
+                      typeof test.is_bankak
                     );
                     console.log(
                       "test.pivot.is_bankak = ",
-                      test.pivot.is_bankak
+                      test.is_bankak
                     );
 
                     return (
@@ -175,29 +179,31 @@ function RequestedTests({ setPatients }) {
                           key={test.id}
                         >
                           <TableCell sx={{ border: "none" }} scope="row">
-                            {test.main_test_name}
+                            {test.main_test.main_test_name}
                           </TableCell>
 
                           <TableCell sx={{ border: "none" }} align="right">
-                            {test.price}
+                            {price}
                           </TableCell>
-                          <TableCell sx={{ border: "none" }} align="right">
+                          {actviePatient.company ? "":  <TableCell sx={{ border: "none" }} align="right">
                             <DiscountSelect
                              
                               setPatients={setPatients}
                               id={test.id}
-                              disc={test.pivot.discount_per}
+                              disc={test.discount_per}
                               actviePatient={actviePatient}
                             />
-                          </TableCell>
-                          <TableCell sx={{ border: "none" }} align="right">
+                          </TableCell>}
+                          {actviePatient.company ? "":   <TableCell sx={{ border: "none" }} align="right">
                             <MyCheckBox
                               setPatients={setPatients}
                               key={actviePatient.id}
-                              isbankak={test.pivot.is_bankak == 1}
+                              isbankak={test.is_bankak == 1}
                               id={test.id}
                             ></MyCheckBox>
-                          </TableCell>
+                          </TableCell>}
+                  {actviePatient.company ?  <TableCell align="right">{endurance}</TableCell>: "" }
+
                           <TableCell sx={{ border: "none" }} align="right">
                             <IconButton
                               disabled={actviePatient?.is_lab_paid == 1}
@@ -242,18 +248,18 @@ function RequestedTests({ setPatients }) {
               <div className="sub-price">
                 <div className="title">Total</div>
                 <div>
-                  {actviePatient.labrequests.reduce((accum, test) => {
+                  {actviePatient.company_id ==null  ? actviePatient.labrequests.reduce((accum, test) => {
                     const discount = Number(
-                      (test.pivot.discount_per * test.price) / 100
+                      (test.discount_per * test.main_test.price) / 100
                     );
-                    return accum + (test.price - discount);
-                  }, 0)}
+                    return accum + (test.main_test.price - discount);
+                  }, 0):total_endurance}
                 </div>
               </div>
               <div className="sub-price">
                 <div className="title">Paid</div>
                 <div>
-                  {actviePatient.is_lab_paid ? actviePatient.lab_paid : 0}
+                  {actviePatient.is_lab_paid ? actviePatient.paid : 0}
                 </div>
               </div>
             </div>

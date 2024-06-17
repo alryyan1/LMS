@@ -12,9 +12,9 @@ import './i18n'
 createRoot(document.querySelector("#root")).render(
   <UserContextProvider>
     <ThemeProvider theme={theme}>
-      <CacheProvider value={cacheRtl}>
+      {/* <CacheProvider value={cacheRtl}> */}
         <RouterProvider router={router} />
-      </CacheProvider>
+      {/* </CacheProvider> */}
     </ThemeProvider>
   </UserContextProvider>
 );
