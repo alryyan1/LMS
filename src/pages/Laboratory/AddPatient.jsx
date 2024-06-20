@@ -223,7 +223,7 @@ function AddPatient() {
           </div>
         </div>
 
-        <Paper style={{height:'85vh',overflow:'auto'}}>
+        <Paper sx={{p:1}}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}

@@ -51,6 +51,7 @@ function LabLayout() {
           { title: " اداره التحاليل", to: "/laboratory/tests" },
           { title: "قائمه الاسعار", to: "/laboratory/price" },
           { title: "CBC LIS", to: "/laboratory/cbc-lis" },
+          { title: "Chemistry LIS", to: "/laboratory/chemistry-lis" },
         ].map((item) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton

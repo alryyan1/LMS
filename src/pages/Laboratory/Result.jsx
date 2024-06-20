@@ -33,6 +33,7 @@ import {
   Download,
   FilterTiltShift,
   FormatListBulleted,
+  StarBorder,
 } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
@@ -42,6 +43,7 @@ import MoneyDialog from "../Dialogs/MoneyDialog";
 import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
 import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import { LoadingButton } from "@mui/lab";
+import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 
 function Result() {
   const {
@@ -89,17 +91,17 @@ function Result() {
   }, [update]);
   console.log(shift, "selected shift");
 
-  const setActivePatientHandler = (id) => {
+  const setActivePatientHandler = (pat) => {
     setSelectedTest(null)
     setSelectedResult(null)
     console.log("start active patient clicked");
-    const data = shift?.patients.find((p) => p.id === id);
+    const data = shift?.patients.find((p) => p.id === pat.id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     console.log(data, "patient from db");
-    setActivePatient({ ...data, active: true });
+    setActivePatient({ ...pat, active: true });
     setShift((prev) => {
       return {...prev,patients:prev.patients.map((patient) => {
-        if (patient.id === id) {
+        if (patient.id === pat.id) {
           console.log("founded");
           return { ...data, active: true };
         } else {
@@ -113,18 +115,30 @@ function Result() {
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
+    
+    <div
+        style={{
+          gap: "15px",
+          transition: "0.3s all ease-in-out",
+          display: "inline-grid",
+          gridTemplateColumns: `0.2fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
+        }}
+      >
+        <div></div>
+          <AutocompleteSearchPatient setActivePatientHandler={setActivePatientHandler}/>
+          </div>
+
       <div
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "90vh",
+          height: "80vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
+          gridTemplateColumns: `0.2fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
       >
         <div>
           <AddDoctorDialog />
-          123
 
           <Stack
             sx={{ mr: 1 }}
@@ -180,14 +194,14 @@ function Result() {
                   <Download />
                 </LoadingButton>
             )}
-               {selectedTest?.main_test_id == 1 && (
+               {selectedTest && (
                 <LoadingButton
                 size="small"
                 loading={loading}
                   onClick={() => {
                     setLoading(true)
                     axiosClient
-                      .post(`populatePatientCbcData/${actviePatient.id}`)
+                      .post(`populatePatientCbcData/${actviePatient?.id}`,{'main_test_id':selectedTest?.main_test_id})
                       .then(({ data }) => {
                         if(data.status == false){
                           setDialog((prev)=>{
@@ -233,6 +247,61 @@ function Result() {
                   variant="contained"
                 >
                   <FormatListBulleted />
+                </LoadingButton>
+            )}
+             {selectedTest && (
+                <LoadingButton
+                size="small"
+                loading={loading}
+                  onClick={() => {
+                    setLoading(true)
+                    axiosClient
+                      .post(`populatePatientChemistryData/${actviePatient?.id}`,{'main_test_id':selectedTest?.main_test_id})
+                      .then(({ data }) => {
+                        if(data.status == false){
+                          setDialog((prev)=>{
+                            return {
+                             ...prev,
+                              open:true,
+                              color:'error',
+                              message:data.message
+                            }
+                          })
+
+
+                          return
+                        }
+                        if(data.status)
+                          {
+                            console.log(data,'patient cbc')
+                            setSelectedTest((prev) => {
+                              console.log(prev, "previous selected test");
+                              return data.patient.labrequests.find((labr)=>labr.id == prev.id)
+                            });
+                            setResultUpdated((prev) => {
+                              return prev + 1;
+                            });
+                            setActivePatient(data.patient)
+                            ?.map((prev) => {
+                              return prev.map((patient) => {
+                                if (patient.id === actviePatient.id) {
+                                  return {
+                                    ...data.patient,
+                                    active:true
+                                  };
+                                }
+                                return patient;
+                              });
+                            });
+                          }
+                    
+                       
+                      }).finally(()=> 
+                      setLoading(false));
+                  }}
+                  variant="contained"
+                >
+                  <StarBorder />
                 </LoadingButton>
             )}
           </Stack>
@@ -299,13 +368,16 @@ function Result() {
                     delay={i * 100}
                     key={p.id}
                     patient={p}
-                    onClick={setActivePatientHandler}
+                    onClick={()=>{
+                      setActivePatientHandler(p)
+                    }}
                   />
                 ))
             )}
           </div>
         </Paper>
         <Paper style={{ height: "85vh", overflow: "auto" }}>
+          {console.log(actviePatient,'activve pateint')}
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <List>
               {actviePatient.labrequests.map((test) => {
@@ -346,7 +418,7 @@ function Result() {
             </List>
           )}
         </Paper>
-        <Paper>
+        <Paper sx={{p:1}}>
           <Table  key={selectedTest?.id + resultUpdated} size="small">
             <TableHead>
               <TableRow>

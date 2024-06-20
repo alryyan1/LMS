@@ -93,20 +93,22 @@ function CBCLIS() {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Name in CBC</TableCell>
-              <TableCell>Name Sysmex Table</TableCell>
+              <TableCell>sysmex table</TableCell>
+              <TableCell>child id array</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {cbcMatchingRows.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name_in_sysmex_table}</TableCell>
+                <MyTableCell   colName={"name_in_sysmex_table"}
+                  item={item}
+                  table="updateCbcBindings">{item.name_in_sysmex_table}</MyTableCell>
                 <MyTableCell
-                  colName={"name_in_cbc_child_table"}
+                  colName={"child_id_array"}
                   item={item}
                   table="updateCbcBindings"
                 >
-                  {item.name_in_cbc_child_table}
+                  {item.child_id_array}
                 </MyTableCell>
               </TableRow>
             ))}

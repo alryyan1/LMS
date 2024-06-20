@@ -1,54 +1,46 @@
+import * as React from "react";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
+import axiosClient from "../../axios-client";
+import { useOutletContext } from "react-router-dom";
 
-
-
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-
-function sleep(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
-  });
-}
-
-export default function AutocompleteSearchPatient() {
+export default function AutocompleteSearchPatient({ setActivePatientHandler }) {
+  const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
+  const [search, setSearch] = React.useState([]);
+  const {setDialog} =  useOutletContext()
 
   React.useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-
-    (async () => {
-      await sleep(1e3); // For demo purposes.
-
-      if (active) {
-        setOptions([...topFilms]);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [loading]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
+    const timer = setTimeout(() => {
+      axiosClient
+        .get(`patients?name=${search}`)
+        .then(({ data }) => {
+          setOptions(data);
+          console.log(data, "patients");
+        })
+        .finally(() => setLoading(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   return (
-    <Autocomplete
+    <Autocomplete size="small"
+      getOptionKey={(op) => op.id}
       id="asynchronous-demo"
-      sx={{ width: 300 }}
+      onChange={(_, newVal) => {
+        if (typeof newVal === "number") {
+            console.log('type of val is number')
+            return
+        }
+        if (newVal) {
+          console.log(newVal, "new Val");
+
+          setActivePatientHandler(newVal);
+        }
+      }}
+      sx={{ width: 300, display: "inline-block" }}
       open={open}
       onOpen={() => {
         setOpen(true);
@@ -56,19 +48,50 @@ export default function AutocompleteSearchPatient() {
       onClose={() => {
         setOpen(false);
       }}
-      isOptionEqualToValue={(option, value) => option.title === value.title}
-      getOptionLabel={(option) => option.title}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      getOptionLabel={(option) => option.name}
       options={options}
       loading={loading}
       renderInput={(params) => (
         <TextField
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log("enter pressed");
+              //get test from tests using find
+              const enteredId = e.target.value;
+              axiosClient.get(`patients?name=${enteredId}`).then(({ data }) => {
+                if (data.data != null) {
+                setActivePatientHandler(data.data);
+                    
+                }else{
+                    setDialog((prev)=>{
+                        return {
+                           ...prev,
+                            open: true,
+                            message: 'no data found',
+                            color: "error"
+                        }
+                    })
+                }
+                console.log(data, "patients");
+              });
+            }
+          }}
+          onChange={(val) => {
+            const value = val.target.value
+            if (typeof +value == "number") return;
+            console.log(typeof val.target.value, "is val");
+            setSearch(val.target.value);
+          }}
           {...params}
-          label="Asynchronous"
+          label="بحث"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),

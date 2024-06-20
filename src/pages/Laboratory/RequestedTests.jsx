@@ -1,5 +1,6 @@
 import {
   Collapse,
+  Divider,
   IconButton,
   Table,
   TableBody,
@@ -134,7 +135,7 @@ function RequestedTests({ setPatients }) {
   return (
     <>
       <div className="requested-tests">
-        <div className="requested-table">
+        <div  style={{height:'65vh',overflow:'auto'}} className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>
@@ -220,6 +221,26 @@ function RequestedTests({ setPatients }) {
             </Table>
           </TableContainer>
         </div>
+        
+        <div style={{marginTop:'10px'}} className="total-price">
+              <div className="sub-price">
+                <div className="title">Total</div>
+                <div>
+                  {actviePatient.company_id ==null  ? actviePatient.labrequests.reduce((accum, test) => {
+                    const discount = Number(
+                      (test.discount_per * test.main_test.price) / 100
+                    );
+                    return accum + (test.main_test.price - discount);
+                  }, 0):total_endurance}
+                </div>
+              </div>
+              <div className="sub-price">
+                <div className="title">Paid</div>
+                <div>
+                  {actviePatient.is_lab_paid ? actviePatient.paid : 0}
+                </div>
+              </div>
+            </div>
         <div className="requested-total">
           <div className="money-info">
             {actviePatient.is_lab_paid ? (
@@ -244,28 +265,11 @@ function RequestedTests({ setPatients }) {
                 دفع الرسوم
               </LoadingButton>
             )}
-            <div className="total-price">
-              <div className="sub-price">
-                <div className="title">Total</div>
-                <div>
-                  {actviePatient.company_id ==null  ? actviePatient.labrequests.reduce((accum, test) => {
-                    const discount = Number(
-                      (test.discount_per * test.main_test.price) / 100
-                    );
-                    return accum + (test.main_test.price - discount);
-                  }, 0):total_endurance}
-                </div>
-              </div>
-              <div className="sub-price">
-                <div className="title">Paid</div>
-                <div>
-                  {actviePatient.is_lab_paid ? actviePatient.paid : 0}
-                </div>
-              </div>
-            </div>
+          
           </div>
         </div>
       </div>
+     
     </>
   );
 }
