@@ -6,13 +6,6 @@ import {  webUrl } from "../constants";
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 import {
-  Drawer,
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Divider,
   IconButton,
   Stack,
@@ -23,8 +16,8 @@ import {
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
-import { Calculate, Mail, PersonAdd, Print, Search } from "@mui/icons-material";
-import { Link, useOutletContext } from "react-router-dom";
+import { Calculate, PersonAdd, Print, Search } from "@mui/icons-material";
+import {  useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
@@ -56,7 +49,6 @@ function AddPatient() {
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
   console.log(actviePatient);
-  const { setOpenDrawer, openDrawer } = useStateContext();
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
     form: "1fr",
@@ -67,34 +59,8 @@ function AddPatient() {
     showTestPanel: false,
     patientDetails:'0.7fr',
   });
-  console.log(openDrawer, "open drawer");
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "/laboratory/result" },
-          { title: "سحب العينات", to: "" },
-          { title: " اداره التحاليل", to: "/laboratory/tests" },
-          { title: "قائمه الاسعار", to: "/laboratory/price" },
-        ].map((item) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setOpenDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+ 
 
   useEffect(() => {
     setPatientsLoading(true);
@@ -176,7 +142,6 @@ function AddPatient() {
 
   return (
     <>
-      <Drawer open={openDrawer}>{DrawerList}</Drawer>
       <div
         style={{
           gap: "15px",
@@ -258,12 +223,12 @@ function AddPatient() {
           </div>
         </div>
 
-        <div style={{height:'85vh',overflow:'auto'}}>
+        <Paper style={{height:'85vh',overflow:'auto'}}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups/>}
-        </div>
+        </Paper>
         <div>
           {/** add card using material   */}
           {actviePatient && (

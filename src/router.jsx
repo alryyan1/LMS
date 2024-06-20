@@ -52,6 +52,7 @@ import Users from "./pages/settings/Users";
 import DoctorsCredits from "./pages/Clinic/DoctorsCredits";
 import CashDenos from "./pages/Clinic/CashDenos";
 import Result from "./pages/Laboratory/Result";
+import CBCLIS from "./pages/Laboratory/CBCLIS";
 
 export const router = createBrowserRouter([
   {
@@ -347,6 +348,12 @@ export const router = createBrowserRouter([
             path: "price",
 
             element: < PriceList/>,
+          },
+          
+          {
+            path: "cbc-lis",
+
+            element: <CBCLIS/>,
           },
 
         ],

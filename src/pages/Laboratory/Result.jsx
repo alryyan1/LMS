@@ -6,7 +6,6 @@ import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
-  Drawer,
   Box,
   List,
   ListItem,
@@ -24,31 +23,25 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  makeStyles,
+  Button,
+  TextField,
+  Typography,
 } from "@mui/material";
-import RequestedTests from "./RequestedTests";
 import {
   ArrowBack,
   ArrowForward,
-  Calculate,
-  CheckBox,
-  Delete,
   Download,
   FilterTiltShift,
-  Mail,
-  PersonAdd,
-  Print,
-  Search,
+  FormatListBulleted,
 } from "@mui/icons-material";
 import { Link, useOutletContext } from "react-router-dom";
-import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
 import MoneyDialog from "../Dialogs/MoneyDialog";
-import SearchDialog from "../Dialogs/SearchDialog";
-import TestGroups from "../../../TestGroups";
 import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
+import MyCheckBoxLab from "../../components/MyCheckBoxLab";
+import { LoadingButton } from "@mui/lab";
 
 function Result() {
   const {
@@ -58,16 +51,19 @@ function Result() {
     searchByName,
     foundedPatients,
     update,
+    setDialog
   } = useOutletContext();
 
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
   console.log(actviePatient);
-  const { setOpenDrawer, openDrawer } = useStateContext();
-  const [patients, setPatients] = useState([]);
   const [shift, setShift] = useState(null);
   const [selectedTest, setSelectedTest] = useState(null);
+  const [selectedReslult, setSelectedResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  console.log(selectedReslult,'selected result')
+  
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -76,34 +72,7 @@ function Result() {
     showTestPanel: false,
     patientDetails: "0.8fr",
   });
-  console.log(openDrawer, "open drawer");
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "" },
-          { title: "سحب العينات", to: "" },
-          { title: " اداره التحاليل", to: "/laboratory/tests" },
-          { title: "قائمه الاسعار", to: "/laboratory/price" },
-        ].map((item) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setOpenDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
 
   useEffect(() => {
     setPatientsLoading(true);
@@ -116,27 +85,27 @@ function Result() {
       setShift(data.data);
       setPatientsLoading(false);
 
-      setPatients(data.data.patients);
     });
   }, [update]);
-  console.log(patients, "patients");
+  console.log(shift, "selected shift");
 
   const setActivePatientHandler = (id) => {
     setSelectedTest(null)
+    setSelectedResult(null)
     console.log("start active patient clicked");
-    const data = patients.find((p) => p.id === id);
+    const data = shift?.patients.find((p) => p.id === id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     console.log(data, "patient from db");
     setActivePatient({ ...data, active: true });
-    setPatients((prePatients) => {
-      return prePatients.map((patient) => {
+    setShift((prev) => {
+      return {...prev,patients:prev.patients.map((patient) => {
         if (patient.id === id) {
           console.log("founded");
           return { ...data, active: true };
         } else {
           return { ...patient, active: false };
         }
-      });
+      })}
     });
     //}//).catch((error)=>console.log(error))
     // setActivePatient({...foundedPatient,active:true});
@@ -144,7 +113,6 @@ function Result() {
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
-      <Drawer open={openDrawer}>{DrawerList}</Drawer>
       <div
         style={{
           gap: "15px",
@@ -156,6 +124,7 @@ function Result() {
       >
         <div>
           <AddDoctorDialog />
+          123
 
           <Stack
             sx={{ mr: 1 }}
@@ -164,47 +133,107 @@ function Result() {
             direction={"column"}
           >
             <Item>
-                <IconButton
+            <IconButton
+            size="small"
                 
-                  variant="contained"
-                >
-                  <FilterTiltShift />
-                </IconButton>
-  
+                variant="contained"
+              >
+                <FilterTiltShift />
+              </IconButton>
             </Item>
+               
+  
             {selectedTest && (
-              <Item>
-                <IconButton
+                <LoadingButton
+                size="small"
+                 loading={loading}
                   onClick={() => {
+                    setLoading(true)
                     axiosClient
                       .post(`requestedResult/default/${selectedTest.id}`)
                       .then(({ data }) => {
                         console.log(data, "labrequest data");
                         setSelectedTest((prev) => {
                           console.log(prev, "previous selected test");
-                          return data.labrequest;
+                          return data.patient.labrequests.find((labr)=>labr.id == prev.id)
                         });
                         setResultUpdated((prev) => {
                           return prev + 1;
                         });
-                        setPatients((prev) => {
+                        setActivePatient(data.patient)
+                        ?.map((prev) => {
                           return prev.map((patient) => {
                             if (patient.id === actviePatient.id) {
                               return {
-                                ...patient,
-                                labrequest: data.labrequest,
+                                ...data.patient,
+                                active:true
                               };
                             }
                             return patient;
                           });
                         });
-                      });
+                      }).finally(()=>
+                      setLoading(false));
                   }}
                   variant="contained"
                 >
                   <Download />
-                </IconButton>
-              </Item>
+                </LoadingButton>
+            )}
+               {selectedTest?.main_test_id == 1 && (
+                <LoadingButton
+                size="small"
+                loading={loading}
+                  onClick={() => {
+                    setLoading(true)
+                    axiosClient
+                      .post(`populatePatientCbcData/${actviePatient.id}`)
+                      .then(({ data }) => {
+                        if(data.status == false){
+                          setDialog((prev)=>{
+                            return {
+                             ...prev,
+                              open:true,
+                              color:'error',
+                              message:data.message
+                            }
+                          })
+
+
+                          return
+                        }
+                        if(data.status)
+                          {
+                            console.log(data,'patient cbc')
+                            setSelectedTest((prev) => {
+                              console.log(prev, "previous selected test");
+                              return data.patient.labrequests.find((labr)=>labr.id == prev.id)
+                            });
+                            setResultUpdated((prev) => {
+                              return prev + 1;
+                            });
+                            setActivePatient(data.patient)
+                            ?.map((prev) => {
+                              return prev.map((patient) => {
+                                if (patient.id === actviePatient.id) {
+                                  return {
+                                    ...data.patient,
+                                    active:true
+                                  };
+                                }
+                                return patient;
+                              });
+                            });
+                          }
+                    
+                       
+                      }).finally(()=> 
+                      setLoading(false));
+                  }}
+                  variant="contained"
+                >
+                  <FormatListBulleted />
+                </LoadingButton>
             )}
           </Stack>
         </div>
@@ -229,10 +258,28 @@ function Result() {
             </div>
           </Stack>
           <Stack justifyContent={"space-around"} direction={"row"}>
-            <IconButton>
+            <IconButton  onClick={()=>{
+              if (shift.id == 1) {
+                return 
+              }
+
+              axiosClient.get(`shiftById/${shift.id - 1}`).then(({data})=>{
+                console.log(data.data,'shift left')
+                setShift(data.data)
+              })
+            }} >
               <ArrowBack />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={()=>{
+              // if (shift.id == 1) {
+              //   return 
+              // }
+
+              axiosClient.get(`shiftById/${shift.id + 1}`).then(({data})=>{
+                console.log(data.data,'shift left')
+                setShift(data.data)
+              })
+            }}>
               <ArrowForward />
             </IconButton>
           </Stack>
@@ -246,8 +293,7 @@ function Result() {
                 height={400}
               />
             ) : (
-              patients
-                .filter((patient) => patient.labrequests.length > 0)
+              shift?.patients?.filter((patient) => patient.labrequests.length > 0)
                 .map((p, i) => (
                   <Patient
                     delay={i * 100}
@@ -267,11 +313,11 @@ function Result() {
                   <ListItem
                     sx={{
                       "&:hover": {
-                        backgroundColor: "transparent",
+                        backgroundColor: "lightblue",
                         color: "white",
                       },
                     }}
-                    secondaryAction={<CheckBox />}
+                    secondaryAction={<MyCheckBoxLab id={test.id} hideTest={test.hidden} />}
                     key={test.main_test.id}
                   >
                     <ListItemButton
@@ -317,9 +363,13 @@ function Result() {
                       <TableCell sx={{p:0.5}}>{req.child_test.child_test_name}</TableCell>
                       <TableCell sx={{p:0.5}}>
                         <AutocompleteResultOptions
+                        setShift={setShift}
+                        setActivePatient={setActivePatient}
+                        setSelectedResult={setSelectedResult}
                           result={req.result}
                           id={req.id}
-                          child_id={req.child_test_id}
+                          req={req}
+                          child_test={req.child_test}
                         />
                       </TableCell>
                     </TableRow>
@@ -327,16 +377,29 @@ function Result() {
                 })}
             </TableBody>
           </Table>
+          {
+            selectedReslult && <Paper sx={{p:1}}>
+              <Typography>Normal Range</Typography>
+              <TextField onChange={(val)=>{
+                axiosClient.patch(`requestedResult/normalRange/${selectedReslult.id}`,{val:val.target.value})
+              }} multiline fullWidth defaultValue={selectedReslult.normal_range}/>
+            </Paper>
+          }
         </Paper>
 
         <div>
           {/** add card using material   */}
           {actviePatient && (
-            <PatientDetail
+           <div> <PatientDetail
               key={actviePatient.id}
               patient={actviePatient}
-              setPatients={setPatients}
+              setShift={setShift}
             />
+             <Stack>
+                <Button href={`${webUrl}result?pid=${actviePatient.id}`} variant="contained">print</Button>
+                </Stack>
+            </div>
+           
           )}
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit></Slide>

@@ -97,7 +97,7 @@ function ReceptionForm({ hideForm,lab }) {
           setIsLoading(false);
           setDialog((prev) => ({
             ...prev,
-            msg: "تمت الاضافه بنجاح",
+            message: "تمت الاضافه بنجاح",
             color: "success",
             open: true,
           }));
@@ -115,7 +115,7 @@ function ReceptionForm({ hideForm,lab }) {
       .catch(( {response:{data}} ) => {
         console.log(data, "catch error");
         setDialog((prev)=>{
-          return {...prev, msg: data.message, color: "error", open:true}
+          return {...prev, message: data.message, color: "error", open:true}
         })
       })
       .finally(() => setIsLoading(false));

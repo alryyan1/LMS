@@ -58,7 +58,7 @@ function RequestedTests({ setPatients }) {
           });
           //show success dialog
           setDialog(() => ({
-            msg: "تمت عمليه السداد بنجاح",
+            message: "تمت عمليه السداد بنجاح",
             open: true,
           }));
         }
@@ -91,7 +91,7 @@ function RequestedTests({ setPatients }) {
           });
           //show success dialog
           setDialog(() => ({
-            msg: "تمت الغاء السداد بنجاح",
+            message: "تمت الغاء السداد بنجاح",
             open: true,
           }));
           setActivePatient((p) => {

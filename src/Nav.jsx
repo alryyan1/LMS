@@ -6,10 +6,9 @@ import axiosClient from "../axios-client";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { useTranslation } from "react-i18next";
 const Nav = () => {
-  const { user, setToken, setUser, setOpenDrawer } = useStateContext();
+  const { user, setToken, setUser } = useStateContext();
   const [loading, setLoading] = useState(false);
   const {i18n} = useTranslation()
   // console.log(setToken);
@@ -49,15 +48,7 @@ const Nav = () => {
           direction={"row"}
           spacing={3}
         >
-          <IconButton
-            onClick={() => {
-              console.log("clicked");
-              setOpenDrawer(true);
-            }}
-            color="success"
-          >
-            <FormatListBulletedIcon />
-          </IconButton>
+         
           <NavLink style={{ textDecoration: "none" ,color:"black" }} to={"/login"}>
             Login
           </NavLink>

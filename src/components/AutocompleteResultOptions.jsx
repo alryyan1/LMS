@@ -11,7 +11,8 @@ import axiosClient from "../../axios-client";
 
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ child_id,id ,result}) {
+export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setPatients}) {
+  
     // console.log('inside table option result rebuilt with result',result)
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
@@ -19,7 +20,7 @@ export default function AutocompleteResultOptions({ child_id,id ,result}) {
   const [options,setOptions] = React.useState([])
   React.useEffect(()=>{
     axiosClient
-     .get(`childTestOption/${child_id}`)
+     .get(`childTestOption/${child_test.id}`)
      .then(({ data }) => {
         setOptions(data);
       })
@@ -36,24 +37,25 @@ export default function AutocompleteResultOptions({ child_id,id ,result}) {
   const [dialogValue, setDialogValue] = React.useState("");
 
   const handleSubmit = (event) => {
-    // setLoading(true);
-    // event.preventDefault();
-    // axiosClient
-    //   .post("childGroup", { name: dialogValue })
-    //   .then(({ data }) => {
-    //     console.log(data);
-    //     setChildGroups((prev) => {
-    //       return [...prev, data.data];
-    //     });
-    //     handleClose();
-    //   })
-    //   .finally(() => setLoading(false));
+    setLoading(true);
+    event.preventDefault();
+    axiosClient
+      .post(`childTestOption/${child_test.id}`, { name: dialogValue })
+      .then(({ data }) => {
+        console.log(data,'options data');
+        if (data.status) {
+            setOptions(data.options)
+        }
+        handleClose();
+      })
+      .finally(() => setLoading(false));
   };
 
 //   console.log('child group in autocomplete')
   return (
     <React.Fragment>
       <Autocomplete
+      
      sx={{
         "& .MuiOutlinedInput-root": {
           padding: "0px!important",
@@ -119,12 +121,24 @@ export default function AutocompleteResultOptions({ child_id,id ,result}) {
       
         freeSolo
         renderInput={(params) => (
-          <TextField {...params} onChange={(val)=>{
+          <TextField onClick={()=>{
+            setSelectedResult(req)
+          }} multiline {...params} onChange={(val)=>{
             console.log(val.target.value,'target value')
 
             setValue(val.target.value)
             axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
-                console.log(data)
+                setActivePatient(data.patient)
+                setPatients((prev)=>{
+                    return  prev.map((patient)=>{
+                        if(patient.id === data.patient.id){
+                            return{ ...data.patient, active: true }
+                        }
+                        return patient
+                    })
+                })
+
+                console.log(data,'result saved')
             })
           }} label="" />
         )}

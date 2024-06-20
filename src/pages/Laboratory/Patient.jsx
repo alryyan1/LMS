@@ -14,8 +14,9 @@ function Patient({ onClick, patient, delay }) {
           color={patient.is_lab_paid == 0 ? "secondary" : "primary"}
         >
           <Box
-            sx= { patient.company ? {
+            sx= { patient.company || patient.active  ? {
               backgroundColor :'lightblue!important' 
+
     
             }:null}
             onClick={() => {
