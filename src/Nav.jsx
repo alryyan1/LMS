@@ -52,27 +52,27 @@ const Nav = () => {
           <NavLink style={{ textDecoration: "none" ,color:"black" }} to={"/login"}>
             Login
           </NavLink>
-          <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
+          {/* <NavLink style={{ textDecoration: "none",color:"black" }} to={"/inventory"}>
             Inventory
-          </NavLink>
-          <NavLink style={{ textDecoration: "none",color:"black" }} to={"/todayClinics"}>
+          </NavLink> */}
+          {/* <NavLink style={{ textDecoration: "none",color:"black" }} to={"/todayClinics"}>
             today Clincs
-          </NavLink>
+          </NavLink> */}
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/laboratory/add"}>
             laboratory
           </NavLink>
-          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/clinic"}>
+          {/* <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/clinic"}>
             Clinic
-          </NavLink>
+          </NavLink> */}
           <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/insurance"}>
             Insurance
           </NavLink>
-          <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/services"}>
+          {/* <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/services"}>
             Services
           </NavLink> 
            <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/ship"}>
             shipping
-          </NavLink>
+          </NavLink> */}
            <NavLink style={{ textDecoration: "none" ,color:"black"}} to={"/settings"}>
             Settings
           </NavLink>

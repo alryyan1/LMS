@@ -92,13 +92,15 @@ function Result() {
   console.log(shift, "selected shift");
 
   const setActivePatientHandler = (pat) => {
-    setSelectedTest(null)
+    // setSelectedTest(null)
     setSelectedResult(null)
     console.log("start active patient clicked");
     const data = shift?.patients.find((p) => p.id === pat.id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     console.log(data, "patient from db");
     setActivePatient({ ...pat, active: true });
+    setSelectedTest(pat.labrequests[0])
+
     setShift((prev) => {
       return {...prev,patients:prev.patients.map((patient) => {
         if (patient.id === pat.id) {
