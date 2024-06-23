@@ -1,9 +1,7 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import {  Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
-import { Alert, Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Snackbar } from "@mui/material";
-import { Mail } from "@mui/icons-material";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import { Alert, Snackbar } from "@mui/material";
 
 function LabLayout() {
   const [dialog, setDialog] = useState({
@@ -37,38 +35,10 @@ function LabLayout() {
   const [updateTests, setUpdateTests] = useState(0);
   const [companies, setCompanies] = useState([]);
   const [selectedTests, setSelectedTests] = useState([]);
-  const [openDrawer, setOpenDrawer] = useState(false);
 
   const [update, setUpdate] = useState(0);
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "/laboratory/result" },
-          { title: "سحب العينات", to: "" },
-          { title: " اداره التحاليل", to: "/laboratory/tests" },
-          { title: "قائمه الاسعار", to: "/laboratory/price" },
-          { title: "CBC LIS", to: "/laboratory/cbc-lis" },
-          { title: "Chemistry LIS", to: "/laboratory/chemistry-lis" },
-        ].map((item) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setOpenDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+
   useEffect(() => {
 
     Promise.all([
@@ -151,17 +121,8 @@ useEffect(()=>{
   return (
     
     <div>
-      <Drawer open={openDrawer}>{DrawerList}</Drawer>
+      
 
-       <IconButton
-            onClick={() => {
-              console.log("clicked");
-              setOpenDrawer(true);
-            }}
-            color="success"
-          >
-            <FormatListBulletedIcon />
-          </IconButton>
       {
         <Outlet
           context={{
@@ -203,8 +164,6 @@ useEffect(()=>{
             foundedPatients,
             setFoundedPatients,
             updateTests,setUpdateTests,
-            openDrawer,
-            DrawerList
           }}
         />
       }

@@ -1,28 +1,23 @@
 import {
-  Autocomplete,
   Grid,
-  IconButton,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { url } from "../constants.js";
-import { Controller, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { Link, useLoaderData, useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
-import dayjs from "dayjs";
 import { Delete } from "@mui/icons-material";
 import axiosClient from "../../../axios-client.js";
 
 function DeductInventory() {
-  const items = useLoaderData();
   // console.log(items);
   //create state variable to store all suppliers
   const {dialog, setDialog} = useOutletContext();
@@ -31,65 +26,39 @@ function DeductInventory() {
   const [loading, setLoading] = useState(false);
   const [deductComplete, setDeductComplete] = useState(1);
   const {
-    register,
     reset,
-    control,
-    formState: { errors, isSubmitted },
-    handleSubmit,
+    formState: { isSubmitted },
   } = useForm();
-  const submitHandler = async (formData) => {
-    console.log(formData);
-    // console.log(formData.expire.$d.toLocaleDateString());
-    setLoading(true);
-    fetch(`${url}inventory/deduct`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        item_id: formData.item.id,
-        quantity: formData.amount,
-        client_id: formData.client.id,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setLoading(false);
-        if (data.status) {
-          setLoading(false);
-          reset();
-          setDialog({
-            open: true,
-            msg: "تمت الاضافه  بنجاح",
-          });
-        }
-      });
-  };
+ 
 
   const deleteDeductHandler = (item) => {
     setLoading(true)
-    fetch(`${url}inventory/deduct`, {
-        headers :{'content-type':'appliction/json'},
-        body :JSON.stringify({item_id:item.id}),
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    console.log(item,'deducted item')
+    axiosClient.post(`inventory/deduct/item?item_id=${item.id}`)
+      .then(({data}) => {
         console.log(data)
         if (data.status) {
             setLoading(false)
             setDeductComplete(deductComplete + 1);
 
           //delete supplier by id
-          setDeduct(deduct.items.filter((item) => item.id != id));
+          setDeduct(data.deduct);
           //show success dialog
           setDialog({
             open: true,
-            msg: "تم الحذف بنجاح",
+            message: "تم الحذف بنجاح",
           });
         }
-      });
+      }).catch(({ response: { data } }) => {
+        setDialog((prev) => {
+          return {
+            ...prev,
+            open: true,
+            color: "error",
+            message: data.message,
+          };
+        });
+      }).finally(()=>setLoading(false));
   };
 
   useEffect(() => {
@@ -144,7 +113,8 @@ function DeductInventory() {
      
       </Grid>
       <Grid item xs={7}>
-      <Typography variant="h4" textAlign={'center'}>
+        <Paper sx={{ p: 1 }} >
+        <Typography variant="h4" textAlign={'center'}>
           {deduct  && deduct.id}   اذن صرف رقم
 
           </Typography>
@@ -188,6 +158,8 @@ function DeductInventory() {
             اذن صرف جديد{" "}
           </LoadingButton>
         )}
+        </Paper>
+     
       </Grid>
 
      

@@ -11,7 +11,7 @@ import axiosClient from "../../axios-client";
 
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setPatients}) {
+export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setPatients,index}) {
   
     // console.log('inside table option result rebuilt with result',result)
   const [value, setValue] = React.useState(result);
@@ -121,7 +121,9 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
       
         freeSolo
         renderInput={(params) => (
-          <TextField onClick={()=>{
+          <TextField
+          autoFocus={index == 0}
+          onClick={()=>{
             setSelectedResult(req)
           }} multiline {...params} onChange={(val)=>{
             console.log(val.target.value,'target value')

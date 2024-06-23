@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../appContext";
 import { useState } from "react";
-const SignUp = () => {
+const SignUp = ({setUsers}) => {
   const { setToken, setUser } = useStateContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ val: false, msg: "" });
@@ -29,8 +29,11 @@ const SignUp = () => {
       .then(({ data }) => {
         if (data.status) {
           console.log(data);
-          setUser(data.user);
-          setToken(data.token);
+          // setUser(data.user);
+          setUsers((prev)=>{
+            return [...prev, data.user]
+          })
+          // setToken(data.token);
         }
       })
       .catch((error) => {
@@ -40,11 +43,10 @@ const SignUp = () => {
       .finally(() => setLoading(false));
   };
   return (
-    <div className="container">
       <Paper>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
           <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
-            Sign up
+            انشاء مستخدم جديد
           </Typography>
           <div className="form">
             <TextField
@@ -61,7 +63,7 @@ const SignUp = () => {
 
               })}
               sx={{ mb: 1 }}
-              variant="standard"
+              variant="filled"
               label="Username"
             ></TextField>
             {errors.username && errors.username.message}
@@ -72,7 +74,7 @@ const SignUp = () => {
                 required: { value: true, message: "password is required" },
                 minLength: {value:8,message:'at least 8 chracters must be entered'},
               })}
-              variant="standard"
+              variant="filled"
               label="Password"
             ></TextField>
             {errors.password && errors.password.message}
@@ -86,7 +88,7 @@ const SignUp = () => {
                 },
                 minLength: 8,
               })}
-              variant="standard"
+              variant="filled"
               label="confirm password"
             ></TextField>
             {errors.confirm && errors.confirm.message}
@@ -102,7 +104,6 @@ const SignUp = () => {
         </form>
         {error.val && <Alert severity="error">{error.msg}</Alert>}
       </Paper>
-    </div>
   );
 };
 

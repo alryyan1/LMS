@@ -30,7 +30,7 @@ body {
   /* overflow: hidden; */
   max-width: 95%;
   margin: auto;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .refresh{

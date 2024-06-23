@@ -1,6 +1,7 @@
 import {
   Grid,
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -10,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { url } from "../constants.js";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
@@ -20,145 +20,82 @@ import { useStateContext } from "../../appContext.jsx";
 
 function Client() {
   const [loading, setLoading] = useState(false);
-  const [update, setUpdate] = useState(1);
   //create state variable to store all clients
   const [clients, setClients] = useState([]);
-  const { dilog, setDilog } = useOutletContext();
+  const { dilog, setDialog } = useOutletContext();
   const {
     register,
     reset,
     formState: { errors, isSubmitted },
     handleSubmit,
   } = useForm();
-  const { setUser, setToken } = useStateContext();
-  console.log(isSubmitted, "is submitted");
   const submitHandler = async (formData) => {
     // setLoading(true);
     try {
       const { data } = await axiosClient.post(
         "client/create",
-        new URLSearchParams(formData)
+       formData
       );
+      console.log(data, "created")
       if (data.status) {
         reset();
-        setDilog((prev) => ({
+        setClients((prev)=>[...prev,data.data]);
+        setDialog((prev) => ({
           ...prev,
           color: "success",
           open: true,
-          msg: "تمت الاضافه بنجاح",
+          message: "تمت الاضافه بنجاح",
         }));
-        setUpdate((prev) => prev + 1);
         setLoading(false);
       }
-    } catch ({ response }) {
-      console.log(response.data);
-      if (response.status == 404) {
-        setDilog((prev) => ({
+    } catch ({ response:{data} }) {
+      
+        setDialog((prev) => ({
           ...prev,
           color: "error",
           open: true,
-          msg: response.data.message,
+          message: data.message,
         }));
         setLoading(false);
-        setTimeout(() => {
-          setUser(null);
-          setToken(null);
-        }, 4000);
-      }
     }
   };
   const deleteClientHandler = (id) => {
-    fetch(`${url}client/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.delete(`client/${id}`)
+      .then(({data}) => {
         if (data.status) {
+          setDialog((prev) => ({
+            ...prev,
+            color: "error",
+            open: true,
+            message: data.message,
+          }));
           //delete client by id
           setClients(clients.filter((client) => client.id != id));
           //show success dialog
         }
+      }).catch(({response:{data}})=>{
+        setDialog((prev) => ({
+          ...prev,
+          color: "error",
+          open: true,
+          message: data.message,
+        }));
       });
   };
   useEffect(() => {
     //fetch all clients
-    fetch(`${url}client/all`)
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient(`client/all`)
+      .then(({data}) => {
         setClients(data);
         console.log(data);
       });
-  }, [update]);
+  }, []);
   return (
-    <Grid container>
-      <Grid item xs={4}>
-        <Typography>اضافه عميل جديد</Typography>
-        <form noValidate onSubmit={handleSubmit(submitHandler)}>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.name != null}
-              {...register("name", {
-                required: { value: true, message: "يجب ادخال اسم العميل" },
-              })}
-              id="outlined-basic"
-              label="اسم العميل"
-              variant="standard"
-              helperText ={errors.name && errors.name.message}
-            />
-            
-          </div>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.phone != null}
-              {...register("phone", {
-                required: { value: true, message: "يجب ادخال رقم الهاتف" },
-              })}
-              id="outlined-basic"
-              label="رقم الهاتف"
-              variant="standard"
-              type="number"
-              helperText ={errors.phone && errors.phone.message}
-            />
-          </div>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.address != null}
-              {...register("address", {
-                required: { value: true, message: "يجب ادخال العنوان" },
-              })}
-              id="outlined-basic"
-              label="العنوان"
-              variant="standard"
-              helperText ={errors.address && errors.address.message}
-            />
-          </div>
-          <div>
-            <TextField
-              sx={{ mb: 1 }}
-              fullWidth
-              {...register("email")}
-              id="outlined-basic"
-              label="الايميل"
-              variant="standard"
-              helperText ={errors.email && errors.email.message}
-            />
-          </div>
-          <div></div>
-          <LoadingButton
-            fullWidth
-            loading={loading}
-            variant="contained"
-            type="submit"
-          >
-            حفظ
-          </LoadingButton>
-        </form>
-      </Grid>
-      <Grid item xs={1}></Grid>
-      <Grid item xs={6}>
+    <Grid container spacing={2}>
+    
+      <Grid item xs={8}>
+        <Paper sx={{p:1}}>
+
         {/* create table with all clients */}
         <TableContainer>
           <Table dir="rtl" size="small">
@@ -195,11 +132,80 @@ function Client() {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+        </Paper>
 
-      <Grid item xs={3}>
-        1
       </Grid>
+      <Grid item xs={4}>
+      <Paper sx={{p:1}}>
+        
+        <Typography textAlign={'center'} variant="h4">اضافه عميل جديد</Typography>
+        <form noValidate onSubmit={handleSubmit(submitHandler)}>
+          <div>
+            <TextField
+             fullWidth
+              error={errors.name != null}
+              {...register("name", {
+                required: { value: true, message: "يجب ادخال اسم العميل" },
+              })}
+              id="outlined-basic"
+              label="اسم العميل"
+              variant="filled"
+              helperText ={errors.name && errors.name.message}
+            />
+            
+          </div>
+          <div>
+            <TextField
+              fullWidth
+              error={errors.phone != null}
+              {...register("phone", {
+                required: { value: true, message: "يجب ادخال رقم الهاتف" },
+              })}
+              id="outlined-basic"
+              label="رقم الهاتف"
+              variant="filled"
+              type="number"
+              
+              helperText ={errors.phone && errors.phone.message}
+            />
+          </div>
+          <div>
+            <TextField
+              fullWidth
+              error={errors.address != null}
+              {...register("address", {
+                required: { value: true, message: "يجب ادخال العنوان" },
+              })}
+              id="outlined-basic"
+              label="العنوان"
+              variant="filled"
+              helperText ={errors.address && errors.address.message}
+            />
+          </div>
+          <div>
+            <TextField
+              sx={{ mb: 1 }}
+              fullWidth
+              {...register("email")}
+              id="outlined-basic"
+              label="الايميل"
+              variant="filled"
+              helperText ={errors.email && errors.email.message}
+            />
+          </div>
+          <div></div>
+          <LoadingButton
+            fullWidth
+            loading={loading}
+            variant="contained"
+            type="submit"
+          >
+            حفظ
+          </LoadingButton>
+        </form>
+        </Paper>
+      </Grid>
+   
     </Grid>
   );
 }

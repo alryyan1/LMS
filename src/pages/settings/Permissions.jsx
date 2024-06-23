@@ -72,7 +72,7 @@ function Permissions() {
     });
   }, [isSubmitSuccessful, updater]);
   useEffect(() => {
-    axiosClient("permissions").then(({ data }) => {
+    axiosClient("permissions?guard_name=web").then(({ data }) => {
       setPermissions(data);
       console.log(data);
       setUpdater((prev) => prev + 1);
@@ -114,26 +114,35 @@ function Permissions() {
         <List dense>
           {roles.map((role) => {
             return (
-              <ListItem sx={{
-                backgroundColor: (theme) =>
-                  selectedRole.id == role.id
-                    ? theme.palette.primary.main
-                    : "",
-              }} secondaryAction={<IconButton onClick={()=>{
-                axiosClient.delete(`roles/${role.id}`).then(({data}) =>{
-                  console.log(data)
-                   
-                      setRoles(data.rules)
-                    
-                })
-              }} ><Delete/></IconButton>} key={role.id}>
-              
+              <ListItem
+                sx={{
+                  backgroundColor: (theme) =>
+                    selectedRole.id == role.id
+                      ? theme.palette.primary.main
+                      : "",
+                }}
+                secondaryAction={
+                  <IconButton
+                    onClick={() => {
+                      axiosClient
+                        .delete(`roles/${role.id}`)
+                        .then(({ data }) => {
+                          console.log(data);
+
+                          setRoles(data.rules);
+                        });
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                }
+                key={role.id}
+              >
                 <ListItemButton
                   style={{
                     marginBottom: "2px",
                     color: "black",
                   }}
-                 
                   onClick={() => {
                     setSelectedRole(role);
                   }}
@@ -145,11 +154,12 @@ function Permissions() {
           })}
         </List>
       </Grid>
-      <Grid key={selectedRole.id} item xs={3}>
+     
+       <Grid key={selectedRole.id} item xs={3}>
         {selectedRole && (
           <div>
             <Typography textAlign={"center"} variant="h5">
-              Permissions {selectedRole.name}{" "}
+              Permissions {selectedRole.name}
             </Typography>
             <FormGroup>
               {permissions.map((p) => {
@@ -158,20 +168,21 @@ function Permissions() {
                   .map((p) => p.id)
                   .includes(p.id);
                 return (
-                  <FormControlLabel
-                    key={p.id}
-                    control={
-                      <CustomCheckBox
-                        selectedRole={selectedRole}
-                        setDialog={setDialog}
-                        setUpdater={setUpdater}
-                        key={p.id}
-                        permission_id={p.id}
-                        isChecked={checked}
-                      />
-                    }
-                    label={p.name}
-                  />
+                    <FormControlLabel key={p.id}
+                    
+                      control={
+                        <CustomCheckBox
+                        
+                          selectedRole={selectedRole}
+                          setDialog={setDialog}
+                          setUpdater={setUpdater}
+                          key={p.id}
+                          permission_id={p.id}
+                          isChecked={checked}
+                        />
+                      }
+                      label={p.name}
+                    />
                 );
               })}
             </FormGroup>

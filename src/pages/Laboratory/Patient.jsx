@@ -1,4 +1,4 @@
-import { Delete } from "@mui/icons-material";
+import { Delete, Lock, LockOpen } from "@mui/icons-material";
 import { Badge, Box, Grow, Icon } from "@mui/material";
 
 function Patient({ onClick, patient, delay }) {
@@ -14,6 +14,7 @@ function Patient({ onClick, patient, delay }) {
           color={patient.is_lab_paid == 0 ? "secondary" : "primary"}
         >
           <Box
+          
             sx= { patient.company || patient.active  ? {
               backgroundColor :'lightblue!important' 
 
@@ -28,6 +29,9 @@ function Patient({ onClick, patient, delay }) {
             }:null}
           >
             {patient.visit_number}
+            <span>
+             {patient.result_is_locked ?  <Lock/> : <LockOpen/>}
+            </span>
           </Box>
         </Badge>
       ) : (
@@ -45,6 +49,9 @@ function Patient({ onClick, patient, delay }) {
 
           }:null}        >
           {patient.visit_number}
+          <span >
+             {patient.result_is_locked ?  <Lock/> : <LockOpen/>}
+            </span>
         </Box>
       )}
     </Grow>

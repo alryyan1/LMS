@@ -16,7 +16,7 @@ function InventoryNav() {
   open: false,
   openError: false,
   openLabReport: false,
-  msg: "تمت الاضافه بنجاح",
+  message: "تمت الاضافه بنجاح",
 });
   const handleClose = () => {
     

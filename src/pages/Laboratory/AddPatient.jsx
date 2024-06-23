@@ -13,6 +13,7 @@ import {
   Paper,
   Skeleton,
   Slide,
+  Box,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
@@ -146,7 +147,7 @@ function AddPatient() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "90vh",
+          height: "80vh",
           display: "grid",
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
@@ -223,12 +224,12 @@ function AddPatient() {
           </div>
         </div>
 
-        <Paper sx={{p:1}}>
+        <Box sx={{p:1}}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups/>}
-        </Paper>
+        </Box>
         <div>
           {/** add card using material   */}
           {actviePatient && (

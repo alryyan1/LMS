@@ -82,7 +82,7 @@ function App() {
               
             ></TextField>
             <LoadingButton  loading={loading} type="submit" sx={{m:1}} variant="contained">تسجيل دخول</LoadingButton>
-            <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link>
+            {/* <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link> */}
           </div>
         </form>
         {error.val&&<Alert severity="error">{error.msg}</Alert>}

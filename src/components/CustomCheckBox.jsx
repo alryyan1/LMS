@@ -19,7 +19,7 @@ function CustomCheckBox({setUpdater,setDialog,selectedRole,isChecked,permission_
       })
     };
   return (
-    <Checkbox  checked={checked}  onChange={handleChange}/>
+    <Checkbox   checked={checked}  onChange={handleChange}/>
   )
 }
 

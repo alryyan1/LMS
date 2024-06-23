@@ -142,7 +142,8 @@ import axiosClient from "../../../axios-client.js";
       <Grid container spacing={1}>
         
         <Grid item xs={7}>
-        <Typography textAlign={'center'}>
+          <Paper sx={{p:1}}>
+          <Typography variant="h4" textAlign={'center'}>
             {deduct  && deduct.id}   اذن طلب رقم
   
             </Typography>
@@ -173,6 +174,8 @@ import axiosClient from "../../../axios-client.js";
             </Table>
           </TableContainer>
        
+          </Paper>
+   
         </Grid>
   
         <Grid item xs={5}>

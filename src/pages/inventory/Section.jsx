@@ -50,30 +50,30 @@ function Section() {
           setLoading(false);
           setDialog({
             open: true,
-            msg: "تمت الاضافه بنجاح",
+          message: "تمت الاضافه بنجاح",
           });
         }
         console.log(data);
       });
   };
 
-  const deleteSectionHandler = (id) => {
-    fetch(`${url}sections/${id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status) {
-          //delete Section by id
-          setSections(Sections.filter((Section) => Section.id != id));
-          //show success dialog
-          setOpenSuccessDialog({
-            open: true,
-            msg: "تم الحذف بنجاح",
-          });
-        }
-      });
-  };
+  // const deleteSectionHandler = (id) => {
+  //   fetch(`${url}sections/${id}`, {
+  //     method: "DELETE",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.status) {
+  //         //delete Section by id
+  //         setSections(Sections.filter((Section) => Section.id != id));
+  //         //show success dialog
+  //         setDialog({
+  //           open: true,
+  //         message: "تم الحذف بنجاح",
+  //         });
+  //       }
+  //     });
+  // };
   useEffect(() => {
     //fetch all Sections
     fetch(`${url}sections/all`)
@@ -85,27 +85,31 @@ function Section() {
       });
   }, [isSubmitted]);
   return (
-    <Grid container>
+    <Grid container spacing={2}>
         
       <Grid item xs={4}>
-        <Typography>اضافه قسم جديد</Typography>
+
+        <Paper sx={{p:1}}>
+        <Typography textAlign={'center'} variant="h4">اضافه قسم جديد</Typography>
+
         <form noValidate onSubmit={handleSubmit(submitHandler)}>
           <div>
             <TextField
+            fullWidth
               error={errors.name}
               {...register("name", {
                 required: { value: true, message: "يجب ادخال اسم القسم" },
               })}
               id="outlined-basic"
               label="اسم القسم"
-              variant="standard"
+              variant="filled"
               helperText={errors.name && errors.name.message}
             />
           </div>
 
           <div></div>
           <LoadingButton
-            loa
+            fullWidth
             sx={{ mt: 2 }}
             loading={loading}
             variant="contained"
@@ -114,9 +118,11 @@ function Section() {
             حفظ
           </LoadingButton>
         </form>
+        </Paper>
+      
       </Grid>
-      <Grid item xs={5}>
-        {/* create table with all Sections */}
+      <Grid item xs={8}>
+        <Paper>
         <TableContainer>
           <Table dir="rtl" size="small">
             <thead>
@@ -138,11 +144,12 @@ function Section() {
             </TableBody>
           </Table>
         </TableContainer>
+        </Paper>
+      
+        
       </Grid>
 
-      <Grid item xs={3}>
-        1
-      </Grid>
+  
     </Grid>
   );
 }

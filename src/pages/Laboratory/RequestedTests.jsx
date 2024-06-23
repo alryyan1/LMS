@@ -2,6 +2,7 @@ import {
   Collapse,
   Divider,
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -134,8 +135,8 @@ function RequestedTests({ setPatients }) {
   let total_endurance = 0;
   return (
     <>
-      <div className="requested-tests">
-        <div  style={{height:'65vh',overflow:'auto'}} className="requested-table">
+      <Paper sx={{p:1}} className="requested-tests">
+        <div  style={{height:'57vh',overflow:'auto'}} className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>
@@ -268,7 +269,7 @@ function RequestedTests({ setPatients }) {
           
           </div>
         </div>
-      </div>
+      </Paper>
      
     </>
   );

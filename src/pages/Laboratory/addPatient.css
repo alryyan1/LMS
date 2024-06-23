@@ -74,7 +74,8 @@
     font-size: 1.4rem;
     font-weight: 500;
 }
-.patients div {
+.patients  div {
+    position: relative;
     border: 1px solid antiquewhite;
     height: 50px;
     cursor: pointer;
@@ -88,4 +89,9 @@
     border-radius: 5px;
     font-size: 1.2rem;
     
+}
+.patients div span {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

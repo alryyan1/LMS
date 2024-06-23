@@ -1,4 +1,5 @@
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -47,7 +48,7 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <div style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
+    <Paper style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
       <TableContainer>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>
@@ -88,7 +89,7 @@ function SearchDialog({lab=false}) {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Paper>
   );
 }
 

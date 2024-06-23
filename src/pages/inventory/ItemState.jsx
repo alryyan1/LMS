@@ -1,10 +1,8 @@
 import {
   Autocomplete,
-  Button,
   Grid,
   MenuItem,
   Select,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -12,16 +10,11 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import axiosClient from "../../../axios-client";
-var today = new Date();
 
 function ItemState() {
-  const [date, setDate] = useState(null);
   const items = useLoaderData();
   const [selectedItem, setSelectedItem] = useState(null);
   const [states, setSates] = useState([]);

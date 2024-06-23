@@ -1,6 +1,7 @@
 import {
   Grid,
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -20,7 +21,7 @@ import axiosClient from "../../../axios-client.js";
 
 function Supplier() {
   //create state variable to store all suppliers
-  const {dialog, setDialog} = useOutletContext();
+  const { dialog, setDialog } = useOutletContext();
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(false);
   const {
@@ -34,26 +35,29 @@ function Supplier() {
     console.log(formData);
     setLoading(true);
     // console.log(isSubmitting)
-    axiosClient.post(`suppliers/create`, formData)
+    axiosClient
+      .post(`suppliers/create`, formData)
       .then((data) => {
         if (data.status) {
           setLoading(false);
           reset();
           setDialog({
             open: true,
-            msg: "تمت الاضافه  بنجاح",
+            message: "تمت الاضافه  بنجاح",
           });
         }
-      }).catch(({response:{data}}) =>{
-        console.log(data)
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
         setLoading(true);
 
         setDialog({
-          color:'error',
+          color: "error",
           open: true,
-          msg: data.msg,
-        })
-      }).finally(() => {
+          message: data.message,
+        });
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -61,7 +65,8 @@ function Supplier() {
     setDialog((prev) => ({ ...prev, open: false }));
   };
   const deleteSupplierHandler = (id) => {
-    axiosClient.delete(`suppliers/${id}`)
+    axiosClient
+      .delete(`suppliers/${id}`)
       .then((data) => {
         if (data.status) {
           //delete supplier by id
@@ -69,16 +74,17 @@ function Supplier() {
           //show success dialog
           setDialog({
             open: true,
-            msg: "تم الحذف بنجاح",
+            message: "تم الحذف بنجاح",
           });
         }
-      }).catch(({response:{data}}) =>{
-        console.log(data)
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
         setDialog({
-          color:'error',
+          color: "error",
           open: true,
-          msg: data.msg,
-        })
+          message: data.message,
+        });
       });
   };
   useEffect(() => {
@@ -92,140 +98,140 @@ function Supplier() {
       });
   }, [isSubmitted]);
   return (
-    <Grid container>
-      <Grid item xs={4}>
-        <Typography>اضافه مورد جديد</Typography>
-        <form noValidate onSubmit={handleSubmit(submitHandler)}>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.name != null}
-              {...register("name", {
-                required: { value: true, message: "يجب ادخال اسم المورد" },
-              })}
-              id="outlined-basic"
-              label="اسم المورد"
-              variant="filled"
-              helperText={errors.name && errors.name.message}
-            />
-            
-          </div>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.phone != null}
-              {...register("phone", {
-                required: { value: true, message: "يجب ادخال رقم الهاتف" },
-              })}
-              id="outlined-basic"
-              label="رقم الهاتف"
-              variant="filled"
-              type="number"
-              helperText={errors.phone && errors.phone.message}
-            />
-          </div>
-          <div>
-            <TextField
-              fullWidth
-              error={errors.address != null}
-              {...register("address", {
-                required: { value: true, message: "يجب ادخال العنوان" },
-              })}
-              id="outlined-basic"
-              label="العنوان"
-              variant="filled"
-              helperText={errors.address && errors.address.message}
-            />
-          </div>
-          <div>
-            <TextField
-              sx={{ mb: 1 }}
-              fullWidth
-              error={errors.email}
-              {...register("email")}
-              id="outlined-basic"
-              label="الايميل"
-              variant="filled"
-              helperText={errors.email && errors.email.message}
-            />
-          </div>
-          <div></div>
-          <LoadingButton
-            fullWidth
-            loading={loading}
-            variant="contained"
-            type="submit"
-          >
-            حفظ
-          </LoadingButton>
-        </form>
-      </Grid>
-      <Grid item xs={1}></Grid>
-      <Grid item xs={7}>
+    <Grid container spacing={2}>
+      <Grid item xs={8}>
         {/* create table with all suppliers */}
-        <TableContainer>
-          <Table dir="rtl" size="small">
-            <thead>
-              <TableRow>
-                <TableCell>رقم</TableCell>
-                <TableCell>الاسم</TableCell>
-                <TableCell>الهاتف</TableCell>
-                <TableCell>العنوان</TableCell>
-                <TableCell>الايميل</TableCell>
-                <TableCell>حذف</TableCell>
-              </TableRow>
-            </thead>
-
-            <TableBody>
-              {suppliers.map((supplier) => (
-                <TableRow key={supplier.id}>
-                  <TableCell>{supplier.id}</TableCell>
-                  <MyTableCell
-                    item={supplier}
-                    colName={"name"}
-                    table="suppliers"
-                  >
-                    {supplier.name}
-                  </MyTableCell>
-                  <MyTableCell
-                    item={supplier}
-                    colName={"phone"}
-                    table="suppliers"
-                  >
-                    {supplier.phone}
-                  </MyTableCell>
-                  <MyTableCell
-                    item={supplier}
-                    colName={"address"}
-                    table="suppliers"
-                  >
-                    {supplier.address}
-                  </MyTableCell>
-                  <MyTableCell
-                    item={supplier}
-                    colName={"email"}
-                    table="suppliers"
-                  >
-                    {supplier.email}
-                  </MyTableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={() => {
-                        deleteSupplierHandler(supplier.id);
-                      }}
-                    >
-                      <Delete></Delete>
-                    </IconButton>
-                  </TableCell>
+        <Paper sx={{p:2 }}>
+          <TableContainer>
+            <Table dir="rtl" size="small">
+              <thead>
+                <TableRow>
+                  <TableCell>رقم</TableCell>
+                  <TableCell>الاسم</TableCell>
+                  <TableCell>الهاتف</TableCell>
+                  <TableCell>العنوان</TableCell>
+                  <TableCell>الايميل</TableCell>
+                  <TableCell>حذف</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
+              </thead>
 
-      <Grid item xs={3}>
-        1
+              <TableBody>
+                {suppliers.map((supplier) => (
+                  <TableRow key={supplier.id}>
+                    <TableCell>{supplier.id}</TableCell>
+                    <MyTableCell
+                      item={supplier}
+                      colName={"name"}
+                      table="suppliers"
+                    >
+                      {supplier.name}
+                    </MyTableCell>
+                    <MyTableCell
+                      item={supplier}
+                      colName={"phone"}
+                      table="suppliers"
+                    >
+                      {supplier.phone}
+                    </MyTableCell>
+                    <MyTableCell
+                      item={supplier}
+                      colName={"address"}
+                      table="suppliers"
+                    >
+                      {supplier.address}
+                    </MyTableCell>
+                    <MyTableCell
+                      item={supplier}
+                      colName={"email"}
+                      table="suppliers"
+                    >
+                      {supplier.email}
+                    </MyTableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => {
+                          deleteSupplierHandler(supplier.id);
+                        }}
+                      >
+                        <Delete></Delete>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+      <Grid item xs={4}>
+        <Paper sx={{p:2 }}>
+          <Typography textAlign={"center"} variant="h4">
+            اضافه مورد جديد
+          </Typography>
+          <form noValidate onSubmit={handleSubmit(submitHandler)}>
+            <div>
+              <TextField
+                fullWidth
+                error={errors.name != null}
+                {...register("name", {
+                  required: { value: true, message: "يجب ادخال اسم المورد" },
+                })}
+                id="outlined-basic"
+                label="اسم المورد"
+                variant="filled"
+                helperText={errors.name && errors.name.message}
+              />
+            </div>
+            <div>
+              <TextField
+                fullWidth
+                error={errors.phone != null}
+                {...register("phone", {
+                  required: { value: true, message: "يجب ادخال رقم الهاتف" },
+                })}
+                id="outlined-basic"
+                label="رقم الهاتف"
+                variant="filled"
+                type="number"
+                helperText={errors.phone && errors.phone.message}
+              />
+            </div>
+            <div>
+              <TextField
+                fullWidth
+                error={errors.address != null}
+                {...register("address", {
+                  required: { value: true, message: "يجب ادخال العنوان" },
+                })}
+                id="outlined-basic"
+                label="العنوان"
+                variant="filled"
+                helperText={errors.address && errors.address.message}
+              />
+            </div>
+            <div>
+              <TextField
+                sx={{ mb: 1 }}
+                fullWidth
+                error={errors.email}
+                {...register("email")}
+                id="outlined-basic"
+                label="الايميل"
+                variant="filled"
+                helperText={errors.email && errors.email.message}
+              />
+            </div>
+            <div></div>
+            <LoadingButton
+              fullWidth
+              loading={loading}
+              variant="contained"
+              type="submit"
+            >
+              حفظ
+            </LoadingButton>
+          </form>
+        </Paper>
       </Grid>
     </Grid>
   );
