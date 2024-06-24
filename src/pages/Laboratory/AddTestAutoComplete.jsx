@@ -40,22 +40,30 @@ function AddTestAutoComplete({ patients, setPatients }) {
         });
         console.log(data.patient, "from db");
         console.info(actviePatient, "active p");
+      }else{
+        setLoading(false);
+        setDialog((prev) => {
+          return {...prev,open:true, message: data.message,color:'error'};
+        });
+        setLoading(false);
       }
+
     } catch ({
       response: {
         data: { message },
         status,
       },
     }) {
+      console.log(message,'message')
       // console.log(response,'error in adding  test data')
       console.log(message, "error in adding  test data");
-      if (status > 400) {
+   
         setLoading(false);
         setDialog((prev) => {
-          return { ...prev, msg: message, openError: true, title: "خطا" };
+          return { ...prev,open:true, message: message};
         });
         setLoading(false);
-      }
+      
     }
 
     setSelectedTests([]);

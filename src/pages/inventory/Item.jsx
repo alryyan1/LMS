@@ -115,7 +115,9 @@ function Item() {
         setLoading(false);
       });
   };
-
+  useEffect(() => {
+    document.title = 'الاصناف' ;
+  }, []);
   const deleteItemHandler = (id) => {
     axiosClient
       .delete(`items/${id}`)

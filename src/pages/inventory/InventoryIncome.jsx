@@ -154,7 +154,9 @@ function InventoryIncome() {
         })
       })
   };
-
+  useEffect(() => {
+    document.title = 'اذن وارد' ;
+  }, []);
   const deleteIncomeItemHandler = (id) => {
     setLoading(true);
     fetch(`${url}inventory/deposit`, {

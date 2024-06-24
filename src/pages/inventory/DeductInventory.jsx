@@ -30,7 +30,9 @@ function DeductInventory() {
     formState: { isSubmitted },
   } = useForm();
  
-
+  useEffect(() => {
+    document.title = 'اذن منصرف' ;
+  }, []);
   const deleteDeductHandler = (item) => {
     setLoading(true)
     console.log(item,'deducted item')

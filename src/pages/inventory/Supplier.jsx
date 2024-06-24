@@ -61,6 +61,9 @@ function Supplier() {
         setLoading(false);
       });
   };
+  useEffect(() => {
+    document.title = 'الموردون' ;
+  }, []);
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };

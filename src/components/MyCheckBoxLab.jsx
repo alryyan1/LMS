@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
 
 function MyCheckBoxLab({ id, hideTest }) {
-  const [isChecked, setIsChecked] = useState(hideTest);
+  const [isChecked, setIsChecked] = useState(hideTest  == 1);
   const { setActivePatient} = useOutletContext();
   const hideTestHandler = (val) => {
     console.log(val.target.checked, "checked handler");

@@ -52,7 +52,7 @@ function RequestedTests({ setPatients }) {
           setPatients((prevPatients) => {
             return prevPatients.map((p) => {
               if (p.id === actviePatient.id) {
-                return  data.data
+                return {...data.data,active:true}
               } else {
                 return p;
               }
@@ -85,6 +85,8 @@ function RequestedTests({ setPatients }) {
                   ...p,
                   is_lab_paid: false,
                   lab_paid: 0,
+           active:true
+
                 };
               } else {
                 return p;

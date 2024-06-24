@@ -59,7 +59,7 @@ console.log(user,'in nav ')
         {[
           { title: "تسجيل مريض", to: "/laboratory/add" },
           { title: "ادخال النتائج ", to: "/laboratory/result" },
-          { title: "سحب العينات", to: "" },
+          { title: "سحب العينات", to: "/laboratory/sample" },
           { title: " اداره التحاليل", to: "/laboratory/tests" },
           { title: "قائمه الاسعار", to: "/laboratory/price" },
           { title: "CBC LIS", to: "/laboratory/cbc-lis" },

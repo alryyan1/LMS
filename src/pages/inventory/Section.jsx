@@ -28,6 +28,9 @@ function Section() {
     formState: { errors, isSubmitting, isSubmitted },
     handleSubmit,
   } = useForm();
+  useEffect(() => {
+    document.title = 'الاقسام' ;
+  }, []);
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
     setLoading(true);

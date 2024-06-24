@@ -131,6 +131,9 @@ function AddPatient() {
       return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
     });
   };
+  useEffect(() => {
+    document.title = 'تسجيل مريض للمعمل';
+  }, []);
 
   const showShiftMoney = () => {
     setDialog((prev) => {

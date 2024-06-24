@@ -3,7 +3,24 @@ import { useEffect, useState } from "react";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
 import { webUrl } from "../constants";
+import pic1 from "../../assets/images/1.png"
+import pic2 from "../../assets/images/2.png"
+import pic3 from "../../assets/images/3.png"
+import pic4 from "../../assets/images/4.png"
+import pic5 from "../../assets/images/5.png"
+import pic6 from "../../assets/images/6.png"
+import pic7 from "../../assets/images/7.png"
 
+const images = [
+  pic1,
+  pic2,
+  pic3,
+  pic4,
+  pic5,
+  pic6,
+  pic7,
+
+]
 import {
   List,
   ListItem,
@@ -13,46 +30,32 @@ import {
   IconButton,
   Stack,
   Skeleton,
-  Slide,
   Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-  TextField,
-  Typography,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
-import ErrorDialog from "../Dialogs/ErrorDialog";
-import MoneyDialog from "../Dialogs/MoneyDialog";
-import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
 import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
-import ResultSidebar from "./ResultSidebar";
-
-function Result() {
+import { LoadingButton } from "@mui/lab";
+function uniqe(val,index,array){
+  return array.indexOf(val) === index;
+}
+function Sample() {
   const {
     actviePatient,
     setActivePatient,
     searchByName,
-    foundedPatients,
     update,
-    setDialog,
   } = useOutletContext();
 
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
-  const [resultUpdated, setResultUpdated] = useState(0);
   console.log(actviePatient);
   const [shift, setShift] = useState(null);
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedReslult, setSelectedResult] = useState(null);
-  const [loading, setLoading] = useState(false);
   console.log(selectedReslult, "selected result");
 
   const [layOut, setLayout] = useState({
@@ -63,10 +66,11 @@ function Result() {
     showTestPanel: false,
     patientDetails: "0.8fr",
   });
-  useEffect(() => {
-    document.title = 'تنزيل النتائج';
-  }, []);
-
+  
+    useEffect(() => {
+      document.title = 'سحب العينات';
+    }, []);
+  
   useEffect(() => {
     setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
@@ -108,8 +112,19 @@ function Result() {
     // setActivePatient({...foundedPatient,active:true});
   };
   const shiftDate = new Date(Date.parse(shift?.created_at));
+  const containers = actviePatient?.labrequests.map((req)=>{
+    return req.main_test.container;
+})
+//سبحان الله
+const filteredContainers=  containers?.filter((item,index,array)=>array.map((i)=>i.id).indexOf(item.id)==index)
+console.log(filteredContainers,'filtered containers')
+
+
+
+console.log(containers,'containerss')
   return (
     <>
+    sample
       <div
         style={{
           gap: "15px",
@@ -205,16 +220,9 @@ function Result() {
               />
             ) : (
               shift?.patients
-                ?.filter((patient) => patient.labrequests.length > 0)
-                .map((p, i) => {
-                  let unfinshed_count = 0;
-                  let allResultsFinished = true;
-                  p.labrequests.forEach((labRequest)=>{
-                    unfinshed_count+= labRequest.unfinished_results_count.length
-    
-                  })
-                 return <Patient
-                 unfinshed_count = {unfinshed_count}
+                
+                .map((p, i) => (
+                  <Patient
                     delay={i * 100}
                     key={p.id}
                     patient={p}
@@ -222,9 +230,7 @@ function Result() {
                       setActivePatientHandler(p);
                     }}
                   />
-                }
-                  
-                )
+                ))
             )}
           </div>
         </Paper>
@@ -241,9 +247,7 @@ function Result() {
                         color: "white",
                       },
                     }}
-                    secondaryAction={
-                      <MyCheckBoxLab id={test.id} hideTest={test.hidden} />
-                    }
+                    
                     key={test.main_test.id}
                   >
                     <ListItemButton
@@ -272,73 +276,13 @@ function Result() {
             </List>
           )}
         </Paper>
-        <Paper key={selectedTest?.id + resultUpdated} sx={{ p: 1 }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell width="80%">Result</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedTest &&
-                selectedTest.requested_results.map((req,i) => {
-                  console.log(selectedTest, "req result in table");
-                  return (
-                    <TableRow key={req.id}>
-                      <TableCell sx={{ p: 0.5 }}>
-                        {req.child_test.child_test_name}
-                      </TableCell>
-                      <TableCell sx={{ p: 0.5 }}>
-                        <AutocompleteResultOptions
-                         index={i}
-                          setShift={setShift}
-                          setActivePatient={setActivePatient}
-                          setSelectedResult={setSelectedResult}
-                          result={req.result}
-                          id={req.id}
-                          req={req}
-                          child_test={req.child_test}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          {selectedReslult && (
-            <Paper key={selectedReslult.id} sx={{ p: 1, mt: 1 }}>
-              <Typography>Normal Range</Typography>
-              <TextField
-                onChange={(val) => {
-                  axiosClient.patch(
-                    `requestedResult/normalRange/${selectedReslult.id}`,
-                    { val: val.target.value }
-                  );
-                }}
-                multiline
-                fullWidth
-                defaultValue={selectedReslult.normal_range}
-              />
-            </Paper>
-          )}
-          <Divider />
+        <Paper sx={{display:'grid',gridTemplateColumns:"1fr 1fr 1fr"}} >
+          
+       { filteredContainers?.map((c)=>{
+        return <img key={c.id}  height={300} src = {images[c.id - 1 ]} alt="" />
+       })}
 
-          {selectedTest && (
-            <Paper sx={{ p: 1, mt: 1 }}>
-              <Typography>Comment</Typography>
-              <TextField
-                onChange={(val) => {
-                  axiosClient.patch(`comment/${selectedTest.id}`, {
-                    val: val.target.value,
-                  });
-                }}
-                multiline
-                fullWidth
-                defaultValue={selectedTest.comment}
-              />
-            </Paper>
-          )}
+       
         </Paper>
 
         <div>
@@ -351,36 +295,22 @@ function Result() {
                 patient={actviePatient}
                 setShift={setShift}
               />
-              <Stack>
-                <Button
-                  disabled={actviePatient.result_is_locked == 1}
-                  href={`${webUrl}result?pid=${actviePatient.id}`}
-                  variant="contained"
-                >
-                  print
-                </Button>
-              </Stack>
+              <Divider/>
+              <LoadingButton onClick={()=>{
+                axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
+                  console.log(data,'barcode')
+                })
+              }} sx={{mt:1}} fullWidth variant="contained">
+                Print Barcode
+              </LoadingButton>
             </div>
           )}
-          {!actviePatient && foundedPatients.length > 0 && (
-            <Slide direction="up" in mountOnEnter unmountOnExit></Slide>
-          )}
+          
         </div>
-        <ResultSidebar
-            actviePatient={actviePatient}
-            loading={loading}
-            selectedTest={selectedTest}
-            setActivePatient={setActivePatient}
-            setDialog={setDialog}
-            setLoading={setLoading}
-            setResultUpdated={setResultUpdated}
-            setSelectedTest={setSelectedTest}
-          />
-        <MoneyDialog />
-        <ErrorDialog />
+      
       </div>
     </>
   );
 }
 
-export default Result;
+export default Sample;

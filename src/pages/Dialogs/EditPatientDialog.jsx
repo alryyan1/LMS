@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient, setOpen, open,doctorVisitId }) {
+function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatients }) {
   const { doctors, setActivePatient, setUpdate, openedDoctors, companies } =
     useOutletContext();
   // console.log(patient);
@@ -35,20 +35,33 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId }) {
   function editDoctorHandler(formData) {
     setLoading(true);
     const newPatient = { ...patient, ...formData };
-
+    const url = isLab ?`patients/${patient.id}`  : `patients/edit/${doctorVisitId}`
     console.log(formData, "formData");
     axiosClient
-      .patch(`patients/edit/${doctorVisitId}`, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id})
-      .then((data) => {
+      .patch(url, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id})
+      .then(({data}) => {
         console.log(data,'edited data');
         if (data.status) {
-          setUpdate((prev) => {
-            return prev + 1;
-          });
-          console.log(newPatient, "new patient");
+          console.log(data)
+          if (!isLab) {
+            setUpdate((prev) => {
+              return prev + 1;
+            });
+          }
+       
+          console.log(data.patient, "new patient");
 
           setOpen(false);
           setActivePatient(data.patient);
+          setPatients((prev)=>{
+            return prev.map((p)=>{
+              if (p.id === data.patient.id) {
+                return {...data.patient ,active:true}
+              } else {
+                return p
+              }
+            })
+          })
         }
       })
       .finally(() => setLoading(false));

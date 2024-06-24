@@ -59,6 +59,10 @@ function Client() {
         setLoading(false);
     }
   };
+  useEffect(() => {
+    document.title = 'العملاء' ;
+  }, []);
+
   const deleteClientHandler = (id) => {
     axiosClient.delete(`client/${id}`)
       .then(({data}) => {

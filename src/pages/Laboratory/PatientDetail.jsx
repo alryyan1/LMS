@@ -199,6 +199,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
         )}
 
         <EditPatientDialog
+         isLab={true}
         doctorVisitId={patient.id}
           open={open}
           setOpen={setOpen}

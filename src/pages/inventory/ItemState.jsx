@@ -20,7 +20,9 @@ function ItemState() {
   const [states, setSates] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(1);
   console.log(selectedMonth);
-
+  useEffect(() => {
+    document.title = 'حركه الاصناف' ;
+  }, []);
   useEffect(() => {
     if (selectedMonth && selectedItem) {
       axiosClient

@@ -2,35 +2,28 @@ import { Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { url } from "../constants";
 import axiosClient from "../../../axios-client";
+import { useOutletContext } from "react-router-dom";
 const DiscountSelect = ({ id, disc, actviePatient,setPatients }) => {
   const [discount, setDiscount] = useState(disc);
+  const {setActivePatient} =  useOutletContext()
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const {status} = await axiosClient.patch(`labRequest/${actviePatient.id}`,{ test_id: id, discount: dis });
-    if (status == 200) {
-        setPatients((prev)=>{
-          return prev.map((p)=>{
-
-            if (p.id === actviePatient.id) {
-              console.log('founed')
-              const editedPatient = {...actviePatient}
-              editedPatient.labrequests.map((test)=>{
-                console.log(test,'test')
-                if (test.id === id) {
-                  test.pivot.discount_per = dis;
-                  return test
-                }else{
-                  return test
-                }
-              })
-              console.log(editedPatient,'edited patient')
-              return editedPatient
-            }
-            return p;
-          })
-        })
-    }
+    const {data} = await axiosClient.patch(`labRequest/${id}`,{ test_id: id, discount: dis });
+    console.log(data,'changed')
+    setActivePatient(data.data)
+    setPatients((prev)=>{
+      return prev.map((p)=>{
+        if (p.id === actviePatient.id) {
+          return {...data.data,active:true}
+        } else {
+          return p;
+        }
+      })
+    })
+  
+       
+    
 
   };
 

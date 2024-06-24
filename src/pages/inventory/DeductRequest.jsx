@@ -108,6 +108,9 @@ import axiosClient from "../../../axios-client.js";
         });
     }, []);
     useEffect(() => {
+      document.title = 'اذن طلب' ;
+    }, []);
+    useEffect(() => {
       //fetch all suppliers
       fetch(`${url}inventory/deduct/last`)
         .then((res) => res.json())

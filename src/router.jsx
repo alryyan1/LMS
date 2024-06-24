@@ -54,6 +54,7 @@ import CashDenos from "./pages/Clinic/CashDenos";
 import Result from "./pages/Laboratory/Result";
 import CBCLIS from "./pages/Laboratory/CBCLIS";
 import ChemistryLIS from "./pages/Laboratory/ChemistryLis";
+import Sample from "./pages/Laboratory/Sample";
 
 export const router = createBrowserRouter([
   {
@@ -344,6 +345,11 @@ export const router = createBrowserRouter([
             path: "result",
 
             element: <Result />,
+          },
+          {
+            path: "sample",
+
+            element: <Sample />,
           },
           {
             path: "price",
