@@ -34,6 +34,7 @@ import AutocompleteResultOptions from "../../components/AutocompleteResultOption
 import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import ResultSidebar from "./ResultSidebar";
+import axios from "axios";
 
 function Result() {
   const {
@@ -353,12 +354,33 @@ function Result() {
                 setShift={setShift}
               />
               <Stack>
-                <Button
+                <Button sx={{mb:1}}
                   disabled={actviePatient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
+                </Button>
+                <Button
+                  disabled={actviePatient.result_is_locked == 1}
+                  onClick={()=>{
+                    const form = new URLSearchParams()
+                    form.append('pid',actviePatient.id)
+                    axiosClient.get(`result?pid=${actviePatient.id}&base64=1`).then(({data})=>{
+                    fetch('http://127.0.0.1:3000/',{
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'text/plain'
+                      },
+                      body: form
+                    }).then((res)=>{
+                      
+                      });
+                    })
+                  }}
+                  variant="contained"
+                >
+                  print direct
                 </Button>
               </Stack>
             </div>
