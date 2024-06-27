@@ -125,7 +125,7 @@ function RequestedTests({ setPatients }) {
           setPatients((prev) => {
             return prev.map((p) => {
               if (p.id === actviePatient.id) {
-                return data.data
+                return {...data.data,active:true}
               } else {
                 return p;
               }

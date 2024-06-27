@@ -4,8 +4,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import axiosClient from "../../axios-client";
 import { useOutletContext } from "react-router-dom";
-
-export default function AutocompleteSearchPatient({ setActivePatientHandler }) {
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false}) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
@@ -15,10 +19,10 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler }) {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       axiosClient
-        .get(`patients?name=${search}`)
+        .get(`patients?name=${search}&withTests=${withTests}`)
         .then(({ data }) => {
           setOptions(data);
-          console.log(data, "patients");
+          console.log(data, "patients in autocomplete search");
         })
         .finally(() => setLoading(false));
     }, 300);
@@ -59,7 +63,7 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler }) {
               console.log("enter pressed");
               //get test from tests using find
               const enteredId = e.target.value;
-              axiosClient.get(`patients?name=${enteredId}`).then(({ data }) => {
+              axiosClient.get(`patients?name=${enteredId}&withTests=${withTests}`).then(({ data }) => {
                 if (data.data != null) {
                 setActivePatientHandler(data.data);
                     
@@ -79,8 +83,15 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler }) {
           }}
           onChange={(val) => {
             const value = val.target.value
-            if (typeof +value == "number") return;
-            console.log(typeof val.target.value, "is val");
+            console.log(typeof value, "is val");
+            console.log(typeof +value, "is val");
+         
+           if ( isNumeric(value)) {
+            console.log('inside if')
+            return;
+           }
+            
+
             setSearch(val.target.value);
           }}
           {...params}

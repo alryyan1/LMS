@@ -16,55 +16,21 @@ function MyCheckBox({ id, isbankak, setPatients }) {
         id,
         val: val.target.checked,
       })
-      .then(({ status }) => {
-        if (status == 200) {
-          setActivePatient((patient)=>{
-            return {
-             ...patient,
-              labrequests: patient.labrequests.map((request) => {
-                if (request.id == id) {
-                  console.log("setting the test", request);
-                  return {
-                   ...request,
-                    pivot: {
-                     ...request.pivot,
-                      is_bankak: val.target.checked,
-                    },
-                  };
-                } else {
-                  return request;
-                }
-              }),
-            }
-           })
-          setPatients((prev) => {
-
-      
-            return prev.map((p) => {
-              if (p.id === actviePatient.id) {
-                const editedPatient = {
-                  ...actviePatient,
-                  labrequests: actviePatient.labrequests.map((request) => {
-                    if (request.id == id) {
-                      console.log("setting the test", request);
-                      return {
-                        ...request,
-                        pivot: {
-                          ...request.pivot,
-                          is_bankak: val.target.checked,
-                        },
-                      };
-                    } else {
-                      return request;
-                    }
-                  }),
-                };
-                return editedPatient;
-              } else {
-                return p;
+      .then(({ data }) => {
+        
+        if (data.status) {
+          setActivePatient({...data.patient,active:true})
+          setPatients((prev)=>{
+            return  prev.map((patient)=>{
+              console.log('patient found',patient)
+              if(patient.id === actviePatient.id){
+                return{...data.patient,active:true}
               }
-            });
-          });
+              return patient
+            })
+          })
+         
+       
         }
         // if (status > 400) {
         // }

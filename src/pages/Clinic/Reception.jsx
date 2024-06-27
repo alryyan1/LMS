@@ -242,6 +242,7 @@ function Reception() {
               <div>
 
                 <PatientDetail
+                showBtns
                   key={actviePatient.id}
                   patient={actviePatient.patient}
                   copyPatient={true}

@@ -120,6 +120,7 @@ function Result() {
       >
         <div></div>
         <AutocompleteSearchPatient
+        withTests={1}
           setActivePatientHandler={setActivePatientHandler}
         />
       </div>

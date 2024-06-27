@@ -2,8 +2,8 @@ import "./addPatient.css";
 import { useEffect, useState } from "react";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import {  webUrl } from "../constants";
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import { webUrl } from "../constants";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
   Divider,
@@ -14,11 +14,12 @@ import {
   Skeleton,
   Slide,
   Box,
+  Grid,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
 import { Calculate, PersonAdd, Print, Search } from "@mui/icons-material";
-import {  useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
@@ -27,6 +28,8 @@ import MoneyDialog from "../Dialogs/MoneyDialog";
 import SearchDialog from "../Dialogs/SearchDialog";
 import ReceptionForm from "../Clinic/ReceptionForm";
 import TestGroups from "../../../TestGroups";
+import PatientLab from "./PatientLab";
+import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -45,7 +48,7 @@ function AddPatient() {
     setFoundedPatients,
     foundedPatients,
     update,
-    setUpdate
+    setUpdate,
   } = useOutletContext();
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
@@ -58,10 +61,8 @@ function AddPatient() {
     testWidth: "400px",
     requestedDiv: "minmax(0,1.5fr)",
     showTestPanel: false,
-    patientDetails:'0.7fr',
+    patientDetails: "0.7fr",
   });
-
- 
 
   useEffect(() => {
     setPatientsLoading(true);
@@ -78,17 +79,18 @@ function AddPatient() {
   }, [update]);
 
   const setActivePatientHandler = (id) => {
+    console.log(id, "in active patient handler");
     hideForm();
     console.log("start active patient clicked");
-    const data = patients.find((p) => p.id === id);
+    // const data = patients.find((p) => p.id === id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
-    console.log(data, "patient from db");
-    setActivePatient({ ...data, active: true });
+    // console.log(data, "patient from db");
+    setActivePatient({ ...id, active: true });
     setPatients((prePatients) => {
       return prePatients.map((patient) => {
-        if (patient.id === id) {
-          console.log("founded");
-          return { ...data, active: true };
+        if (patient.id === id.id) {
+          console.log("patient founded");
+          return { ...patient, active: true };
         } else {
           return { ...patient, active: false };
         }
@@ -104,11 +106,11 @@ function AddPatient() {
   //       return {
   //        ...prev,
   //        form: "1.5fr",
-       
+
   //       };
   //     })
   //   }
-    
+
   // },[foundedPatients.length])
 
   const hideForm = () => {
@@ -120,19 +122,19 @@ function AddPatient() {
         tests: "2fr",
         testWidth: "500px",
         showTestPanel: false,
-        patientDetails:'0.7fr'
+        patientDetails: "0.7fr",
       };
     });
   };
   const showFormHandler = () => {
     setActivePatient(null);
-    setFoundedPatients([])
+    setFoundedPatients([]);
     setLayout((prev) => {
       return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
     });
   };
   useEffect(() => {
-    document.title = 'تسجيل مريض للمعمل';
+    document.title = "تسجيل مريض للمعمل";
   }, []);
 
   const showShiftMoney = () => {
@@ -146,6 +148,17 @@ function AddPatient() {
 
   return (
     <>
+      <Grid container>
+        <Grid xs={8}>
+
+        </Grid>
+        <Grid xs={4}>
+          <AutocompleteSearchPatient
+            setActivePatientHandler={setActivePatientHandler}
+          />
+        </Grid>
+      </Grid>
+
       <div
         style={{
           gap: "15px",
@@ -163,7 +176,6 @@ function AddPatient() {
             gap={"5px"}
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
-          
           >
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
@@ -190,18 +202,17 @@ function AddPatient() {
                 <Print />
               </IconButton>
             </Item>
-            <Item>
-              <IconButton variant="contained">
-                <Search />
-              </IconButton>
-            </Item>
           </Stack>
         </div>
         <div>
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <ReceptionForm lab={true} setUpdate={setUpdate} hideForm={hideForm} />
+            <ReceptionForm
+              lab={true}
+              setUpdate={setUpdate}
+              hideForm={hideForm}
+            />
           )}
         </div>
         <div style={{ overflow: "auto" }}>
@@ -216,7 +227,7 @@ function AddPatient() {
               />
             ) : (
               patients.map((p, i) => (
-                <Patient
+                <PatientLab
                   delay={i * 100}
                   key={p.id}
                   patient={p}
@@ -227,32 +238,32 @@ function AddPatient() {
           </div>
         </div>
 
-        <Box sx={{p:1}}>
+        <Box sx={{ p: 1 }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
-          {actviePatient?.labrequests.length == 0 && <TestGroups/>}
+          {actviePatient?.labrequests.length == 0 && <TestGroups />}
         </Box>
         <div>
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
-            showBtns
+              showBtns
               key={actviePatient.id}
               patient={actviePatient}
               setPatients={setPatients}
-              
             />
           )}
-          {!actviePatient &&  foundedPatients.length > 0 && <Slide direction="up" in mountOnEnter unmountOnExit>
-          <div style={{position:'relative'}}>
-            <SearchDialog lab={true} />
-          </div>
-        </Slide>}
+          {!actviePatient && foundedPatients.length > 0 && (
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <div style={{ position: "relative" }}>
+                <SearchDialog lab={true} />
+              </div>
+            </Slide>
+          )}
         </div>
         <MoneyDialog />
         <ErrorDialog />
-      
       </div>
     </>
   );
