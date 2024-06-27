@@ -1,10 +1,23 @@
 import { Delete, Lock, LockOpen } from "@mui/icons-material";
-import { Badge, Box, Grow, Icon } from "@mui/material";
+import { Badge, Box, Grow, Icon, breadcrumbsClasses } from "@mui/material";
 import 'animate.css';
 
 function Patient({ onClick, patient, delay,unfinshed_count }) {
+  let patientState= ''
+  if (patient.result_print_date == null){
+ 
+    switch(unfinshed_count){
+      case 0 :
+         patientState = "animate__animated  animate__bounce   animate__infinite animate__slower";
+      break;
+      case 1 :
+        patientState = "animate__animated animate__heartBeat animate__infinite animate__slower";
+        break;
+    }
+  }
+
   return (
-    <Grow className={unfinshed_count == 0 && patient.result_print_date ==null ? "animate__animated animate__bounce animate__infinite animate__slow" :"" } style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
+    <Grow className={patientState  } style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
       {patient.labrequests.length > 0 ? (
         <Badge
         style={{

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import axiosClient from '../../../axios-client'
-import { Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Button, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
 function DoctorsCredits() {
     const [doctorShifts,setDoctorShifts] = useState([])
     const [update,setUpdate] = useState(0)
-    
+    useEffect(() => {
+        document.title = 'استحقاق الاطباء' ;
+      }, []);
     useEffect(()=>{
         axiosClient.get('/doctor/byLastUnifiedShift').then(({data})=>{
             setDoctorShifts(data)
@@ -20,8 +22,8 @@ function DoctorsCredits() {
         })
     }
   return (
-    <div>
-        <Table size='small'>
+    <Paper elevation={2}>
+        <Table style={{direction:'rtl'}} size='small'>
             <TableHead>
                 <TableRow>
                     <TableCell>الاسم</TableCell>
@@ -49,7 +51,7 @@ function DoctorsCredits() {
                 })}
             </TableBody>
         </Table>
-    </div>
+    </Paper>
   )
 }
 

@@ -40,6 +40,9 @@ function Dashboard() {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  useEffect(() => {
+    document.title = 'الرئيسيه' ;
+  }, []);
   const peopleOptions = {
     loop: true,
     autoplay: true,

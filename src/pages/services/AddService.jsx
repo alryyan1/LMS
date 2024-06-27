@@ -58,8 +58,8 @@ function AddService() {
       })
       .then(({ data, links }) => {
         console.log(data, links);
-        // setItems(data)
-        // setLinks(links)
+        setservices(data)
+        setLinks(links)
       })
       .finally(() => {
         setLoading(false);
@@ -115,7 +115,9 @@ function AddService() {
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, [page, isSubmitting]);
-
+  useEffect(() => {
+    document.title = 'الخدمات' ;
+  }, []);
   return (
     <Stack direction={"row"} gap={3}>
       {loading ? (
@@ -156,9 +158,8 @@ function AddService() {
                   <TableCell>رقم</TableCell>
                   <TableCell>الاسم</TableCell>
                   <TableCell>السعر</TableCell>
-                  <TableCell> نصيب الطبيب (مبلغ)</TableCell>
-                  <TableCell> نصيب الطبيب (نسبه)</TableCell>
                   <TableCell>القسم</TableCell>
+                  <TableCell>حذف</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
@@ -176,28 +177,36 @@ function AddService() {
                     >
                       {item.price}
                     </MyTableCell>
-                    <MyTableCell
-                      table="service"
-                      colName={"static_wage"}
-                      item={item}
-                    >
-                      {item.static_wage}
-                    </MyTableCell>
-                    <MyTableCell
-                      table="service"
-                      colName={"percentage_wage"}
-                      item={item}
-                    >
-                      {item.percentage_wage}
-                    </MyTableCell>
+                   
+                
                     <MyAutoCompeleteTableCell
-                  
                       table="service"
                       val={item.service_group}
                       item={item}
                       colName={"service_group_id"}
                       sections={serviceGroups}
                     >{item.service_group}</MyAutoCompeleteTableCell>
+                    <TableCell>
+                      <MyLoadingButton  onClick={()=>{
+
+                        const result =  confirm('هل انت متاكد من حذف الخدمه')
+                        if (result) {
+                          axiosClient.delete(`service/${item.id}`).then((data)=>{
+                            if (data.status) {
+                              setDialog((prev) => {
+                                return {
+                                 ...prev,
+                                  open: true,
+                                  color: "success",
+                                  msg: "تمت الحذف بنجاح",
+                                };
+                              });
+                             setservices((prev)=>prev.filter((ser)=>ser.id != item.id))
+                            }
+                          })
+                        }
+                      }}>Delete</MyLoadingButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -282,39 +291,7 @@ function AddService() {
               variant="filled"
               helperText={errors.price?.message}
             />
-            <Stack direction={"row"} gap={5}>
-              <TextField
-                fullWidth
-                type="number"
-                error={errors.static_wage != null}
-                {...register("static_wage", {
-                  required: { value: true, message: "نصيب الطبيب (المبلغ)" },
-                })}
-                id="outlined-basic"
-                label="نصيب الطبيب (المبلغ)"
-                variant="filled"
-                helperText={errors.static_wage?.message}
-              />
-              <TextField
-                fullWidth
-                type="number"
-                error={errors.percentage_wage != null}
-                {...register("percentage_wage", {
-                  required: { value: true, message: "نصيب الطبيب (نسبه)" },
-                  max: {
-                    value: 100,
-                    message: "يجب ان يكون النسبه اقل من 100",
-                    validate: (value) => {
-                      return value <= 100;
-                    },
-                  },
-                })}
-                id="outlined-basic"
-                label="نصيب الطبيب (نسبه)"
-                variant="filled"
-                helperText={errors.percentage_wage?.message}
-              />
-            </Stack>
+          
 
             <Controller
               control={control}

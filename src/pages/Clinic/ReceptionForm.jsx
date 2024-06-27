@@ -85,7 +85,7 @@ function ReceptionForm({ hideForm,lab }) {
     axiosClient
       .post(url, {
         ...formData,
-        doctor_id: activeShift?.doctor.id ?? formData.doctor.id,
+        doctor_id: activeShift?.doctor.id ?? formData.doctor?.id,
         company_id:selectedCompany?.id,
         subcompany_id:selectedSubCompany?.id,
         company_relation_id : selectedRelation?.id,
@@ -192,7 +192,7 @@ function ReceptionForm({ hideForm,lab }) {
              
             </Stack>
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
                 النوع
               </InputLabel>
@@ -202,21 +202,20 @@ function ReceptionForm({ hideForm,lab }) {
                 render={({ field }) => {
                   return (
                     <Select
-                      defaultValue={""}
-                      value={"ذكر"}
-                      onChange={(data) => {
+                    
+                        onChange={(data) => {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
                       }}
                       label="النوع"
                     >
                       <MenuItem value={"ذكر"}>ذكر</MenuItem>
-                      <MenuItem value={"اثني"}>اثني</MenuItem>
+                      <MenuItem value={"انثي"}>انثي</MenuItem>
                     </Select>
                   );
                 }}
               />
-            </FormControl>
+            </FormControl> */}
             </Stack>
           </Slide>
           <Slide unmountOnExit in={selectedCompany == null} mountOnEnter >
@@ -255,12 +254,12 @@ function ReceptionForm({ hideForm,lab }) {
             />
                 {lab && <Controller
             name="doctor"
-            rules={{
-              required: {
-                value: true,
-                message: "يجب اختيار اسم الطبيب",
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: "يجب اختيار اسم الطبيب",
+            //   },
+            // }}
             control={control}
             render={({ field }) => {
               return (
@@ -352,8 +351,7 @@ function ReceptionForm({ hideForm,lab }) {
                 render={({ field }) => {
                   return (
                     <Select
-                      defaultValue={""}
-                      value={"ذكر"}
+                      value={field.value}
                       onChange={(data) => {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
@@ -361,7 +359,7 @@ function ReceptionForm({ hideForm,lab }) {
                       label="النوع"
                     >
                       <MenuItem value={"ذكر"}>ذكر</MenuItem>
-                      <MenuItem value={"اثني"}>اثني</MenuItem>
+                      <MenuItem value={"انثي"}>انثي</MenuItem>
                     </Select>
                   );
                 }}

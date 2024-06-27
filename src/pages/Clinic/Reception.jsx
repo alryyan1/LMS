@@ -75,31 +75,6 @@ function Reception() {
   });
   // console.log(openDrawer, "open drawer");
 
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: "استحقاق الاطباء", to: "/clinic/doctors" },
-          { title: "حساب الفئات", to: "/clinic/denos" },
-          { title: "المرضي", to: "" },
-          { title: " اداره التحاليل", to: "" },
-        ].map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setOpenDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
 
   useEffect(() => {
     if (foundedPatients.length > 0) {
@@ -157,7 +132,9 @@ function Reception() {
       };
     });
   };
-
+  useEffect(() => {
+    document.title = 'الاستقبال' ;
+  }, []);
   //get opened doctors
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
@@ -236,7 +213,7 @@ function Reception() {
       </Stack>
       <AddDoctorDialog />
 
-      <Drawer open={openDrawer}>{DrawerList}</Drawer>
+      {/* <Drawer open={openDrawer}>{DrawerList}</Drawer> */}
       <div
         style={{
           gap: "15px",

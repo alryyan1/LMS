@@ -42,6 +42,9 @@ function Balance() {
       });
   };
   useEffect(() => {
+    document.title = 'المخزون' ;
+  }, []);
+  useEffect(() => {
     axiosClient
       .post(`items/all/balance/paginate/${page}`, { word: "" })
       .then(({ data: { data, links } }) => {

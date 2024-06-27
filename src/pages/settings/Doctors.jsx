@@ -75,7 +75,9 @@ function Doctors() {
       });
   };
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    document.title = 'الاطباء' ;
+  }, []);
   // console.log(isSubmitting);
   useEffect(() => {
     setLoading(true);
@@ -145,19 +147,23 @@ function Doctors() {
               <TableHead>
                 <TableRow>
                   <TableCell>الاسم</TableCell>
+                  <TableCell>نصيب الطبيب نسبه</TableCell>
+                  <TableCell>نصيب الطبيب مبلغ</TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
                   {selectedDoctor && selectedDoctor.services.map((service) => (
                     <TableRow key={service.id}>
-                      <TableCell>{service.name}</TableCell>
+                      <TableCell>{service.service.name}</TableCell>
+                      <MyTableCell table="doctor/service" colName={'percentage'}   item={service}    >{service.percentage}</MyTableCell>
+                      <MyTableCell table="doctor/service" colName={'fixed'} item={service}   >{service.fixed}</MyTableCell>
                       <TableCell>
                         <Button
                           variant="contained"
                           color="error"
                           onClick={() => {
-                            axiosClient.delete(`doctors/${selectedDoctor.id}/service?service_id=${service.id}`).then(({data}) =>{
+                            axiosClient.delete(`doctors/doctor/${service.id}`).then(({data}) =>{
                               console.log(data)
                               if (data.status) {
                                 setSelectedDoctor(data.doctor)

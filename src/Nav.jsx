@@ -8,6 +8,8 @@ import {
   ListItemText,
   Drawer,
   Typography,
+  Box,
+  List,
 } from "@mui/material";
 import {
   Language,
@@ -22,7 +24,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useTranslation } from "react-i18next";
 
 const Nav = () => {
-  const { user, setToken, setUser, setLabDrawer, labDrawer } =
+  const { user, setToken, setUser, setLabDrawer, labDrawer ,clinicDrawer, setClinicDrawer} =
     useStateContext();
 console.log(user,'in nav ')
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,30 @@ console.log(user,'in nav ')
     }
   };
 
+  const DrawerClinicList = (
+    <Box sx={{ width: 250 }} role="presentation">
+      <List>
+        {[
+          { title: "الحجز", to: "/clinic" },
+          { title: "استحقاق الاطباء", to: "/clinic/doctors" },
+          { title: "حساب الفئات", to: "/clinic/denos" },
+        ].map((item, index) => (
+          <ListItem key={item.title} disablePadding>
+            <ListItemButton
+              onClick={() => setClinicDrawer(false)}
+              LinkComponent={Link}
+              to={item.to}
+            >
+              <ListItemIcon>
+                <Mail />
+              </ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
   return (
     <>
       <Drawer open={labDrawer}>
@@ -80,6 +106,9 @@ console.log(user,'in nav ')
             </ListItem>
           );
         })}
+      </Drawer>
+      <Drawer open={clinicDrawer}>
+        {DrawerClinicList}
       </Drawer>
       <AppBar
         color="primary"
@@ -120,8 +149,11 @@ console.log(user,'in nav ')
             laboratory
           </NavLink>
           <NavLink
+            onClick={() => {
+              setClinicDrawer(true);
+            }}
             style={{ textDecoration: "none", color: "black" }}
-            to={"/clinic"}
+          
           >
             Clinic
           </NavLink>

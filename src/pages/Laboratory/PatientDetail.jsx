@@ -42,7 +42,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
         </div>
         <Divider />
         <div className="form-control">
-          <div>{patient.doctor.name}</div>
+          <div>{patient?.doctor?.name}</div>
           <div>الطبيب</div>
         </div>
         <Divider />

@@ -38,7 +38,7 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
     const url = isLab ?`patients/${patient.id}`  : `patients/edit/${doctorVisitId}`
     console.log(formData, "formData");
     axiosClient
-      .patch(url, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id})
+      .patch(url, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id,doctor_id:formData.doctor?.id})
       .then(({data}) => {
         console.log(data,'edited data');
         if (data.status) {
@@ -80,6 +80,7 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
       age_month: patient.age_month,
       age_year: patient.age_year,
       insurance_no: patient.insurance_no,
+      doctor: patient.doctor,
       // company: patient.company,
       guarantor : patient.guarantor,
       company_relation_id : patient.relation,
@@ -151,7 +152,45 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
                 }}
               />
             </Stack>
+            {isLab && <Controller
+            name="doctor"
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: "يجب اختيار اسم الطبيب",
+            //   },
+            // }}
+            control={control}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                  isOptionEqualToValue={(option,val)=>
+                    option.id === val.id
+                  }
+                     
+                  onChange={(e, newVal) => field.onChange(newVal)}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={doctors}
+                  value={field.value}
+                  
+                  renderInput={(params) => {
+                    // console.log(params)
 
+                    return (
+                      <TextField
+                        inputRef={field.ref}
+                        error={errors?.doctor}
+                        {...params}
+                        label="الطبيب"
+                      />
+                    );
+                  }}
+                ></Autocomplete>
+              );
+            }}
+          />
+}
             <Stack
               direction={"row"}
               gap={4}

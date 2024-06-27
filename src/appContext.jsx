@@ -7,6 +7,8 @@ const StateContext =  createContext({
     setToken:()=>{},
     setLabDrawer:()=>{},
     labDrawer : false,
+    clinicDrawer : false,
+     setClinicDrawer : ()=>{},
 
 })
 
@@ -15,6 +17,7 @@ export const UserContextProvider = ({children})=>{
     const [token , _setToken] =  useState(localStorage.getItem('ACCESS_TOKEN'))
     const [user , setUser] =  useState()
     const [labDrawer, setLabDrawer] = useState(false);
+    const [clinicDrawer, setClinicDrawer] = useState(false);
 
     const setToken = (token)=>{
         _setToken(token)
@@ -32,7 +35,9 @@ export const UserContextProvider = ({children})=>{
           user,
           token,
           setUser,
-          setToken
+          setToken,
+          clinicDrawer, 
+          setClinicDrawer
         }}>
             {children}
         </StateContext.Provider>

@@ -18,13 +18,13 @@ body {
   margin-bottom: 15px;
 }
 .nav{
-  color: white !important;
+  /* color: white !important; */
   text-decoration: none !important;
   font-size: large;
   font-weight: bold;
 }
 .nav .active{
-  color: white;
+  /* color: white; */
 }
 
 .app-container{
@@ -52,7 +52,7 @@ body {
 }
 
 .active {
-  color: white!important;
+  /* color: white!important; */
   /* color: white!important; */
   /* padding: 8px; */
   /* background-color: #1976d2!important; */
