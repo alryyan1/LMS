@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import axiosClient from "../../../axios-client";
+import { webUrl } from "../constants";
 
 function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = false}) {
 
@@ -159,10 +160,12 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
           <Button
             sx={{ flexGrow: 1 }}
             onClick={() => {
-              axiosClient.get(`print`, {});
+              // axiosClient.get(`print`, {});
             }}
             color="warning"
             variant="contained"
+            target="myframe"
+            href={`${webUrl}printLab?pid=${patient.id}`}
           >
             Print
           </Button>
@@ -206,6 +209,11 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
           patient={patient}
           setPatients={setPatients}
         />
+        <iframe  onLoad={(e)=>{
+          e.currentTarget.contentWindow.print()
+     console.log(e.currentTarget)
+        }} name="myframe" id="myframe" ></iframe>
+
       </Paper>
     </>
   );

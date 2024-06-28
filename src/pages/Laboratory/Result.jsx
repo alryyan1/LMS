@@ -35,6 +35,7 @@ import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import ResultSidebar from "./ResultSidebar";
 import axios from "axios";
+import printJS from "print-js";
 
 function Result() {
   const {
@@ -365,17 +366,23 @@ function Result() {
                   disabled={actviePatient.result_is_locked == 1}
                   onClick={()=>{
                     const form = new URLSearchParams()
-                    form.append('pid',actviePatient.id)
                     axiosClient.get(`result?pid=${actviePatient.id}&base64=1`).then(({data})=>{
-                    fetch('http://127.0.0.1:3000/',{
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'text/plain'
-                      },
-                      body: form
-                    }).then((res)=>{
+                    form.append('data',data)
+                    console.log(data,'daa')
+                    printJS({
+                      printable:data.slice(data.indexOf('JVB')),
+                      base64:true,
+                      type:'pdf'
+                    });
+
+                    // fetch('http://127.0.0.1:3000/',{
+                    //   method: 'POST',
+                    //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+
+                    //   body: form
+                    // }).then((res)=>{
                       
-                      });
+                    //   });
                     })
                   }}
                   variant="contained"
