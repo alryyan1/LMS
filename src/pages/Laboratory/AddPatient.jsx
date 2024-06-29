@@ -163,7 +163,7 @@ function AddPatient() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "80vh",
+          height: "75vh",
           display: "grid",
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}

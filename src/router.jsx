@@ -56,7 +56,6 @@ import CBCLIS from "./pages/Laboratory/CBCLIS";
 import ChemistryLIS from "./pages/Laboratory/ChemistryLis";
 import Sample from "./pages/Laboratory/Sample";
 import PaperConfig from "./pages/settings/PaperConfig";
-import PDFJS from "./pages/PDJS";
 
 export const router = createBrowserRouter([
   {
@@ -77,11 +76,7 @@ export const router = createBrowserRouter([
         path: "*",
         element: <Login />,
       },
-      {
-        path: "/pdf",
-        element: <PDFJS />,
-      },
-     
+  
       {
         element: <GuestLayout />,
         children: [
