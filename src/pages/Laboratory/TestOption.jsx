@@ -1,6 +1,7 @@
-import { TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
+import { DeleteOutline } from "@mui/icons-material";
 
 function TestOption({ testOptionId, name: optionName, setUpdate }) {
   console.log(optionName);
@@ -54,7 +55,7 @@ function TestOption({ testOptionId, name: optionName, setUpdate }) {
           )}
         </div>
 
-        <button onClick={() => deleteHandler(testOptionId)}>x</button>
+        <IconButton onClick={() => deleteHandler(testOptionId)}><DeleteOutline/></IconButton>
       </div>
     </li>
   );

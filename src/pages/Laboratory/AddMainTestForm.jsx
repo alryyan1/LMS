@@ -1,27 +1,45 @@
 import { useState, useRef } from "react";
-import {useOutletContext} from 'react-router-dom'
+import { useOutletContext } from "react-router-dom";
 import Loader from "../../loader";
+import axiosClient from "../../../axios-client";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Autocomplete,
+  Button,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 function AddMainTestForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm();
+
   const [loading, setIsLoading] = useState(false);
-  const nameRef = useRef();
-  const priceRef = useRef();
-  const packRef = useRef();
-  const containerRef = useRef();
   const AppData = useOutletContext();
-  const addTest = () => {
-    setIsLoading(true);
+  const addTest = (data) => {
+    console.log(data);
     const answer = confirm("A New Test Will Be Added !!");
     if (answer) {
-      fetch(
-        `http://127.0.0.1/projects/bootstraped/new/api.php?AddMainTest=1&name=${nameRef.current.value}&price=${priceRef.current.value}&container=${containerRef.current.value}&pack=${packRef.current.value}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status) {
-            AppData.setActiveTestObj(data.activeTestObj);
-            AppData.setShowAddTest(false);
-          }
+    setIsLoading(true);
+
+      axiosClient
+        .post("mainTest", {
+          ...data,
+          pack_id: data.department.package_id,
+          container_id: data.container.id,
+        })
+        .then(({ data }) => {
+          console.log(data.data,'data.data')
+          AppData.setActiveTestObj(data.data);
+          AppData.setShowAddTest(false);
         })
         .finally(() => {
           setIsLoading(false);
@@ -30,50 +48,102 @@ function AddMainTestForm() {
   };
 
   return (
-    <div className="Test-Details">
-      {loading ? (
-        <Loader />
-      ) : (
-        <div>
-          <h1 style={{ textAlign: "center" }}>Add New Test</h1>
-          <div className="form-control">
-            <label htmlFor="">Test Name</label>
-            <input ref={nameRef} type="text" />
-          </div>
-          <div className="form-control">
-            <label htmlFor="">Price</label>
-            <input ref={priceRef} type="number" />
-          </div>
-          <div className="form-control">
-            <label htmlFor="">Container</label>
-            <select ref={containerRef}>
-              {AppData.containerData.map((el) => (
-                <option key={el.id} value={el.id}>
-                  {el.container_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-control">
-            <label htmlFor="">Department</label>
-            <select ref={packRef}>
-              {AppData.packageData.map((el) => {
-                // console.log(el)
+    <Grid container>
+      <Grid item xs={4}>
+        <Paper sx={{ p: 2, mt: 2 }}>
+          <form onSubmit={handleSubmit(addTest)}>
+            <Stack direction={"column"} gap={5} className="Test-Details">
+              <Typography variant="h4" textAlign={"center"}>
+                اضافه تحليل جديد
+              </Typography>
+              <TextField
+                label="اسم الفحص"
+                {...register("main_test_name", {
+                  required: true,
+                  pattern: /^[A-Za-z\s]+$/,
+                  message: "Name should contain only letters and spaces",
+                })}
+                helperText={
+                  errors.main_test_name && errors.main_test_name.message
+                }
+              />
+              <TextField
+                label="السعر"
+                {...register("price", {
+                  required: true,
+                  pattern: /^[0-9]+$/,
+                  message: "Price should contain only numbers",
+                })}
+                helperText={errors.price && errors.price.message}
+              />
+              <Controller
+                name="department"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Autocomplete
+                      onChange={(e, newVal) => {
+                        field.onChange(newVal);
+                      }}
+                      getOptionKey={(op) => op.id}
+                      getOptionLabel={(option) => option.package_name}
+                      options={AppData.packageData}
+                      renderInput={(params) => {
+                        // console.log(params)
 
-                return (
-                  <option key={el.package_id} value={el.package_id}>
-                    {el.package_name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <button className="btn1" onClick={addTest}>
-            Save
-          </button>
-        </div>
-      )}
-    </div>
+                        return (
+                          <TextField
+                            inputRef={field.ref}
+                            error={errors?.department}
+                            {...params}
+                            helperText={
+                              errors?.department && errors.department.message
+                            }
+                            label="المجموعه"
+                          />
+                        );
+                      }}
+                    ></Autocomplete>
+                  );
+                }}
+              />
+              <Controller
+                name="container"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Autocomplete
+                      onChange={(e, newVal) => {
+                        field.onChange(newVal);
+                      }}
+                      getOptionKey={(op) => op.id}
+                      getOptionLabel={(option) => option.container_name}
+                      options={AppData.containerData}
+                      renderInput={(params) => {
+                        // console.log(params)
+
+                        return (
+                          <TextField
+                            inputRef={field.ref}
+                            error={errors?.doctor}
+                            {...params}
+                            label="الحاويه"
+                            helperText={
+                              errors?.container && errors.container.message
+                            }
+                          />
+                        );
+                      }}
+                    ></Autocomplete>
+                  );
+                }}
+              />
+              <LoadingButton variant="contained" loading={loading} type="submit">حفظ</LoadingButton>
+            </Stack>
+          </form>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 }
 

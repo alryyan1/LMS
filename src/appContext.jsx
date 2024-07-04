@@ -8,6 +8,9 @@ const StateContext =  createContext({
     setLabDrawer:()=>{},
     labDrawer : false,
     clinicDrawer : false,
+    pharmcyDrawer : false,
+    setPharmacyDrawer:()=>{},
+
      setClinicDrawer : ()=>{},
 
 })
@@ -18,6 +21,7 @@ export const UserContextProvider = ({children})=>{
     const [user , setUser] =  useState()
     const [labDrawer, setLabDrawer] = useState(false);
     const [clinicDrawer, setClinicDrawer] = useState(false);
+    const [pharmcyDrawer, setPharmacyDrawer] = useState(false);
 
     const setToken = (token)=>{
         _setToken(token)
@@ -37,7 +41,9 @@ export const UserContextProvider = ({children})=>{
           setUser,
           setToken,
           clinicDrawer, 
-          setClinicDrawer
+          setClinicDrawer,
+          pharmcyDrawer, 
+          setPharmacyDrawer,
         }}>
             {children}
         </StateContext.Provider>

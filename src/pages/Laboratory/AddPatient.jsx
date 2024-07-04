@@ -238,7 +238,7 @@ function AddPatient() {
           </div>
         </div>
 
-        <Box sx={{ p: 1 }}>
+        <Box  style={{height:'80vh',overflow:'auto'}} sx={{ p: 1 }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}

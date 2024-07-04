@@ -2,6 +2,7 @@ import { Autocomplete, TableCell, TextField } from "@mui/material";
 import { useState } from "react";
 import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../../axios-client";
 
 function MyAutoCompeleteTableCell({
   children,
@@ -26,14 +27,12 @@ function MyAutoCompeleteTableCell({
   };
 
   const updateItemSectionId = (val) => {
-    fetch(`${url}${table}/${item.id}`, {
-      headers: { "content-type": "application/json" },
-      method: "PATCH",
-      body: JSON.stringify({ colName: colName, val: selectedSection.id ,child_id}),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data)).finally(()=>{
-        stateUpdater((prev)=>prev+1)
+    axiosClient.patch(`${table}/${item.id}`, { colName: colName, val: selectedSection.id ,child_id})
+      .then(({data}) => console.log(data)).finally(()=>{
+        if (stateUpdater) {
+          stateUpdater((prev)=>prev+1)
+          
+        }
       });
   };
 

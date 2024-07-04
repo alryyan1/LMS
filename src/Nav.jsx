@@ -24,7 +24,8 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useTranslation } from "react-i18next";
 
 const Nav = () => {
-  const { user, setToken, setUser, setLabDrawer, labDrawer ,clinicDrawer, setClinicDrawer} =
+  const { user, setToken, setUser, setLabDrawer, labDrawer ,clinicDrawer, setClinicDrawer, pharmcyDrawer, 
+    setPharmacyDrawer} =
     useStateContext();
 console.log(user,'in nav ')
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ console.log(user,'in nav ')
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
-      i18n.changeLanguage("ch");
+      i18n.changeLanguage("en");
     } else {
       i18n.changeLanguage("ar");
     }
@@ -65,6 +66,31 @@ console.log(user,'in nav ')
           <ListItem key={item.title} disablePadding>
             <ListItemButton
               onClick={() => setClinicDrawer(false)}
+              LinkComponent={Link}
+              to={item.to}
+            >
+              <ListItemIcon>
+                <Mail />
+              </ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  const DrawerPharmacyList = (
+    <Box sx={{ width: 250 }} role="presentation">
+      <List>
+        {[
+          { title: "تعريف دواء", to: "/pharmacy/add" },
+          { title: "نافذه البيع", to: "/pharmacy/sell" },
+          { title: "حساب الفئات", to: "/clinic/denos" },
+        ].map((item, index) => (
+          <ListItem key={item.title} disablePadding>
+            <ListItemButton
+              onClick={() => setPharmacyDrawer(false)}
               LinkComponent={Link}
               to={item.to}
             >
@@ -110,11 +136,16 @@ console.log(user,'in nav ')
       <Drawer open={clinicDrawer}>
         {DrawerClinicList}
       </Drawer>
+      <Drawer open={pharmcyDrawer}>
+        {DrawerPharmacyList}
+      </Drawer>
       <AppBar
-        color="primary"
+       
         sx={{
+          backgroundColor: "#485765",
+        
           marginBottom: "10px",
-          p: 1,
+          p: 2,
           justifyContent: "",
           borderRadius: 7,
           mt: 1,
@@ -125,71 +156,80 @@ console.log(user,'in nav ')
           className="nav"
           sx={{ alignItems: "center" }}
           direction={"row"}
-          spacing={3}
+          gap={3}
         >
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
             Login
           </NavLink>
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/inventory"}
           >
             Inventory
           </NavLink>
          
-          <NavLink
+          <Link
             onClick={() => {
               setLabDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
           >
-            laboratory
-          </NavLink>
-          <NavLink
+            Lab
+          </Link>
+          <Link
             onClick={() => {
               setClinicDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
           
           >
             Clinic
-          </NavLink>
+          </Link>
+          <Link
+            onClick={() => {
+              setPharmacyDrawer(true);
+            }}
+            style={{ textDecoration: "none", color: "white" }}
+          
+          >
+            pharmacy
+          </Link>
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/insurance"}
           >
             Insurance
           </NavLink>
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/services"}
           >
             Services
           </NavLink>
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
           >
             shipping
           </NavLink>
        {user?.roles.map((r)=>r.name).includes('admin') || user?.id == 1 ?   <NavLink 
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/settings"}
           >
             Settings
           </NavLink> : ""}
           <NavLink
-            style={{ textDecoration: "none", color: "black" }}
+            style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
             dashboard
           </NavLink>
          
           <div style={{ flexGrow: 1 }}></div>
-          <Typography variant="h5">
+          <Typography color={'black'} variant="h5">
           {user?.username}
           </Typography>
           <IconButton onClick={changeLang}>
@@ -199,7 +239,6 @@ console.log(user,'in nav ')
           {user && (
             <LoadingButton
               color="error"
-              style={{ color: "wheat" }}
               variant="contained"
               loading={loading}
               endIcon={loading ? "" : <ExitToAppIcon />}

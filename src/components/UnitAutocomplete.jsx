@@ -3,35 +3,20 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../axios-client";
-function isNumeric(str) {
-  if (typeof str != "string") return false // we only process strings!  
-  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-}
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setPatients,index}) {
-  
-    // console.log('inside table option result rebuilt with result',result)
-  const [value, setValue] = React.useState(result);
+export default function UnitAutocomplete({ unitObj,child_id }) {
+  const { units ,setUnits} = useOutletContext();
+  const [value, setValue] = React.useState(unitObj);
   const [open, toggleOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [options,setOptions] = React.useState([])
-  React.useEffect(()=>{
-    axiosClient
-     .get(`childTestOption/${child_test.id}`)
-     .then(({ data }) => {
-        setOptions(data);
-      })
-     .catch((err) => {
-        console.log(err);
-      });
-  },[])
 
   const handleClose = () => {
     setDialogValue('');
@@ -44,27 +29,22 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
     setLoading(true);
     event.preventDefault();
     axiosClient
-      .post(`childTestOption/${child_test.id}`, { name: dialogValue })
+      .post("units", { name: dialogValue })
       .then(({ data }) => {
-        console.log(data,'options data');
-        if (data.status) {
-            setOptions(data.options)
-        }
+        console.log(data);
+        setUnits((prev) => {
+          return [...prev, data.data];
+        });
         handleClose();
       })
       .finally(() => setLoading(false));
   };
 
-//   console.log('child group in autocomplete')
+  console.log(unitObj,'child group in autocomplete')
   return (
     <React.Fragment>
       <Autocomplete
-      
-     sx={{
-        "& .MuiOutlinedInput-root": {
-          padding: "0px!important",
-        },
-      }}
+      getOptionKey={(option)=>option.id}
       size="small"
        isOptionEqualToValue={(option,val)=> {
         return option.id === val.id
@@ -72,32 +52,23 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
         value={value}
         onChange={(event, newValue) => {
           if (typeof newValue === "string") {
-            setValue(newValue);
-            console.log('val 1' ,newValue)
-
             // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue(newValue);
             });
           } else if (newValue && newValue.inputValue) {
-            console.log('val 2' ,newValue)
-
             toggleOpen(true);
             setDialogValue(newValue.inputValue);
           } else {
             setValue(newValue);
-            // console.log(first)
-            axiosClient.patch(`requestedResult/${id}`,{val:newValue?.name ?? ''}).then(({data})=>{
-                console.log(data)
-            })
-           // axiosClient.patch(`editChildTestGroup/${child_id}`,{id:newValue.id})
+            axiosClient.patch(`child_tests/${child_id}`,{colName:'unit_id' , val: newValue.id})
           }
         }}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
 
-          if (params.inputValue !== "" && !isNumeric(params.inputValue)) {
+          if (params.inputValue !== "") {
             filtered.push({
               inputValue: params.inputValue,
               name: `Add "${params.inputValue}"`,
@@ -106,9 +77,9 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
 
           return filtered;
         }}
-        options={options}
+        options={units}
         getOptionLabel={(option) => {
-        //   console.log('option',option)
+          console.log('option',option)
           // for example value selected with enter, right from the input
           if (typeof option === "string") {
             return option;
@@ -125,33 +96,12 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
       
         freeSolo
         renderInput={(params) => (
-          <TextField
-          autoFocus={index == 0}
-          onClick={()=>{
-            setSelectedResult(req)
-          }} multiline {...params} onChange={(val)=>{
-            console.log(val.target.value,'target value')
-
-            setValue(val.target.value)
-            axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
-                setActivePatient(data.patient)
-                setPatients((prev)=>{
-                    return  prev.map((patient)=>{
-                        if(patient.id === data.patient.id){
-                            return{ ...data.patient, active: true }
-                        }
-                        return patient
-                    })
-                })
-
-                console.log(data,'result saved')
-            })
-          }} label="" />
+          <TextField {...params} label="الوحده" />
         )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
-          <DialogTitle> add test option   </DialogTitle>
+          <DialogTitle> اضافه عنوان فرعي </DialogTitle>
           <DialogContent>
             <TextField
             size="small"
@@ -160,7 +110,7 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
               id="name"
               value={dialogValue}
               onChange={(event) => setDialogValue(event.target.value)}
-              label="option name"
+              label="العنوان"
               type="text"
               variant="standard"
             />

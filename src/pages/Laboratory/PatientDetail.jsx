@@ -32,10 +32,10 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
 
   return (
     <>
-      <Paper elevation={3} sx={{ padding: "10px" }}>
-        <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
+      <Paper sx={{backgroundColor: '#ffffffbb!important',p:2}} elevation={3} >
+        {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
-        </Typography>
+        </Typography> */}
         {/** add card body   */}
         <div className="patientId">{patient.id}</div>
         <div className="form-control">

@@ -1,22 +1,25 @@
+import { Add, AddTask } from "@mui/icons-material";
+import { Button, Stack } from "@mui/material";
 
-function Modal({showModal,setShowModal,children,addHandler}) {
-
+function Modal({ showModal, setShowModal, children, addHandler }) {
   return (
-    <div className={showModal ? "test-options":'hide'}>
-    <div className="header">
-
-        <div>options</div>
-        <div>
-          <button onClick={addHandler}>+</button>
-          <button onClick={()=>setShowModal(false)}>x</button>
-          </div>
+    <div className={showModal ? "test-options" : "hide"}>
+      <Stack direction={"row"} justifyContent={"space-around"}>
+        <Button
+          size="small"
+          variant="contained"
+          color="warning"
+          onClick={() => setShowModal(false)}
+        >
+          close
+        </Button>
+        <Button size="small" variant="contained" onClick={addHandler}>
+          add
+        </Button>
+      </Stack>
+      <div className="body">{children}</div>
     </div>
-    <div className="body">
-      {children}
-   
-    </div>
-</div>
-  )
-} 
+  );
+}
 
-export default Modal
+export default Modal;

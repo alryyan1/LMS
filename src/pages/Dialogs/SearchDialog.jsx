@@ -1,4 +1,5 @@
 import {
+  Box,
   Paper,
   Table,
   TableBody,
@@ -25,7 +26,14 @@ function SearchDialog({lab=false}) {
   };
   const addPatientByHistory = (id, oldDoctor) => {
     setLoading(true);
-    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor?.id ?? oldDoctor.id}`  :`patients/add-patient-by-history/${id}/${doctor?.id ?? oldDoctor.id}`
+    let doctor ='';
+    if (doctor.id != undefined) {
+        doctor = doctor.id;
+    }
+    else if(oldDoctor){
+        doctor = oldDoctor.id
+    }
+    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor}`  :`patients/add-patient-by-history/${id}/${doctor?.id ?? oldDoctor?.id}`
 
     axiosClient
       .post(
@@ -48,7 +56,7 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <Paper style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
+    <Box style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
       <TableContainer>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>
@@ -89,7 +97,7 @@ function SearchDialog({lab=false}) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
+    </Box>
   );
 }
 

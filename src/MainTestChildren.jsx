@@ -9,6 +9,7 @@ import axiosClient from "../axios-client";
 import {
   Box,
   Button,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -21,6 +22,7 @@ import MyAutoCompeleteTableCell from "./pages/inventory/MyAutoCompeleteTableCell
 import { LoadingButton } from "@mui/lab";
 import ChildGroupAutoComplete from "./pages/Laboratory/ChildGroupAutoComplete";
 import { Delete } from "@mui/icons-material";
+import UnitAutocomplete from "./components/UnitAutocomplete";
 
 function MainTestChildren() {
   const {
@@ -38,7 +40,7 @@ function MainTestChildren() {
 
   const addTestOptionHandler = () => {
     axiosClient
-      .post(`childTestOption/${activeChild.id}`)
+      .post(`childTestOption/${activeChild.id}`,{name:'new'})
       .then((data) => console.log(data))
       .finally(() => {
         setUpdate((prev) => prev + 1);
@@ -113,10 +115,11 @@ function MainTestChildren() {
         >
           +
         </LoadingButton>
+        <Paper>
         <Table size="small">
           <thead>
             <TableRow>
-              <TableCell>order</TableCell>
+              {/* <TableCell>order</TableCell> */}
               <TableCell>Name</TableCell>
               <TableCell>Unit</TableCell>
               <TableCell>Default value</TableCell>
@@ -129,39 +132,34 @@ function MainTestChildren() {
           </thead>
           <TableBody>
             {activeTestObj.child_tests.map((child) => {
-              // console.log(child.normalRange)
+              console.log(child,'child inloop')
               return (
                 <tr key={child.id}>
-                  <MyTableCell
+                  {/* <MyTableCell
                     table="child_tests"
                     colName={"test_order"}
                     item={activeTestObj}
                     child_id={child.id}
                   >
                     {child.test_order}
-                  </MyTableCell>
+                  </MyTableCell> */}
                   <MyTableCell
                     table="child_tests"
                     colName={"child_test_name"}
-                    item={activeTestObj}
+                    item={child}
                     child_id={child.id}
                     stateUpdater={setUpdateTests}
                   >
                     {child.child_test_name}
                   </MyTableCell>
-                  <MyAutoCompeleteTableCell
-                    child_id={child.id}
-                    sections={units}
-                    colName={"unit_id"}
-                    item={activeTestObj}
-                    val={child.unit}
-                    table="child_tests"
-                    stateUpdater={setUpdateTests}
-                  />
+                  <TableCell>
+                    <UnitAutocomplete child_id={child.id} unitObj={child.unit}  />
+                  </TableCell>
+                
                   <MyTableCell
                     table="child_tests"
                     colName={"defval"}
-                    item={activeTestObj}
+                    item={child}
                     child_id={child.id}
                     stateUpdater={setUpdateTests}
                   >
@@ -171,7 +169,7 @@ function MainTestChildren() {
                     multiline={true}
                     table="child_tests"
                     colName={"normalRange"}
-                    item={activeTestObj}
+                    item={child}
                     child_id={child.id}
                     stateUpdater={setUpdateTests}
                   >
@@ -180,7 +178,7 @@ function MainTestChildren() {
                   <MyTableCell
                     table="child_tests"
                     colName={"max"}
-                    item={activeTestObj}
+                    item={child}
                     child_id={child.id}
                     stateUpdater={setUpdateTests}
                   >
@@ -189,7 +187,7 @@ function MainTestChildren() {
                   <MyTableCell
                     table="child_tests"
                     colName={"lowest"}
-                    item={activeTestObj}
+                    item={child}
                     child_id={child.id}
                     stateUpdater={setUpdateTests}
                   >
@@ -228,6 +226,8 @@ function MainTestChildren() {
             })}
           </TableBody>
         </Table>
+        </Paper>
+        
       </Box>
 
       {activeChild && (

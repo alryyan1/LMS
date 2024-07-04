@@ -2,13 +2,13 @@ import { Lock } from "@mui/icons-material";
 import { Badge, Box, Grow,  } from "@mui/material";
 import 'animate.css';
 
-function PatientLab({ onClick, patient }) {
+function SellBox({ onClick, sell,index,activeSell }) {
   
   
 
   return (
     <Grow  timeout={2000} in>
-      {patient.labrequests.length > 0 ? (
+      {sell.deducted_items.length > 0 ? (
         <Badge
         
          
@@ -17,16 +17,16 @@ function PatientLab({ onClick, patient }) {
             horizontal: "bottom",
           }}
         
-          badgeContent={patient.labrequests.length}
-          color={patient.is_lab_paid == 0 ? "secondary" : "warning"}
+          badgeContent={sell.deducted_items.length}
+          color={sell.complete == 0 ? "secondary" : "warning"}
         >
           <Box
           
         
             onClick={() => {
-              onClick(patient);
+              onClick(sell);
             }}
-            sx={ patient.active ? {
+            sx={ activeSell?.id == sell.id ? {
                 borderBottom:"4px solid blue",
                 fontWeight:"bolder",
                 backgroundColor :(theme)=>theme.palette.primary.light
@@ -35,9 +35,9 @@ function PatientLab({ onClick, patient }) {
                 backgroundColor:'white'
               }}   
           >
-            {patient.visit_number}
+            {index}
             <span>
-             {patient.result_is_locked ?  <Lock/> :""}
+             {sell.result_is_locked ?  <Lock/> :""}
             </span>
           </Box>
         </Badge>
@@ -45,9 +45,9 @@ function PatientLab({ onClick, patient }) {
         <Box
        
           onClick={() => {
-            onClick(patient);
+            onClick(sell);
           }}
-          sx={ patient.active ? {
+          sx={ activeSell?.id == sell.id ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
             backgroundColor :(theme)=>theme.palette.primary.light
@@ -55,9 +55,9 @@ function PatientLab({ onClick, patient }) {
           }:{
             backgroundColor:'white'
           }}        >
-          {patient.visit_number}
+          {index}
           <span >
-             {patient.result_is_locked ?  <Lock/> :""}
+             {sell.result_is_locked ?  <Lock/> :""}
             </span>
         </Box>
       )}
@@ -65,4 +65,4 @@ function PatientLab({ onClick, patient }) {
   );
 }
 
-export default PatientLab;
+export default SellBox;

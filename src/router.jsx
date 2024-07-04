@@ -18,7 +18,6 @@ import LabLayout from "./LabLayout";
 import Report from "./pages/inventory/Report";
 import ProtectedRoute from "./ProtectedRoute";
 import AddInsurance from "./pages/insurance/AddInsurance";
-
 import InsuranceNav from "./pages/insurance/InsuranceNav";
 import LabList from "./pages/insurance/LabList";
 import ServiceNav from "./pages/services/ServiceNav";
@@ -32,7 +31,6 @@ import SettingsNav from "./pages/settings/SettingsNav";
 import Doctors from "./pages/settings/Doctors";
 import Specialists from "./pages/settings/Specialists";
 import ItemState from "./pages/inventory/ItemState";
-import ItemStatistics from "./pages/inventory/ItemStatisticsLine";
 import ItemNavStatistics from "./pages/inventory/ItemNavStatistics";
 import ItemStatisticsLine from "./pages/inventory/ItemStatisticsLine";
 import ItemStatisticsPie from "./pages/inventory/ItemStatisticsPie";
@@ -42,7 +40,6 @@ import LoginCardInventory from "./loginCardInventory";
 import Error404 from "./pages/Dialogs/Error404";
 import Dashboard from "./Dashboard";
 import AddSubcompany from "./pages/insurance/AddSubcompany";
-import { AddReaction } from "@mui/icons-material";
 import AddRelation from "./pages/insurance/AddRelation";
 import AddShip from "./pages/shipping/AddShip";
 import ShippingNav from "./pages/shipping/ShippingNav";
@@ -56,6 +53,9 @@ import CBCLIS from "./pages/Laboratory/CBCLIS";
 import ChemistryLIS from "./pages/Laboratory/ChemistryLis";
 import Sample from "./pages/Laboratory/Sample";
 import PaperConfig from "./pages/settings/PaperConfig";
+import PharmacyLayout from "./pages/pharmacy/PharmacyLayout";
+import AddDrug from "./pages/pharmacy/AddDrug";
+import SellDrug from "./pages/pharmacy/Sell";
 
 export const router = createBrowserRouter([
   {
@@ -257,6 +257,39 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <DoctorsCredits />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "denos",
+            element: (
+              <ProtectedRoute>
+                <CashDenos />
+              </ProtectedRoute>
+            ),
+          },
+        ],
+      },
+
+
+      {
+        path: "/pharmacy",
+        element: <PharmacyLayout />,
+        children: [
+          {
+            path: "add",
+
+              element: (
+              <ProtectedRoute>
+                <AddDrug />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path:'sell',
+            element: (
+              <ProtectedRoute>
+                <SellDrug />
               </ProtectedRoute>
             ),
           },

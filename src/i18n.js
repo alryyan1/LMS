@@ -16,8 +16,11 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 addShip:'اضافه شحنه',
                 nameValidation :'يجب ادخال اسم',
                 phoneValidation :'يجب ادخال الهاتف',
-
+                 ['draug type']:'الشكل الصيدلاني'
             }
+        },
+        en:{
+            ['draug type']:'drug type'
         },
         ch:{
             translation:{

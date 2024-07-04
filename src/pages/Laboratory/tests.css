@@ -59,7 +59,7 @@ table {
   justify-content: space-between;
   margin-bottom: 5px;
   align-items: center;
-  font-weight: bold;
+  /* font-weight: bold; */
   /* color: #dfdfdf; */
   padding: 5px;
 }

@@ -141,7 +141,7 @@ function Result() {
 
       
         </div>
-        <Paper style={{ overflow: "auto" }} sx={{ p: 1 }}>
+        <Paper sx={{backgroundColor: '#ffffffbb!important', overflow: "auto",p:1 }}  >
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
@@ -231,7 +231,7 @@ function Result() {
             )}
           </div>
         </Paper>
-        <Paper style={{ height: "80vh", overflow: "auto" }}>
+        <Paper sx={{backgroundColor: '#ffffffbb!important',height: "80vh", overflow: "auto" }} >
           {console.log(actviePatient, "activve pateint")}
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <List>
@@ -275,7 +275,7 @@ function Result() {
             </List>
           )}
         </Paper>
-        <Paper key={selectedTest?.id + resultUpdated} sx={{ p: 1 }}>
+        <Paper sx={{backgroundColor: '#ffffffbb!important',height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
           <Table size="small">
             <TableHead>
               <TableRow>

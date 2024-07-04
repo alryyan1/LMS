@@ -217,7 +217,7 @@ function Item() {
                 {Items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
-                    <MyTableCell colName={"name"} item={item}>
+                    <MyTableCell  colName={"name"} item={item}>
                       {item.name}
                     </MyTableCell>
                     <MyAutoCompeleteTableCell
@@ -228,9 +228,9 @@ function Item() {
                     >
                       {item?.section?.name}
                     </MyAutoCompeleteTableCell>
-                    <MyTableCell colName={"initial_balance"} item={item}>
+                    <TableCell >
                       {item.initial_balance}
-                    </MyTableCell>
+                    </TableCell>
                     <MyTableCell colName={"require_amount"} item={item}>
                       {item.require_amount}
                     </MyTableCell>

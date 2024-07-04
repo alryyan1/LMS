@@ -137,8 +137,8 @@ function RequestedTests({ setPatients }) {
   let total_endurance = 0;
   return (
     <>
-      <Paper sx={{p:1}} className="requested-tests">
-        <div  style={{height:'57vh',overflow:'auto'}} className="requested-table">
+      <Paper sx={{backgroundColor: '#ffffffbb!important',p:1}}  className="requested-tests">
+        <div  style={{height:'50vh',overflow:'auto'}} className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>
@@ -159,7 +159,11 @@ function RequestedTests({ setPatients }) {
                         let endurance
                         if(actviePatient.company_id != null) {
                            company = companies.find((c)=>c.id == actviePatient.company_id)
-                           price  = company.tests.find((t)=>t.id == test.id).pivot.price
+                           console.log('founded company',company)
+                           const founedTest  = company.tests.find((t)=>t.id == test.main_test_id)
+                           console.log(test,'patient test')
+                           console.log(founedTest,'founed test')
+                           price  = founedTest.pivot.price
                            endurance =   (price * company.lab_endurance) /100
                            total_endurance+= endurance;
                           console.log(company,'patient company')

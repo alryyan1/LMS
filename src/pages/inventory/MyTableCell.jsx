@@ -16,6 +16,8 @@ function MyTableCell({
   multiline = false,
   child_id = null,
   stateUpdater = null,
+  sx = null,
+  setData=null
 }) {
   const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
@@ -56,12 +58,20 @@ function MyTableCell({
         .then((data) => {
           console.log(data, "data");
           if (data.status) {
+            if (setData) {
+              console.log(data.data,'inside updater function')
+              setData(data.data.data)
+              
+            }
+            if (stateUpdater) {
             stateUpdater((prev) => prev + 1);
+              
+            }
             setDialog((prev) => {
               return {
                 ...prev,
                 open: true,
-                msg: "تم التعديل بنجاح",
+                message: "تم التعديل بنجاح",
                 color: "success",
               };
             });
@@ -74,7 +84,7 @@ function MyTableCell({
                 ...prev,
                 open: true,
                 color: "error",
-                msg: data.msg,
+                message: data.message,
               };
             });
           }
@@ -84,7 +94,7 @@ function MyTableCell({
                 ...prev,
                 open: true,
                 color: "error",
-                msg: data.msg,
+                message: data.message,
               };
             });
           }
@@ -109,7 +119,9 @@ function MyTableCell({
       {show || edited ? (
         <TextField
           multiline={multiline}
-          fullWidth
+         
+         sx={sx}
+          
           inputProps={{
             style: {
               textAlign: "left",
