@@ -17,7 +17,7 @@ export default function PayOptions() {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const {activeSell,setActiveSell,setShift} =useOutletContext()
-  const [payment, setPayment] = React.useState(activeSell?.payment_type.id );
+  const [payment, setPayment] = React.useState(activeSell.payment_type_id);
   const handleClick = () => {
   };
 
