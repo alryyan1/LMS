@@ -20,6 +20,9 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    document.title = "المستخدمين";
+  }, []);
   const {
     formState: { isSubmitSuccessful },
   } = useForm();

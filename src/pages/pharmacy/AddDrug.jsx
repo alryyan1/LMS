@@ -1,6 +1,7 @@
 import {
   Grid,
   Paper,
+  Skeleton,
   Stack,
   Table,
   TableCell,
@@ -25,9 +26,11 @@ import MyDateField from "../../components/MyDateField.jsx";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { DeleteOutlineOutlined } from "@mui/icons-material";
 
 function AddDrug() {
   const [loading, setLoading] = useState(false);
+  const [itemsIsLoading, setItemsIsLoading] = useState(false);
   const [page, setPage] = useState(7);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
@@ -44,6 +47,7 @@ function AddDrug() {
     handleSubmit,
   } = useForm();
   useEffect(() => {
+    setItemsIsLoading(true)
     //fetch all Items
     axiosClient
       .get(`items/all/pagination/${page}`)
@@ -56,7 +60,7 @@ function AddDrug() {
       })
       .catch(({ response: { data } }) => {
         setError(data.message);
-      });
+      }).finally(()=>setItemsIsLoading(false));
   }, [isSubmitted, page]);
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
@@ -126,7 +130,7 @@ function AddDrug() {
       });
   };
   useEffect(() => {
-    document.title = "اضافه دواء جديد";
+    document.title = "اضافه صنف جديد";
   }, []);
   const searchHandler = (word) => {
     setSearch(word);
@@ -151,8 +155,8 @@ function AddDrug() {
       return () => clearTimeout(timer);
   },[search])
   return (
-    <Grid container spacing={3}>
-        <Grid item  lg={9} xs={12} md={12}>
+    <Grid container spacing={2}>
+        <Grid item  lg={8} xs={12} md={12}>
         <Stack
             sx={{ mb: 1 }}
             direction={"row"}
@@ -178,6 +182,14 @@ function AddDrug() {
               label="بحث"
             ></TextField>
           </Stack>
+            {itemsIsLoading ? (
+              <Skeleton
+                animation="wave"
+                variant="rectangular"
+                width={"100%"}
+                height={400}
+              />
+            ) : (
             <TableContainer>
                 <Table dir="rtl" size="small">
                   <thead>
@@ -188,9 +200,8 @@ function AddDrug() {
                       <TableCell>سعر البيع </TableCell>
                       <TableCell> عدد الشرائط</TableCell>
                       <TableCell> الصلاحيه</TableCell>
-                      <TableCell> المجموعه</TableCell>
-                      <TableCell> الشكل</TableCell>
                       <TableCell> الباركود</TableCell>
+                      <TableCell> -</TableCell>
                     </TableRow>
                   </thead>
                   <tbody>
@@ -207,9 +218,22 @@ function AddDrug() {
                             <TableCell>
                               <MyDateField val={drug.expire} item={drug} />
                             </TableCell>
-                            <MyAutoCompeleteTableCell sections={drugCategory} val={drug.category}  colName="drug_category_id"  item={drug} table="items">{drug.category?.name}</MyAutoCompeleteTableCell>
-                            <MyAutoCompeleteTableCell sections={pharmacyTypes}  colName={'pharmacy_type_id'} val={drug.type} item={drug} table="items">{drug.type?.name}</MyAutoCompeleteTableCell>
                             <MyTableCell colName={'barcode'} item={drug} table="items">{drug.barcode}</MyTableCell>
+                            <TableCell>
+                              <LoadingButton loading={loading} onClick={()=>{
+                                setLoading(true)
+                                axiosClient.delete(`items/${drug.id}`)
+                               .then(({ data }) => {
+                                setItems((prev)=>{
+                                  
+                                  return prev.filter(item=>item.id!== drug.id)
+
+                                })
+                               }).finally(()=>setLoading(false))
+                              }} color="error">
+                                <DeleteOutlineOutlined/>
+                              </LoadingButton>
+                            </TableCell>
                           </TableRow>
                         )
                     })}
@@ -218,7 +242,8 @@ function AddDrug() {
                 </Table>
   
             </TableContainer>
-            <Grid sx={{ gap: "4px" }} container>
+            )}
+            <Grid sx={{ gap: "4px",mt:1 }} container>
             {links.map((link, i) => {
               if (i == 0) {
                 return (
@@ -264,7 +289,7 @@ function AddDrug() {
             })}
           </Grid>
         </Grid>
-      <Grid item xs={12} md={12} lg={3}>
+      <Grid item xs={12} md={12} lg={4}>
         <Paper sx={{ p: 1 }}>
           <Typography
             sx={{
@@ -276,7 +301,7 @@ function AddDrug() {
             textAlign={"center"}
             variant="h3"
           >
-            اضافه دواء جديد
+            Item Definition
           </Typography>
           <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
             <Stack direction={"column"} spacing={3}>

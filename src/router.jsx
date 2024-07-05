@@ -56,6 +56,8 @@ import PaperConfig from "./pages/settings/PaperConfig";
 import PharmacyLayout from "./pages/pharmacy/PharmacyLayout";
 import AddDrug from "./pages/pharmacy/AddDrug";
 import SellDrug from "./pages/pharmacy/Sell";
+import DrugItems from "./pages/pharmacy/DrugItems";
+import SalesReport from "./pages/pharmacy/SalesReport";
 
 export const router = createBrowserRouter([
   {
@@ -290,6 +292,23 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <SellDrug />
+              </ProtectedRoute>
+            ),
+          },
+          
+          {
+            path:'items',
+            element: (
+              <ProtectedRoute>
+                <DrugItems />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path:'reports',
+            element: (
+              <ProtectedRoute>
+                <SalesReport />
               </ProtectedRoute>
             ),
           },

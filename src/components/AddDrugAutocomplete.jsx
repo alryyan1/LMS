@@ -6,11 +6,12 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
 
 function AddDrugAutocomplete({setUpdater}) {
-
   const { items,setDeduct   ,  activeSell, setActiveSell,setShift} = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
+  console.log('AddDrugAutocomplete rendered',selectedDrugs)
+
   const addDrugsHandler = ()=>{
     setLoading(true)
     axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.map((d)=>d.id)}).then(({data})=>{
@@ -18,6 +19,7 @@ function AddDrugAutocomplete({setUpdater}) {
         setActiveSell(data.data)
         setShift(data.shift)
         setUpdater((prev)=>prev+1)
+        setSelectedDrugs([])
     }).finally(()=>{
       setLoading(false)
     })
@@ -35,6 +37,7 @@ function AddDrugAutocomplete({setUpdater}) {
           }}
         >
           <Autocomplete
+          value={selectedDrugs}
           inputValue={field}
             onInputChange={(e,v)=>{
               console.log(v,'')

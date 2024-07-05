@@ -11,11 +11,8 @@ import {
   Box,
   List,
 } from "@mui/material";
-import {
-  Language,
-  Mail,
-} from "@mui/icons-material";
-import {  NavLink, Link } from "react-router-dom";
+import { ArrowRight, Language, Mail } from "@mui/icons-material";
+import { NavLink, Link } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -24,10 +21,18 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useTranslation } from "react-i18next";
 
 const Nav = () => {
-  const { user, setToken, setUser, setLabDrawer, labDrawer ,clinicDrawer, setClinicDrawer, pharmcyDrawer, 
-    setPharmacyDrawer} =
-    useStateContext();
-console.log(user,'in nav ')
+  const {
+    user,
+    setToken,
+    setUser,
+    setLabDrawer,
+    labDrawer,
+    clinicDrawer,
+    setClinicDrawer,
+    pharmcyDrawer,
+    setPharmacyDrawer,
+  } = useStateContext();
+  console.log(user, "in nav ");
   const [loading, setLoading] = useState(false);
   const { i18n } = useTranslation();
   // console.log(setToken);
@@ -86,6 +91,8 @@ console.log(user,'in nav ')
         {[
           { title: "تعريف دواء", to: "/pharmacy/add" },
           { title: "نافذه البيع", to: "/pharmacy/sell" },
+          { title: "الاصناف", to: "/pharmacy/items" },
+          { title: "التقارير", to: "/pharmacy/reports" },
           { title: "حساب الفئات", to: "/clinic/denos" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
@@ -95,7 +102,7 @@ console.log(user,'in nav ')
               to={item.to}
             >
               <ListItemIcon>
-                <Mail />
+                <ArrowRight />
               </ListItemIcon>
               <ListItemText primary={item.title} />
             </ListItemButton>
@@ -106,7 +113,11 @@ console.log(user,'in nav ')
   );
   return (
     <>
-      <Drawer open={labDrawer}>
+      <Drawer ModalProps={{
+        onBackdropClick:()=>{
+          setLabDrawer(false);
+        }
+      }}  open={labDrawer}>
         {" "}
         {[
           { title: "تسجيل مريض", to: "/laboratory/add" },
@@ -133,17 +144,30 @@ console.log(user,'in nav ')
           );
         })}
       </Drawer>
-      <Drawer open={clinicDrawer}>
+      <Drawer
+        ModalProps={{
+          onBackdropClick: () => {
+            setClinicDrawer(false);
+          },
+        }}
+        open={clinicDrawer}
+      >
         {DrawerClinicList}
       </Drawer>
-      <Drawer open={pharmcyDrawer}>
+      <Drawer
+        ModalProps={{
+          onBackdropClick: () => {
+            setPharmacyDrawer(false);
+          },
+        }}
+        open={pharmcyDrawer}
+      >
         {DrawerPharmacyList}
       </Drawer>
       <AppBar
-       
         sx={{
           backgroundColor: "#485765",
-        
+
           marginBottom: "10px",
           p: 2,
           justifyContent: "",
@@ -170,7 +194,7 @@ console.log(user,'in nav ')
           >
             Inventory
           </NavLink>
-         
+
           <Link
             onClick={() => {
               setLabDrawer(true);
@@ -184,7 +208,6 @@ console.log(user,'in nav ')
               setClinicDrawer(true);
             }}
             style={{ textDecoration: "none", color: "white" }}
-          
           >
             Clinic
           </Link>
@@ -193,7 +216,6 @@ console.log(user,'in nav ')
               setPharmacyDrawer(true);
             }}
             style={{ textDecoration: "none", color: "white" }}
-          
           >
             pharmacy
           </Link>
@@ -215,27 +237,31 @@ console.log(user,'in nav ')
           >
             shipping
           </NavLink>
-       {user?.roles.map((r)=>r.name).includes('admin') || user?.id == 1 ?   <NavLink 
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/settings"}
-          >
-            Settings
-          </NavLink> : ""}
+          {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
+            <NavLink
+              style={{ textDecoration: "none", color: "white" }}
+              to={"/settings"}
+            >
+              Settings
+            </NavLink>
+          ) : (
+            ""
+          )}
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
             dashboard
           </NavLink>
-         
+
           <div style={{ flexGrow: 1 }}></div>
-          <Typography color={'black'} variant="h5">
-          {user?.username}
+          <Typography color={"white"} variant="h5">
+            {user?.username}
           </Typography>
           <IconButton onClick={changeLang}>
             <Language />
           </IconButton>
-          
+
           {user && (
             <LoadingButton
               color="error"

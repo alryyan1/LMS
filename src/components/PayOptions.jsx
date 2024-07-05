@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { useOutletContext } from 'react-router-dom';
 import axiosClient from '../../axios-client';
+import { LoadingButton } from '@mui/lab';
 
 const options = [{ id:1 ,name:'Cash'},{ id:2,name:'Transfer'}, {id:3,name:'Bank'}];
 
@@ -18,17 +19,21 @@ export default function PayOptions() {
   const anchorRef = React.useRef(null);
   const {activeSell,setActiveSell,setShift} =useOutletContext()
   const [payment, setPayment] = React.useState(activeSell.payment_type_id);
+  const [loading , setLoading] = React.useState(false)
+  console.log(payment,'payment')
+  console.log(activeSell,'activeSell')
   const handleClick = () => {
   };
 
   const handleMenuItemClick = (event, paymentId) => {
     setPayment(paymentId);
+    setLoading(true)
     setOpen(false);
     axiosClient.patch(`deduct/payment/${activeSell.id}`,{payment:paymentId}).then(({data})=>{
         console.log(data,'data')
         setActiveSell(data.data)
         setShift(data.shift)
-    })
+    }).finally(()=>setLoading(false))
   };
 
   const handleToggle = () => {
@@ -45,13 +50,13 @@ export default function PayOptions() {
 
   return (
     <React.Fragment>
-      <ButtonGroup sx={{m:1}}
+      <ButtonGroup  sx={{m:1}}
       
         variant="contained"
         ref={anchorRef}
         aria-label="Button group with a nested menu"
       >
-        <Button fullWidth onClick={handleClick}>{activeSell.payment_type.name}</Button>
+        <LoadingButton loading={loading} fullWidth onClick={handleClick}>{activeSell.payment_type.name}</LoadingButton>
         <Button
          
           size="small"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-
+import DescriptionIcon from '@mui/icons-material/Description';
 import {
   Divider,
   IconButton,
@@ -123,14 +123,14 @@ function SellDrug() {
               </IconButton>
             </Item>
             <Item>
-              <IconButton href={`${webUrl}lab/report`} variant="contained">
-                <Print />
+              <IconButton href={`${webUrl}pharmacy/sellsReport`} variant="contained">
+                <DescriptionIcon />
               </IconButton>
             </Item>
           </Stack>
         </div>
         <div>
-          <AddDrugAutocomplete setUpdater={setUpdater} />
+          {activeSell &&<AddDrugAutocomplete setUpdater={setUpdater} />}
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -172,7 +172,7 @@ function SellDrug() {
                   <TableCell>{deductedItem.item?.sell_price}</TableCell>
                   <MyTableCell
                     stateUpdater={setUpdater}
-                    setData={setDeduct}
+                    setData={setActiveSell}
                     sx={{ width: "70px" }}
                     type={"number"}
                     item={deductedItem}
@@ -183,7 +183,7 @@ function SellDrug() {
                   </MyTableCell>
                   <MyTableCell
                     stateUpdater={setUpdater}
-                    setData={setDeduct}
+                    setData={setActiveSell}
                     sx={{ width: "70px" }}
                     type={"number"}
                     item={deductedItem}
@@ -236,7 +236,7 @@ function SellDrug() {
                 Transaction No {activeSell?.id}
               </Typography>
               <Divider/>
-              {activeSell &&  <PayOptions/> }
+              {activeSell &&  <PayOptions key={activeSell.id}/> }
               <Divider/>
               <Card
                 sx={{
@@ -430,7 +430,7 @@ function SellDrug() {
          
         </Box>
         <Box>
-         <Stack>
+         <Stack direction={'column'} gap={2}>
               <LoadingButton
                   sx={{ mt: 2 }}
                   fullWidth
@@ -469,6 +469,9 @@ function SellDrug() {
                 >
                   <AddIcon />
                 </LoadingButton>
+                <IconButton>
+                  <Print/>
+                </IconButton>
            </Stack>
 
         </Box>
