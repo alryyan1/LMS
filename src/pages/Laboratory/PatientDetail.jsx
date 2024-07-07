@@ -15,7 +15,7 @@ import axiosClient from "../../../axios-client";
 import { webUrl } from "../constants";
 import printJS from "print-js";
 
-function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = false}) {
+function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = false,isLab=false}) {
 
 
   console.log(patient, "patient in patient details");
@@ -154,40 +154,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
             }
           </div>
         )}
-        {showBtns && <Stack direction={"row"} gap={2}>
-          <Button sx={{ flexGrow: 1 }} onClick={handleEdit} variant="contained">
-            Edit
-          </Button>
-          <Button
-            sx={{ flexGrow: 1 }}
-            onClick={() => {
-              const form = new URLSearchParams()
-              axiosClient.get(`printLab?pid=${patient.id}&base64=1`).then(({data})=>{
-              form.append('data',data)
-              console.log(data,'daa')
-              printJS({
-                printable:data.slice(data.indexOf('JVB')),
-                base64:true,
-                type:'pdf'
-              });
-
-              fetch('http://127.0.0.1:4000/',{
-                method: 'POST',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-
-                body: form
-              }).then((res)=>{
-                
-                });
-              })
-            }}
-            color="warning"
-            variant="contained"
-            target="myframe"
-          >
-            Print
-          </Button>
-        </Stack>}
+      
         <Divider sx={{ m: 1 }} />
         {copyPatient && patient.doctor_id == activeShift.doctor.id && (
           <Autocomplete
@@ -219,15 +186,7 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
           />
         )}
 
-        <EditPatientDialog
-         isLab={true}
-        doctorVisitId={patient.id}
-          open={open}
-          setOpen={setOpen}
-          patient={patient}
-          setPatients={setPatients}
-        />
-    
+      
 
       </Paper>
     </>

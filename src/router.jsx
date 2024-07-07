@@ -58,6 +58,7 @@ import AddDrug from "./pages/pharmacy/AddDrug";
 import SellDrug from "./pages/pharmacy/Sell";
 import DrugItems from "./pages/pharmacy/DrugItems";
 import SalesReport from "./pages/pharmacy/SalesReport";
+import ItemsInventory from "./pages/pharmacy/ItemsInventory";
 
 export const router = createBrowserRouter([
   {
@@ -309,6 +310,14 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <SalesReport />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path:'inventory',
+            element: (
+              <ProtectedRoute>
+                <ItemsInventory />
               </ProtectedRoute>
             ),
           },

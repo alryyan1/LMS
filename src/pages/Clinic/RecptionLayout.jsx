@@ -21,6 +21,7 @@ function ReceptionLayout() {
   const [update, setUpdate] = useState(0);
   const [error, setError] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [specialists, setSpecialists] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [actviePatient, setActivePatient] = useState(null);
@@ -94,7 +95,7 @@ function ReceptionLayout() {
             setError,
             open,
             dialog,
-
+            openEdit, setOpenEdit,
             specialists,
             setDoctors,
             searchByName,

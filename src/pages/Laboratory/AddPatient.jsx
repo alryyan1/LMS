@@ -15,6 +15,7 @@ import {
   Slide,
   Box,
   Grid,
+  Button,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
@@ -30,6 +31,8 @@ import ReceptionForm from "../Clinic/ReceptionForm";
 import TestGroups from "../../../TestGroups";
 import PatientLab from "./PatientLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
+import EditPatientDialog from "../Dialogs/EditPatientDialog";
+import printJS from "print-js";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -49,6 +52,8 @@ function AddPatient() {
     foundedPatients,
     update,
     setUpdate,
+    openEdit,
+    setOpenEdit,
   } = useOutletContext();
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
@@ -254,6 +259,51 @@ function AddPatient() {
               setPatients={setPatients}
             />
           )}
+           {actviePatient && <Stack sx={{mt:1}} direction={"row"} gap={2}>
+                  <Button size="small"
+                    sx={{ flexGrow: 1 }}
+                    onClick={() => {
+                      setOpenEdit(true);
+                    }}
+                    variant="contained"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                  size="small"
+                    sx={{ flexGrow: 1 }}
+                    onClick={() => {
+                      const form = new URLSearchParams();
+
+                      axiosClient
+                        .get(`printLab?pid=${actviePatient.id}&base64=1`)
+                        .then(({ data }) => {
+                          form.append("data", data);
+                          console.log(data, "daa");
+                          printJS({
+                            printable: data.slice(data.indexOf("JVB")),
+                            base64: true,
+                            type: "pdf",
+                          });
+
+                          // fetch("http://127.0.0.1:4000/", {
+                          //   method: "POST",
+                          //   headers: {
+                          //     "Content-Type":
+                          //       "application/x-www-form-urlencoded",
+                          //   },
+
+                          //   body: form,
+                          // }).then(() => {});
+                        });
+                    }}
+                    color="warning"
+                    variant="contained"
+                    target="myframe"
+                  >
+                    Print
+                  </Button>
+                </Stack>}
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div style={{ position: "relative" }}>
@@ -264,6 +314,13 @@ function AddPatient() {
         </div>
         <MoneyDialog />
         <ErrorDialog />
+        {actviePatient &&<EditPatientDialog
+          open={openEdit}
+          isLab = {true}
+          setOpen={setOpenEdit}
+          patient={actviePatient}
+          // setPatients={setPatients}
+        />}
       </div>
     </>
   );

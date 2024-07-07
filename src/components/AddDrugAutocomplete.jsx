@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
+import dayjs from "dayjs";
 
 function AddDrugAutocomplete({setUpdater}) {
-  const { items,setDeduct   ,  activeSell, setActiveSell,setShift} = useOutletContext();
+  const { items,setDeduct   ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
@@ -14,6 +15,7 @@ function AddDrugAutocomplete({setUpdater}) {
 
   const addDrugsHandler = ()=>{
     setLoading(true)
+    
     axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
         setActiveSell(data.data)
@@ -74,6 +76,13 @@ function AddDrugAutocomplete({setUpdater}) {
                       })
                       console.log(itemFounded,'founed')
                       if (itemFounded ) {
+                        console.log(itemFounded.expire,'expire')
+                        console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
+                        if (!dayjs(itemFounded.expire).isAfter(dayjs())) {
+                          setDialog((prev)=>{
+                            return {...prev, open: true, message:'هذا المنتج منتهي الصلاحية',color:'error'}
+                          })
+                        }
                         setLoading(true);
                         axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
                           console.log(data,'add by barcode')
@@ -87,6 +96,12 @@ function AddDrugAutocomplete({setUpdater}) {
                         //   console.log(prev)
                         //   return [...prev, itemFounded]
                         // })
+                      }else{
+                        setOpendDrugDialog(true)
+                        setDialog((prev)=>{
+                          return {...prev, open: true,message:'هذا المنتج غير معرف',color:'error'}
+                        })
+                        // alert('no item')
                       }
 
                     

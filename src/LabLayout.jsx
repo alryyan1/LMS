@@ -13,6 +13,8 @@ function LabLayout() {
     openLabReport: false,
     msg: "تمت الاضافه بنجاح",
   });
+  const [openEdit, setOpenEdit] = useState(false);
+
   const [foundedPatients, setFoundedPatients] = useState([]);
   const [childGroups, setChildGroups] = useState([]);
   const [searchByName, setSearchByName] = useState(null);
@@ -164,6 +166,7 @@ useEffect(()=>{
             foundedPatients,
             setFoundedPatients,
             updateTests,setUpdateTests,
+            openEdit, setOpenEdit
           }}
         />
       }

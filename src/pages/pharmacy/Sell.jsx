@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 import {
   Divider,
   IconButton,
@@ -33,7 +33,13 @@ import PatientLab from "../Laboratory/PatientLab";
 import SellBox from "./SellBox";
 import PayOptions from "../../components/PayOptions";
 import SellsMoneyDialog from "./SellsMoneyDialog";
-
+import printJS from "print-js";
+import AddDrugDialog from "./AddDrugDialog";
+import dayjs from "dayjs";
+function toFixed(num, fixed) {
+  var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+  return num.toString().match(re)[0];
+}
 function SellDrug() {
   const [loading, setLoading] = useState();
 
@@ -48,7 +54,8 @@ function SellDrug() {
     activeSell,
     setActiveSell,
     setShift,
-    showDialogMoney, setShowDialogMoney
+    showDialogMoney,
+    setShowDialogMoney,
   } = useOutletContext();
   console.log(shift, "shift");
   console.log(activeSell, "active sell");
@@ -89,16 +96,17 @@ function SellDrug() {
   };
 
   const showShiftMoney = () => {
-   setShowDialogMoney(true);
+    setShowDialogMoney(true);
   };
   useEffect(() => {
     document.title = "المبيعات";
   }, []);
 
-  let total = activeSell?.deducted_items?.reduce(
-    (prev, current) => prev + current.strips * current.item.sell_price,
+ let total =  activeSell?.deducted_items?.reduce(
+    (prev, current) =>
+      prev + (current.item.sell_price/current.item.strips) * current.strips,
     0
-  );
+  ).toFixed(2)
   return (
     <>
       <div
@@ -123,14 +131,17 @@ function SellDrug() {
               </IconButton>
             </Item>
             <Item>
-              <IconButton href={`${webUrl}pharmacy/sellsReport`} variant="contained">
+              <IconButton
+                href={`${webUrl}pharmacy/sellsReport?shift_id=${shift?.id}`}
+                variant="contained"
+              >
                 <DescriptionIcon />
               </IconButton>
             </Item>
           </Stack>
         </div>
         <div>
-          {activeSell &&<AddDrugAutocomplete setUpdater={setUpdater} />}
+          {activeSell && <AddDrugAutocomplete setUpdater={setUpdater} />}
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -169,7 +180,8 @@ function SellDrug() {
               {activeSell?.deducted_items?.map((deductedItem) => (
                 <TableRow key={deductedItem.id}>
                   <TableCell>{deductedItem.item?.market_name}</TableCell>
-                  <TableCell>{deductedItem.item?.sell_price}</TableCell>
+                  <TableCell> {deductedItem.item?.sell_price}</TableCell>
+                 
                   <MyTableCell
                     stateUpdater={setUpdater}
                     setData={setActiveSell}
@@ -178,12 +190,15 @@ function SellDrug() {
                     item={deductedItem}
                     table="deductedItem"
                     colName={"strips"}
+                    setShift={setShift}
                   >
                     {deductedItem.strips}
                   </MyTableCell>
                   <MyTableCell
                     stateUpdater={setUpdater}
                     setData={setActiveSell}
+                    setShift={setShift}
+
                     sx={{ width: "70px" }}
                     type={"number"}
                     item={deductedItem}
@@ -193,7 +208,7 @@ function SellDrug() {
                     {deductedItem.box}
                   </MyTableCell>
                   <TableCell>
-                    {deductedItem.item?.sell_price * deductedItem.strips}
+                    {toFixed((deductedItem.item?.sell_price/deductedItem.item?.strips) * deductedItem.strips,1)}
                   </TableCell>
                   <TableCell>
                     <LoadingButton
@@ -235,9 +250,9 @@ function SellDrug() {
                 {" "}
                 Transaction No {activeSell?.id}
               </Typography>
-              <Divider/>
-              {activeSell &&  <PayOptions key={activeSell.id}/> }
-              <Divider/>
+              <Divider />
+              {activeSell && <PayOptions key={activeSell.id} />}
+              <Divider />
               <Card
                 sx={{
                   borderRadius: 10,
@@ -256,11 +271,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                          {activeSell?.deducted_items?.reduce(
-                            (prev, current) =>
-                              prev + current.strips * current.item.sell_price,
-                            0
-                          )}
+                       {toFixed(total,1)}
                         </Typography>
                       )}
                     </Stack>
@@ -287,24 +298,23 @@ function SellDrug() {
                     >
                       <Typography>Recieved</Typography>
                       <Divider />
-                    
-                        <TextField
-                          value={recieved}
-                          type="number"
-                          onChange={(e) => {
-                            setRecieved(e.target.value);
-                            axiosClient
-                              .patch(`deduct/${activeSell.id}`, {
-                                colName: "total_amount_received",
-                                val: e.target.value,
-                              })
-                              .then(({ data }) => {
-                                setActiveSell(data.data);
-                              });
-                          }}
-                          variant="standard"
-                        ></TextField>
-                   
+
+                      <TextField
+                        value={recieved}
+                        type="number"
+                        onChange={(e) => {
+                          setRecieved(e.target.value);
+                          axiosClient
+                            .patch(`deduct/${activeSell.id}`, {
+                              colName: "total_amount_received",
+                              val: e.target.value,
+                            })
+                            .then(({ data }) => {
+                              setActiveSell(data.data);
+                            });
+                        }}
+                        variant="standard"
+                      ></TextField>
                     </Stack>
                     <Stack
                       direction={"column"}
@@ -329,13 +339,11 @@ function SellDrug() {
                     >
                       <Typography>Balance</Typography>
                       <Divider />
-                    
-                        <Typography variant="h3">
-                          {" "}
-                          {total > 0 &&
-                            activeSell.total_amount_received - total}
-                        </Typography>
-                    
+
+                      <Typography variant="h3">
+                        {" "}
+                        {total > 0 && toFixed(activeSell.total_amount_received - total,1)}
+                      </Typography>
                     </Stack>
                     <Stack
                       direction={"column"}
@@ -345,7 +353,7 @@ function SellDrug() {
                 </CardContent>
               </Card>
               <Divider />
-         
+
               <Stack justifyContent={"center"} sx={{ mt: 2 }}>
                 {activeSell?.complete ? (
                   <LoadingButton
@@ -359,7 +367,7 @@ function SellDrug() {
                         .then(({ data }) => {
                           setRecieved(0);
                           setActiveSell(data.data);
-                          setShift(data.shift)
+                          setShift(data.shift);
                         })
                         .catch(({ response: { data } }) => {
                           console.log({ data });
@@ -383,6 +391,7 @@ function SellDrug() {
                   </LoadingButton>
                 ) : (
                   <LoadingButton
+                   disabled={activeSell.deducted_items.length ==0}
                     fullWidth
                     loading={loading}
                     onClick={() => {
@@ -390,15 +399,22 @@ function SellDrug() {
                       axiosClient
                         .get(`inventory/deduct/complete/${activeSell.id}`)
                         .then(({ data }) => {
-                          try{
+                          try {
+                            setDialog((prev)=>{
+                              return {
+                               ...prev,
+                                color: "success",
+                                open: true,
+                                message: "Sell completed successfully",
+                              };
+                            })
                             setRecieved(0);
-                            console.log(data.data,'new active sell')
+                            console.log(data.data, "new active sell");
                             setActiveSell(data.data);
-                            setShift(data.shift)
-                          }catch(e) {
-                              console.log(e)
+                            setShift(data.shift);
+                          } catch (e) {
+                            console.log(e);
                           }
-                      
                         })
                         .catch(({ response: { data } }) => {
                           console.log({ data });
@@ -423,59 +439,82 @@ function SellDrug() {
                 )}
 
                 <Divider />
-             
               </Stack>
             </>
           )}
-         
         </Box>
         <Box>
-         <Stack direction={'column'} gap={2}>
-              <LoadingButton
-                  sx={{ mt: 2 }}
-                  fullWidth
-                  loading={loading}
-                  onClick={() => {
-                    setLoading(true);
-                    axiosClient
-                      .get(`inventory/deduct/new`)
-                      .then(({ data }) => {
-                        try {
-                          setRecieved(0);
-                          setActiveSell(data.data);
-                          setShift(data.shift);
-                        } catch (error) {
-                          console.log(error)
-                        }
-                      
-                      })
-                      .catch(({ response: { data } }) => {
-                        console.log({ data });
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            color: "error",
+          <Stack direction={"column"} gap={2}>
+            <LoadingButton
+              sx={{ mt: 2 }}
+              fullWidth
+              loading={loading}
+              onClick={() => {
+                setLoading(true);
+                axiosClient
+                  .get(`inventory/deduct/new`)
+                  .then(({ data }) => {
+                    try {
+                      setRecieved(0);
+                      setActiveSell(data.data);
+                      setShift(data.shift);
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  })
+                  .catch(({ response: { data } }) => {
+                    console.log({ data });
+                    setDialog((prev) => {
+                      return {
+                        ...prev,
+                        color: "error",
 
-                            open: true,
-                            message: data?.message || "An error occured",
-                          };
-                        });
-                      })
-                      .finally(() => {
-                        setLoading(false);
-                      });
-                  }}
-                  variant="contained"
-                >
-                  <AddIcon />
-                </LoadingButton>
-                <IconButton>
-                  <Print/>
-                </IconButton>
-           </Stack>
+                        open: true,
+                        message: data?.message || "An error occured",
+                      };
+                    });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+              }}
+              variant="contained"
+            >
+              <AddIcon />
+            </LoadingButton>
+            <IconButton
+              onClick={() => {
+                const form = new URLSearchParams();
 
+                axiosClient
+                  .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
+                  .then(({ data }) => {
+                    form.append("data", data);
+                    console.log(data, "daa");
+                    printJS({
+                      printable: data.slice(data.indexOf("JVB")),
+                      base64: true,
+                      type: "pdf",
+                    });
+
+                    // fetch("http://127.0.0.1:4000/", {
+                    //   method: "POST",
+                    //   headers: {
+                    //     "Content-Type":
+                    //       "application/x-www-form-urlencoded",
+                    //   },
+
+                    //   body: form,
+                    // }).then(() => {});
+                  });
+              }}
+            >
+              <Print />
+            </IconButton>
+          </Stack>
         </Box>
-        <SellsMoneyDialog/>
+        <SellsMoneyDialog />
+        <AddDrugDialog/>
       </div>
     </>
   );

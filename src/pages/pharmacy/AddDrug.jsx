@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
-import {  useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
 import PharmacyTypeAutocomplete from "../../components/PharmacyType.jsx";
 import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete.jsx";
@@ -27,16 +27,18 @@ import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
+import AddDrugForm from "./AddDrugForm.jsx";
 
 function AddDrug() {
   const [loading, setLoading] = useState(false);
+  const [stripPrice, setStripPrice] = useState(0);
   const [itemsIsLoading, setItemsIsLoading] = useState(false);
   const [page, setPage] = useState(7);
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
-  const [items, setItems] = useState([])
-  const {  setDialog ,drugCategory,pharmacyTypes} = useOutletContext();
+  const [items, setItems] = useState([]);
+  const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
 
   const {
     register,
@@ -45,9 +47,21 @@ function AddDrug() {
     control,
     reset,
     handleSubmit,
+    watch
   } = useForm();
+
+  const sell_price = watch("sell_price");
+  const strips = watch("strips");
+  useEffect(()=>{
+    console.log(typeof sell_price,'type of sellprice')
+    console.log(typeof strips,'type of strips')
+    if (sell_price  && strips  ) {
+      console.log('inside one strip prise')
+      setStripPrice((sell_price/strips).toFixed(1))
+    }
+  },[sell_price,strips])
   useEffect(() => {
-    setItemsIsLoading(true)
+    setItemsIsLoading(true);
     //fetch all Items
     axiosClient
       .get(`items/all/pagination/${page}`)
@@ -60,7 +74,8 @@ function AddDrug() {
       })
       .catch(({ response: { data } }) => {
         setError(data.message);
-      }).finally(()=>setItemsIsLoading(false));
+      })
+      .finally(() => setItemsIsLoading(false));
   }, [isSubmitted, page]);
   console.log(isSubmitting);
   const submitHandler = async (formData) => {
@@ -70,7 +85,7 @@ function AddDrug() {
     setLoading(true);
     axiosClient
       .post(`drugs`, {
-        expire:   `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
+        expire: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
         cost_price: formData.cost_price,
         require_amount: formData.require_amount,
         sell_price: formData.sell_price,
@@ -83,12 +98,12 @@ function AddDrug() {
         batch: formData.batch,
       })
       .then(({ data }) => {
-        console.log(data,'addded drug')
+        console.log(data, "addded drug");
         if (data.status) {
-          console.log('success',data)
-          setItems((prev)=>{
-                return [...prev, data.data]
-            })
+          console.log("success", data);
+          setItems((prev) => {
+            return [...prev, data.data];
+          });
           reset();
           setValue("section", null);
           setLoading(false);
@@ -101,7 +116,7 @@ function AddDrug() {
         }
       })
       .catch(({ response: { data } }) => {
-        setLoading(false)
+        setLoading(false);
         console.log(data);
         setDialog({
           color: "error",
@@ -116,9 +131,9 @@ function AddDrug() {
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
-    axiosClient(`${link.url}&word=${search}`,)
+    axiosClient(`${link.url}&word=${search}`)
       .then(({ data }) => {
-        console.log(data,'pagination data');
+        console.log(data, "pagination data");
         setItems(data.data);
         setLinks(data.links);
       })
@@ -134,11 +149,10 @@ function AddDrug() {
   }, []);
   const searchHandler = (word) => {
     setSearch(word);
-  
   };
   useEffect(() => {
-    const timer =  setTimeout(() => {
-        axiosClient
+    const timer = setTimeout(() => {
+      axiosClient
         .get(`items/all/pagination/${page}?word=${search}`)
         .then(({ data: { data, links } }) => {
           console.log(data);
@@ -146,321 +160,164 @@ function AddDrug() {
           setItems(data);
           // console.log(links)
           setLinks(links);
-        }).catch(({response:{data}}) => {
-          setDialog((prev)=>{
-            return {...prev, open: true, color: "error", message: data.message}
-          })
+        })
+        .catch(({ response: { data } }) => {
+          setDialog((prev) => {
+            return {
+              ...prev,
+              open: true,
+              color: "error",
+              message: data.message,
+            };
+          });
         });
-      }, 300);
-      return () => clearTimeout(timer);
-  },[search])
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
   return (
     <Grid container spacing={2}>
-        <Grid item  lg={8} xs={12} md={12}>
+      <Grid item lg={7} xs={12} md={12}>
         <Stack
-            sx={{ mb: 1 }}
-            direction={"row"}
-            justifyContent={"space-between"}
-          >
-            <select
-              onChange={(val) => {
-                setPage(val.target.value);
-              }}
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-            <TextField
-              value={search}
-              onChange={(e) => {
-                searchHandler(e.target.value);
-              }}
-              label="بحث"
-            ></TextField>
-          </Stack>
-            {itemsIsLoading ? (
-              <Skeleton
-                animation="wave"
-                variant="rectangular"
-                width={"100%"}
-                height={400}
-              />
-            ) : (
-            <TableContainer>
-                <Table dir="rtl" size="small">
-                  <thead>
-                    <TableRow>
-                      <TableCell>الاسم العلمي</TableCell>
-                      <TableCell>الاسم التجاري</TableCell>
-                      <TableCell>سعر الشراء</TableCell>
-                      <TableCell>سعر البيع </TableCell>
-                      <TableCell> عدد الشرائط</TableCell>
-                      <TableCell> الصلاحيه</TableCell>
-                      <TableCell> الباركود</TableCell>
-                      <TableCell> -</TableCell>
-                    </TableRow>
-                  </thead>
-                  <tbody>
-
-                    {items.map((drug)=>{
-                      console.log(drug,'drug ')
-                        return (
-                          <TableRow key={drug.id}>
-                            <MyTableCell colName={'sc_name'} item={drug} table="items" >{drug.sc_name}</MyTableCell>
-                            <MyTableCell  colName={'market_name'} item={drug} table="items">{drug.market_name}</MyTableCell>
-                            <MyTableCell sx={{width:'70px'}} colName={'cost_price'} item={drug} table="items"  >{drug.cost_price}</MyTableCell>
-                            <MyTableCell sx={{width:'70px'}}   colName={'sell_price'} item={drug} table="items">{drug.sell_price}</MyTableCell>
-                            <MyTableCell colName={'strips'} item={drug} table="items">{drug.strips}</MyTableCell>
-                            <TableCell>
-                              <MyDateField val={drug.expire} item={drug} />
-                            </TableCell>
-                            <MyTableCell colName={'barcode'} item={drug} table="items">{drug.barcode}</MyTableCell>
-                            <TableCell>
-                              <LoadingButton loading={loading} onClick={()=>{
-                                setLoading(true)
-                                axiosClient.delete(`items/${drug.id}`)
-                               .then(({ data }) => {
-                                setItems((prev)=>{
-                                  
-                                  return prev.filter(item=>item.id!== drug.id)
-
-                                })
-                               }).finally(()=>setLoading(false))
-                              }} color="error">
-                                <DeleteOutlineOutlined/>
-                              </LoadingButton>
-                            </TableCell>
-                          </TableRow>
-                        )
-                    })}
-
-                  </tbody>
-                </Table>
-  
-            </TableContainer>
-            )}
-            <Grid sx={{ gap: "4px",mt:1 }} container>
-            {links.map((link, i) => {
-              if (i == 0) {
-                return (
-                  <Grid item xs={1} key={i}>
-                    <MyLoadingButton
-                      onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
-                      }}
-                      variant="contained"
-                      key={i}
-                    >
-                      <ArrowBackIosIcon />
-                    </MyLoadingButton>
-                  </Grid>
-                );
-              } else if (links.length - 1 == i) {
-                return (
-                  <Grid item xs={1} key={i}>
-                    <MyLoadingButton
-                      onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
-                      }}
-                      variant="contained"
-                      key={i}
-                    >
-                      <ArrowForwardIosIcon />
-                    </MyLoadingButton>
-                  </Grid>
-                );
-              } else
-                return (
-                  <Grid item xs={1} key={i}>
-                    <MyLoadingButton
-                      active={link.active}
-                      onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
-                      }}
-                    >
-                      {link.label}
-                    </MyLoadingButton>
-                  </Grid>
-                );
-            })}
-          </Grid>
-        </Grid>
-      <Grid item xs={12} md={12} lg={4}>
-        <Paper sx={{ p: 1 }}>
-          <Typography
-            sx={{
-              mb: 2,
-              backgroundColor: (theme) => theme.palette.primary.main,
-              color: "white",
-              borderRadius: "5px",
+          sx={{ mb: 1 }}
+          direction={"row"}
+          justifyContent={"space-between"}
+        >
+          <select
+            onChange={(val) => {
+              setPage(val.target.value);
             }}
-            textAlign={"center"}
-            variant="h3"
           >
-            Item Definition
-          </Typography>
-          <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
-            <Stack direction={"column"} spacing={3}>
-              <Stack gap={2} direction={"row"}>
-                <TextField
-                  size="small"
-                  fullWidth
-                  error={errors.sc_name}
-                  {...register("sc_name", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال الاسم العلمي",
-                    },
-                  })}
-                  label="اسم العلمي"
-                  variant="standard"
-                  helperText={errors.sc_name && errors.sc_name.message}
-                />
-                <TextField
-                  size="small"
-                  fullWidth
-                  error={errors.market_name}
-                  {...register("market_name", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال الاسم التجاري",
-                    },
-                  })}
-                  label="اسم التجاري"
-                  variant="standard"
-                  helperText={errors.market_name && errors.market_name.message}
-                />
-              </Stack>
-              <Stack gap={2} direction={"row"}>
-                <TextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  error={errors.sell_price}
-                  {...register("sell_price", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال سعر البيع ",
-                    },
-                  })}
-                  label="سعر البيع"
-                  variant="standard"
-                  
-                  helperText={errors.sell_price && errors.sell_price.message}
-                />
-                <TextField
-                  size="small"
-                  fullWidth
-                  type="number"
-                  error={errors.cost_price}
-                  {...register("cost_price", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال سعر الشراء ",
-                    },
-                  })}
-                  label="سعر الشراء"
-                  variant="standard"
-                  helperText={errors.cost_price && errors.cost_price.message}
-                />
-              </Stack>
-              <Stack gap={2} direction={"row"}>
-                <TextField
-                  size="small"
-                  fullWidth
-                  error={errors.batch}
-                  {...register("batch")}
-                  label="الباتش"
-                  variant="standard"
-                />
-                <TextField
-                  size="small"
-                  type="number"
-                  error={errors.strips && errors.strips.message}
-                  fullWidth
-                  {...register("strips", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال  عدد الشرائط ",
-                    },
-                  })}
-                  label="عدد الشرائط"
-                  variant="standard"
-                  helperText={errors.cost_price && errors.cost_price.message}
-                />
-              </Stack>
-              <Stack gap={2} direction={"row"}>
-                <PharmacyTypeAutocomplete
-                  errors={errors}
-                  Controller={Controller}
-                  control={control}
-                  setValue={setValue}
-                />
-                <DrugCategoryAutocomplete
-                  errors={errors}
-                  Controller={Controller}
-                  control={control}
-                  setValue={setValue}
-                />
-              </Stack>
-              <Stack gap={2} direction={"row"}>
-                <TextField
-                  size="small"
-                  type="number"
-                  fullWidth
-                  {...register("require_amount")}
-                  label="حد الادني للطلب"
-                  variant="filled"
-                />
-                <TextField
-                  size="small"
-                  fullWidth
-                  helperText={errors.barcode && errors.barcode.message}
-                  error={errors.barcode}
-                  {...register("barcode",{
-                    required: {
-                      value: true,
-                      message: "يجب ادخال الباركود",
-                    },
-                  })}
-                  label="الباركود"
-                  variant="filled"
-                />
-              </Stack>
-
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Controller
-                  defaultValue={dayjs(new Date())}
-                
-                  control={control}
-                  name="expire"
-                  render={({ field }) => (
-                    <DateField
-                      {...field}
-                      value={field.value}
-                      onChange={(val) => field.onChange(val)}
-                      sx={{ mb: 1 }}
-                      label="تاريخ الانتهاء"
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-
-              <LoadingButton
-                fullWidth
-                loading={loading}
-                variant="contained"
-                type="submit"
-              >
-                حفظ
-              </LoadingButton>
-            </Stack>
-          </form>
-        </Paper>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <TextField
+            value={search}
+            onChange={(e) => {
+              searchHandler(e.target.value);
+            }}
+            label="بحث"
+          ></TextField>
+        </Stack>
+        {itemsIsLoading ? (
+          <Skeleton
+            animation="wave"
+            variant="rectangular"
+            width={"100%"}
+            height={400}
+          />
+        ) : (
+          <TableContainer>
+            <Table dir="rtl" size="small">
+              <thead>
+                <TableRow>
+                  <TableCell>الاسم العلمي</TableCell>
+                  <TableCell>الاسم التجاري</TableCell>
+                  <TableCell>سعر الشراء</TableCell>
+                  <TableCell>سعر البيع </TableCell>
+                  <TableCell> عدد الشرائط</TableCell>
+                  <TableCell> الصلاحيه</TableCell>
+                </TableRow>
+              </thead>
+              <tbody>
+                {items.map((drug) => {
+                  console.log(drug, "drug ");
+                  return (
+                    <TableRow key={drug.id}>
+                      <MyTableCell
+                        colName={"sc_name"}
+                        item={drug}
+                        table="items"
+                      >
+                        {drug.sc_name}
+                      </MyTableCell>
+                      <MyTableCell
+                        colName={"market_name"}
+                        item={drug}
+                        table="items"
+                      >
+                        {drug.market_name}
+                      </MyTableCell>
+                      <MyTableCell
+                        sx={{ width: "70px" }}
+                        colName={"cost_price"}
+                        item={drug}
+                        table="items"
+                      >
+                        {drug.cost_price}
+                      </MyTableCell>
+                      <MyTableCell
+                        sx={{ width: "70px" }}
+                        colName={"sell_price"}
+                        item={drug}
+                        table="items"
+                      >
+                        {drug.sell_price}
+                      </MyTableCell>
+                      <MyTableCell colName={"strips"} item={drug} table="items">
+                        {drug.strips}
+                      </MyTableCell>
+                      <TableCell>
+                        <MyDateField val={drug.expire} item={drug} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </TableContainer>
+        )}
+        <Grid sx={{ gap: "4px", mt: 1 }} container>
+          {links.map((link, i) => {
+            if (i == 0) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowBackIosIcon />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else if (links.length - 1 == i) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowForwardIosIcon />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    active={link.active}
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                  >
+                    {link.label}
+                  </MyLoadingButton>
+                </Grid>
+              );
+          })}
+        </Grid>
+      </Grid>
+      <Grid item xs={12} md={12} lg={5}>
+      <AddDrugForm/>
       </Grid>
     </Grid>
   );

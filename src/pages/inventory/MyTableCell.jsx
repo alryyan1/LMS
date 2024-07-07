@@ -16,6 +16,7 @@ function MyTableCell({
   multiline = false,
   child_id = null,
   stateUpdater = null,
+  setShift=null,
   sx = null,
   setData=null
 }) {
@@ -62,6 +63,9 @@ function MyTableCell({
               console.log(data.data,'inside updater function')
               setData(data.data.data)
               
+            }
+            if (setShift) {
+              setShift(data.data.shift)
             }
             if (stateUpdater) {
             stateUpdater((prev) => prev + 1);

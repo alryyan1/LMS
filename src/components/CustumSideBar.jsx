@@ -3,7 +3,8 @@ import React from 'react'
 import { Item, webUrl } from '../pages/constants';
 import { Calculate, Group, PersonAdd, Print } from '@mui/icons-material';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
-
+import DescriptionIcon from '@mui/icons-material/Description';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney,activeShift,user}) {
   return (
@@ -39,23 +40,23 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
       </IconButton>
     </Item>
    
-    <Item>
+    {/* <Item>
       
      {user && <IconButton title="التقرير العام" href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
         <Print />
       </IconButton>}
-    </Item>
+    </Item> */}
        
     <Item>
       
-     {user && <IconButton title="2 التقرير العام" href={`${webUrl}clinics/all?user=${user.id}`} variant="contained">
-        <Print />
+     {user && <IconButton title=" التقرير العام" href={`${webUrl}clinics/all?user=${user.id}`} variant="contained">
+        <Diversity3Icon />
       </IconButton>}
     </Item>
     
     {activeShift &&<Item>
      <IconButton color="info" title="التقرير الخاص" href={`${webUrl}clinics/doctor/report?user=${user.id}&doctorshift=${activeShift.id}`} variant="contained">
-        <Print  />
+        <DescriptionIcon  />
       </IconButton>
     </Item>}
   </Stack>

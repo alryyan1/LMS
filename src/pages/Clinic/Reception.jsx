@@ -1,27 +1,16 @@
 import "../Laboratory/addPatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "../Laboratory/PatientDetail";
-import { webUrl } from "../constants";
-
+import DescriptionIcon from '@mui/icons-material/Description';
 import {
-  Drawer,
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Stack,
   styled,
   Paper,
   Slide,
   Badge,
-  Chip,
+  Button,
 } from "@mui/material";
-import {
-  Mail,
-} from "@mui/icons-material";
-import { Link, useOutletContext } from "react-router-dom";
+import {  useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
@@ -34,6 +23,8 @@ import RequestedServices from "./RequestedServices";
 import ServiceMoneyDialog from "../Dialogs/ServiceMoneyDialog";
 import PatientReception from "./PatientReception";
 import CustumSideBar from "../../components/CustumSideBar";
+import EditPatientDialog from "../Dialogs/EditPatientDialog";
+import printJS from "print-js";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -54,17 +45,18 @@ function Reception() {
     setOpenedDoctors,
     activeShift,
     setActiveShift,
+    openEdit,
+    setOpenEdit,
+    open,
     update,
     setUpdate,
     showPatientServices,
     setShowPatientServices,
     showServicePanel,
     setShowServicePanel,
-  } = useOutletContext();
-  // console.log(activeShift, "active doctor");
-  // console.log(searchByName, "searchByname");
-  const { setOpenDrawer, openDrawer, user } = useStateContext();
 
+  } = useOutletContext();
+  const { user } = useStateContext();
   const [layOut, setLayout] = useState({
     form: "1fr",
     hideForm: false,
@@ -74,7 +66,6 @@ function Reception() {
     patients: "1fr",
   });
   // console.log(openDrawer, "open drawer");
-
 
   useEffect(() => {
     if (foundedPatients.length > 0) {
@@ -133,7 +124,7 @@ function Reception() {
     });
   };
   useEffect(() => {
-    document.title = 'الاستقبال' ;
+    document.title = "الاستقبال";
   }, []);
   //get opened doctors
   useEffect(() => {
@@ -156,7 +147,7 @@ function Reception() {
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
-        {openedDoctors.map((shift, index) => {
+        {openedDoctors.map((shift) => {
           // console.log(shift, "shift");
           return (
             <Badge
@@ -175,8 +166,8 @@ function Reception() {
                         cursor: "pointer",
                         flexGrow: 1,
                         minWidth: "200px",
-                        borderBottom:"4px solid blue",
-                        fontWeight:"bolder",
+                        borderBottom: "4px solid blue",
+                        fontWeight: "bolder",
                       }
                     : {
                         minWidth: "200px",
@@ -224,7 +215,7 @@ function Reception() {
         }}
       >
         <div>
-        {!actviePatient && foundedPatients.length > 0 && (
+          {!actviePatient && foundedPatients.length > 0 && (
             <Slide
               style={{ position: "absolute", left: "0px" }}
               direction="up"
@@ -240,13 +231,57 @@ function Reception() {
           {actviePatient && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
-
                 <PatientDetail
-                showBtns
+    
                   key={actviePatient.id}
                   patient={actviePatient.patient}
                   copyPatient={true}
                 />
+                <Stack direction={"row"} gap={2}>
+                  <Button size="small"
+                    sx={{ flexGrow: 1 }}
+                    onClick={() => {
+                      setOpenEdit(true);
+                    }}
+                    variant="contained"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                  size="small"
+                    sx={{ flexGrow: 1 }}
+                    onClick={() => {
+                      const form = new URLSearchParams();
+
+                      axiosClient
+                        .get(`reception?pid=${actviePatient.id}&base64=1`)
+                        .then(({ data }) => {
+                          form.append("data", data);
+                          console.log(data, "daa");
+                          printJS({
+                            printable: data.slice(data.indexOf("JVB")),
+                            base64: true,
+                            type: "pdf",
+                          });
+
+                          fetch("http://127.0.0.1:4000/", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type":
+                                "application/x-www-form-urlencoded",
+                            },
+
+                            body: form,
+                          }).then(() => {});
+                        });
+                    }}
+                    color="warning"
+                    variant="contained"
+                    target="myframe"
+                  >
+                    Print
+                  </Button>
+                </Stack>
               </div>
             </Slide>
           )}
@@ -264,7 +299,7 @@ function Reception() {
             </Slide>
           )}
         </div>
-        <Paper sx={{backgroundColor: '#ffffffbb!important'}}>
+        <Paper sx={{ backgroundColor: "#ffffffbb!important" }}>
           <div style={{ overflow: "auto" }}>
             <Stack
               flexDirection={"row"}
@@ -273,7 +308,7 @@ function Reception() {
               style={{ padding: "15px", display: "flex" }}
             >
               {activeShift &&
-                activeShift.visits.map((visit, index) => {
+                activeShift.visits.map((visit) => {
                   return (
                     <PatientReception
                       index={count--}
@@ -292,13 +327,28 @@ function Reception() {
           ) : (
             <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
           )}
-         
         </div>
-        <CustumSideBar setOpen={setOpen} showShiftMoney={showShiftMoney} showFormHandler={showFormHandler} activeShift={activeShift} user={user} showDoctorsDialog={showDoctorsDialog}/>
+        <CustumSideBar
+          setOpen={setOpen}
+          showShiftMoney={showShiftMoney}
+          showFormHandler={showFormHandler}
+          activeShift={activeShift}
+          user={user}
+          showDoctorsDialog={showDoctorsDialog}
+        />
 
         <ServiceMoneyDialog />
         <ErrorDialog />
         <ReceptionDoctorsDialog />
+        {actviePatient && (
+          <EditPatientDialog
+            doctorVisitId={actviePatient.id}
+            open={openEdit}
+            setOpen={setOpenEdit}
+            patient={actviePatient.patient}
+            // setPatients={setPatients}
+          />
+        )}
       </div>
     </>
   );

@@ -20,7 +20,8 @@ function PharmacyLayout() {
     msg: "تمت الاضافه بنجاح",
   });
   const [showDialogMoney, setShowDialogMoney] = useState(false);
-
+  
+  const [opendDrugDialog,setOpendDrugDialog] = useState(false);
   const [shift, setShift] = useState(null);
   const [drugCategory, setDrugCategory] = useState([]);
   const [pharmacyTypes, setPharmacyTypes] = useState([]);
@@ -75,7 +76,8 @@ function PharmacyLayout() {
             setShiftIsLoading,
             shiftIsLoading,
             activeSell, setActiveSell,
-            showDialogMoney, setShowDialogMoney
+            showDialogMoney, setShowDialogMoney,
+            opendDrugDialog,setOpendDrugDialog,
           
           }}
         />
@@ -83,7 +85,7 @@ function PharmacyLayout() {
       }
       <Snackbar
         open={dialog.open}
-        autoHideDuration={2000}
+        autoHideDuration={5000}
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
         <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>

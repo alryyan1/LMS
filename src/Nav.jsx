@@ -93,6 +93,7 @@ const Nav = () => {
           { title: "نافذه البيع", to: "/pharmacy/sell" },
           { title: "الاصناف", to: "/pharmacy/items" },
           { title: "التقارير", to: "/pharmacy/reports" },
+          { title: "المخزون", to: "/pharmacy/inventory" },
           { title: "حساب الفئات", to: "/clinic/denos" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>

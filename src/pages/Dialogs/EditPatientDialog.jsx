@@ -25,8 +25,8 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatients }) {
-  const { doctors, setActivePatient, setUpdate, openedDoctors, companies } =
+function EditPatientDialog({ patient,doctorVisitId,isLab=false }) {
+  const { doctors, setActivePatient, setUpdate, openedDoctors,setOpenEdit,openEdit } =
     useOutletContext();
   // console.log(patient);
   // console.log(appData.doctors, "doctors");
@@ -34,7 +34,6 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
   const [loading, setLoading] = useState();
   function editDoctorHandler(formData) {
     setLoading(true);
-    const newPatient = { ...patient, ...formData };
     const url = isLab ?`patients/${patient.id}`  : `patients/edit/${doctorVisitId}`
     console.log(formData, "formData");
     axiosClient
@@ -51,17 +50,20 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
        
           console.log(data.patient, "new patient");
 
-          setOpen(false);
-          setActivePatient(data.patient);
-          setPatients((prev)=>{
-            return prev.map((p)=>{
-              if (p.id === data.patient.id) {
-                return {...data.patient ,active:true}
-              } else {
-                return p
-              }
-            })
-          })
+          setOpenEdit(false);
+          if(isLab){
+
+            setActivePatient(data.patient);
+          }
+          // setPatients((prev)=>{
+          //   return prev.map((p)=>{
+          //     if (p.id === data.patient.id) {
+          //       return {...data.patient ,active:true}
+          //     } else {
+          //       return p
+          //     }
+          //   })
+          // })
         }
       })
       .finally(() => setLoading(false));
@@ -89,7 +91,7 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
     },
   });
   return (
-    <Dialog key={patient.id} open={open == undefined ? false : open}>
+    <Dialog key={patient.id} open={openEdit}>
       <DialogTitle>تعديل البيانات</DialogTitle>
       <DialogContent >
         <form onSubmit={handleSubmit(editDoctorHandler)} >
@@ -207,11 +209,14 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
                     },
                   })}
                   label="السنه"
+                type="number"
+
                   variant="standard"
                 />
               </Item>
               <Item>
                 <TextField
+                type="number"
                   defaultValue={patient.age_month}
                   {...register("age_month")}
                   label="الشهر"
@@ -220,6 +225,8 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
               </Item>
               <Item>
                 <TextField
+                type="number"
+
                   defaultValue={patient.age_day}
                   {...register("age_day")}
                   label="اليوم"
@@ -359,7 +366,7 @@ function EditPatientDialog({ patient, setOpen, open,doctorVisitId,isLab,setPatie
       <DialogActions>
         <Button
           onClick={() => {
-            setOpen(false);
+            setOpenEdit(false);
           }}
         >
           close
