@@ -37,7 +37,7 @@ import printJS from "print-js";
 import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 function toFixed(num, fixed) {
-  var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
   return num.toString().match(re)[0];
 }
 function SellDrug() {
@@ -102,11 +102,13 @@ function SellDrug() {
     document.title = "المبيعات";
   }, []);
 
- let total =  activeSell?.deducted_items?.reduce(
-    (prev, current) =>
-      prev + (current.item.sell_price/current.item.strips) * current.strips,
-    0
-  ).toFixed(2)
+  let total = activeSell?.deducted_items
+    ?.reduce(
+      (prev, current) =>
+        prev + (current.item.sell_price / current.item.strips) * current.strips,
+      0
+    )
+    .toFixed(2);
   return (
     <>
       <div
@@ -181,37 +183,46 @@ function SellDrug() {
                 <TableRow key={deductedItem.id}>
                   <TableCell>{deductedItem.item?.market_name}</TableCell>
                   <TableCell> {deductedItem.item?.sell_price}</TableCell>
-                 
-                  <MyTableCell
-                    stateUpdater={setUpdater}
-                    setData={setActiveSell}
-                    sx={{ width: "70px" }}
-                    type={"number"}
-                    item={deductedItem}
-                    table="deductedItem"
-                    colName={"strips"}
-                    setShift={setShift}
-                  >
-                    {deductedItem.strips}
-                  </MyTableCell>
-                  <MyTableCell
-                    stateUpdater={setUpdater}
-                    setData={setActiveSell}
-                    setShift={setShift}
 
+                  {activeSell.complete ? (
+                    <TableCell> {deductedItem.strips}</TableCell>
+                  ) : (
+                    <MyTableCell
+                      stateUpdater={setUpdater}
+                      setData={setActiveSell}
+                      sx={{ width: "70px" }}
+                      type={"number"}
+                      item={deductedItem}
+                      table="deductedItem"
+                      colName={"strips"}
+                      setShift={setShift}
+                    >
+                      {deductedItem.strips}
+                    </MyTableCell>
+                  )}
+                     {activeSell.complete ? <TableCell>{toFixed(deductedItem.box, 1)}</TableCell> :<MyTableCell
+                    stateUpdater={setUpdater}
+                    setData={setActiveSell}
+                    setShift={setShift}
                     sx={{ width: "70px" }}
                     type={"number"}
                     item={deductedItem}
                     table="deductedItem"
                     colName={"box"}
                   >
-                    {deductedItem.box}
-                  </MyTableCell>
+                    {toFixed(deductedItem.box, 1)}
+                  </MyTableCell>}
                   <TableCell>
-                    {toFixed((deductedItem.item?.sell_price/deductedItem.item?.strips) * deductedItem.strips,1)}
+                    {toFixed(
+                      (deductedItem.item?.sell_price /
+                        deductedItem.item?.strips) *
+                        deductedItem.strips,
+                      1
+                    )}
                   </TableCell>
                   <TableCell>
                     <LoadingButton
+                      disabled={activeSell.complete}
                       size="small"
                       loading={loading}
                       onClick={() => {
@@ -271,7 +282,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                       {toFixed(total,1)}
+                          {toFixed(total, 1)}
                         </Typography>
                       )}
                     </Stack>
@@ -342,7 +353,8 @@ function SellDrug() {
 
                       <Typography variant="h3">
                         {" "}
-                        {total > 0 && toFixed(activeSell.total_amount_received - total,1)}
+                        {total > 0 &&
+                          toFixed(activeSell.total_amount_received - total, 1)}
                       </Typography>
                     </Stack>
                     <Stack
@@ -391,7 +403,7 @@ function SellDrug() {
                   </LoadingButton>
                 ) : (
                   <LoadingButton
-                   disabled={activeSell.deducted_items.length ==0}
+                    disabled={activeSell.deducted_items.length == 0}
                     fullWidth
                     loading={loading}
                     onClick={() => {
@@ -400,14 +412,14 @@ function SellDrug() {
                         .get(`inventory/deduct/complete/${activeSell.id}`)
                         .then(({ data }) => {
                           try {
-                            setDialog((prev)=>{
+                            setDialog((prev) => {
                               return {
-                               ...prev,
+                                ...prev,
                                 color: "success",
                                 open: true,
                                 message: "Sell completed successfully",
                               };
-                            })
+                            });
                             setRecieved(0);
                             console.log(data.data, "new active sell");
                             setActiveSell(data.data);
@@ -514,7 +526,7 @@ function SellDrug() {
           </Stack>
         </Box>
         <SellsMoneyDialog />
-        <AddDrugDialog/>
+        <AddDrugDialog />
       </div>
     </>
   );

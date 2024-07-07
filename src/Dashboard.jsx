@@ -30,6 +30,10 @@ import axiosClient from "../axios-client";
 import { webUrl } from "./pages/constants";
 import { useOutletContext } from "react-router-dom";
 import dayjs from "dayjs";
+function toFixed(num, fixed) {
+  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
+  return num.toString().match(re)[0];
+}
 function Dashboard() {
   const options = {
     weekday: "long",
@@ -170,7 +174,7 @@ function Dashboard() {
                   <Typography>الدخل</Typography>
                   <Divider />
                   <Typography variant="h4">
-                    {shift?.totalDeductsPrice}
+                    {shift && toFixed(shift?.totalDeductsPrice,1)}
                   </Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
@@ -215,7 +219,7 @@ function Dashboard() {
                   <Typography>الصافي</Typography>
                   <Divider />
                   <Typography variant="h4">
-                    {shift?.totalDeductsPrice -
+                    {shift && toFixed(shift?.totalDeductsPrice,1) -
                       shift?.cost?.reduce((p, c) => p + c.amount, 0)}
                   </Typography>
                 </Stack>

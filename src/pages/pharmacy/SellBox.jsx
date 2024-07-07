@@ -21,11 +21,15 @@ function SellBox({ onClick, sell,index,activeSell }) {
           color={sell.complete == 0 ? "secondary" : "warning"}
         >
           <Box
+          style={{
           
+          backgroundColor: sell.complete == 1 && activeSell?.id != sell.id  ? "#00e676" : ""
+          }}
         
             onClick={() => {
               onClick(sell);
             }}
+            
             sx={ activeSell?.id == sell.id ? {
                 borderBottom:"4px solid blue",
                 fontWeight:"bolder",

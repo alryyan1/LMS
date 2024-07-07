@@ -190,6 +190,9 @@ function CashDenos() {
                       <TableCell>{deno.name}</TableCell>
                       <TableCell>
                         <TextField
+                        variant="standard"
+                        type="number"
+                        
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               console.log("enter pressed");
@@ -218,7 +221,7 @@ function CashDenos() {
         </Grid>
         <Grid xs={3}>
           <Paper sx={{ p: 1 }}>
-            <Typography variant="h3" textAlign={"center"}>
+            <Typography variant="h4" textAlign={"center"}>
               مصروفات الورديه
             </Typography>
             <Table size="small" style={{ direction: "rtl" }}>

@@ -11,7 +11,10 @@ import {
   import { useEffect, useState } from "react";
   import { useOutletContext } from "react-router-dom";
   import axiosClient from "../../../axios-client";
-  
+  function toFixed(num, fixed) {
+    var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    return num.toString().match(re)[0];
+  }
   function SellsMoneyDialog() {
     const { shift,  showDialogMoney, setShowDialogMoney} = useOutletContext();
     const [money, setMoney] = useState();
@@ -26,22 +29,22 @@ import {
           <DialogContent>
             <Stack direction={'column'} sx={{m:1 ,backgroundColor:(theme)=>theme.palette.success.light,p:1,borderRadius:'5px',color:'white',fontSize:"2rem"}} gap={1}>
               <Typography variant="h4" textAlign={'center'}>Total Income</Typography>
-              <Typography variant="h4" textAlign={'center'}>{shift?.totalDeductsPrice}</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift &&  toFixed(shift.totalDeductsPrice,1)}</Typography>
             </Stack>
             <Divider></Divider>
             <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
               <Typography variant="h4" textAlign={'center'}>Bank</Typography>
-              <Typography variant="h4" textAlign={'center'}>{shift?.totalDeductsPriceBank}</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift && toFixed(shift.totalDeductsPriceBank,1)}</Typography>
             </Stack>
             <Divider></Divider>
             <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
               <Typography variant="h4" textAlign={'center'}>Transfer</Typography>
-              <Typography variant="h4" textAlign={'center'}>{shift?.totalDeductsPriceTransfer}</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift && toFixed(shift.totalDeductsPriceTransfer,1)}</Typography>
             </Stack>
             <Divider></Divider>
             <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
               <Typography variant="h4" textAlign={'center'}>Cash</Typography>
-              <Typography variant="h4" textAlign={'center'}>{shift?.totalDeductsPriceCash}</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift && toFixed(shift.totalDeductsPriceCash,1)}</Typography>
             </Stack>
           </DialogContent>
           <DialogActions>
