@@ -29,7 +29,6 @@ function Report() {
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
   const [update,setUpdate] = useState(0);
-  console.log(selectedSupplier);
 
 
   const searchDeposits = () => {
@@ -126,10 +125,10 @@ function Report() {
                   <TableRow key={i}>
                     <TableCell>{i + 1}</TableCell>
                     <TableCell>{income.name}</TableCell>
-                    <TableCell>{income.pivot.quantity}</TableCell>
-                    <TableCell>{income.pivot.price}</TableCell>
+                    <TableCell>{income.quantity}</TableCell>
+                    <TableCell>{income.price}</TableCell>
                     <TableCell>
-                      {income.pivot.quantity * income.pivot.price}
+                      {income.quantity * income.price}
                     </TableCell>
                   </TableRow>
                 ))}

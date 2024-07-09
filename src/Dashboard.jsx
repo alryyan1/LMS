@@ -1,21 +1,15 @@
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import {
-  Add,
   ArrowBack,
   ArrowForward,
-  HourglassBottom,
   Lock,
   LockOpen,
-  Person,
-  PlusOne,
 } from "@mui/icons-material";
 import {
-  Avatar,
   Card,
   CardContent,
   Divider,
   Grid,
-  Icon,
   IconButton,
   Stack,
   Typography,
@@ -24,11 +18,11 @@ import React, { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import animationData from "./lotties/money.json";
 import people from "./lotties/people.json";
+import boxes from "./lotties/boxes.json";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import axiosClient from "../axios-client";
 import { webUrl } from "./pages/constants";
-import { useOutletContext } from "react-router-dom";
 import dayjs from "dayjs";
 function toFixed(num, fixed) {
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
@@ -73,6 +67,14 @@ function Dashboard() {
     loop: true,
     autoplay: true,
     animationData: people,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const boxesOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: boxes,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
@@ -147,11 +149,11 @@ function Dashboard() {
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-around"}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography>Sales</Typography>
+                  <Typography>Patients</Typography>
                   <Divider />
                   {shift && (
                     <Typography variant="h4">
-                      {shift?.deducts?.length}
+                      {shift?.totalPaid}
                     </Typography>
                   )}
                 </Stack>
@@ -308,7 +310,34 @@ function Dashboard() {
               </Stack>
             </CardContent>
           </Card>
+          
+          
         </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
+            <CardContent>
+              <Stack direction={"row"} justifyContent={"space-around"}>
+                <Stack justifyContent={"space-between"} direction={"column"}>
+                  <Typography>Sales</Typography>
+                  <Divider />
+                  {shift && (
+                    <Typography variant="h4">
+                      {shift?.deducts?.length}
+                    </Typography>
+                  )}
+                </Stack>
+                <Stack direction={"column"} justifyContent={"center"}>
+                  <IconButton
+                    href={`${webUrl}pharmacy/sellsReport?shift_id=${shift?.id}`}
+                  >
+                    <Lottie options={boxesOptions} height={100} width={100} />
+                  </IconButton>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+        
       </Grid>
     </>
   );

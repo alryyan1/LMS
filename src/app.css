@@ -2,7 +2,6 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900");
 body {
-  scrollbar-width: 10px;
 
   font-family: "Tajawal", sans-serif;
 }
@@ -70,9 +69,80 @@ td{
     font-weight: 500!important;
 }
 .patient-no{
-  color: white!important;
   margin-left: 4px!important;
   background-color: burlywood!important;
   /* padding: 5px!important; */
   width: 40px!important;
 }
+
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --clr-1: #052b2f;
+  --clr-2: #073438;
+  --clr-3: white;
+  --clr-4: #2d8f85;
+  --clr-5: #637c54;
+}
+
+body {
+  background: var(--clr-2);
+  color: var(--clr-1);
+}
+
+.effect {
+  /* aspect-ratio: 1 / 1.5; */
+  background: var(--clr-1);
+  border-radius: 0.2rem;
+
+  position: relative;
+}
+.logo{
+  
+  border-radius: 8px;
+  box-shadow: 2px 5px 9px #14272d;
+  width: 544px;
+  padding: 5px;
+  background-color: #003b4f;
+}
+.effect::before,
+.effect::after {
+  content: "";
+  position: absolute;
+  inset: -0.1rem;
+  z-index: -1;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    var(--clr-3),
+    var(--clr-4),
+    var(--clr-5),
+    var(--clr-4),
+    var(--clr-3)
+  );
+  border-radius: inherit;
+  animation: rotation 3s linear infinite;
+}
+/* .white tbody td {
+  color: white !important;
+} */
+.effect::after {
+  filter: blur(3.5rem);
+}
+
+@keyframes rotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* .muirtl-1cnhgfl-MuiAutocomplete-root .MuiAutocomplete-tag {
+  background-color: aliceblue
+} */

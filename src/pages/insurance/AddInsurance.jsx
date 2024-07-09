@@ -257,7 +257,7 @@ function AddInsurance() {
           <Stack direction={"column"} gap={3}>
             <TextField
              InputLabelProps={{
-              style: { color: 'black',fontSize:'1rem' },
+              style: { fontSize:'1rem' },
             }}
               fullWidth
               error={errors.name != null}

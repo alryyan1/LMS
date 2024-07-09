@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import {
+  Box,
   Card,
   CardContent,
   Divider,
@@ -63,7 +64,7 @@ function CashDenos() {
       }
     });
   };
-  const totalIncome = shift?.totalPaid + shift?.paidLab;
+  const totalIncome = shift?.totalPaid + shift?.paidLab + shift?.totalDeductsPrice;
   const denosAmount = userDenos.reduce(
     (accum, d) => accum + d.name * d.pivot.amount,
     0
@@ -143,7 +144,7 @@ function CashDenos() {
                   </Typography>
                   <Divider />
                   <Typography variant="h4">
-                    {totalIncome.toLocaleString({ minimumFractionDigits: 2 })}
+                    {totalIncome.toLocaleString({ minimumFractionDigits: 2 }) }
                   </Typography>
                 </Stack>
               </Stack>
@@ -170,7 +171,7 @@ function CashDenos() {
           </Card>
         </Grid>
         <Grid xs={3}>
-          <Paper sx={{ p: 1 }}>
+          <Box sx={{ p: 1 }}>
             <Typography variant="h3" textAlign={"center"}>
               الفئات
             </Typography>
@@ -217,10 +218,10 @@ function CashDenos() {
                 })}
               </TableBody>
             </Table>
-          </Paper>
+          </Box>
         </Grid>
         <Grid xs={3}>
-          <Paper sx={{ p: 1 }}>
+          <Box sx={{ p: 1 }}>
             <Typography variant="h4" textAlign={"center"}>
               مصروفات الورديه
             </Typography>
@@ -253,10 +254,10 @@ function CashDenos() {
                 })}
               </TableBody>
             </Table>
-          </Paper>
+          </Box>
         </Grid>
         <Grid item xs={3}>
-          <Paper elevation={2}>
+          <Box elevation={2}>
             <Typography textAlign={"center"} variant="h4">
               اضافه مصروف
             </Typography>
@@ -292,7 +293,7 @@ function CashDenos() {
                 <LoadingButton type="submit">حفظ</LoadingButton>
               </Stack>
             </form>
-          </Paper>
+          </Box>
         </Grid>
       </Grid>
     </>

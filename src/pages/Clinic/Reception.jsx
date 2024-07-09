@@ -162,7 +162,7 @@ function Reception() {
                 sx={
                   activeShift && activeShift.id === shift.id
                     ? {
-                        color: "black",
+                    
                         cursor: "pointer",
                         flexGrow: 1,
                         minWidth: "200px",
@@ -237,7 +237,7 @@ function Reception() {
                   patient={actviePatient.patient}
                   copyPatient={true}
                 />
-                <Stack direction={"row"} gap={2}>
+                <Stack sx={{mt:1}} direction={"row"} gap={2}>
                   <Button size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
@@ -254,7 +254,7 @@ function Reception() {
                       const form = new URLSearchParams();
 
                       axiosClient
-                        .get(`reception?pid=${actviePatient.id}&base64=1`)
+                        .get(`printReception?doctor_visit=${actviePatient.id}&base64=1`)
                         .then(({ data }) => {
                           form.append("data", data);
                           console.log(data, "daa");

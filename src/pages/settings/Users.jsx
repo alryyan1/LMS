@@ -1,4 +1,5 @@
 import {
+  Box,
   FormControlLabel,
   FormGroup,
   Grid,
@@ -48,7 +49,7 @@ function Users() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={3}>
-        <Paper sx={{ p: 1 }}>
+        <Box sx={{ p: 1 }}>
           <Typography textAlign={"center"} variant="h3">
             Users
           </Typography>
@@ -58,7 +59,7 @@ function Users() {
                 style={{
                   border: "1px dashed ",
                   marginBottom: "2px",
-                  color: "black",
+             
                 }}
                 sx={{
                   backgroundColor: (theme) =>
@@ -75,11 +76,11 @@ function Users() {
               </ListItemButton>
             );
           })}
-        </Paper>
+        </Box>
       </Grid>
       <Grid item xs={3}>
         {selectedUser && (
-          <Paper sx={{ p: 1 }}>
+          <Box sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
               Roles {selectedUser.name}{" "}
             </Typography>
@@ -106,7 +107,7 @@ function Users() {
                 );
               })}
             </FormGroup>
-          </Paper>
+          </Box>
         )}
       </Grid>
       <Grid item xs={3}>

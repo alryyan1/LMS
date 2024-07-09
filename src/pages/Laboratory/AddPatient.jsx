@@ -153,23 +153,25 @@ function AddPatient() {
 
   return (
     <>
-      <Grid container>
-        <Grid xs={8}>
+      <Stack direction={'row'}   justifyContent={'space-between'} >
+        <Box flexGrow={'1'}>
 
-        </Grid>
-        <Grid xs={4}>
+        </Box>
+        <Box >
           <AutocompleteSearchPatient
             setActivePatientHandler={setActivePatientHandler}
           />
-        </Grid>
-      </Grid>
+        </Box>
+      </Stack>
 
       <div
         style={{
+          marginTop:'5px',
           gap: "15px",
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
+          direction:'rtl',
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
       >

@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Divider,
   FormControlLabel,
@@ -86,7 +87,7 @@ function PaperConfig() {
 
       </Grid>
       <Grid xs={3}>
-        <Paper key={settings?.id} sx={{p:1}}>
+        <Box key={settings?.id} sx={{p:1}}>
           <FormGroup>
             <FormControlLabel
               control={
@@ -160,10 +161,10 @@ function PaperConfig() {
               data: e.target.value,
             });
           }}/>
-        </Paper>
+        </Box>
       </Grid>
       <Grid xs={3}>
-          <Paper sx={{p:1}}>
+          <Box sx={{p:1}}>
            <TextField defaultValue={settings?.header_contentr} sx={{mb:1}}  rows={3} label='محتوي الترويسه' multiline fullWidth onChange={(e)=>{
              axiosClient.post("settings", {
               colName: "header_content",
@@ -178,7 +179,7 @@ function PaperConfig() {
             });
           }}/>
           <Divider/>
-          </Paper>
+          </Box>
       </Grid>
     </Grid>
   );

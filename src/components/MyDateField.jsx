@@ -4,14 +4,17 @@ import dayjs from "dayjs";
 import { Controller } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 function MyDateField({ val, item }) {
   // console.log(item , val,'date filed ')
   console.log(dayjs(val), "date filed ", val, "val");
   const [date, setDate] = useState(val);
+  const {setDialog} = useOutletContext()
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateField
+      format='YYYY-MM-DD'
       fullWidth
         size="small"
         defaultValue={dayjs(date)}
@@ -28,7 +31,15 @@ function MyDateField({ val, item }) {
               }/${dayJsObj.date()}`,
             })
             .then(({ data }) => {
-              console.log(data, "edited");
+              if (data.status) {
+                setDialog((prev)=>{
+                  return {
+                     ...prev,
+                    open: true,
+                    message: "تم التعديل ",
+                  };
+                })
+              }
             });
         }}
         sx={{ mb: 1 }}

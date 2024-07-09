@@ -122,7 +122,7 @@ function ReceptionForm({ hideForm,lab }) {
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: "10px" }}>
+    <Item elevation={2} sx={{ padding: "10px" }}>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
         التسجيل
       </Typography>
@@ -407,7 +407,7 @@ function ReceptionForm({ hideForm,lab }) {
           </LoadingButton>
         </Stack>
       </form>
-    </Paper>
+    </Item>
   );
 }
 

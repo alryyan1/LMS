@@ -15,7 +15,7 @@ import {
       <div>
         <Dialog open={dialog.openError}>
           <DialogTitle color={dialog.color}>{dialog.title}</DialogTitle>
-           <DialogContent sx={{color:'black'}}>
+           <DialogContent >
            {dialog.msg}
            </DialogContent>
           <DialogActions>

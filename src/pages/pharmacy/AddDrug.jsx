@@ -1,6 +1,5 @@
 import {
   Grid,
-  Paper,
   Skeleton,
   Stack,
   Table,
@@ -8,126 +7,29 @@ import {
   TableContainer,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { LoadingButton } from "@mui/lab";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
-import PharmacyTypeAutocomplete from "../../components/PharmacyType.jsx";
-import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete.jsx";
-import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import MyTableCell from "../inventory/MyTableCell.jsx";
-import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell.jsx";
 import MyDateField from "../../components/MyDateField.jsx";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { DeleteOutlineOutlined } from "@mui/icons-material";
 import AddDrugForm from "./AddDrugForm.jsx";
 
 function AddDrug() {
-  const [loading, setLoading] = useState(false);
-  const [stripPrice, setStripPrice] = useState(0);
   const [itemsIsLoading, setItemsIsLoading] = useState(false);
   const [page, setPage] = useState(7);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
-  const [items, setItems] = useState([]);
-  const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
+  const { setDialog} = useOutletContext();
+  const [items,setItems] = useState([]);
+  const [update,setUpdate] = useState([]);
+ 
 
-  const {
-    register,
-    setValue,
-    formState: { errors, isSubmitting, isSubmitted },
-    control,
-    reset,
-    handleSubmit,
-    watch
-  } = useForm();
 
-  const sell_price = watch("sell_price");
-  const strips = watch("strips");
-  useEffect(()=>{
-    console.log(typeof sell_price,'type of sellprice')
-    console.log(typeof strips,'type of strips')
-    if (sell_price  && strips  ) {
-      console.log('inside one strip prise')
-      setStripPrice((sell_price/strips).toFixed(1))
-    }
-  },[sell_price,strips])
-  useEffect(() => {
-    setItemsIsLoading(true);
-    //fetch all Items
-    axiosClient
-      .get(`items/all/pagination/${page}`)
-      .then(({ data: { data, links } }) => {
-        console.log(data, "items");
-        console.log(links);
-        setItems(data);
-        console.log(links);
-        setLinks(links);
-      })
-      .catch(({ response: { data } }) => {
-        setError(data.message);
-      })
-      .finally(() => setItemsIsLoading(false));
-  }, [isSubmitted, page]);
-  console.log(isSubmitting);
-  const submitHandler = async (formData) => {
-    const dayJsObj = formData.expire;
-
-    console.log(formData, "formdata");
-    setLoading(true);
-    axiosClient
-      .post(`drugs`, {
-        expire: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
-        cost_price: formData.cost_price,
-        require_amount: formData.require_amount,
-        sell_price: formData.sell_price,
-        pharmacy_type_id: formData.pharmacyType?.id,
-        drug_category_id: formData.drugCategory?.id,
-        barcode: formData.barcode,
-        strips: formData.strips,
-        sc_name: formData.sc_name,
-        market_name: formData.market_name,
-        batch: formData.batch,
-      })
-      .then(({ data }) => {
-        console.log(data, "addded drug");
-        if (data.status) {
-          console.log("success", data);
-          setItems((prev) => {
-            return [...prev, data.data];
-          });
-          reset();
-          setValue("section", null);
-          setLoading(false);
-          //show snackbar
-          setDialog({
-            color: "success",
-            open: true,
-            message: "تمت الاضافه بنجاح",
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        setLoading(false);
-        console.log(data);
-        setDialog({
-          color: "error",
-          open: true,
-          message: data.message,
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+ 
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
@@ -151,6 +53,7 @@ function AddDrug() {
     setSearch(word);
   };
   useEffect(() => {
+    setItemsIsLoading(true)
     const timer = setTimeout(() => {
       axiosClient
         .get(`items/all/pagination/${page}?word=${search}`)
@@ -170,10 +73,10 @@ function AddDrug() {
               message: data.message,
             };
           });
-        });
+        }).finally(()=>setItemsIsLoading(false));
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search,page,update]);
   return (
     <Grid container spacing={2}>
       <Grid item lg={7} xs={12} md={12}>
@@ -214,6 +117,7 @@ function AddDrug() {
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
+                  <TableCell>رقم </TableCell>
                   <TableCell>الاسم العلمي</TableCell>
                   <TableCell>الاسم التجاري</TableCell>
                   <TableCell>سعر الشراء</TableCell>
@@ -227,6 +131,7 @@ function AddDrug() {
                   console.log(drug, "drug ");
                   return (
                     <TableRow key={drug.id}>
+                       <TableCell>{drug.id}</TableCell>
                       <MyTableCell
                         colName={"sc_name"}
                         item={drug}
@@ -317,7 +222,7 @@ function AddDrug() {
         </Grid>
       </Grid>
       <Grid item xs={12} md={12} lg={5}>
-      <AddDrugForm/>
+      <AddDrugForm setUpdate={setUpdate}/>
       </Grid>
     </Grid>
   );

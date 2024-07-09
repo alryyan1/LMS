@@ -31,11 +31,11 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
           }}
         
           badgeContent={patient.labrequests.length}
-          color={patient.is_lab_paid == 0 ? "secondary" : "warning"}
+          color={patient.is_lab_paid == 0 ? "error" : "success"}
         >
           <Box
           
-            sx= { patient.result_print_date !=null? {
+            style= { patient.result_print_date !=null? {
               
               backgroundColor :'#00b0ff!important' 
 
@@ -44,10 +44,8 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
             onClick={() => {
               onClick(patient.id);
             }}
-            style={ patient.active ? {
-              borderBottom:"4px solid blue",
-              fontWeight:"bolder",
-              backgroundColor :'lightblue!important' 
+            sx={ patient.active ? {
+              backgroundColor :(theme)=>theme.palette.warning.light
             }:null}
           >
             {patient.visit_number}
@@ -58,7 +56,7 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
         </Badge>
       ) : (
         <Box
-        sx= { patient.result_print_date !=null? {
+        style= { patient.result_print_date !=null? {
               
           backgroundColor :'#00b0ff!important' 
 
@@ -67,10 +65,8 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
           onClick={() => {
             onClick(patient.id);
           }}
-          style={ patient.active ? {
-            borderBottom:"4px solid blue",
-            fontWeight:"bolder",
-            backgroundColor :'lightblue' 
+          sx={ patient.active ? {
+            backgroundColor :(theme)=>theme.palette.warning.light
 
           }:null}        >
           {patient.visit_number}

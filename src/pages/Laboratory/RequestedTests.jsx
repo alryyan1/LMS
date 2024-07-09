@@ -1,4 +1,5 @@
 import {
+  Box,
   Collapse,
   Divider,
   IconButton,
@@ -137,7 +138,7 @@ function RequestedTests({ setPatients }) {
   let total_endurance = 0;
   return (
     <>
-      <Paper sx={{backgroundColor: '#ffffffbb!important',p:1}}  className="requested-tests">
+      <Box sx={{p:1}}  className="requested-tests">
         <div  style={{height:'50vh',overflow:'auto'}} className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
@@ -275,7 +276,7 @@ function RequestedTests({ setPatients }) {
           
           </div>
         </div>
-      </Paper>
+      </Box>
      
     </>
   );

@@ -150,7 +150,7 @@ function ServiceList() {
                 style={{
                   border: "1px dashed ",
                   marginBottom: "2px",
-                  color: "black",
+               
                 }}
                 sx={
                   activeCompany?.id == company.id

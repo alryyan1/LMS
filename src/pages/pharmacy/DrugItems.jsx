@@ -10,7 +10,6 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
@@ -32,14 +31,7 @@ function DrugItems() {
   const [items, setItems] = useState([]);
   const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
 
-  const {
-    register,
-    setValue,
-    formState: { errors, isSubmitting, isSubmitted },
-    control,
-    reset,
-    handleSubmit,
-  } = useForm();
+
   useEffect(() => {
     //fetch all Items
     axiosClient
@@ -54,58 +46,8 @@ function DrugItems() {
       .catch(({ response: { data } }) => {
         setError(data.message);
       });
-  }, [isSubmitted, page]);
-  console.log(isSubmitting);
-  const submitHandler = async (formData) => {
-    const dayJsObj = formData.expire;
+  }, [ page]);
 
-    console.log(formData, "formdata");
-    setLoading(true);
-    axiosClient
-      .post(`drugs`, {
-        expire: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
-        cost_price: formData.cost_price,
-        require_amount: formData.require_amount,
-        sell_price: formData.sell_price,
-        pharmacy_type_id: formData.pharmacyType?.id,
-        drug_category_id: formData.drugCategory?.id,
-        barcode: formData.barcode,
-        strips: formData.strips,
-        sc_name: formData.sc_name,
-        market_name: formData.market_name,
-        batch: formData.batch,
-      })
-      .then(({ data }) => {
-        console.log(data, "addded drug");
-        if (data.status) {
-          console.log("success", data);
-          setItems((prev) => {
-            return [...prev, data.data];
-          });
-          reset();
-          setValue("section", null);
-          setLoading(false);
-          //show snackbar
-          setDialog({
-            color: "success",
-            open: true,
-            message: "تمت الاضافه بنجاح",
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        setLoading(false);
-        console.log(data);
-        setDialog({
-          color: "error",
-          open: true,
-          message: data.message,
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
@@ -168,6 +110,7 @@ function DrugItems() {
           <option value="100">100</option>
         </select>
         <TextField
+        type="search"
           value={search}
           onChange={(e) => {
             searchHandler(e.target.value);
@@ -296,7 +239,10 @@ function DrugItems() {
                         <LoadingButton
                           loading={loading}
                           onClick={() => {
+                           let result =   confirm("Are you sure you want to delete")
+                           if (result) {
                             setLoading(true);
+
                             axiosClient
                               .delete(`items/${drug.id}`)
                               .then(({ data }) => {
@@ -307,6 +253,8 @@ function DrugItems() {
                                 });
                               })
                               .finally(() => setLoading(false));
+                           }
+                          
                           }}
                           color="error"
                         >
@@ -322,7 +270,7 @@ function DrugItems() {
           </tbody>
         </Table>
       </TableContainer>
-      <Grid sx={{ gap: "4px" }} container>
+      <Grid sx={{ gap: "4px",mt:1 }} container>
         {links.map((link, i) => {
           if (i == 0) {
             return (

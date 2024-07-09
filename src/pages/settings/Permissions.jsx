@@ -141,7 +141,7 @@ function Permissions() {
                 <ListItemButton
                   style={{
                     marginBottom: "2px",
-                    color: "black",
+                 
                   }}
                   onClick={() => {
                     setSelectedRole(role);
@@ -154,8 +154,8 @@ function Permissions() {
           })}
         </List>
       </Grid>
-     
-       <Grid key={selectedRole.id} item xs={3}>
+
+      <Grid key={selectedRole.id} item xs={3}>
         {selectedRole && (
           <div>
             <Typography textAlign={"center"} variant="h5">
@@ -168,21 +168,20 @@ function Permissions() {
                   .map((p) => p.id)
                   .includes(p.id);
                 return (
-                    <FormControlLabel key={p.id}
-                    
-                      control={
-                        <CustomCheckBox
-                        
-                          selectedRole={selectedRole}
-                          setDialog={setDialog}
-                          setUpdater={setUpdater}
-                          key={p.id}
-                          permission_id={p.id}
-                          isChecked={checked}
-                        />
-                      }
-                      label={p.name}
-                    />
+                  <FormControlLabel
+                    key={p.id}
+                    control={
+                      <CustomCheckBox
+                        selectedRole={selectedRole}
+                        setDialog={setDialog}
+                        setUpdater={setUpdater}
+                        key={p.id}
+                        permission_id={p.id}
+                        isChecked={checked}
+                      />
+                    }
+                    label={p.name}
+                  />
                 );
               })}
             </FormGroup>

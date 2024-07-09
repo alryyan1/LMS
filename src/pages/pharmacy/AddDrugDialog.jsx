@@ -16,7 +16,7 @@ import AddDrugForm from "./AddDrugForm";
       <div>
         <Dialog open={opendDrugDialog}>
           <DialogTitle color={dialog.color}>{dialog.title}</DialogTitle>
-           <DialogContent sx={{color:'black'}}>
+           <DialogContent >
            <AddDrugForm/>
            </DialogContent>
           <DialogActions>

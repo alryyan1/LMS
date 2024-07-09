@@ -58,9 +58,10 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
 //   console.log('child group in autocomplete')
   return (
     <React.Fragment>
-      <Autocomplete
+      <Autocomplete  
       
      sx={{
+      
         "& .MuiOutlinedInput-root": {
           padding: "0px!important",
         },
@@ -107,6 +108,7 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
           return filtered;
         }}
         options={options}
+        disableClearable
         getOptionLabel={(option) => {
         //   console.log('option',option)
           // for example value selected with enter, right from the input

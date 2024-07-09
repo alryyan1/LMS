@@ -2,6 +2,8 @@ import {  Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { Alert, Snackbar } from "@mui/material";
+import { CacheProvider, ThemeProvider } from "@emotion/react";
+import { cacheRtl, theme } from "./pages/constants";
 
 function LabLayout() {
   const [dialog, setDialog] = useState({
@@ -124,9 +126,7 @@ useEffect(()=>{
     
     <div>
       
-
-      {
-        <Outlet
+        <CacheProvider value={cacheRtl}> {<Outlet
           context={{
             childGroups,
             setChildGroups,
@@ -168,8 +168,9 @@ useEffect(()=>{
             updateTests,setUpdateTests,
             openEdit, setOpenEdit
           }}
-        />
-      }
+        />}</CacheProvider>
+
+    
       <Snackbar
         open={dialog.open}
         autoHideDuration={2000}

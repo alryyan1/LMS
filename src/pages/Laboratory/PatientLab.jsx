@@ -1,10 +1,11 @@
 import { Lock } from "@mui/icons-material";
 import { Badge, Box, Grow,  } from "@mui/material";
 import 'animate.css';
+import { useOutletContext } from "react-router-dom";
 
 function PatientLab({ onClick, patient }) {
   
-  
+  const {actviePatient} = useOutletContext()
 
   return (
     <Grow  timeout={2000} in>
@@ -18,21 +19,23 @@ function PatientLab({ onClick, patient }) {
           }}
         
           badgeContent={patient.labrequests.length}
-          color={patient.is_lab_paid == 0 ? "secondary" : "warning"}
+          color={patient.is_lab_paid == 0 ? "error" : "success"}
         >
           <Box
-          
+            
         
             onClick={() => {
               onClick(patient);
             }}
+            style={  patient.is_lab_paid  == 1  && patient.id != actviePatient?.id ? {
+             backgroundColor:"#00e676"
+            }:{}}
+            
             sx={ patient.active ? {
-                borderBottom:"4px solid blue",
-                fontWeight:"bolder",
-                backgroundColor :(theme)=>theme.palette.primary.light
+                backgroundColor :(theme)=>theme.palette.warning.light
     
               }:{
-                backgroundColor:'white'
+              
               }}   
           >
             {patient.visit_number}
@@ -50,10 +53,9 @@ function PatientLab({ onClick, patient }) {
           sx={ patient.active ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
-            backgroundColor :(theme)=>theme.palette.primary.light
+            backgroundColor :(theme)=>theme.palette.warning.light
 
           }:{
-            backgroundColor:'white'
           }}        >
           {patient.visit_number}
           <span >

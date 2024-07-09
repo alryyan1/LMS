@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 
 const StateContext =  createContext({
     user : null,
+    settings:null,
+    setSettings:()=>{},
     token : "123",
     setUser:()=>{},
     setToken:()=>{},
@@ -19,9 +21,12 @@ export const UserContextProvider = ({children})=>{
 
     const [token , _setToken] =  useState(localStorage.getItem('ACCESS_TOKEN'))
     const [user , setUser] =  useState()
+    const [settings , setSettings] =  useState()
+    const [theme , setTheme] = useState(localStorage.getItem('theme'))
     const [labDrawer, setLabDrawer] = useState(false);
     const [clinicDrawer, setClinicDrawer] = useState(false);
     const [pharmcyDrawer, setPharmacyDrawer] = useState(false);
+    const [mode, setMode] = useState('dark');
 
     const setToken = (token)=>{
         _setToken(token)
@@ -44,6 +49,7 @@ export const UserContextProvider = ({children})=>{
           setClinicDrawer,
           pharmcyDrawer, 
           setPharmacyDrawer,
+          mode, setMode
         }}>
             {children}
         </StateContext.Provider>

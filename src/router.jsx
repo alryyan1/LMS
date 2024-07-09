@@ -415,12 +415,16 @@ export const router = createBrowserRouter([
           {
             path: "add",
 
-            element: <AddPatient />,
+            element: 
+            
+            <AddPatient />,
           },
           {
             path: "result",
 
-            element: <Result />,
+            element: 
+            
+            <Result />,
           },
           {
             path: "sample",

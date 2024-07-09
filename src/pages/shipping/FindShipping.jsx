@@ -27,7 +27,7 @@ function FindShipping() {
   }, []);
   return (
     <Dialog open={true}>
-      <DialogContent sx={{ color: "black" }}>
+      <DialogContent >
         <Stack
           direction={"row"}
           justifyContent={"center"}

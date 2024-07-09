@@ -23,6 +23,7 @@ import {
   Button,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
@@ -141,7 +142,7 @@ function Result() {
 
       
         </div>
-        <Paper sx={{backgroundColor: '#ffffffbb!important', overflow: "auto",p:1 }}  >
+        <Box sx={{ overflow: "auto",p:1 }}  >
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
@@ -230,8 +231,8 @@ function Result() {
                 )
             )}
           </div>
-        </Paper>
-        <Paper sx={{backgroundColor: '#ffffffbb!important',height: "80vh", overflow: "auto" }} >
+        </Box>
+        <Box sx={{height: "80vh", overflow: "auto" }} >
           {console.log(actviePatient, "activve pateint")}
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <List>
@@ -264,7 +265,7 @@ function Result() {
                       }}
                       style={{
                         marginBottom: "2px",
-                        color: "black",
+                       
                       }}
                     >
                       <ListItemText primary={test.main_test.main_test_name} />
@@ -274,8 +275,8 @@ function Result() {
               })}
             </List>
           )}
-        </Paper>
-        <Paper sx={{backgroundColor: '#ffffffbb!important',height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
+        </Box>
+        <Box sx={{height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -310,7 +311,7 @@ function Result() {
             </TableBody>
           </Table>
           {selectedReslult && (
-            <Paper key={selectedReslult.id} sx={{ p: 1, mt: 1 }}>
+            <Box key={selectedReslult.id} sx={{ p: 1, mt: 1 }}>
               <Typography>Normal Range</Typography>
               <TextField
                 onChange={(val) => {
@@ -323,12 +324,12 @@ function Result() {
                 fullWidth
                 defaultValue={selectedReslult.normal_range}
               />
-            </Paper>
+            </Box>
           )}
           <Divider />
 
           {selectedTest && (
-            <Paper sx={{ p: 1, mt: 1 }}>
+            <Box sx={{ p: 1, mt: 1 }}>
               <Typography>Comment</Typography>
               <TextField
                 onChange={(val) => {
@@ -340,9 +341,9 @@ function Result() {
                 fullWidth
                 defaultValue={selectedTest.comment}
               />
-            </Paper>
+            </Box>
           )}
-        </Paper>
+        </Box>
 
         <div>
           {/** add card using material   */}

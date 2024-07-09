@@ -1,4 +1,4 @@
-import { Alert, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Paper, TextField, Typography } from "@mui/material";
 import "./login.css";
 import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
@@ -43,7 +43,7 @@ const SignUp = ({setUsers}) => {
       .finally(() => setLoading(false));
   };
   return (
-      <Paper>
+      <Box>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
           <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
             انشاء مستخدم جديد
@@ -103,7 +103,7 @@ const SignUp = ({setUsers}) => {
           </div>
         </form>
         {error.val && <Alert severity="error">{error.msg}</Alert>}
-      </Paper>
+      </Box>
   );
 };
 

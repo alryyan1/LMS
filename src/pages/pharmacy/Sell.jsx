@@ -113,6 +113,7 @@ function SellDrug() {
     <>
       <div
         style={{
+          userSelect: "none",
           gap: "15px",
           transition: "0.3s all ease-in-out",
           height: "75vh",
@@ -167,7 +168,7 @@ function SellDrug() {
           </div>
         </div>
         <div style={{ overflow: "auto" }}>
-          <Table key={updater} size="small">
+          <Table className="white" key={updater} size="small">
             <thead>
               <TableRow>
                 <TableCell>Item</TableCell>
@@ -200,18 +201,22 @@ function SellDrug() {
                       {deductedItem.strips}
                     </MyTableCell>
                   )}
-                     {activeSell.complete ? <TableCell>{toFixed(deductedItem.box, 1)}</TableCell> :<MyTableCell
-                    stateUpdater={setUpdater}
-                    setData={setActiveSell}
-                    setShift={setShift}
-                    sx={{ width: "70px" }}
-                    type={"number"}
-                    item={deductedItem}
-                    table="deductedItem"
-                    colName={"box"}
-                  >
-                    {toFixed(deductedItem.box, 1)}
-                  </MyTableCell>}
+                  {activeSell.complete ? (
+                    <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
+                  ) : (
+                    <MyTableCell
+                      stateUpdater={setUpdater}
+                      setData={setActiveSell}
+                      setShift={setShift}
+                      sx={{ width: "70px" }}
+                      type={"number"}
+                      item={deductedItem}
+                      table="deductedItem"
+                      colName={"box"}
+                    >
+                      {toFixed(deductedItem.box, 1)}
+                    </MyTableCell>
+                  )}
                   <TableCell>
                     {toFixed(
                       (deductedItem.item?.sell_price /
@@ -257,7 +262,7 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Typography variant="h5" textAlign={"center"}>
+              <Typography  textAlign={"center"}>
                 {" "}
                 Transaction No {activeSell?.id}
               </Typography>
@@ -403,6 +408,7 @@ function SellDrug() {
                   </LoadingButton>
                 ) : (
                   <LoadingButton
+                    className="effect"
                     disabled={activeSell.deducted_items.length == 0}
                     fullWidth
                     loading={loading}
@@ -494,7 +500,7 @@ function SellDrug() {
             >
               <AddIcon />
             </LoadingButton>
-            <IconButton
+           {activeSell  &&  <IconButton
               onClick={() => {
                 const form = new URLSearchParams();
 
@@ -522,7 +528,7 @@ function SellDrug() {
               }}
             >
               <Print />
-            </IconButton>
+            </IconButton>}
           </Stack>
         </Box>
         <SellsMoneyDialog />

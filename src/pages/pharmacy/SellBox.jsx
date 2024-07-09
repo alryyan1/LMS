@@ -18,7 +18,7 @@ function SellBox({ onClick, sell,index,activeSell }) {
           }}
         
           badgeContent={sell.deducted_items.length}
-          color={sell.complete == 0 ? "secondary" : "warning"}
+          color={sell.complete == 0 ? "error" : "success"}
         >
           <Box
           style={{
@@ -33,10 +33,10 @@ function SellBox({ onClick, sell,index,activeSell }) {
             sx={ activeSell?.id == sell.id ? {
                 borderBottom:"4px solid blue",
                 fontWeight:"bolder",
-                backgroundColor :(theme)=>theme.palette.primary.light
+                backgroundColor :(theme)=>theme.palette.warning.light
     
               }:{
-                backgroundColor:'white'
+                
               }}   
           >
             {index}
@@ -47,17 +47,17 @@ function SellBox({ onClick, sell,index,activeSell }) {
         </Badge>
       ) : (
         <Box
-       
+            
           onClick={() => {
             onClick(sell);
           }}
           sx={ activeSell?.id == sell.id ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
-            backgroundColor :(theme)=>theme.palette.primary.light
+            backgroundColor :(theme)=>theme.palette.warning.light
 
           }:{
-            backgroundColor:'white'
+            
           }}        >
           {index}
           <span >

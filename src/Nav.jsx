@@ -19,9 +19,12 @@ import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useTranslation } from "react-i18next";
-
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import { useThemeContext } from "./ThemeContext";
 const Nav = () => {
   const {
+    settings,
+    setSettings,
     user,
     setToken,
     setUser,
@@ -32,6 +35,7 @@ const Nav = () => {
     pharmcyDrawer,
     setPharmacyDrawer,
   } = useStateContext();
+  const { setMode,mode}= useThemeContext()
   console.log(user, "in nav ");
   const [loading, setLoading] = useState(false);
   const { i18n } = useTranslation();
@@ -51,15 +55,39 @@ const Nav = () => {
       setUser(data);
     });
   }, []);
+  useEffect(() => {
+    axiosClient.get("/settings").then(({ data }) => {
+      setSettings(data);
+      setMode(data.theme)
+    });
+  }, []);
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
+      axiosClient.post('settings',{colName:'lang',data:mode})
+
     } else {
       i18n.changeLanguage("ar");
+      axiosClient.post('settings',{colName:'lang',data:mode})
+
+    }
+
+  };
+  const changeMode = () => {
+    if(mode === 'light'){
+      setMode('dark')
+      localStorage.setItem('theme','dark');
+      axiosClient.post('settings',{colName:'theme',data:'dark'})
+
+    }else{
+      setMode('light')
+      localStorage.setItem('theme','light');
+
+      axiosClient.post('settings',{colName:'theme',data:'light'})
+
     }
   };
-
   const DrawerClinicList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
@@ -166,8 +194,9 @@ const Nav = () => {
       >
         {DrawerPharmacyList}
       </Drawer>
-      <AppBar
+      <AppBar 
         sx={{
+         
           backgroundColor: "#485765",
 
           marginBottom: "10px",
@@ -179,22 +208,23 @@ const Nav = () => {
         position="static"
       >
         <Stack
+          
           className="nav"
-          sx={{ alignItems: "center" }}
-          direction={"row"}
+          sx={{ alignItems: "center", direction:'rtl', }}
+          direction={"row-reverse"}
           gap={3}
         >
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
-            Login
+            الدخول
           </NavLink>
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/inventory"}
           >
-            Inventory
+            المخزن
           </NavLink>
 
           <Link
@@ -203,7 +233,7 @@ const Nav = () => {
             }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            Lab
+            المختبر
           </Link>
           <Link
             onClick={() => {
@@ -211,7 +241,7 @@ const Nav = () => {
             }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            Clinic
+            العيادات
           </Link>
           <Link
             onClick={() => {
@@ -219,32 +249,32 @@ const Nav = () => {
             }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            pharmacy
+            الصيدليه
           </Link>
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/insurance"}
           >
-            Insurance
+            التامين
           </NavLink>
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/services"}
           >
-            Services
+            الخدمات
           </NavLink>
-          <NavLink
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
           >
             shipping
-          </NavLink>
+          </NavLink> */}
           {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
             <NavLink
               style={{ textDecoration: "none", color: "white" }}
               to={"/settings"}
             >
-              Settings
+              الاعدادات
             </NavLink>
           ) : (
             ""
@@ -253,7 +283,7 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
-            dashboard
+            الرئيسيه
           </NavLink>
 
           <div style={{ flexGrow: 1 }}></div>
@@ -263,7 +293,9 @@ const Nav = () => {
           <IconButton onClick={changeLang}>
             <Language />
           </IconButton>
-
+    <IconButton onClick={changeMode}>
+            <Brightness4Icon />
+          </IconButton>
           {user && (
             <LoadingButton
               color="error"

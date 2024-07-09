@@ -1,4 +1,5 @@
 import {
+  Box,
     Paper,
     Stack,
     TextField,
@@ -14,15 +15,16 @@ import {
   import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
   import dayjs from "dayjs";
   import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-function AddDrugForm() {
+  import generator from 'generate-serial-number'
+function AddDrugForm({setUpdate}) {
     const [loading, setLoading] = useState(false);
     const [stripPrice, setStripPrice] = useState(0);
     const [itemsIsLoading, setItemsIsLoading] = useState(false);
     const [page, setPage] = useState(7);
     const [error, setError] = useState(null);
-    const [search, setSearch] = useState("");
     const [links, setLinks] = useState([]);
-    const { setDialog,items,setItems } = useOutletContext();
+    const [barcode,setBarcode] = useState(null);
+    const { setDialog,setItems } = useOutletContext();
   
     const {
       register,
@@ -69,7 +71,7 @@ function AddDrugForm() {
       setLoading(true);
       axiosClient
         .post(`drugs`, {
-          expire: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
+          expire: `${dayJsObj.format('YYYY-MM-DD')}}`,
           cost_price: formData.cost_price,
           require_amount: formData.require_amount,
           sell_price: formData.sell_price,
@@ -88,7 +90,9 @@ function AddDrugForm() {
             setItems((prev) => {
               return [...prev, data.data];
             });
+            setUpdate((prev)=>prev + 1)
             reset();
+            setBarcode(null)
             setValue("section", null);
             setLoading(false);
             //show snackbar
@@ -112,54 +116,14 @@ function AddDrugForm() {
           setLoading(false);
         });
     };
-    const updateItemsTable = (link, setLoading) => {
-      console.log(search);
-      setLoading(true);
-      axiosClient(`${link.url}&word=${search}`)
-        .then(({ data }) => {
-          console.log(data, "pagination data");
-          setItems(data.data);
-          setLinks(data.links);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
+  
     useEffect(() => {
       document.title = "اضافه صنف جديد";
     }, []);
-    const searchHandler = (word) => {
-      setSearch(word);
-    };
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        axiosClient
-          .get(`items/all/pagination/${page}?word=${search}`)
-          .then(({ data: { data, links } }) => {
-            console.log(data);
-            console.log(links);
-            setItems(data);
-            // console.log(links)
-            setLinks(links);
-          })
-          .catch(({ response: { data } }) => {
-            setDialog((prev) => {
-              return {
-                ...prev,
-                open: true,
-                color: "error",
-                message: data.message,
-              };
-            });
-          });
-      }, 300);
-      return () => clearTimeout(timer);
-    }, [search]);
+  
+   
   return (
-    <Paper sx={{ p: 1 }}>
+    <Box sx={{ p: 1 }}>
     <Typography
       sx={{
         mb: 2,
@@ -176,14 +140,7 @@ function AddDrugForm() {
       <Stack direction={"column"} spacing={3}>
         <Stack gap={2} direction={"row"}>
           <TextField
-           InputLabelProps={{
-            sx: {
-              color: "#518eb9",
-              fontSize: "20px",
-              fontWeight: 500,
-              "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-            }
-          }}
+      
             size="small"
             fullWidth
             error={errors.sc_name}
@@ -200,14 +157,7 @@ function AddDrugForm() {
           <TextField
             size="small"
             fullWidth
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+         
             error={errors.market_name}
             {...register("market_name", {
               required: {
@@ -225,14 +175,7 @@ function AddDrugForm() {
             size="small"
             type="number"
             fullWidth
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+       
             error={errors.sell_price}
             {...register("sell_price", {
               required: {
@@ -274,28 +217,14 @@ function AddDrugForm() {
             size="small"
             fullWidth
             disabled={true}
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+    
             label="سعر الشريط"
             variant="standard"
           />
           <TextField
             size="small"
             type="number"
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+         
             error={errors.strips && errors.strips.message}
             fullWidth
             {...register("strips", {
@@ -330,21 +259,21 @@ function AddDrugForm() {
             fullWidth
             {...register("require_amount")}
             label="حد الادني للطلب"
-            variant="filled"
+            variant="outlined"
           />
           <TextField
             size="small"
             fullWidth
+            value={barcode}
+            onChange={(e)=>setBarcode(e.target.value)}
             helperText={errors.barcode && errors.barcode.message}
             error={errors.barcode}
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
+            onDoubleClick={()=>{
+             const serial =  generator.generate(10)
+             setBarcode(serial)
+             setValue('barcode',serial)
             }}
+          
             {...register("barcode", {
               required: {
                 value: true,
@@ -352,20 +281,14 @@ function AddDrugForm() {
               },
             })}
             label="الباركود"
-            variant="filled"
+            variant="outlined"
           />
         </Stack>
         <Stack gap={2} direction={"row"}>
           <TextField
             size="small"
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+          
+         
             fullWidth
             {...register("batch")}
             label="الباتش"
@@ -402,7 +325,7 @@ function AddDrugForm() {
         </LoadingButton>
       </Stack>
     </form>
-  </Paper>
+  </Box>
   )
 }
 

@@ -28,7 +28,7 @@ function AddMainTestForm() {
     console.log(data);
     const answer = confirm("A New Test Will Be Added !!");
     if (answer) {
-    setIsLoading(true);
+      setIsLoading(true);
 
       axiosClient
         .post("mainTest", {
@@ -37,7 +37,7 @@ function AddMainTestForm() {
           container_id: data.container.id,
         })
         .then(({ data }) => {
-          console.log(data.data,'data.data')
+          console.log(data.data, "data.data");
           AppData.setActiveTestObj(data.data);
           AppData.setShowAddTest(false);
         })
@@ -57,11 +57,15 @@ function AddMainTestForm() {
                 اضافه تحليل جديد
               </Typography>
               <TextField
+                error={errors.main_test_name != null}
                 label="اسم الفحص"
                 {...register("main_test_name", {
-                  required: true,
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: "Name should contain only letters and spaces",
+                  required: {
+                    value: true,
+                    message: "يجب  ادخال اسم الفحص",
+                  },
+
+                 
                 })}
                 helperText={
                   errors.main_test_name && errors.main_test_name.message
@@ -70,15 +74,24 @@ function AddMainTestForm() {
               <TextField
                 label="السعر"
                 {...register("price", {
-                  required: true,
+                  required: {
+                    value: true,
+                    message: "يجب ادخال السعر",
+                  },
                   pattern: /^[0-9]+$/,
-                  message: "Price should contain only numbers",
                 })}
+                error={errors.price != null}
                 helperText={errors.price && errors.price.message}
               />
               <Controller
                 name="department"
                 control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "يجب اختيار مجموعه التحليل",
+                  },
+                }}
                 render={({ field }) => {
                   return (
                     <Autocomplete
@@ -94,7 +107,7 @@ function AddMainTestForm() {
                         return (
                           <TextField
                             inputRef={field.ref}
-                            error={errors?.department}
+                            error={errors.department != null}
                             {...params}
                             helperText={
                               errors?.department && errors.department.message
@@ -110,6 +123,12 @@ function AddMainTestForm() {
               <Controller
                 name="container"
                 control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "يجب اختيار الحاويه",
+                  },
+                }}
                 render={({ field }) => {
                   return (
                     <Autocomplete
@@ -125,7 +144,7 @@ function AddMainTestForm() {
                         return (
                           <TextField
                             inputRef={field.ref}
-                            error={errors?.doctor}
+                            error={errors.container != null}
                             {...params}
                             label="الحاويه"
                             helperText={
@@ -138,7 +157,13 @@ function AddMainTestForm() {
                   );
                 }}
               />
-              <LoadingButton variant="contained" loading={loading} type="submit">حفظ</LoadingButton>
+              <LoadingButton
+                variant="contained"
+                loading={loading}
+                type="submit"
+              >
+                حفظ
+              </LoadingButton>
             </Stack>
           </form>
         </Paper>
