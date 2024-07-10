@@ -220,12 +220,12 @@ const Nav = () => {
           >
             Login
           </NavLink>
-          <NavLink
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/inventory"}
           >
             Inventory
-          </NavLink>
+          </NavLink> */}
 {/* 
           <NavLink
             to={'/lab'}
