@@ -3,8 +3,8 @@ import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
 import { useStateContext } from "../appContext";
-export const url = "http://127.0.0.1/laravel-react-app/public/api/"
-export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
+export const url = "https://intaj-starstechnology.com/pharmacy/public/api/"
+export const webUrl = "https://intaj-starstechnology.com/pharmacy/laravel-react-app/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],

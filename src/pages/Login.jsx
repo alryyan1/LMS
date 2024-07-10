@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBCard,
-  MDBCardBody,
-  MDBInput,
-  MDBIcon,
-  MDBRow,
-  MDBCol,
-  MDBCheckbox,
-} from "mdb-react-ui-kit";
+
+
 import { Alert, Box, Paper, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Link } from "react-router-dom";
@@ -51,7 +42,7 @@ function App() {
   return (
     <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='200px' src={logo}/>
+      <img height='200px' width={'500px'} src={logo}/>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
                   <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
                     Login
