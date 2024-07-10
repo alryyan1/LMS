@@ -153,9 +153,8 @@ function ItemDeposit() {
   };
   useEffect(() => {
     //fetch all suppliers
-    fetch(`${url}suppliers/all`)
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.get(`suppliers/all`)
+      .then(({data}) => {
         //set suppliers
         setSuppliers(data);
         // console.log(data);
