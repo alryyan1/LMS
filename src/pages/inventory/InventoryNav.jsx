@@ -38,9 +38,11 @@ function InventoryNav() {
         <NavLink to={"item/statistics"}><Item>الرسم البياني</Item></NavLink>
       </ul>
 
-      <ThemeProvider theme={theme}>
-        <CacheProvider value={cacheRtl}> {<Outlet context={{dialog, setDialog}}></Outlet>}</CacheProvider>
-      </ThemeProvider>
+      {/* <ThemeProvider theme={theme}> */}
+        {/* <CacheProvider value={cacheRtl}> { */}
+          <Outlet context={{dialog, setDialog}}></Outlet>
+          {/* </CacheProvider> */}
+      {/* </ThemeProvider> */}
       <Snackbar
             open={dialog.open}
             autoHideDuration={2000}

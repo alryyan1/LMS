@@ -24,6 +24,7 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import axiosClient from "../axios-client";
 import { webUrl } from "./pages/constants";
 import dayjs from "dayjs";
+import { LoadingButton } from "@mui/lab";
 function toFixed(num, fixed) {
   if(num == undefined) return 0
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
@@ -37,9 +38,10 @@ function Dashboard() {
     day: "numeric",
   };
   const [items, setItems] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [shift, setShift] = useState(null);
   useEffect(() => {
+    setLoading(true);
      
     axiosClient.get(`items/all`).then(({ data: data }) => {
       setItems(data);
@@ -50,7 +52,7 @@ function Dashboard() {
       setShift(data);
       console.log(data);
       console.log(new Date(Date.parse(data.created_at)).toLocaleDateString());
-    });
+    }).finally(()=>setLoading(false));
   }, []);
 
   const defaultOptions = {
@@ -258,8 +260,10 @@ function Dashboard() {
                   </Typography>
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
-                  <IconButton
+                  <LoadingButton 
+                   loading={loading}
                     onClick={() => {
+                      setLoading(true);
                       const msg = shift.is_closed
                         ? "  Open shift ? "
                         : " Close Shift ?  ";
@@ -272,6 +276,8 @@ function Dashboard() {
                           .then(({ data }) => {
                             console.log(data, "data ");
                             setShift(data.data);
+                          }).finally(()=>{
+                            setLoading(false);
                           });
                       }
                     }}
@@ -284,7 +290,7 @@ function Dashboard() {
                     ) : (
                       <Lock color="error" sx={{ width: 100, height: 100 }} />
                     )}
-                  </IconButton>
+                  </LoadingButton >
                 </Stack>
               </Stack>
             </CardContent>

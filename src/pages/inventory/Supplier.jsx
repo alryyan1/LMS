@@ -1,4 +1,5 @@
 import {
+  Box,
   Grid,
   IconButton,
   Paper,
@@ -92,9 +93,8 @@ function Supplier() {
   };
   useEffect(() => {
     //fetch all suppliers
-    fetch(`${url}suppliers/all`)
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.get(`suppliers/all`)
+      .then(({data}) => {
         //set suppliers
         setSuppliers(data);
         console.log(data);
@@ -104,7 +104,7 @@ function Supplier() {
     <Grid container spacing={2}>
       <Grid item xs={8}>
         {/* create table with all suppliers */}
-        <Paper sx={{p:2 }}>
+        <Box sx={{p:2 }}>
           <TableContainer>
             <Table dir="rtl" size="small">
               <thead>
@@ -164,10 +164,10 @@ function Supplier() {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
+        </Box>
       </Grid>
       <Grid item xs={4}>
-        <Paper sx={{p:2 }}>
+        <Box sx={{p:2 }}>
           <Typography textAlign={"center"} variant="h4">
             اضافه مورد جديد
           </Typography>
@@ -234,7 +234,7 @@ function Supplier() {
               حفظ
             </LoadingButton>
           </form>
-        </Paper>
+        </Box>
       </Grid>
     </Grid>
   );
