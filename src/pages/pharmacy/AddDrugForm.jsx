@@ -159,7 +159,7 @@ function AddDrugForm({setUpdate}) {
             fullWidth
          
             error={errors.market_name}
-            {...register("Market_name", {
+            {...register("market_name", {
               required: {
                 value: true,
                 message: "market name is required",
