@@ -24,7 +24,7 @@ function AddDrugForm({setUpdate}) {
     const [error, setError] = useState(null);
     const [links, setLinks] = useState([]);
     const [barcode,setBarcode] = useState(null);
-    const { setDialog,setItems } = useOutletContext();
+    const { setDialog,setItems,setOpendDrugDialog } = useOutletContext();
   
     const {
       register,
@@ -86,21 +86,33 @@ function AddDrugForm({setUpdate}) {
         .then(({ data }) => {
           console.log(data, "addded drug");
           if (data.status) {
-            console.log("success", data);
-            setItems((prev) => {
-              return [...prev, data.data];
-            });
-            setUpdate((prev)=>prev + 1)
-            reset();
-            setBarcode(null)
-            setValue("section", null);
-            setLoading(false);
-            //show snackbar
-            setDialog({
-              color: "success",
-              open: true,
-              message: "Added Successfully",
-            });
+            // alert('success')
+            try {
+              console.log("success", data);
+              setItems((prev) => {
+                return [...prev, data.data];
+              });
+              if (setUpdate) {
+                
+                setUpdate((prev)=>prev + 1)
+              }
+              if (setOpendDrugDialog) {
+                setOpendDrugDialog(false)
+              }
+              reset();
+              setBarcode(null)
+              setValue("section", null);
+              setLoading(false);
+              //show snackbar
+              setDialog({
+                color: "success",
+                open: true,
+                message: "Added Successfully",
+              });
+            } catch (error) {
+               console.log(error)
+            }
+          
           }
         })
         .catch(({ response: { data } }) => {
@@ -265,9 +277,9 @@ function AddDrugForm({setUpdate}) {
             size="small"
             fullWidth
             value={barcode}
-            onChange={(e)=>setBarcode(e.target.value)}
             helperText={errors.barcode && errors.barcode.message}
             error={errors.barcode}
+            
             onDoubleClick={()=>{
              const serial =  generator.generate(10)
              setBarcode(serial)
@@ -280,6 +292,12 @@ function AddDrugForm({setUpdate}) {
                 message: "Barcode is required",
               },
             })}
+            onChange={(e)=>{
+              setBarcode(e.target.value)
+              setValue('barcode',e.target.value)
+
+            }}
+
             label="Barcode"
             variant="outlined"
           />
