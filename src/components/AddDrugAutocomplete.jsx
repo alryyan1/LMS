@@ -80,8 +80,14 @@ function AddDrugAutocomplete({setUpdater}) {
                         console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
                         if (!dayjs(itemFounded.expire).isAfter(dayjs())) {
                           setDialog((prev)=>{
-                            return {...prev, open: true, message:'هذا المنتج منتهي الصلاحية',color:'error'}
+                            return {...prev, open: true, message:'Item is expire',color:'error'}
                           })
+                        }
+                        if (itemFounded.remaining == null || itemFounded.remaining <= 0) {
+                          setDialog((prev)=>{
+                            return {...prev, open: true, message:'This product is Unavailable In Store',color:'error'}
+                          })
+                          // return
                         }
                         setLoading(true);
                         axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
@@ -101,7 +107,7 @@ function AddDrugAutocomplete({setUpdater}) {
                       }else{
                         setOpendDrugDialog(true)
                         setDialog((prev)=>{
-                          return {...prev, open: true,message:'هذا المنتج غير معرف',color:'error'}
+                          return {...prev, open: true,message:'Item Not Defined',color:'error'}
                         })
                         // alert('no item')
                       }
@@ -110,7 +116,7 @@ function AddDrugAutocomplete({setUpdater}) {
                     }
                   }}
                   {...params}
-                  label="الدواء"
+                  label="Item"
                 />
               );
             }}

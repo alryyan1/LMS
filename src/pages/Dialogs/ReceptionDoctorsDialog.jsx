@@ -66,7 +66,7 @@ function ReceptionDoctorsDialog() {
     });
   };
   const closeDoctorShift = (doctor) => {
-    axiosClient.get(`doctor/shift/close/${doctor.id}`).then(({ data }) => {
+    axiosClient.get(`doctor/shift/close/${doctor.last_shift.id}`).then(({ data }) => {
       if (data.status) {
         setOpenedDoctors((prev) => {
           return prev.filter((shift) => {
@@ -83,6 +83,10 @@ function ReceptionDoctorsDialog() {
            })
         })
       }
+    }).catch(({response:{data}})=>{
+      setDialog((prev)=>{
+        return {...prev,open:true,msg:data.message,color:'error'}
+      })
     });
   };
   return (

@@ -117,13 +117,13 @@ function AddDrug() {
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>رقم </TableCell>
-                  <TableCell>الاسم العلمي</TableCell>
-                  <TableCell>الاسم التجاري</TableCell>
-                  <TableCell>سعر الشراء</TableCell>
-                  <TableCell>سعر البيع </TableCell>
-                  <TableCell> عدد الشرائط</TableCell>
-                  <TableCell> الصلاحيه</TableCell>
+                  <TableCell>No </TableCell>
+                  <TableCell>Scientific Name</TableCell>
+                  <TableCell>Market Name</TableCell>
+                  <TableCell>Cost price</TableCell>
+                  <TableCell>Sell Price</TableCell>
+                  <TableCell> Strips per Box </TableCell>
+                  <TableCell> Expire</TableCell>
                 </TableRow>
               </thead>
               <tbody>

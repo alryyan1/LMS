@@ -5,6 +5,7 @@ import {
   Typography,
   TextField,
   Stack,
+  Box,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -38,7 +39,7 @@ function NewInvoiceForm({
           setUpdate((prev) => prev + 1);
           setDialog({
             open: true,
-            message: "تمت العمليه  بنجاح",
+            message: "Added successfully",
           });
         }
         console.log(data, "deposit complete");
@@ -60,14 +61,14 @@ function NewInvoiceForm({
     handleSubmit: handleSubmit2,
   } = useForm();
   return (
-    <Paper>
+    <Box>
       <form
         style={{ margin: "5px" }}
         noValidate
         onSubmit={handleSubmit2(newInvoiceHandler)}
       >
         <Typography variant="h5" align="center">
-          انشاء فاتوره
+          Make Purchase 
         </Typography>
 
         <Stack direction={"column"} gap={2}>
@@ -76,7 +77,7 @@ function NewInvoiceForm({
             rules={{
               required: {
                 value: true,
-                message: "يجب اختيار المورد",
+                message: "Supplier must be provided",
               },
             }}
             control={control2}
@@ -98,7 +99,7 @@ function NewInvoiceForm({
                         helperText={
                           errors2.supplier && errors2.supplier.message
                         }
-                        label={"المورد"}
+                        label={"Supplier" }
                         {...params}
                       />
                     );
@@ -115,7 +116,7 @@ function NewInvoiceForm({
               rules={{
                 required: {
                   value: true,
-                  message: "يجب ادخال تاريخ الفاتوره",
+                  message: "Date must be provided",
                 },
               }}
               control={control2}
@@ -127,7 +128,7 @@ function NewInvoiceForm({
                   value={field.value}
                   onChange={(val) => field.onChange(val)}
                   sx={{ mb: 1 }}
-                  label="تاريخ الفاتوره"
+                  label="Invoice Purchase Date"
                 />
               )}
             />
@@ -141,10 +142,10 @@ function NewInvoiceForm({
             {...register2("bill_number", {
               required: {
                 value: true,
-                message: "يجب ادخال رقم الفاتوره",
+                message: "Invoice Purchase Number must be provided",
               },
             })}
-            label="رقم الفاتوره"
+            label="Invoice Purchase Number"
           ></TextField>
 
           <LoadingButton
@@ -155,11 +156,11 @@ function NewInvoiceForm({
             variant="contained"
             fullWidth
           >
-            انشاء
+            Save
           </LoadingButton>
         </Stack>
       </form>
-    </Paper>
+    </Box>
   );
 }
 

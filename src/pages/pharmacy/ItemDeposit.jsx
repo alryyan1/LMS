@@ -207,7 +207,7 @@ function ItemDeposit() {
       <Stack direction={"row"} gap={3} style={{ textAlign: "right" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Button onClick={searchDeposits} size="medium" variant="contained">
-            بحث
+           Search
           </Button>
           <DateField
             onChange={(val) => {
@@ -216,14 +216,14 @@ function ItemDeposit() {
             value={date}
             defaultValue={dayjs(new Date())}
             sx={{ m: 1 }}
-            label="تاريخ الفاتوره"
+            label="Purchase Invoice Date"
           />
         </LocalizationProvider>
         <TextField
           onChange={(event) => {
             setBillNumber(event.target.value);
           }}
-          label="بحث برقم الفاتوره"
+          label="Search by invoice number"
         ></TextField>
         <Autocomplete
           sx={{ width: "400px" }}
@@ -234,7 +234,7 @@ function ItemDeposit() {
             showDepositBySupplier(data);
           }}
           renderInput={(params) => {
-            return <TextField label={"بحث بالمورد"} {...params} />;
+            return <TextField label={"Search by Supplier"} {...params} />;
           }}
         ></Autocomplete>
       </Stack>
@@ -243,7 +243,7 @@ function ItemDeposit() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "90vh",
+          height: "70vh",
           display: "grid",
           gridTemplateColumns: `  1fr  1fr   1.6fr   1fr  ${layOut.newForm}  0.1fr `,
         }}

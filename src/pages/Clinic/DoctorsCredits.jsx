@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axiosClient from '../../../axios-client'
 import { Button, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import dayjs from 'dayjs'
 
 function DoctorsCredits() {
     const [doctorShifts,setDoctorShifts] = useState([])
@@ -31,6 +32,7 @@ function DoctorsCredits() {
                     <TableCell>عدد المرضي</TableCell>
                     <TableCell>استحقاق النقدي</TableCell>
                     <TableCell>استحقاق التامين</TableCell>
+                    <TableCell>الزمن</TableCell>
                     <TableCell>خصم استحقاق</TableCell>
                 </TableRow>
             </TableHead>
@@ -43,6 +45,7 @@ function DoctorsCredits() {
                             <TableCell>{shift.visits.length}</TableCell>
                             <TableCell>{shift.doctor_credit_cash}</TableCell>
                             <TableCell>{shift.doctor_credit_company}</TableCell>
+                            <TableCell>{dayjs(Date.parse(shift.created_at)).format('H:m A')}</TableCell>
                             <TableCell><Button disabled={shift?.cost?.amount > 0} onClick={()=>{
                                 addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name)
                             }} variant='contained'>خصم</Button></TableCell>

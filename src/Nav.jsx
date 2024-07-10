@@ -117,13 +117,13 @@ const Nav = () => {
     <Box sx={{ width: 250 }} role="presentation">
       <List>
         {[
-          { title: "تعريف دواء", to: "/pharmacy/add" },
-          { title: "نافذه البيع", to: "/pharmacy/sell" },
-          { title: "الاصناف", to: "/pharmacy/items" },
-          { title: "التقارير", to: "/pharmacy/reports" },
-          { title: "المخزون", to: "/pharmacy/inventory" },
-          { title: "الوارد", to: "/pharmacy/deposit" },
-          { title: "حساب الفئات", to: "/clinic/denos" },
+          { title: "Drug Define", to: "/pharmacy/add" },
+          { title: "POS", to: "/pharmacy/sell" },
+          { title: "Items", to: "/pharmacy/items" },
+          { title: "Sales", to: "/pharmacy/reports" },
+          { title: "Inventory", to: "/pharmacy/inventory" },
+          { title: "Income", to: "/pharmacy/deposit" },
+          { title: "Expenses", to: "/clinic/denos" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton
@@ -218,51 +218,60 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
-            الدخول
+            Login
           </NavLink>
-          <NavLink
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/inventory"}
           >
             المخزن
-          </NavLink>
-
-          <Link
-            onClick={() => {
+          </NavLink> */}
+{/* 
+          <NavLink
+            to={'/lab'}
+          
+            onClick={(e) => {
+              e.preventDefault()
               setLabDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white" }}
+            style={{ textDecoration: "none", color: "white",cursor: "pointer" }}
           >
             المختبر
-          </Link>
-          <Link
-            onClick={() => {
+          </NavLink> */}
+          {/* <NavLink
+          to={'clinic'}
+            onClick={(e) => {
+              e.preventDefault()
+
               setClinicDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white" }}
+            style={{ textDecoration: "none", color: "white",cursor:'pointer' }}
           >
             العيادات
-          </Link>
-          <Link
-            onClick={() => {
+          </NavLink> */}
+          <NavLink
+          to={'pharma'}
+            onClick={(e) => {
+              e.preventDefault()
+
               setPharmacyDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white" }}
+            style={{ textDecoration: "none", color: "white", cursor:'pointer'}}
           >
-            الصيدليه
-          </Link>
-          <NavLink
+           Pharmacy
+          </NavLink>
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/insurance"}
           >
             التامين
-          </NavLink>
-          <NavLink
+          </NavLink> */}
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/services"}
           >
             الخدمات
-          </NavLink>
+          </NavLink> */}
           {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
@@ -274,7 +283,7 @@ const Nav = () => {
               style={{ textDecoration: "none", color: "white" }}
               to={"/settings"}
             >
-              الاعدادات
+              Settings
             </NavLink>
           ) : (
             ""
@@ -283,7 +292,7 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
-            الرئيسيه
+           Dashboard
           </NavLink>
 
           <div style={{ flexGrow: 1 }}></div>

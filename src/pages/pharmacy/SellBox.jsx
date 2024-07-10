@@ -59,7 +59,7 @@ function SellBox({ onClick, sell,index,activeSell }) {
           }:{
             
           }}        >
-          {index}
+          {sell.number}
           <span >
              {sell.result_is_locked ?  <Lock/> :""}
             </span>

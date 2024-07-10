@@ -6,7 +6,7 @@ function GuestLayout() {
   console.log(token);
 
   if (token) {
-    return <Navigate to={"/laboratory/add"} />;
+    return <Navigate to={"/pharmacy/add"} />;
   }
   return (
     <div>

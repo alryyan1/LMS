@@ -18,12 +18,12 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler}) {
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>رقم</TableCell>
-                  <TableCell>الصنف</TableCell>
-                  <TableCell>الكميه</TableCell>
-                  <TableCell>السعر</TableCell>
-                  <TableCell>الاجمالي</TableCell>
-                  <TableCell>حذف</TableCell>
+                  <TableCell>No</TableCell>
+                  <TableCell>Item</TableCell>
+                  <TableCell>Amount</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Subtotal</TableCell>
+                  <TableCell>Dlt</TableCell>
                 </TableRow>
               </thead>
 
@@ -40,7 +40,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler}) {
                     <TableCell>
                       <LoadingButton
                         loading={loading}
-                        title="حذف"
+                        title="Delete"
                         endIcon={<Delete />}
                         onClick={() => {
                           deleteIncomeItemHandler(depositItem.id);

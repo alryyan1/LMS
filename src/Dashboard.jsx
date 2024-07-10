@@ -25,6 +25,7 @@ import axiosClient from "../axios-client";
 import { webUrl } from "./pages/constants";
 import dayjs from "dayjs";
 function toFixed(num, fixed) {
+  if(num == undefined) return 0
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
   return num.toString().match(re)[0];
 }
@@ -61,7 +62,7 @@ function Dashboard() {
     },
   };
   useEffect(() => {
-    document.title = "الرئيسيه";
+    document.title = "Dashboard";
   }, []);
   const peopleOptions = {
     loop: true,
@@ -114,7 +115,7 @@ function Dashboard() {
                 )}
               </Typography>
               <Typography alignContent={"center"}>
-                ورديه رقم {shift.id}
+                Shift No  {shift.id}
               </Typography>
               <Typography alignContent={"center"}>
                 {new Date(Date.parse(shift.created_at)).toLocaleDateString(
@@ -173,7 +174,7 @@ function Dashboard() {
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-evenly"}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography>الدخل</Typography>
+                  <Typography>Income</Typography>
                   <Divider />
                   <Typography variant="h4">
                     {shift && toFixed(shift?.totalDeductsPrice,1)}
@@ -193,7 +194,7 @@ function Dashboard() {
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography>المصروفات</Typography>
+                  <Typography>Expenses</Typography>
                   <Divider />
                   <Typography variant="h4">
                     {shift?.cost?.reduce((p, c) => p + c.amount, 0)}
@@ -218,7 +219,7 @@ function Dashboard() {
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography>الصافي</Typography>
+                  <Typography>Net</Typography>
                   <Divider />
                   <Typography variant="h4">
                     {shift && toFixed(shift?.totalDeductsPrice,1) -
@@ -242,9 +243,9 @@ function Dashboard() {
               <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
                 <Stack justifyContent={"space-between"} direction={"column"}>
                   <Typography>
-                    حاله الودريه {shift?.is_closed ? "مغلقه" : "مفتوحه"}
+                     Shift State {shift?.is_closed ? "مغلقه" : "مفتوحه"}
                   </Typography>
-                  <Typography> الزمن </Typography>
+                  <Typography> Time </Typography>
                   <Typography>
                     {" "}
                     {shift?.is_closed
@@ -260,8 +261,8 @@ function Dashboard() {
                   <IconButton
                     onClick={() => {
                       const msg = shift.is_closed
-                        ? "هل تريد فتح ورديه جديد؟"
-                        : "هل تريد قفل الورديه";
+                        ? "  Open shift ? "
+                        : " Close Shift ?  ";
                       const result = confirm(msg);
                       if (result) {
                         axiosClient

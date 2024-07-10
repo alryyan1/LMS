@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
     errorElement: <Error404 />,
     children: [
       {
-        path: "*",
+        index:true,
         element: <Login />,
       },
   
@@ -99,6 +99,7 @@ export const router = createBrowserRouter([
         path: "/settings",
         element: (
           <ProtectedRoute>
+            
             <SettingsNav />
           </ProtectedRoute>
         ),

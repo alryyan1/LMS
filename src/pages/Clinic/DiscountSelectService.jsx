@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 const DiscountSelectService = ({ id, actviePatient ,service}) => {
-  const [discount, setDiscount] = useState(service.pivot.discount);
+  const [discount, setDiscount] = useState(service.discount);
   const {setActivePatient,setActiveShift} = useOutletContext()
   console.log('discount select rendered ')
   
@@ -30,11 +30,11 @@ const DiscountSelectService = ({ id, actviePatient ,service}) => {
       paddingBottom: 0.5,
    }
  }}
-      disabled={service.pivot.is_paid == 1}
+      disabled={service.is_paid == 1}
       onChange={(e) => {
         changeDiscountHandler(id, e.target.value);
       }}
-      value={service.pivot.discount}
+      value={service.discount}
     >
       <MenuItem value={0}>0%</MenuItem>
       <MenuItem value={10}>10%</MenuItem>

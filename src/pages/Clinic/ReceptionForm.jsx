@@ -351,7 +351,7 @@ function ReceptionForm({ hideForm,lab }) {
                 render={({ field }) => {
                   return (
                     <Select
-                      value={field.value}
+                      value={field.value || 'انثي'}
                       onChange={(data) => {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);

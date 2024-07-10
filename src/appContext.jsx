@@ -49,7 +49,8 @@ export const UserContextProvider = ({children})=>{
           setClinicDrawer,
           pharmcyDrawer, 
           setPharmacyDrawer,
-          mode, setMode
+          mode, setMode,
+          settings , setSettings,
         }}>
             {children}
         </StateContext.Provider>

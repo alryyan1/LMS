@@ -21,19 +21,18 @@ function SearchDialog({lab=false}) {
   const [doctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const setDoctor = (doctor) => {
-    setSelectedDoctor(doctor);
+  const setDoctor = (d) => {
+    setSelectedDoctor(d);
   };
   const addPatientByHistory = (id, oldDoctor) => {
+    console.log(doctor, oldDoctor,'id - oldDoctor');
+    if(doctor == undefined) {
+      alert('قم بتحديد الطبيب')
+      return;
+    }
     setLoading(true);
-    let doctor ='';
-    if (doctor.id != undefined) {
-        doctor = doctor.id;
-    }
-    else if(oldDoctor){
-        doctor = oldDoctor.id
-    }
-    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor}`  :`patients/add-patient-by-history/${id}/${doctor?.id ?? oldDoctor?.id}`
+  
+    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor}`  :`patients/add-patient-by-history/${id}/${doctor?.id}`
 
     axiosClient
       .post(
@@ -56,7 +55,7 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <Box style={{position:'absolute',top:'0px',right:'0px',height:'80vh',overflow:'auto'}}>
+    <Box sx={{position:'absolute'}} style={{height:'80vh',overflow:'auto'}}>
       <TableContainer>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>

@@ -67,16 +67,16 @@ function Reception() {
   });
   // console.log(openDrawer, "open drawer");
 
-  useEffect(() => {
-    if (foundedPatients.length > 0) {
-      setLayout((prev) => {
-        return {
-          ...prev,
-          patientDetails: "1fr",
-        };
-      });
-    }
-  }, [foundedPatients.length]);
+  // useEffect(() => {
+  //   if (foundedPatients.length > 0) {
+  //     setLayout((prev) => {
+  //       return {
+  //         ...prev,
+  //         patientDetails: "1fr",
+  //       };
+  //     });
+  //   }
+  // }, [foundedPatients.length]);
 
   const hideForm = () => {
     setLayout((prev) => {
@@ -217,7 +217,7 @@ function Reception() {
         <div>
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide
-              style={{ position: "absolute", left: "0px" }}
+          
               direction="up"
               in
               mountOnEnter

@@ -1,11 +1,11 @@
-import { Alert, Box, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Paper, Stack, TextField, Typography } from "@mui/material";
 import "./login.css";
 import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../appContext";
 import { useState } from "react";
-const SignUp = ({setUsers}) => {
+const SignUp = ({ setUsers }) => {
   const { setToken, setUser } = useStateContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ val: false, msg: "" });
@@ -30,9 +30,9 @@ const SignUp = ({setUsers}) => {
         if (data.status) {
           console.log(data);
           // setUser(data.user);
-          setUsers((prev)=>{
-            return [...prev, data.user]
-          })
+          setUsers((prev) => {
+            return [...prev, data.user];
+          });
           // setToken(data.token);
         }
       })
@@ -43,67 +43,68 @@ const SignUp = ({setUsers}) => {
       .finally(() => setLoading(false));
   };
   return (
-      <Box>
-        <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
-          <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
-            انشاء مستخدم جديد
+      <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
+        <Stack direction={"column"} gap={2}>
+          <Typography sx={{ p: 1, textAlign: "center" }} variant="h5">
+             Add new user
           </Typography>
-          <div className="form">
-            <TextField
-              error={errors.username != null}
-              {...register("username", {
-                required: {
-                  value: true,
-                  message: "username is required",
-                },
-                minLength: {
-                    value: 6,
-                    message: "username must be at least 6 characters",
-                },
+          <TextField
+            error={errors.username != null}
+            {...register("username", {
+              required: {
+                value: true,
+                message: "username is required",
+              },
+              minLength: {
+                value: 6,
+                message: "username must be at least 6 characters",
+              },
+            })}
+            sx={{ mb: 1 }}
+            variant="standard"
+            label="Username"
+          ></TextField>
+          {errors.username && errors.username.message}
+          <TextField
+            error={errors.password != null}
+            sx={{ mb: 1 }}
+            {...register("password", {
+              required: { value: true, message: "password is required" },
+              minLength: {
+                value: 8,
+                message: "at least 8 chracters must be entered",
+              },
+            })}
+            variant="standard"
+            label="Password"
+          ></TextField>
+          {errors.password && errors.password.message}
+          <TextField
+            error={errors.confirm != null}
+            sx={{ mb: 1 }}
+            {...register("confirm", {
+              required: {
+                value: true,
+                message: "confirm password is required",
+              },
+              minLength: 8,
+            })}
+            variant="standard"
+            label="confirm password"
+          ></TextField>
+          {errors.confirm && errors.confirm.message}
+          <LoadingButton
+            loading={loading}
+            type="submit"
+            sx={{ m: 1 }}
+            variant="contained"
+          >
+            انشاء حساب
+          </LoadingButton>
+        </Stack>
 
-              })}
-              sx={{ mb: 1 }}
-              variant="filled"
-              label="Username"
-            ></TextField>
-            {errors.username && errors.username.message}
-            <TextField
-              error={errors.password != null}
-              sx={{ mb: 1 }}
-              {...register("password", {
-                required: { value: true, message: "password is required" },
-                minLength: {value:8,message:'at least 8 chracters must be entered'},
-              })}
-              variant="filled"
-              label="Password"
-            ></TextField>
-            {errors.password && errors.password.message}
-            <TextField
-              error={errors.confirm != null}
-              sx={{ mb: 1 }}
-              {...register("confirm", {
-                required: {
-                  value: true,
-                  message: "confirm password is required",
-                },
-                minLength: 8,
-              })}
-              variant="filled"
-              label="confirm password"
-            ></TextField>
-            {errors.confirm && errors.confirm.message}
-            <LoadingButton
-              loading={loading}
-              type="submit"
-              sx={{ m: 1 }}
-              variant="contained"
-            >
-              انشاء حساب
-            </LoadingButton>
-          </div>
-        </form>
         {error.val && <Alert severity="error">{error.msg}</Alert>}
-      </Box>
+      </form>
   );
 };
 

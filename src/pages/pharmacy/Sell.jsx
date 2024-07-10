@@ -99,7 +99,7 @@ function SellDrug() {
     setShowDialogMoney(true);
   };
   useEffect(() => {
-    document.title = "المبيعات";
+    document.title = "Sales";
   }, []);
 
   let total = activeSell?.deducted_items

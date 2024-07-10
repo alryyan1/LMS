@@ -43,15 +43,13 @@ function SettingsNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"doctors"}>الاطباء</NavLink>
-        <NavLink to={"specialists"}>التخصصات الطبيه</NavLink>
-        <NavLink to={"users"}>المتسخدمين</NavLink>
-        <NavLink to={"permissions"}>الصلاحيات</NavLink>
-        <NavLink to={"paperConfig"}>اللوقو والترويسه</NavLink>
+        {/* <NavLink to={"doctors"}>Doctors</NavLink> */}
+        {/* <NavLink to={"specialists"}>Specialists</NavLink> */}
+        <NavLink to={"users"}>Users</NavLink>
+        <NavLink to={"permissions"}>Permissions</NavLink>
+        <NavLink to={"paperConfig"}>Logo</NavLink>
       </ul>
 
-      <ThemeProvider theme={theme}>
-        <CacheProvider value={cacheRtl}>
           {" "}
           {
             <Outlet
@@ -68,8 +66,6 @@ function SettingsNav() {
               }}
             ></Outlet>
           }
-        </CacheProvider>
-      </ThemeProvider>
       <Snackbar
         open={dialog.open}
         autoHideDuration={4000}

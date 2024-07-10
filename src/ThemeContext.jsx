@@ -1,5 +1,4 @@
 import { createTheme, ThemeProvider } from "@mui/material";
-import { deepOrange, deepPurple } from "@mui/material/colors";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext({
@@ -8,7 +7,7 @@ const ThemeContext = createContext({
 });
 
 export const ThemeContextProvider = ({ children }) => {
-  const [mode, setMode] = useState(localStorage.getItem('theme'));
+  const [mode, setMode] = useState(localStorage.getItem('theme')?? 'light');
 
 
   useEffect(()=>{

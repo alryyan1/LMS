@@ -99,7 +99,7 @@ function AddDrugForm({setUpdate}) {
             setDialog({
               color: "success",
               open: true,
-              message: "تمت الاضافه بنجاح",
+              message: "Added Successfully",
             });
           }
         })
@@ -118,7 +118,7 @@ function AddDrugForm({setUpdate}) {
     };
   
     useEffect(() => {
-      document.title = "اضافه صنف جديد";
+      document.title = "Add new item";
     }, []);
   
    
@@ -147,10 +147,10 @@ function AddDrugForm({setUpdate}) {
             {...register("sc_name", {
               required: {
                 value: true,
-                message: "يجب ادخال الاسم العلمي",
+                message: " Sc name is required",
               },
             })}
-            label="الاسم العلمي"
+            label="Scientific Name"
             variant="standard"
             helperText={errors.sc_name && errors.sc_name.message}
           />
@@ -159,13 +159,13 @@ function AddDrugForm({setUpdate}) {
             fullWidth
          
             error={errors.market_name}
-            {...register("market_name", {
+            {...register("Market_name", {
               required: {
                 value: true,
-                message: "يجب ادخال الاسم التجاري",
+                message: "market name is required",
               },
             })}
-            label="اسم التجاري"
+            label="market name"
             variant="standard"
             helperText={errors.market_name && errors.market_name.message}
           />
@@ -180,10 +180,10 @@ function AddDrugForm({setUpdate}) {
             {...register("sell_price", {
               required: {
                 value: true,
-                message: "يجب ادخال سعر البيع ",
+                message: "price is required",
               },
             })}
-            label="سعر البيع (صندوق)"
+            label="Sell price"
             variant="standard"
             helperText={errors.sell_price && errors.sell_price.message}
           />
@@ -203,10 +203,10 @@ function AddDrugForm({setUpdate}) {
             {...register("cost_price", {
               required: {
                 value: true,
-                message: "يجب ادخال سعر الشراء ",
+                message: "Cost is required",
               },
             })}
-            label="سعر الشراء (صندوق)"
+            label="Cost Price(Box)"
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
@@ -218,7 +218,7 @@ function AddDrugForm({setUpdate}) {
             fullWidth
             disabled={true}
     
-            label="سعر الشريط"
+            label="Strip price"
             variant="standard"
           />
           <TextField
@@ -230,10 +230,10 @@ function AddDrugForm({setUpdate}) {
             {...register("strips", {
               required: {
                 value: true,
-                message: "يجب ادخال  عدد الشرائط ",
+                message: "Strips count is required",
               },
             })}
-            label="عدد الشرائط"
+            label="Strips per box"
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
@@ -258,7 +258,7 @@ function AddDrugForm({setUpdate}) {
             type="number"
             fullWidth
             {...register("require_amount")}
-            label="حد الادني للطلب"
+            label="Minimum amount"
             variant="outlined"
           />
           <TextField
@@ -277,10 +277,10 @@ function AddDrugForm({setUpdate}) {
             {...register("barcode", {
               required: {
                 value: true,
-                message: "يجب ادخال الباركود",
+                message: "Barcode is required",
               },
             })}
-            label="الباركود"
+            label="Barcode"
             variant="outlined"
           />
         </Stack>
@@ -291,7 +291,7 @@ function AddDrugForm({setUpdate}) {
          
             fullWidth
             {...register("batch")}
-            label="الباتش"
+            label="Batch"
             variant="outlined"
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -308,7 +308,7 @@ function AddDrugForm({setUpdate}) {
                   value={field.value}
                   onChange={(val) => field.onChange(val)}
                   sx={{ mb: 1 }}
-                  label="تاريخ الانتهاء"
+                  label="Expire Date"
                 />
               )}
             />
@@ -321,7 +321,7 @@ function AddDrugForm({setUpdate}) {
           variant="contained"
           type="submit"
         >
-          حفظ
+          Save
         </LoadingButton>
       </Stack>
     </form>

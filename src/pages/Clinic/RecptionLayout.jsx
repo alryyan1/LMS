@@ -109,7 +109,7 @@ function ReceptionLayout() {
       }
       <Snackbar
         open={dialog.open}
-        autoHideDuration={2000}
+        autoHideDuration={5000}
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
         <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>

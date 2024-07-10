@@ -40,12 +40,12 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
       </IconButton>
     </Item>
    
-    {/* <Item>
+    <Item>
       
-     {user && <IconButton title="التقرير العام" href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
+     {user && <IconButton title="العيادات تفصيلي" href={`${webUrl}clinics/report?user=${user.id}`} variant="contained">
         <Print />
       </IconButton>}
-    </Item> */}
+    </Item>
        
     <Item>
       

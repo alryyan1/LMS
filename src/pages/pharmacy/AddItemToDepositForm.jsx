@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Grid, Paper, TextField, Typography } from '@mui/material';
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import axiosClient from '../../../axios-client';
@@ -51,7 +51,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
               setValue("expire", dayjs(new Date()));
               setDialog({
                 open: true,
-                message: "تمت الاضافه  بنجاح",
+                message: "Items added successfully",
               });
             }
           })
@@ -66,12 +66,12 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
           });
       };
   return (
-    <Paper sx={{ p: 1 }}>
+    <Box sx={{ p: 1 }}>
             <Typography
               sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
               variant="h5"
             >
-              اضافه للمخزون
+               Add To Inventory
             </Typography>
             <form noValidate onSubmit={handleSubmit(submitHandler)}>
               <Grid container>
@@ -79,12 +79,12 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                   <TextField
                     {...register("batch")}
                     sx={{ mb: 1 }}
-                    label={"الباتش"}
+                    label={"Batch"}
                   ></TextField>
                   <TextField
                     {...register("barcode")}
                     sx={{ mb: 1 }}
-                    label={"الباركود"}
+                    label={"Barcode"}
                   ></TextField>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Controller
@@ -92,7 +92,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                       rules={{
                         required: {
                           value: true,
-                          message: "يجب ادخال تاريخ الانتهاء",
+                          message: "Expire date must be provided",
                         },
                       }}
                       control={control}
@@ -103,7 +103,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                           value={field.value}
                           onChange={(val) => field.onChange(val)}
                           sx={{ mb: 1 }}
-                          label="تاريخ الانتهاء"
+                          label="Expire Date"
                         />
                       )}
                     />
@@ -113,7 +113,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                     rows={3}
                     {...register("notes")}
                     sx={{ mb: 1 }}
-                    label={"الملاحظات"}
+                    label={"Notes"}
                   ></TextField>
                 </Grid>
                 <Grid item xs={6}>
@@ -122,7 +122,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                     rules={{
                       required: {
                         value: true,
-                        message: "يجب اختيار الصنف",
+                        message: "Item must be selected",
                       },
                     }}
                     control={control}
@@ -146,7 +146,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                                   errors.name && errors.name.message
                                 }
                                 error={errors.name != null}
-                                label={"الصنف"}
+                                label={"Item"}
                                 {...params}
                               />
                             );
@@ -163,10 +163,10 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                       sx={{ mb: 1 }}
                       error={errors.amount}
                       {...register("amount", {
-                        required: { value: true, message: "يجب ادخال الكميه" },
+                        required: { value: true, message: "Amount must be provided" },
                       })}
                       id="outlined-basic"
-                      label="الكميه"
+                      label="Amount"
                       variant="filled"
                     />
                     {errors.amount && errors.amount.message}
@@ -179,11 +179,11 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                       {...register("price", {
                         required: {
                           value: true,
-                          message: "يجب ادخال السعر",
+                          message: "Price must be provided",
                         },
                       })}
                       id="outlined-basic"
-                      label="سعر الصندوق"
+                      label="Box Price"
                       variant="filled"
                     />
                     {errors.price && errors.price.message}
@@ -195,11 +195,11 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                   variant="contained"
                   type="submit"
                 >
-                  اضافه للمخزون
+                  Add to inventory 
                 </LoadingButton>
               </Grid>
             </form>
-          </Paper>
+          </Box>
   )
 }
 

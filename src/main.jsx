@@ -12,9 +12,9 @@ import { CacheProvider } from '@emotion/react';
 createRoot(document.querySelector("#root")).render(
   <UserContextProvider>
     <ThemeContextProvider>
-      <CacheProvider value={cacheRtl}>
+      {/* <CacheProvider value={cacheRtl}> */}
         <RouterProvider router={router} />
-      </CacheProvider>
+      {/* </CacheProvider> */}
     </ThemeContextProvider>
   </UserContextProvider>
 );

@@ -134,7 +134,7 @@ function RequestedServices({ setPatients }) {
               </TableHead>
               <TableBody>
                 {actviePatient.services.filter((service)=>{
-                  return service.pivot.doctor_id ==activeShift.doctor.id
+                  return service.doctor_id ==activeShift.doctor.id
                 }).map((service) => {
 
                   let price  
@@ -142,12 +142,12 @@ function RequestedServices({ setPatients }) {
                   let endurance
                   if(actviePatient.company_id != null) {
                      company = companies.find((c)=>c.id == actviePatient.company_id)
-                     price  = company.services.find((s)=>s.id == service.id).pivot.price
-                     endurance =   (price * service.pivot.count) *company.service_endurance /100
+                     price  = company.services.find((s)=>s.id == service.id).price
+                     endurance =   (price * service.count) *company.service_endurance /100
                      total_endurance+= endurance;
                     console.log(company,'patient company')
                   }else{
-                    price  = service.pivot.price
+                    price  = service.price
                   }
                   console.log(price,'price ')
                   return (
@@ -158,7 +158,7 @@ function RequestedServices({ setPatients }) {
                       key={service.id}
                     >
                       <TableCell sx={{ border: "none" }} scope="row">
-                        {service.name}
+                        {service.service.name}
                       </TableCell>
 
                       <TableCell sx={{ border: "none" }} align="right">
@@ -168,7 +168,7 @@ function RequestedServices({ setPatients }) {
                        {endurance}
                       </TableCell>: ""}
                       <TableCell sx={{ border: "none" }} align="right">
-                        {service.pivot.amount_paid}
+                        {service.amount_paid}
                       </TableCell>
                       { actviePatient.company_id ? "": <TableCell sx={{ border: "none" }} align="right">
                         <DiscountSelectService
@@ -179,8 +179,8 @@ function RequestedServices({ setPatients }) {
                       </TableCell>}
                       { actviePatient.company_id ? "":  <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
-                          disabled={service.pivot.is_paid == 0}
-                          checked={service.pivot.bank == 1}
+                          disabled={service.is_paid == 0}
+                          checked={service.bank == 1}
                           
                           id={service.id}
                         ></MyCheckboxReception>
@@ -190,7 +190,7 @@ function RequestedServices({ setPatients }) {
                           service={service}
                           id={service.id}
                           actviePatient={actviePatient}
-                          disabled={service.pivot.is_paid == 1}
+                          disabled={service.is_paid == 1}
                         />
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
@@ -204,7 +204,7 @@ function RequestedServices({ setPatients }) {
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                       <MyLoadingButton
-                         disabled={service.pivot.is_paid == 0}
+                         disabled={service.is_paid == 0}
 
                         loading={loading}
                          
@@ -216,8 +216,8 @@ function RequestedServices({ setPatients }) {
                       <TableCell sx={{ border: "none" }} align="right">
                         <MyLoadingButton
                         
-                        active={service.pivot.is_paid}
-                        disabled={service.pivot.is_paid === 1}
+                        active={service.is_paid}
+                        disabled={service.is_paid === 1}
 
                         loading={loading}
                          
@@ -242,12 +242,12 @@ function RequestedServices({ setPatients }) {
                 
                 <Typography  variant="h3">
                   {actviePatient.company_id ==null  ? actviePatient.services.filter((service)=>{
-                  return service.pivot.doctor_id == activeShift.doctor.id
+                  return service.doctor_id == activeShift.doctor.id
                 }).reduce((accum, service) => {
-                    console.log(service.pivot.count,'service.pivot.count)')
-                    const total = service.price * service.pivot.count;
+                    console.log(service.count,'service.count)')
+                    const total = service.price * service.count;
                     const discount = Number(
-                      (service.pivot.discount * total ) / 100
+                      (service.discount * total ) / 100
                     );
                     return accum + (total - discount);
                   }, 0) : total_endurance}
@@ -257,10 +257,10 @@ function RequestedServices({ setPatients }) {
                 <div className="title">Paid</div>
                 <Typography  variant="h3">
                 {actviePatient.services.filter((service)=>{
-                  return service.pivot.doctor_id ==activeShift.doctor.id
+                  return service.doctor_id ==activeShift.doctor.id
                 }).reduce((accum, service) => {
                    
-                    return accum + service.pivot.amount_paid ;
+                    return accum + service.amount_paid ;
                   }, 0)}
                 </Typography>
               </div>

@@ -55,7 +55,7 @@ import {
           {loading  ? (
             <Skeleton height={400} style={{flexGrow:"2"} }></Skeleton>
           ) : (
-            <Grid item xs={5}>
+            <Grid item xs={4}>
               <TableContainer sx={{ mb: 1 }}>
               
     
@@ -85,7 +85,7 @@ import {
            
             </Grid>
           )}
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Stack direction={"row"} justifyContent={"center"} spacing={4}>
               <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
                 اضافه  تخصص طبي
