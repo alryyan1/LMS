@@ -9,7 +9,7 @@ const ServiceCountSelect = ({ id, actviePatient ,service,disabled}) => {
   
   const changeHandler = async (id, count) => {
     setCount(count);
-    const {data} = await axiosClient.patch(`patient/service/count/${actviePatient.id}`,{ service_id: id, serviceCount: count });
+    const {data} = await axiosClient.patch(`requestedService/count/${id}`,{ service_id: id, serviceCount: count });
     console.log(data)
     if (data.status) {
       console.log(data.patient);

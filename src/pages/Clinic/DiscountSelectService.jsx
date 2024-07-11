@@ -9,7 +9,7 @@ const DiscountSelectService = ({ id, actviePatient ,service}) => {
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const {data} = await axiosClient.patch(`patient/service/discount/${actviePatient.id}`,{ service_id: id, discount: dis });
+    const {data} = await axiosClient.patch(`requestedService/discount/${id}`,{ service_id: id, discount: dis });
     console.log(data)
     if (data.status) {
       console.log(data.patient);

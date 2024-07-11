@@ -19,8 +19,9 @@ import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useTranslation } from "react-i18next";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness4Icon from "@mui/icons-material/Brightness4";
 import { useThemeContext } from "./ThemeContext";
+import { t } from "i18next";
 const Nav = () => {
   const {
     settings,
@@ -35,7 +36,7 @@ const Nav = () => {
     pharmcyDrawer,
     setPharmacyDrawer,
   } = useStateContext();
-  const { setMode,mode}= useThemeContext()
+  const { setMode, mode } = useThemeContext();
   console.log(user, "in nav ");
   const [loading, setLoading] = useState(false);
   const { i18n } = useTranslation();
@@ -58,34 +59,29 @@ const Nav = () => {
   useEffect(() => {
     axiosClient.get("/settings").then(({ data }) => {
       setSettings(data);
-      setMode(data.theme)
+      setMode(data.theme);
     });
   }, []);
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
-      axiosClient.post('settings',{colName:'lang',data:mode})
-
+      axiosClient.post("settings", { colName: "lang", data: mode });
     } else {
       i18n.changeLanguage("ar");
-      axiosClient.post('settings',{colName:'lang',data:mode})
-
+      axiosClient.post("settings", { colName: "lang", data: mode });
     }
-
   };
   const changeMode = () => {
-    if(mode === 'light'){
-      setMode('dark')
-      localStorage.setItem('theme','dark');
-      axiosClient.post('settings',{colName:'theme',data:'dark'})
+    if (mode === "light") {
+      setMode("dark");
+      localStorage.setItem("theme", "dark");
+      axiosClient.post("settings", { colName: "theme", data: "dark" });
+    } else {
+      setMode("light");
+      localStorage.setItem("theme", "light");
 
-    }else{
-      setMode('light')
-      localStorage.setItem('theme','light');
-
-      axiosClient.post('settings',{colName:'theme',data:'light'})
-
+      axiosClient.post("settings", { colName: "theme", data: "light" });
     }
   };
   const DrawerClinicList = (
@@ -143,11 +139,14 @@ const Nav = () => {
   );
   return (
     <>
-      <Drawer ModalProps={{
-        onBackdropClick:()=>{
-          setLabDrawer(false);
-        }
-      }}  open={labDrawer}>
+      <Drawer
+        ModalProps={{
+          onBackdropClick: () => {
+            setLabDrawer(false);
+          },
+        }}
+        open={labDrawer}
+      >
         {" "}
         {[
           { title: "تسجيل مريض", to: "/laboratory/add" },
@@ -194,9 +193,8 @@ const Nav = () => {
       >
         {DrawerPharmacyList}
       </Drawer>
-      <AppBar 
+      <AppBar
         sx={{
-         
           backgroundColor: "#485765",
 
           marginBottom: "10px",
@@ -208,9 +206,8 @@ const Nav = () => {
         position="static"
       >
         <Stack
-          
           className="nav"
-          sx={{ alignItems: "center", direction:'rtl', }}
+          sx={{ alignItems: "center", direction: "rtl" }}
           direction={"row-reverse"}
           gap={3}
         >
@@ -218,72 +215,97 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"/login"}
           >
-            Login
+            {t('login')}
           </NavLink>
-          {/* <NavLink
+          <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/inventory"}
           >
-            Inventory
-          </NavLink> */}
-{/* 
+            {t("inventory")}{" "}
+          </NavLink>
           <NavLink
-            to={'/lab'}
-          
+            style={{ textDecoration: "none", color: "white" }}
+            to={"/audit"}
+          >
+            {t("audit")}{" "}
+          </NavLink>
+
+          <NavLink
+            to={"/lab"}
             onClick={(e) => {
-              e.preventDefault()
+              e.preventDefault();
               setLabDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white",cursor: "pointer" }}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              cursor: "pointer",
+            }}
           >
-            المختبر
-          </NavLink> */}
-          {/* <NavLink
-          to={'clinic'}
+            {t('lab')}
+          </NavLink>
+          <NavLink
+            to={"clinic"}
             onClick={(e) => {
-              e.preventDefault()
+              e.preventDefault();
 
               setClinicDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white",cursor:'pointer' }}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              cursor: "pointer",
+            }}
           >
-            العيادات
-          </NavLink> */}
+            {t('clinic')}
+          </NavLink>
           <NavLink
-          to={'pharma'}
+            to={"pharma"}
             onClick={(e) => {
-              e.preventDefault()
+              e.preventDefault();
 
               setPharmacyDrawer(true);
             }}
-            style={{ textDecoration: "none", color: "white", cursor:'pointer'}}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              cursor: "pointer",
+            }}
           >
-           Pharmacy
+          {
+            t('pharma')
+          }
           </NavLink>
-          {/* <NavLink
+          <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/insurance"}
           >
-            التامين
-          </NavLink> */}
-          {/* <NavLink
+            {
+              t('insurance')
+            }
+          </NavLink>
+          <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/services"}
           >
-            الخدمات
-          </NavLink> */}
-          {/* <NavLink
+            {
+              t('services')
+            }
+          </NavLink>
+          <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
           >
             shipping
-          </NavLink> */}
+          </NavLink>
           {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
             <NavLink
               style={{ textDecoration: "none", color: "white" }}
               to={"/settings"}
             >
-              Settings
+              {
+                t('settings')
+              }
             </NavLink>
           ) : (
             ""
@@ -292,7 +314,9 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
-           Dashboard
+            {
+              t('dashboard')
+            }
           </NavLink>
 
           <div style={{ flexGrow: 1 }}></div>
@@ -302,7 +326,7 @@ const Nav = () => {
           <IconButton onClick={changeLang}>
             <Language />
           </IconButton>
-    <IconButton onClick={changeMode}>
+          <IconButton onClick={changeMode}>
             <Brightness4Icon />
           </IconButton>
           {user && (

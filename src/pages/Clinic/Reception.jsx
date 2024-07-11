@@ -180,6 +180,7 @@ function Reception() {
                   // console.log('activeShift',doctor.id);
 
                   setActiveShift(shift);
+                  setFoundedPatients([])
                   setActivePatient(null);
                   setShowPatientServices(false);
                   setShowServicePanel(false);

@@ -8,6 +8,18 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     resources :{
         ar:{
             translation:{
+                inventory:'المخزن',
+                audit:'التدقيق',
+                signup:'انشاء حساب ',
+                login:'الدخول',
+                lab:'المختبر',
+                clinic:'العيادات',
+                pharma:'الصيدليه',
+                services:'الخدمات',
+                 Addnewuser:'اضافه مستخدم',
+                insurance:'التعاقدات',
+                settings:'الاعدادات',
+                dashboard:'الرئيسيه',
                 name : "الاسم",
                 phone : "الهاتف",
                 item : "الصنف",
@@ -20,7 +32,22 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
             }
         },
         en:{
-            ['draug type']:'drug type'
+            translation:{
+                Addnewuser:'Add new user',
+                signup:'Sign up',
+                audit:'Finance Audit',
+
+                name:'name',
+                Inventory:'inventory',
+                login:'login',
+                lab:'lab',
+                clinic:'Clinic',
+                pharma:'pharmacy',
+                services:'services',
+                insurance:'insurance',
+                settings:'settings',
+                dashboard:'dashboard',
+            }
         },
         ch:{
             translation:{

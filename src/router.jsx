@@ -60,6 +60,7 @@ import DrugItems from "./pages/pharmacy/DrugItems";
 import SalesReport from "./pages/pharmacy/SalesReport";
 import ItemsInventory from "./pages/pharmacy/ItemsInventory";
 import ItemDeposit from "./pages/pharmacy/ItemDeposit";
+import Audit from "./pages/Audit";
 
 export const router = createBrowserRouter([
   {
@@ -132,11 +133,18 @@ export const router = createBrowserRouter([
       },
       {
 
-        element : <Dashboard/>,
+        element : <ProtectedRoute><Dashboard/></ProtectedRoute> ,
         path:"/dashboard",
 
       },
+      {
 
+        element :<ProtectedRoute>
+          <Audit/>
+        </ProtectedRoute>,
+        path:"/audit",
+
+      },
       {
         path: "/inventory",
         element: (

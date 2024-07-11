@@ -23,7 +23,7 @@ function PatientReception({ visit, hideForm, index }) {
       color="primary"
       badgeContent={
         visit.services.filter((service) => {
-          return service.pivot.doctor_id == activeShift.doctor.id;
+          return service.doctor_id == activeShift.doctor.id;
         }).length
       }
       key={visit.id}
@@ -43,7 +43,7 @@ function PatientReception({ visit, hideForm, index }) {
           }
           if (
             visit.services.filter((service) => {
-              return service.pivot.doctor_id == activeShift.doctor.id;
+              return service.doctor_id == activeShift.doctor.id;
             }).length > 0
           ) {
             if (!showServicePanel) {

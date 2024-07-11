@@ -39,6 +39,7 @@ function ReceptionForm({ hideForm,lab }) {
     control,
     handleSubmit,
     register,
+    setValue,
     reset,
     formState: { errors },
   } = useForm();
@@ -46,6 +47,7 @@ function ReceptionForm({ hideForm,lab }) {
   const phone = watch("phone");
 
   useEffect(() => {
+    setValue('gender', 'انثي');
     if (name != undefined) {
       console.log(name, "name");
       const timer = setTimeout(() => {

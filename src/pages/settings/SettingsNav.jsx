@@ -43,8 +43,8 @@ function SettingsNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        {/* <NavLink to={"doctors"}>Doctors</NavLink> */}
-        {/* <NavLink to={"specialists"}>Specialists</NavLink> */}
+        <NavLink to={"doctors"}>Doctors</NavLink>
+        <NavLink to={"specialists"}>Specialists</NavLink>
         <NavLink to={"users"}>Users</NavLink>
         <NavLink to={"permissions"}>Permissions</NavLink>
         <NavLink to={"paperConfig"}>Logo</NavLink>

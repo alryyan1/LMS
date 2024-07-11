@@ -32,7 +32,7 @@ function SearchDialog({lab=false}) {
     }
     setLoading(true);
   
-    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor}`  :`patients/add-patient-by-history/${id}/${doctor?.id}`
+    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor.id}`  :`patients/add-patient-by-history/${id}/${doctor?.id}`
 
     axiosClient
       .post(
@@ -55,7 +55,7 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <Box sx={{position:'absolute'}} style={{height:'80vh',overflow:'auto'}}>
+    <Box sx={{position:'absolute'}} >
       <TableContainer>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>

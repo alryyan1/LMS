@@ -11,6 +11,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -85,8 +86,15 @@ function Dashboard() {
   console.log("rendering");
   return (
     <>
-      {shift && (
-        <Card sx={{ mb: 1 }}>
+     { loading ? <Skeleton
+            animation="wave"
+            variant="rectangular"
+            width={"100%"}
+            height={400}
+          />
+          :
+          <div>
+              <Card sx={{ mb: 1 }}>
           <CardContent>
             <Stack
               direction={"row"}
@@ -96,31 +104,32 @@ function Dashboard() {
               <IconButton
                 disabled={shift?.id == 1}
                 onClick={() => {
-                  if (shift.id == 1) {
+                  
+                  if (shift?.id == 1) {
                     return;
                   }
-
+setLoading(true);
                   axiosClient
-                    .get(`shiftById/${shift.id - 1}`)
+                    .get(`shiftById/${shift?.id - 1}`)
                     .then(({ data }) => {
                       console.log(data.data, "shift left");
                       setShift(data.data);
-                    });
+                    }).finally(()=>setLoading(false));
                 }}
               >
                 <ArrowBack />
               </IconButton>
               <Typography alignContent={"center"}>
-                {new Date(Date.parse(shift.created_at)).toLocaleDateString(
+                {new Date(Date.parse(shift?.created_at)).toLocaleDateString(
                   "ar-SA",
                   options
                 )}
               </Typography>
               <Typography alignContent={"center"}>
-                Shift No  {shift.id}
+                Shift No  {shift?.id}
               </Typography>
               <Typography alignContent={"center"}>
-                {new Date(Date.parse(shift.created_at)).toLocaleDateString(
+                {new Date(Date.parse(shift?.created_at)).toLocaleDateString(
                   "En-US",
                   options
                 )}
@@ -128,16 +137,18 @@ function Dashboard() {
               <IconButton
                 disabled={shift?.id == shift?.maxShiftId}
                 onClick={() => {
-                  // if (shift.id == 1) {
+                  // if (shift?.id == 1) {
                   //   return
                   // }
+                  setLoading(true);
 
                   axiosClient
-                    .get(`shiftById/${shift.id + 1}`)
+                    .get(`shiftById/${shift?.id + 1}`)
                     .then(({ data }) => {
+                      
                       console.log(data.data, "shift left");
                       setShift(data.data);
-                    });
+                    }).finally(()=>setLoading(false));
                 }}
               >
                 <ArrowForward />
@@ -145,7 +156,7 @@ function Dashboard() {
             </Stack>
           </CardContent>
         </Card>
-      )}
+      
       <Grid spacing={2} container>
         <Grid item xs={12} md={6} lg={3}>
           <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
@@ -162,7 +173,7 @@ function Dashboard() {
                 </Stack>
                 <Stack direction={"column"} justifyContent={"center"}>
                   <IconButton
-                    href={`${webUrl}pharmacy/sellsReport?shift_id=${shift?.id}`}
+                 href={`${webUrl}clinics/all?shift=${shift?.id}`}
                   >
                     <Lottie options={peopleOptions} height={100} width={100} />
                   </IconButton>
@@ -252,7 +263,7 @@ function Dashboard() {
                     {" "}
                     {shift?.is_closed
                       ? new Date(
-                          Date.parse(shift.closed_at)
+                          Date.parse(shift?.closed_at)
                         ).toLocaleTimeString()
                       : new Date(
                           Date.parse(shift?.created_at)
@@ -264,14 +275,14 @@ function Dashboard() {
                    loading={loading}
                     onClick={() => {
                       setLoading(true);
-                      const msg = shift.is_closed
+                      const msg = shift?.is_closed
                         ? "  Open shift ? "
                         : " Close Shift ?  ";
                       const result = confirm(msg);
                       if (result) {
                         axiosClient
-                          .post(`shift/status/${shift.id}`, {
-                            status: shift.is_closed,
+                          .post(`shift/status/${shift?.id}`, {
+                            status: shift?.is_closed,
                           })
                           .then(({ data }) => {
                             console.log(data, "data ");
@@ -346,6 +357,10 @@ function Dashboard() {
         </Grid>
         
       </Grid>
+          </div>
+      }
+
+
     </>
   );
 }

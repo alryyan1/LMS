@@ -26,7 +26,7 @@ function RequestedServices({ setPatients }) {
   const pay = (id,setLoading) => {
     setLoading(true);
     axiosClient
-      .get(`patient/service/pay/${actviePatient.id}?service_id=${id}`)
+      .patch(`requestedService/pay/${id}`)
       .then(({ data }) => {
         console.log(data,'pay service')
         setActivePatient(data.patient);
@@ -53,7 +53,7 @@ function RequestedServices({ setPatients }) {
   };
   const cancelPayHandler = (id,setLoading) => {
     setLoading(true);
-     axiosClient.get(`patient/service/cancel/${actviePatient.id}?service_id=${id}`).then(({ data }) => {
+     axiosClient.patch(`requestedService/cancel/${id}`).then(({ data }) => {
       if(data.status) {
         setUpdate((prev)=>prev+1)
 
@@ -81,7 +81,7 @@ function RequestedServices({ setPatients }) {
 
   const deleteService = (id) => {
     axiosClient
-      .delete(`patient/service/${actviePatient.id}?service_id=${id}`)
+      .delete(`requestedService/${id}`)
       .then(({ data }) => {
         if (data.status) {
           setActivePatient(data.patient);

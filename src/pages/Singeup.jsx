@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../appContext";
 import { useState } from "react";
+import {t} from 'i18next'
 const SignUp = ({ setUsers }) => {
   const { setToken, setUser } = useStateContext();
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,9 @@ const SignUp = ({ setUsers }) => {
       <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
         <Stack direction={"column"} gap={2}>
           <Typography sx={{ p: 1, textAlign: "center" }} variant="h5">
-             Add new user
+             {
+              t('Addnewuser')
+             }
           </Typography>
           <TextField
             error={errors.username != null}
@@ -99,7 +102,7 @@ const SignUp = ({ setUsers }) => {
             sx={{ m: 1 }}
             variant="contained"
           >
-            انشاء حساب
+            {t('signup')}
           </LoadingButton>
         </Stack>
 

@@ -245,11 +245,18 @@ function AddPatient() {
           </div>
         </div>
 
-        <Box  style={{height:'80vh',overflow:'auto'}} sx={{ p: 1 }}>
+        <Box  style={{height:'70vh',overflow:'auto'}} sx={{ p: 1 }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
+          {!actviePatient && foundedPatients.length > 0 && (
+            <Slide direction="up" in mountOnEnter unmountOnExit>
+              <div style={{ position: "relative" }}>
+                <SearchDialog lab={true} />
+              </div>
+            </Slide>
+          )}
         </Box>
         <div>
           {/** add card using material   */}
@@ -306,13 +313,7 @@ function AddPatient() {
                     Print
                   </Button>
                 </Stack>}
-          {!actviePatient && foundedPatients.length > 0 && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div style={{ position: "relative" }}>
-                <SearchDialog lab={true} />
-              </div>
-            </Slide>
-          )}
+         
         </div>
         <MoneyDialog />
         <ErrorDialog />
