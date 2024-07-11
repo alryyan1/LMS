@@ -3,11 +3,12 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React, { useState } from "react";
+import axiosClient from "../../axios-client";
 
 function Audit() {
   const [date, setDate] = useState(null);
   const searchShiftByDateHandler = ()=>{
-    
+    axiosClient.get(`getShiftByDate?date=${date.format('YYYY-MM-DD')}`)
   }
   return (
     <div
