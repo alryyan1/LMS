@@ -54,7 +54,7 @@ function Reception() {
     setShowPatientServices,
     showServicePanel,
     setShowServicePanel,
-
+   companies,
   } = useOutletContext();
   const { user } = useStateContext();
   const [layOut, setLayout] = useState({
@@ -170,7 +170,6 @@ function Reception() {
                         fontWeight: "bolder",
                       }
                     : {
-                        minWidth: "200px",
                         cursor: "pointer",
                         transition: "0.3s all ease-in-out",
                         transform: "scale(1.1)",
@@ -233,7 +232,7 @@ function Reception() {
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <PatientDetail
-    
+                activeShift={activeShift}
                   key={actviePatient.id}
                   patient={actviePatient.patient}
                   copyPatient={true}
@@ -294,7 +293,7 @@ function Reception() {
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <Paper sx={{ p: 1 }}>
                 <div>
-                  <RequestedServices />
+                  <RequestedServices activeShift={activeShift} setShowServicePanel={setShowServicePanel} setUpdate={setUpdate} companies={companies} setActivePatient={setActivePatient} setDialog={setDialog} setShowPatientServices={setShowPatientServices} actviePatient={actviePatient} />
                 </div>
               </Paper>
             </Slide>

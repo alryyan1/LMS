@@ -21,7 +21,6 @@ import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
 import { Calculate, PersonAdd, Print, Search } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
-import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
@@ -54,6 +53,7 @@ function AddPatient() {
     setUpdate,
     openEdit,
     setOpenEdit,
+    dialog
   } = useOutletContext();
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
@@ -262,7 +262,8 @@ function AddPatient() {
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
-              showBtns
+            setUpdate={setUpdate}
+
               key={actviePatient.id}
               patient={actviePatient}
               setPatients={setPatients}
@@ -315,9 +316,10 @@ function AddPatient() {
                 </Stack>}
          
         </div>
-        <MoneyDialog />
+        {dialog.showMoneyDialog &&<MoneyDialog />}
         <ErrorDialog />
         {actviePatient &&<EditPatientDialog
+        setDialog={setDialog}
           open={openEdit}
           isLab = {true}
           setOpen={setOpenEdit}

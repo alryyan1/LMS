@@ -18,8 +18,7 @@ import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import ServiceCountSelect from "./ServiceCountSelect";
-function RequestedServices({ setPatients }) {
-  const { setDialog, setActivePatient, actviePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift,companies} = useOutletContext();
+function RequestedServices({ actviePatient , setDialog, setActivePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift,companies}) {
   const [loading, setLoading] = useState(false);
   console.log(companies,'companies')
 
@@ -40,6 +39,15 @@ function RequestedServices({ setPatients }) {
             color:"success"
           }
         })
+      }).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return{
+           ...prev,
+            open:true,
+            msg:data.message,
+            color:"error"
+          }
+        })
       }).finally(() => {setLoading(false);}).catch(({response:{data}})=>{
         setDialog((prev)=>{
           return{
@@ -55,7 +63,10 @@ function RequestedServices({ setPatients }) {
     setLoading(true);
      axiosClient.patch(`requestedService/cancel/${id}`).then(({ data }) => {
       if(data.status) {
-        setUpdate((prev)=>prev+1)
+        if (setUpdate) {
+          
+          setUpdate((prev)=>prev+1)
+        }
 
         setDialog((prev)=>{
           return{
@@ -67,7 +78,16 @@ function RequestedServices({ setPatients }) {
         })
         setActivePatient(data.patient);
       }
-     }).finally(() => {setLoading(loading)}).catch(({response:{data}})=>{
+     }).catch(({response:{data}})=>{
+      setDialog((prev)=>{
+        return{
+         ...prev,
+          open:true,
+          msg:data.message,
+          color:"error"
+        }
+      })
+    }).finally(() => {setLoading(loading)}).catch(({response:{data}})=>{
       setDialog((prev)=>{
         return{
          ...prev,
@@ -172,6 +192,7 @@ function RequestedServices({ setPatients }) {
                       </TableCell>
                       { actviePatient.company_id ? "": <TableCell sx={{ border: "none" }} align="right">
                         <DiscountSelectService
+                        setActivePatient={setActivePatient}
                           service={service}
                           id={service.id}
                           actviePatient={actviePatient}
@@ -179,6 +200,7 @@ function RequestedServices({ setPatients }) {
                       </TableCell>}
                       { actviePatient.company_id ? "":  <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
+                        setUpdate={setUpdate}
                           disabled={service.is_paid == 0}
                           checked={service.bank == 1}
                           
@@ -187,6 +209,8 @@ function RequestedServices({ setPatients }) {
                       </TableCell>}
                       <TableCell sx={{ border: "none" }} align="right">
                         <ServiceCountSelect
+                        setUpdate={setUpdate}
+                        setActivePatient={setActivePatient}
                           service={service}
                           id={service.id}
                           actviePatient={actviePatient}

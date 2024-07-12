@@ -1,10 +1,8 @@
 import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-import { useOutletContext } from "react-router-dom";
-const ServiceCountSelect = ({ id, actviePatient ,service,disabled}) => {
+const ServiceCountSelect = ({ id ,setActivePatient,setUpdate,service,disabled}) => {
   const [count, setCount] = useState(service.count);
-  const {setActivePatient,setActiveShift,setUpdate} = useOutletContext()
   console.log('servce in count select',service)
   
   const changeHandler = async (id, count) => {

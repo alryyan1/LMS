@@ -14,14 +14,13 @@ import axiosClient from "../../../axios-client";
 
 function MoneyDialog() {
   const { dialog, setDialog } = useOutletContext();
-  const [shift,setShift] = useState(null)
+  const [labUserMoney,setLabUserMoney] = useState(null)
   // console.log(dialog);
   useEffect(() => {
-    axiosClient.get("shift/last").then(({data})=>{
-        console.log(data,'last shift data')
-        setShift(data.data)
+    axiosClient.get("totalUserLabTotalAndBank").then(({data})=>{
+        setLabUserMoney(data)
     }).catch((err)=>console.log(err));
-  }, [dialog.showMoneyDialog]);
+  }, []);
 
   return (
     <div>
@@ -30,17 +29,17 @@ function MoneyDialog() {
         <DialogContent>
           <Stack direction={'column'} sx={{m:1 ,backgroundColor:(theme)=>theme.palette.success.light,p:1,borderRadius:'5px',color:'white',fontSize:"2rem"}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>اجمالي الدخل</Typography>
-            <Typography variant="h4" textAlign={'center'}>{shift?.paidLab}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{labUserMoney?.total}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>بنكك</Typography>
-            <Typography variant="h4" textAlign={'center'}>{shift?.bankak}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{labUserMoney?.bank}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>النقدي</Typography>
-            <Typography variant="h4" textAlign={'center'}>{  shift?.paidLab - shift?.bankak}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{  labUserMoney?.total - labUserMoney?.bank}</Typography>
           </Stack>
         </DialogContent>
         <DialogActions>

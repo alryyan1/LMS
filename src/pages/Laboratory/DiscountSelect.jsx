@@ -3,13 +3,14 @@ import { useState } from "react";
 import { url } from "../constants";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
-const DiscountSelect = ({ id, disc, actviePatient,setPatients }) => {
+const DiscountSelect = ({ id, disc, actviePatient,setPatients,setDialog }) => {
   const [discount, setDiscount] = useState(disc);
   const {setActivePatient} =  useOutletContext()
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const {data} = await axiosClient.patch(`labRequest/${id}`,{ test_id: id, discount: dis });
+    try {
+      const {data} = await axiosClient.patch(`labRequest/${id}`,{ test_id: id, discount: dis });
     console.log(data,'changed')
     setActivePatient(data.data)
     setPatients((prev)=>{
@@ -21,6 +22,12 @@ const DiscountSelect = ({ id, disc, actviePatient,setPatients }) => {
         }
       })
     })
+    } catch ({response:{data}}) {
+      setDialog((prev)=>{
+        return {...prev, open:true, message:data.message ,color:'error'}
+      })
+    }
+    
   
        
     

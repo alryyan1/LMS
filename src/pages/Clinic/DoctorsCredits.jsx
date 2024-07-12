@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axiosClient from '../../../axios-client'
 import { Button, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import dayjs from 'dayjs'
+import MyCustomLoadingButton from '../../components/MyCustomLoadingButton'
 
 function DoctorsCredits() {
     const [doctorShifts,setDoctorShifts] = useState([])
@@ -15,12 +16,13 @@ function DoctorsCredits() {
             console.log(data)
         })
     },[update])
-    const addCost = (id,amount,name)=>{
+    const addCost = (id,amount,name,setIsLoading)=>{
+        setIsLoading(true)
         axiosClient.post('cost',{id,amount,name}).then(({data})=>{
             console.log(data)
         }).catch((err)=>console.log(err)).finally(()=>{
             setUpdate((prev)=>prev+1)
-        })
+        }).finally(()=>setIsLoading(false))
     }
   return (
     <Paper elevation={2}>
@@ -46,9 +48,10 @@ function DoctorsCredits() {
                             <TableCell>{shift.doctor_credit_cash}</TableCell>
                             <TableCell>{shift.doctor_credit_company}</TableCell>
                             <TableCell>{dayjs(Date.parse(shift.created_at)).format('H:m A')}</TableCell>
-                            <TableCell><Button disabled={shift?.cost?.amount > 0} onClick={()=>{
-                                addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name)
-                            }} variant='contained'>خصم</Button></TableCell>
+                            <TableCell><MyCustomLoadingButton disabled={shift?.cost?.amount > 0} onClick={(setIsLoading)=>{
+                                
+                                addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name,setIsLoading)
+                            }} variant='contained'>خصم</MyCustomLoadingButton></TableCell>
                         </TableRow>
                     )
                 })}

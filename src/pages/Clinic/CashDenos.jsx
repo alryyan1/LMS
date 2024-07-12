@@ -6,8 +6,6 @@ import {
   CardContent,
   Divider,
   Grid,
-  IconButton,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -18,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { useForm } from "react-hook-form";
+import AddCostForm from "../../components/AddCostForm";
 
 const options = {
   weekday: "long",
@@ -50,20 +48,7 @@ function CashDenos() {
       setUserDenos(data.data);
     });
   }, []);
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm();
-  const submitHandler = (data) => {
-    console.log("function called");
-    axiosClient.post("cost/general", data).then(({ data }) => {
-      console.log(data);
-      if (data.status) {
-        setShift(data.data);
-      }
-    });
-  };
+
   const totalIncome = shift?.totalPaid + shift?.paidLab + shift?.totalDeductsPrice;
   const denosAmount = userDenos.reduce(
     (accum, d) => accum + d.name * d.pivot.amount,
@@ -76,7 +61,7 @@ function CashDenos() {
   return (
     <>
       {shift && (
-        <Card sx={{ mb: 1 }}>
+        <Card  sx={{ mb: 1 }}>
           <CardContent>
             <Stack
               direction={"row"}
@@ -102,9 +87,9 @@ function CashDenos() {
           </CardContent>
         </Card>
       )}
-      <Grid container gap={2}>
+      <Grid container spacing={2}>
        
-        <Grid xs={2}>
+        <Grid  item lg={3} xs={12}>
           <Card sx={{ borderRadius: 10, flexBasis: "70px", p: 1 }}>
             <CardContent>
               <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
@@ -157,7 +142,7 @@ function CashDenos() {
                   <Typography variant="h4" textAlign={"center"}>
                     {/* {(denosAmount + totalCost - totalIncome)  > 0 &&  '+'} */}
                     {/* {(denosAmount + totalCost - totalIncome) < 0 &&  '-'} */}
-                    ==========
+                    --
                   </Typography>
                   <Divider />
                   <Typography textAlign={"center"} variant="h4">
@@ -170,7 +155,7 @@ function CashDenos() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid xs={3}>
+        <Grid  item lg={3} xs={12}>
           <Box sx={{ p: 1 }}>
             <Typography variant="h3" textAlign={"center"}>
               الفئات
@@ -220,7 +205,7 @@ function CashDenos() {
             </Table>
           </Box>
         </Grid>
-        <Grid xs={3}>
+        <Grid  item  lg={3} xs={12}>
           <Box sx={{ p: 1 }}>
             <Typography variant="h4" textAlign={"center"}>
               مصروفات الورديه
@@ -256,44 +241,8 @@ function CashDenos() {
             </Table>
           </Box>
         </Grid>
-        <Grid item xs={3}>
-          <Box elevation={2}>
-            <Typography textAlign={"center"} variant="h4">
-              اضافه مصروف
-            </Typography>
-            <Divider></Divider>
-            <form
-              onSubmit={handleSubmit(submitHandler)}
-              style={{ padding: "5px" }}
-            >
-              <Stack direction={"column"} spacing={2}>
-                <TextField
-                  error={errors?.description != null}
-                  helperText={errors?.description && errors.description.message}
-                  {...register("description", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال وصف المصروف",
-                    },
-                  })}
-                  multiline
-                  label="وصف المصروف"
-                />
-                <TextField
-                  error={errors?.amount != null}
-                  helperText={errors?.amount && errors.amount.message}
-                  {...register("amount", {
-                    required: {
-                      value: true,
-                      message: "يجب ادخال المبلغ",
-                    },
-                  })}
-                  label="المبلغ"
-                />
-                <LoadingButton type="submit">حفظ</LoadingButton>
-              </Stack>
-            </form>
-          </Box>
+        <Grid   item lg={3} xs={12}>
+         <AddCostForm setShift={setShift}/>
         </Grid>
       </Grid>
     </>

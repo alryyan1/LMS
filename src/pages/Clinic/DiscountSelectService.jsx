@@ -1,10 +1,8 @@
 import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-import { useOutletContext } from "react-router-dom";
-const DiscountSelectService = ({ id, actviePatient ,service}) => {
+const DiscountSelectService = ({ id, setActivePatient ,service}) => {
   const [discount, setDiscount] = useState(service.discount);
-  const {setActivePatient,setActiveShift} = useOutletContext()
   console.log('discount select rendered ')
   
   const changeDiscountHandler = async (id, dis) => {

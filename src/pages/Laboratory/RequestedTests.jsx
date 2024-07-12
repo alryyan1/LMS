@@ -1,9 +1,6 @@
 import {
   Box,
-  Collapse,
-  Divider,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -11,17 +8,16 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { TransitionGroup } from "react-transition-group";
 
 import DiscountSelect from "./DiscountSelect";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
-import Patient from "./Patient";
+import { useStateContext } from "../../appContext";
 function RequestedTests({ setPatients }) {
   console.log("requested tests rendered");
   const {
@@ -30,7 +26,9 @@ function RequestedTests({ setPatients }) {
     actviePatient,
     tests,
     companies,
+
   } = useOutletContext();
+  const {user} = useStateContext()
   console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
   console.log(actviePatient, "active patient", setActivePatient);
@@ -65,17 +63,16 @@ function RequestedTests({ setPatients }) {
             open: true,
           }));
         }
+      }).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return {...prev, open:true, message:data.message,color:'error'}
+        })
       }).finally(()=>setLoading(false));
   };
   const cancelPayHandler = () => {
     setLoading(true);
-    fetch(`${url}labRequest/cancelPayment/${actviePatient.id}`, {
-      method: "PATCH",
-
-      headers: { "content-type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient.patch(`${url}labRequest/cancelPayment/${actviePatient.id}`)
+      .then(({data}) => {
         console.log(data, "data from cancel");
         if (data.status) {
           setLoading(false);
@@ -103,7 +100,11 @@ function RequestedTests({ setPatients }) {
             return { ...p, is_lab_paid: false, lab_paid: 0 };
           });
         }
-      });
+      }).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return {...prev, open:true, message:data.message,color:'error'}
+        })
+      }).finally(()=>setLoading(false));
   };
   // useEffect(() => {
   //   axiosClient.get(`labRequest/${actviePatient.id}`)
@@ -196,7 +197,7 @@ function RequestedTests({ setPatients }) {
                           </TableCell>
                           {actviePatient.company ? "":  <TableCell sx={{ border: "none" }} align="right">
                             <DiscountSelect
-                             
+                              setDialog={setDialog}
                               setPatients={setPatients}
                               id={test.id}
                               disc={test.discount_per}
@@ -253,6 +254,7 @@ function RequestedTests({ setPatients }) {
           <div className="money-info">
             {actviePatient.is_lab_paid ? (
               <LoadingButton
+              disabled={user.id !=actviePatient.user_id}
                 loading={loading}
                 color="error"
                 onClick={cancelPayHandler}

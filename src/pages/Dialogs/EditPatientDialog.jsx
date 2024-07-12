@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient,doctorVisitId,isLab=false }) {
+function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
   const { doctors, setActivePatient, setUpdate, openedDoctors,setOpenEdit,openEdit } =
     useOutletContext();
   // console.log(patient);
@@ -65,6 +65,10 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false }) {
           //   })
           // })
         }
+      }).catch(({response:{data}})=>{
+        setDialog((prev)=>{
+          return {...prev, open:true, message:data.message,color:'error'}
+        })
       })
       .finally(() => setLoading(false));
   }

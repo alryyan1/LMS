@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
 
 function ReceptionDoctorsDialog() {
   const [page, setPage] = useState(0);
@@ -35,7 +36,8 @@ function ReceptionDoctorsDialog() {
       });
     });
   };
-  const openDoctorShiftHandler = (doctor) => {
+  const openDoctorShiftHandler = (doctor,setLoading) => {
+    setLoading(true)
     console.log(openedDoctors)
     console.log(doctor);
     axiosClient.get(`doctor/shift/open/${doctor.id}`).then(({ data }) => {
@@ -63,9 +65,12 @@ function ReceptionDoctorsDialog() {
       console.log(data)
       setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
 
+    }).finally(()=>{
+      setLoading(false)
     });
   };
-  const closeDoctorShift = (doctor) => {
+  const closeDoctorShift = (doctor,setIsLoading) => {
+    setIsLoading(true)
     axiosClient.get(`doctor/shift/close/${doctor.last_shift.id}`).then(({ data }) => {
       if (data.status) {
         setOpenedDoctors((prev) => {
@@ -87,7 +92,7 @@ function ReceptionDoctorsDialog() {
       setDialog((prev)=>{
         return {...prev,open:true,msg:data.message,color:'error'}
       })
-    });
+    }).finally(()=>setIsLoading(false));
   };
   return (
     <div>
@@ -117,29 +122,29 @@ function ReceptionDoctorsDialog() {
                     <TableRow key={doctor.id}>
                       <TableCell>{doctor.name}</TableCell>
                       <TableCell>
-                        <Button
+                        <MyCustomLoadingButton
                           disabled={
                             doctor.last_shift &&
                             doctor.last_shift.status === 1
                           }
-                          onClick={() => openDoctorShiftHandler(doctor)}
+                          onClick={(setLoading) => openDoctorShiftHandler(doctor,setLoading)}
                           variant="contained"
                         >
                           فتح ورديه
-                        </Button>
+                        </MyCustomLoadingButton>
                       </TableCell>
                       <TableCell>
-                        <Button
+                        <MyCustomLoadingButton
                           disabled={
                             doctor.last_shift &&
                             doctor.last_shift.status === 0
                           }
-                          onClick={() => closeDoctorShift(doctor)}
+                          onClick={(setIsLoading) => closeDoctorShift(doctor,setIsLoading)}
                           variant="contained"
                           color="error"
                         >
                           قفل ورديه
-                        </Button>
+                        </MyCustomLoadingButton>
                       </TableCell>
                     </TableRow>
                   );

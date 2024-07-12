@@ -1,34 +1,19 @@
 import {
   Autocomplete,
-  Button,
   Divider,
-  Grid,
   Paper,
-  Stack,
   TextField,
-  Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import axiosClient from "../../../axios-client";
-import { webUrl } from "../constants";
-import printJS from "print-js";
 
-function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = false,isLab=false}) {
+function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPatient = false }) {
 
 
-  console.log(patient, "patient in patient details");
 
-  const [open, setOpen] = useState();
 
-  const { openedDoctors, setUpdate, activeShift } = useOutletContext();
 
   const date = new Date(patient.created_at);
 
-  const handleEdit = () => {
-    setOpen(true);
-  };
 
   return (
     <>
@@ -77,6 +62,16 @@ function PatientDetail({ patient, setPatients, copyPatient = false ,showBtns = f
             }
           </div>
           <div>الزمن</div>
+        </div>
+        <Divider />
+        <div className="form-control">
+          <div>
+            {
+              //print iso date
+              patient.user.username
+            }
+          </div>
+          <div>سجل بواسطه</div>
         </div>
         <Divider />
         <div className="form-control">
