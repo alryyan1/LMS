@@ -217,13 +217,76 @@ const Nav = () => {
           >
             {t('login')}
           </NavLink>
-          <NavLink
+          {
+            user?.routes.map((r)=>{
+              if (r.route.id == 4) {
+                return (<NavLink
+                 key={r.id}
+                  to={"/lab"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setLabDrawer(true);
+                  }}
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t('lab')}
+                </NavLink>)
+              }
+              else if(r.route_id == 5){
+                return (
+                  <NavLink
+                   key={r.id}
+                  to={"clinic"}
+                  onClick={(e) => {
+                    e.preventDefault();
+      
+                    setClinicDrawer(true);
+                  }}
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t('clinic')}
+                </NavLink>
+                )
+              }else if(r.route_id == 2){
+               return <NavLink
+                key={r.id}
+                // to={"pharma"}
+                onClick={(e) => {
+                  e.preventDefault();
+    
+                  setPharmacyDrawer(true);
+                }}
+                style={{
+                  textDecoration: "none",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+              {
+                t('pharma')
+              }
+              </NavLink>
+              }
+              return (
+                <NavLink
+                 key={r.id}
             style={{ textDecoration: "none", color: "white" }}
-            to={"/inventory"}
+            to={r.route.path}
           >
-            {t("inventory")}{" "}
+            {t(r.route.name)}
           </NavLink>
-          <NavLink
+              )
+            })
+          }
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/audit"}
           >
@@ -283,22 +346,23 @@ const Nav = () => {
             {
               t('insurance')
             }
-          </NavLink>
-          <NavLink
+          </NavLink> */}
+          {/* <NavLink
+          
             style={{ textDecoration: "none", color: "white" }}
             to={"/services"}
           >
             {
               t('services')
             }
-          </NavLink>
-          <NavLink
+          </NavLink> */}
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
           >
             shipping
-          </NavLink>
-          {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
+          </NavLink> */}
+          {/* {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
             <NavLink
               style={{ textDecoration: "none", color: "white" }}
               to={"/settings"}
@@ -309,15 +373,15 @@ const Nav = () => {
             </NavLink>
           ) : (
             ""
-          )}
-          <NavLink
+          )} */}
+          {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/dashboard"}
           >
             {
               t('dashboard')
             }
-          </NavLink>
+          </NavLink> */}
 
           <div style={{ flexGrow: 1 }}></div>
           <Typography color={"white"} variant="h5">

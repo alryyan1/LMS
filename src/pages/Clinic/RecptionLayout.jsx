@@ -13,7 +13,7 @@ function ReceptionLayout() {
     openError: false,
     openLabReport: false,
     showDoctorsDialog: false,
-    msg: "تمت الاضافه بنجاح",
+    message: "تمت الاضافه بنجاح",
   });
   const [foundedPatients, setFoundedPatients] = useState([]);
   const [searchByName, setSearchByName] = useState(null);
@@ -113,7 +113,7 @@ function ReceptionLayout() {
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
         <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>
-          {dialog.msg}
+          {dialog.message}
         </Alert>
       </Snackbar>
     </div>

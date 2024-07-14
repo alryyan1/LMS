@@ -14,6 +14,7 @@ import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import CustomCheckBoxUser from "../../components/CustomCheckBoxUser";
 import SignUp from "../Singeup";
+import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
 
 function Users() {
   const { setDialog } = useOutletContext();
@@ -21,6 +22,7 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
+  const [routes, setRoutes] = useState([]);
   useEffect(() => {
     document.title = "المستخدمين";
   }, []);
@@ -43,6 +45,13 @@ function Users() {
     axiosClient("roles").then(({ data }) => {
       setRoles(data);
       console.log(data, "rules");
+      //   setUpdater((prev)=>prev+1)
+    });
+  }, []);
+  useEffect(() => {
+    axiosClient("routes").then(({ data }) => {
+      setRoutes(data);
+      console.log(data, "rouotes");
       //   setUpdater((prev)=>prev+1)
     });
   }, []);
@@ -103,6 +112,38 @@ function Users() {
                       />
                     }
                     label={role.name}
+                  />
+                );
+              })}
+            </FormGroup>
+          </Box>
+        )}
+      </Grid>
+      <Grid item xs={3}>
+        {selectedUser && (
+          <Box sx={{ p: 1 }}>
+            <Typography textAlign={"center"} variant="h5">
+              User Routes {selectedUser.name}{" "}
+            </Typography>
+            <FormGroup>
+              {routes.map((route) => {
+                console.log(route, "route check box");
+                const checked = selectedUser.routes
+                  .map((r) => r.route_id)
+                  .includes(route.id);
+                return (
+                  <FormControlLabel
+                    key={route.id}
+                    control={
+                      <CustomCheckboxUserRoute
+                        selectedUser={selectedUser}
+                        setDialog={setDialog}
+                        setUpdater={setUpdater}
+                        route_id={route.id}
+                        isChecked={checked}
+                      />
+                    }
+                    label={route.name}
                   />
                 );
               })}

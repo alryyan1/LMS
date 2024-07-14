@@ -65,6 +65,7 @@ function RequestedTests({ setPatients }) {
         }
       }).catch(({response:{data}})=>{
         setDialog((prev)=>{
+
           return {...prev, open:true, message:data.message,color:'error'}
         })
       }).finally(()=>setLoading(false));
@@ -101,6 +102,7 @@ function RequestedTests({ setPatients }) {
           });
         }
       }).catch(({response:{data}})=>{
+       
         setDialog((prev)=>{
           return {...prev, open:true, message:data.message,color:'error'}
         })

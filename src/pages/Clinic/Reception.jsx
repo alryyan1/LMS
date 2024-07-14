@@ -232,6 +232,7 @@ function Reception() {
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <PatientDetail
+                openedDoctors={openedDoctors}
                 activeShift={activeShift}
                   key={actviePatient.id}
                   patient={actviePatient.patient}

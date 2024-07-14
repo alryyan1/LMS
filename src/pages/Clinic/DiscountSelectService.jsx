@@ -1,19 +1,26 @@
 import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-const DiscountSelectService = ({ id, setActivePatient ,service}) => {
+const DiscountSelectService = ({ id, setActivePatient ,service,setDialog}) => {
   const [discount, setDiscount] = useState(service.discount);
   console.log('discount select rendered ')
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
-    const {data} = await axiosClient.patch(`requestedService/discount/${id}`,{ service_id: id, discount: dis });
+    try {
+        const {data} = await axiosClient.patch(`requestedService/discount/${id}`,{ service_id: id, discount: dis });
     console.log(data)
     if (data.status) {
       console.log(data.patient);
       setActivePatient(data.patient);
     }
 
+  
+    } catch ({response:{data}}) {
+        setDialog((prev)=>{
+          return {...prev, open: true,color:'error' ,message:data.message};
+        })
+    }
   
     
 

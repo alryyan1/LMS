@@ -35,16 +35,17 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
           return{
            ...prev,
             open:true,
-            msg:"تم  السداد بنجاح",
+            message:"تم  السداد بنجاح",
             color:"success"
           }
         })
       }).catch(({response:{data}})=>{
+        // alert(data.message)
         setDialog((prev)=>{
           return{
            ...prev,
             open:true,
-            msg:data.message,
+            message:data.message,
             color:"error"
           }
         })
@@ -53,7 +54,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
           return{
            ...prev,
             open:true,
-            msg:data.message,
+            message:data.message,
             color:"error"
           }
         })
@@ -72,7 +73,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
           return{
            ...prev,
             open:true,
-            msg:"تم الغاء السداد بنجاح",
+            message:"تم الغاء السداد بنجاح",
             color:"success"
           }
         })
@@ -83,7 +84,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
         return{
          ...prev,
           open:true,
-          msg:data.message,
+          message:data.message,
           color:"error"
         }
       })
@@ -92,7 +93,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
         return{
          ...prev,
           open:true,
-          msg:data.message,
+          message:data.message,
           color:"error"
         }
       })
@@ -110,7 +111,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
             return {
               ...prev,
               open: true,
-              msg: "تم الحذف بنجاح",
+              message: "تم الحذف بنجاح",
               color: "success",
             };
           });
@@ -120,7 +121,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
           return{
            ...prev,
             open:true,
-            msg:data.message,
+            message:data.message,
             color:"error"
           }
         })
@@ -192,6 +193,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                       </TableCell>
                       { actviePatient.company_id ? "": <TableCell sx={{ border: "none" }} align="right">
                         <DiscountSelectService
+                        setDialog={setDialog}
                         setActivePatient={setActivePatient}
                           service={service}
                           id={service.id}

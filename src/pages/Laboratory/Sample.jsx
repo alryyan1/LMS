@@ -39,6 +39,7 @@ import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import { LoadingButton } from "@mui/lab";
+import printJS from "print-js";
 function uniqe(val,index,array){
   return array.indexOf(val) === index;
 }
@@ -297,9 +298,32 @@ console.log(containers,'containerss')
               />
               <Divider/>
               <LoadingButton onClick={()=>{
-                axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
-                  console.log(data,'barcode')
-                })
+                // axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
+                  // console.log(data,'barcode')
+                // })
+                axiosClient
+                .get(`printBarcode?pid=${actviePatient.id}&base64=1`)
+                .then(({ data }) => {
+                  const form = new URLSearchParams();
+
+                  form.append("data", data);
+                  console.log(data, "daa");
+                  printJS({
+                    printable: data.slice(data.indexOf("JVB")),
+                    base64: true,
+                    type: "pdf",
+                  });
+
+                  fetch("http://127.0.0.1:4000/", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type":
+                        "application/x-www-form-urlencoded",
+                    },
+
+                    body: form,
+                  }).then(() => {});
+                });
               }} sx={{mt:1}} fullWidth variant="contained">
                 Print Barcode
               </LoadingButton>
