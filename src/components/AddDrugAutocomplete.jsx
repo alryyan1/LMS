@@ -72,7 +72,7 @@ function AddDrugAutocomplete({setUpdater}) {
                       const barcode = e.target.value.trim();
                       console.log(items,'items',barcode,'barcode');
                       const itemFounded =  items.find((item)=>{
-                        return item.barcode.trim() === barcode
+                        return item.barcode?.trim() === barcode
                       })
                       console.log(itemFounded,'founed')
                       if (itemFounded ) {

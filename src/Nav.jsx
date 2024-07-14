@@ -108,18 +108,18 @@ const Nav = () => {
       </List>
     </Box>
   );
-
+  console.log('nav updated')
   const DrawerPharmacyList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
         {[
-          { title: "Drug Define", to: "/pharmacy/add" },
-          { title: "POS", to: "/pharmacy/sell" },
-          { title: "Items", to: "/pharmacy/items" },
-          { title: "Sales", to: "/pharmacy/reports" },
-          { title: "Inventory", to: "/pharmacy/inventory" },
-          { title: "Income", to: "/pharmacy/deposit" },
-          { title: "Expenses", to: "/clinic/denos" },
+          { title: t('define') , to: "/pharmacy/add" },
+          { title:t('pos') , to: "/pharmacy/sell" },
+          { title: t('items'), to: "/pharmacy/items" },
+          { title: t('sales'), to: "/pharmacy/reports" },
+          { title: t('inventory'), to: "/pharmacy/inventory" },
+          { title: t("income"), to: "/pharmacy/deposit" },
+          { title: t("expenses"), to: "/clinic/denos" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
             <ListItemButton

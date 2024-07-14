@@ -22,7 +22,7 @@ import NewInvoiceForm from "./NewInvoiceForm.jsx";
 import AddItemToDepositForm from "./AddItemToDepositForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
+import {t} from 'i18next'
 function ItemDeposit() {
   const [layOut, setLayout] = useState({
     newForm: "1fr",
@@ -153,12 +153,11 @@ function ItemDeposit() {
   };
   useEffect(() => {
     //fetch all suppliers
-    axiosClient.get(`suppliers/all`)
-      .then(({data}) => {
-        //set suppliers
-        setSuppliers(data);
-        // console.log(data);
-      });
+    axiosClient.get(`suppliers/all`).then(({ data }) => {
+      //set suppliers
+      setSuppliers(data);
+      // console.log(data);
+    });
   }, []);
   const [billNumber, setBillNumber] = useState("");
   const [date, setDate] = useState(dayjs(new Date()));
@@ -206,7 +205,7 @@ function ItemDeposit() {
       <Stack direction={"row"} gap={3} style={{ textAlign: "right" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Button onClick={searchDeposits} size="medium" variant="contained">
-           Search
+            {t('search')}
           </Button>
           <DateField
             onChange={(val) => {
@@ -244,9 +243,19 @@ function ItemDeposit() {
           transition: "0.3s all ease-in-out",
           height: "70vh",
           display: "grid",
-          gridTemplateColumns: `  1fr  1fr   1.6fr   1fr  ${layOut.newForm}  0.1fr `,
+          gridTemplateColumns: `  1fr  1fr   1fr   1fr  ${layOut.newForm}  0.1fr `,
         }}
       >
+        <div style={layOut.incomeItemsStyleObj}>
+          {/* create table with all suppliers */}
+          {selectedDeposit && (
+            <DepoistItemsTable
+              deleteIncomeItemHandler={deleteIncomeItemHandler}
+              loading={loading}
+              selectedDeposit={selectedDeposit}
+            />
+          )}
+        </div>
         <div style={layOut.addToInventoryStyleObj}>
           {selectedDeposit && (
             <AddItemToDepositForm
@@ -266,14 +275,14 @@ function ItemDeposit() {
                 color="primary"
                 badgeContent={deposit.items.length}
               >
-                <ListItem 
-                 key={deposit.id}>
+                <ListItem key={deposit.id}>
                   <ListItemButton
-                  title={dayjs(Date.parse(deposit.bill_number)).format('YYYY-MM-DD')}
+                    title={dayjs(Date.parse(deposit.bill_number)).format(
+                      "YYYY-MM-DD"
+                    )}
                     style={{
                       border: "1px dashed ",
                       marginBottom: "2px",
-                     
                     }}
                     sx={{
                       backgroundColor: (theme) =>
@@ -293,17 +302,7 @@ function ItemDeposit() {
             );
           })}
         </div>
-        <div style={layOut.incomeItemsStyleObj}>
 
-          {/* create table with all suppliers */}
-          {selectedDeposit && (
-            <DepoistItemsTable
-              deleteIncomeItemHandler={deleteIncomeItemHandler}
-              loading={loading}
-              selectedDeposit={selectedDeposit}
-            />
-          )}
-        </div>
         {layOut.showNewForm && (
           <NewInvoiceForm
             hideNewFormHandler={hideNewFormHandler}

@@ -3,24 +3,15 @@ import { useEffect, useState } from "react";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
 import { webUrl } from "../constants";
-import pic1 from "../../assets/images/1.png"
-import pic2 from "../../assets/images/2.png"
-import pic3 from "../../assets/images/3.png"
-import pic4 from "../../assets/images/4.png"
-import pic5 from "../../assets/images/5.png"
-import pic6 from "../../assets/images/6.png"
-import pic7 from "../../assets/images/7.png"
+import pic1 from "../../assets/images/1.png";
+import pic2 from "../../assets/images/2.png";
+import pic3 from "../../assets/images/3.png";
+import pic4 from "../../assets/images/4.png";
+import pic5 from "../../assets/images/5.png";
+import pic6 from "../../assets/images/6.png";
+import pic7 from "../../assets/images/7.png";
 
-const images = [
-  pic1,
-  pic2,
-  pic3,
-  pic4,
-  pic5,
-  pic6,
-  pic7,
-
-]
+const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
 import {
   List,
   ListItem,
@@ -31,6 +22,9 @@ import {
   Stack,
   Skeleton,
   Paper,
+  Grid,
+  Typography,
+  Box,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
@@ -40,16 +34,12 @@ import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import { LoadingButton } from "@mui/lab";
 import printJS from "print-js";
-function uniqe(val,index,array){
+function uniqe(val, index, array) {
   return array.indexOf(val) === index;
 }
 function Sample() {
-  const {
-    actviePatient,
-    setActivePatient,
-    searchByName,
-    update,
-  } = useOutletContext();
+  const { actviePatient, setActivePatient, searchByName, update } =
+    useOutletContext();
 
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
@@ -67,11 +57,11 @@ function Sample() {
     showTestPanel: false,
     patientDetails: "0.8fr",
   });
-  
-    useEffect(() => {
-      document.title = 'سحب العينات';
-    }, []);
-  
+
+  useEffect(() => {
+    document.title = "سحب العينات";
+  }, []);
+
   useEffect(() => {
     setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
@@ -113,19 +103,19 @@ function Sample() {
     // setActivePatient({...foundedPatient,active:true});
   };
   const shiftDate = new Date(Date.parse(shift?.created_at));
-  const containers = actviePatient?.labrequests.map((req)=>{
+  const containers = actviePatient?.labrequests.map((req) => {
     return req.main_test.container;
-})
-//سبحان الله
-const filteredContainers=  containers?.filter((item,index,array)=>array.map((i)=>i.id).indexOf(item.id)==index)
-console.log(filteredContainers,'filtered containers')
+  });
+  //سبحان الله
+  const filteredContainers = containers?.filter(
+    (item, index, array) => array.map((i) => i.id).indexOf(item.id) == index
+  );
+  console.log(filteredContainers, "filtered containers");
 
-
-
-console.log(containers,'containerss')
+  console.log(containers, "containerss");
   return (
     <>
-    sample
+      sample
       <div
         style={{
           gap: "15px",
@@ -139,7 +129,6 @@ console.log(containers,'containerss')
           setActivePatientHandler={setActivePatientHandler}
         />
       </div>
-
       <div
         style={{
           gap: "15px",
@@ -151,8 +140,6 @@ console.log(containers,'containerss')
       >
         <div>
           <AddDoctorDialog />
-
-      
         </div>
         <Paper style={{ overflow: "auto" }} sx={{ p: 1 }}>
           <Stack justifyContent={"space-around"} direction={"row"}>
@@ -176,7 +163,7 @@ console.log(containers,'containerss')
           </Stack>
           <Stack justifyContent={"space-around"} direction={"row"}>
             <IconButton
-            disabled={shift?.id == 1}
+              disabled={shift?.id == 1}
               onClick={() => {
                 if (shift.id == 1) {
                   return;
@@ -193,7 +180,7 @@ console.log(containers,'containerss')
               <ArrowBack />
             </IconButton>
             <IconButton
-            disabled={shift?.id == shift?.maxShiftId}
+              disabled={shift?.id == shift?.maxShiftId}
               onClick={() => {
                 // if (shift.id == 1) {
                 //   return
@@ -211,29 +198,60 @@ console.log(containers,'containerss')
             </IconButton>
           </Stack>
           <Divider></Divider>
-          <div className="patients" style={{ padding: "15px" }}>
-            {patientsLoading ? (
-              <Skeleton
-                animation="wave"
-                variant="rectangular"
-                width={"100%"}
-                height={400}
-              />
-            ) : (
-              shift?.patients
-                
-                .map((p, i) => (
-                  <Patient
-                    delay={i * 100}
-                    key={p.id}
-                    patient={p}
-                    onClick={() => {
-                      setActivePatientHandler(p);
-                    }}
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography textAlign={"center"}>Collected</Typography>
+              <div className="patients" style={{ padding: "15px" }}>
+                {patientsLoading ? (
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={400}
                   />
-                ))
-            )}
-          </div>
+                ) : (
+                  shift?.patients
+                    .filter((p) => p.sample_collected == 0)
+                    .map((p, i) => (
+                      <Patient
+                        delay={i * 100}
+                        key={p.id}
+                        patient={p}
+                        onClick={() => {
+                          setActivePatientHandler(p);
+                        }}
+                      />
+                    ))
+                )}
+              </div>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography textAlign={"center"}>Not Collected</Typography>
+              <div className="patients" style={{ padding: "15px" }}>
+                {patientsLoading ? (
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={400}
+                  />
+                ) : (
+                  shift?.patients
+                    .filter((p) => p.sample_collected == 1)
+                    .map((p, i) => (
+                      <Patient
+                        delay={i * 100}
+                        key={p.id}
+                        patient={p}
+                        onClick={() => {
+                          setActivePatientHandler(p);
+                        }}
+                      />
+                    ))
+                )}
+              </div>
+            </Grid>
+          </Grid>
         </Paper>
         <Paper style={{ height: "80vh", overflow: "auto" }}>
           {console.log(actviePatient, "activve pateint")}
@@ -248,7 +266,6 @@ console.log(containers,'containerss')
                         color: "white",
                       },
                     }}
-                    
                     key={test.main_test.id}
                   >
                     <ListItemButton
@@ -277,13 +294,12 @@ console.log(containers,'containerss')
             </List>
           )}
         </Paper>
-        <Paper sx={{display:'grid',gridTemplateColumns:"1fr 1fr 1fr"}} >
-          
-       { filteredContainers?.map((c)=>{
-        return <img key={c.id}  height={300} src = {images[c.id - 1 ]} alt="" />
-       })}
-
-       
+        <Paper sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+          {filteredContainers?.map((c) => {
+            return (
+              <img key={c.id} height={300} src={images[c.id - 1]} alt="" />
+            );
+          })}
         </Paper>
 
         <div>
@@ -296,42 +312,59 @@ console.log(containers,'containerss')
                 patient={actviePatient}
                 setShift={setShift}
               />
-              <Divider/>
-              <LoadingButton onClick={()=>{
-                // axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
+              <Divider />
+              <LoadingButton
+                onClick={() => {
+                  // axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
                   // console.log(data,'barcode')
-                // })
-                axiosClient
-                .get(`printBarcode?pid=${actviePatient.id}&base64=1`)
-                .then(({ data }) => {
-                  const form = new URLSearchParams();
+                  // })
 
-                  form.append("data", data);
-                  console.log(data, "daa");
-                  printJS({
-                    printable: data.slice(data.indexOf("JVB")),
-                    base64: true,
-                    type: "pdf",
-                  });
+                  axiosClient
+                    .get(`patient/sampleCollected/${actviePatient.id}`)
+                    .then(({ data }) => {
+                      setShift(data.shift);
+                    });
+                  axiosClient
+                    .get(`printBarcode?pid=${actviePatient.id}&base64=1`)
+                    .then(({ data }) => {
+                      const form = new URLSearchParams();
 
-                  fetch("http://127.0.0.1:4000/", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type":
-                        "application/x-www-form-urlencoded",
-                    },
+                      form.append("data", data);
+                      console.log(data, "daa");
+                      printJS({
+                        printable: data.slice(data.indexOf("JVB")),
+                        base64: true,
+                        type: "pdf",
+                      });
 
-                    body: form,
-                  }).then(() => {});
-                });
-              }} sx={{mt:1}} fullWidth variant="contained">
+                      fetch("http://127.0.0.1:4000/", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/x-www-form-urlencoded",
+                        },
+
+                        body: form,
+                      }).then(() => {});
+                    });
+                }}
+                sx={{ mt: 1 }}
+                fullWidth
+                variant="contained"
+              >
                 Print Barcode
               </LoadingButton>
+              {    actviePatient && actviePatient.sample_collected && <Box>
+            <Divider />
+                <div style={{marginTop:'10px'}} className="form-control">
+                  <div>{actviePatient.sample_collect_time}</div>
+                  <div>زمن سحب العينه </div>
+                </div>
+                <Divider />
+               
+              </Box>}
             </div>
           )}
-          
         </div>
-      
       </div>
     </>
   );

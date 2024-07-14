@@ -8,6 +8,12 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     resources :{
         ar:{
             translation:{
+                define:'تعريف منتج',
+                income:'فاتوره وارد جديد',
+                
+                sales:'المبيعات',
+                items:'قائمه المنتجات',
+                pos:'نافذه البيع',
                 inventory:'المخزن',
                 audit:'التدقيق',
                 signup:'انشاء حساب ',
@@ -28,17 +34,42 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 addShip:'اضافه شحنه',
                 nameValidation :'يجب ادخال اسم',
                 phoneValidation :'يجب ادخال الهاتف',
-                 ['draug type']:'الشكل الصيدلاني'
+                supplierValidation :"يجب اختيار المورد",
+                expenses:'المصروفات',
+                supplier:'المورد',
+                dateValidation :" يجب اختيار التاريخ  ",
+                invoiceDate:"تاريخ الفاتوره",
+                billNumber:'رقم الفاتوره',
+                billNumberValidation:'يجب ادخال رقم الفاتوره',
+                save:'حفظ',
+                search:'بحث',
+                pharmacy:'الصيدليه',
             }
         },
         en:{
             translation:{
+                pharmacy:'pharmacy',
+
+                invoiceDate:"Invoice Purchase Date",
+                billNumberValidation:"Invoice Purchase Number must be provided",
+                save:'save',
+                search:'search',
+
+                dateValidation :"Date must be provided",
+                supplierValidation :"Supplier must be provided",
+                supplier:'Supplier',
+                expenses:'expenses',
+                income:'New Purchase Invoice',
+                sales:'sales',
+                items:'items',
+                define:'define item',
+                pos:'POS',
                 Addnewuser:'Add new user',
                 signup:'Sign up',
                 audit:'Finance Audit',
 
                 name:'name',
-                Inventory:'inventory',
+                inventory:'inventory',
                 login:'login',
                 lab:'lab',
                 clinic:'Clinic',
@@ -47,7 +78,9 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 insurance:'insurance',
                 settings:'settings',
                 dashboard:'dashboard',
+                billNumber:'bill number',
             }
+            
         },
         ch:{
             translation:{

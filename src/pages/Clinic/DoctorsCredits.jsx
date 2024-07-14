@@ -48,7 +48,7 @@ function DoctorsCredits() {
                             <TableCell>{shift.doctor_credit_cash}</TableCell>
                             <TableCell>{shift.doctor_credit_company}</TableCell>
                             <TableCell>{dayjs(Date.parse(shift.created_at)).format('H:m A')}</TableCell>
-                            <TableCell><MyCustomLoadingButton disabled={shift?.cost?.amount > 0} onClick={(setIsLoading)=>{
+                            <TableCell><MyCustomLoadingButton disabled={shift.cost} onClick={(setIsLoading)=>{
                                 
                                 addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name,setIsLoading)
                             }} variant='contained'>خصم</MyCustomLoadingButton></TableCell>

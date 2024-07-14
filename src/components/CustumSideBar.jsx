@@ -49,7 +49,7 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
        
     <Item>
       
-     {user && <IconButton title=" التقرير العام" href={`${webUrl}clinics/all?user=${user.id}`} variant="contained">
+     {user && <IconButton title=" التقرير العام" href={`${webUrl}userClinicReport?user=${user.id}`} variant="contained">
         <Diversity3Icon />
       </IconButton>}
     </Item>

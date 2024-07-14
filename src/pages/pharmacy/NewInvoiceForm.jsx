@@ -14,7 +14,7 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
-
+import {t} from "i18next"
 function NewInvoiceForm({
   hideNewFormHandler,
   suppliers,
@@ -68,7 +68,7 @@ function NewInvoiceForm({
         onSubmit={handleSubmit2(newInvoiceHandler)}
       >
         <Typography variant="h5" align="center">
-          Make Purchase 
+          {t('income')}
         </Typography>
 
         <Stack direction={"column"} gap={2}>
@@ -77,7 +77,7 @@ function NewInvoiceForm({
             rules={{
               required: {
                 value: true,
-                message: "Supplier must be provided",
+                message: t('supplierValidation'),
               },
             }}
             control={control2}
@@ -99,7 +99,7 @@ function NewInvoiceForm({
                         helperText={
                           errors2.supplier && errors2.supplier.message
                         }
-                        label={"Supplier" }
+                        label={t("supplier") }
                         {...params}
                       />
                     );
@@ -116,7 +116,7 @@ function NewInvoiceForm({
               rules={{
                 required: {
                   value: true,
-                  message: "Date must be provided",
+                  message: t('dateValidation'),
                 },
               }}
               control={control2}
@@ -128,7 +128,7 @@ function NewInvoiceForm({
                   value={field.value}
                   onChange={(val) => field.onChange(val)}
                   sx={{ mb: 1 }}
-                  label="Invoice Purchase Date"
+                  label={t('invoiceDate')}
                 />
               )}
             />
@@ -142,10 +142,10 @@ function NewInvoiceForm({
             {...register2("bill_number", {
               required: {
                 value: true,
-                message: "Invoice Purchase Number must be provided",
+                message: t('billNumberValidation'),
               },
             })}
-            label="Invoice Purchase Number"
+            label={t('billNumber')}
           ></TextField>
 
           <LoadingButton
@@ -156,7 +156,7 @@ function NewInvoiceForm({
             variant="contained"
             fullWidth
           >
-            Save
+             {t('save')}
           </LoadingButton>
         </Stack>
       </form>

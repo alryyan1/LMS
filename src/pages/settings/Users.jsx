@@ -15,7 +15,7 @@ import { useOutletContext } from "react-router-dom";
 import CustomCheckBoxUser from "../../components/CustomCheckBoxUser";
 import SignUp from "../Singeup";
 import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
-
+import {t} from 'i18next'
 function Users() {
   const { setDialog } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(false);
@@ -143,7 +143,7 @@ function Users() {
                         isChecked={checked}
                       />
                     }
-                    label={route.name}
+                    label={t(route.name)}
                   />
                 );
               })}
