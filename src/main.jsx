@@ -7,14 +7,19 @@ import { cacheRtl, theme } from "./pages/constants";
 import './i18n'
 import { ThemeContextProvider } from './ThemeContext';
 import { CacheProvider } from '@emotion/react';
+import MyCacheProvider from './MyCacheProvider';
 // console.log = function() {}
 
 createRoot(document.querySelector("#root")).render(
   <UserContextProvider>
     <ThemeContextProvider>
-      <CacheProvider value={cacheRtl}>
+      {/* <CacheProvider value={cacheRtl}> */}
+      {/* <MyCacheProvider> */}
+
         <RouterProvider router={router} />
-      </CacheProvider>
+      {/* </MyCacheProvider> */}
+
+      {/* </CacheProvider> */}
     </ThemeContextProvider>
   </UserContextProvider>
 );

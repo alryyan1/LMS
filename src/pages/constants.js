@@ -2,14 +2,15 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-import { useStateContext } from "../appContext";
 export const url = "http://127.0.0.1/laravel-react-app/public/api/"
 export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],
   });
-
+ export const ltrCache = createCache({
+    key: 'mui',
+  });
 export const theme = createTheme({
   palette:{
     mode:'dark'

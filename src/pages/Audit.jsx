@@ -31,6 +31,7 @@ import AddCostForm from "../components/AddCostForm";
 import AuditPanel from "../components/AuditPanel";
 import AuditClinics from "./AuditClinics";
 import AuditCost from "./AuditCost";
+import AuditLab from "./AuditLab";
 
 function Audit() {
   const [date, setDate] = useState(dayjs( new Date()));
@@ -134,7 +135,7 @@ function Audit() {
       </Snackbar>
     {showServices &&  <PatientServicesDialog setDialog={setDialog} activeShift={selectedDoctorShift}  setActivePatient={setSelectedVisit} companies={companies}  patient={selectedVisit} showServices={showServices} setShowServices={setShowServices} />}
     </div>
-   {selectedShift && <AuditPanel cost={<AuditCost selectedShift={selectedShift} setSelectedShift={setSelectedShift}  />} clinics={<AuditClinics selectedDoctorShift={selectedDoctorShift} setSelectedVisit={setSelectedVisit} setShowServices={setShowServices} setSelectedDoctorShift={setSelectedDoctorShift} selectedShift={selectedShift} selectedVisit={selectedVisit} />}/>}
+   {selectedShift && <AuditPanel lab={<AuditLab/>} cost={<AuditCost selectedShift={selectedShift} setSelectedShift={setSelectedShift}  />} clinics={<AuditClinics selectedDoctorShift={selectedDoctorShift} setSelectedVisit={setSelectedVisit} setShowServices={setShowServices} setSelectedDoctorShift={setSelectedDoctorShift} selectedShift={selectedShift} selectedVisit={selectedVisit} />}/>}
     
     </>
   );

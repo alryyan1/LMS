@@ -60,16 +60,20 @@ const Nav = () => {
     axiosClient.get("/settings").then(({ data }) => {
       setSettings(data);
       setMode(data.theme);
+      i18n.changeLanguage(data.lang);
     });
   }, []);
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
-      axiosClient.post("settings", { colName: "lang", data: mode });
+      localStorage.setItem("lang","en")
+      axiosClient.post("settings", { colName: "lang", data: 'en' });
     } else {
       i18n.changeLanguage("ar");
-      axiosClient.post("settings", { colName: "lang", data: mode });
+      localStorage.setItem("lang","ar")
+
+      axiosClient.post("settings", { colName: "lang", data: 'ar' });
     }
   };
   const changeMode = () => {
@@ -286,13 +290,13 @@ const Nav = () => {
               )
             })
           }
-          {/* <NavLink
+           <NavLink
             style={{ textDecoration: "none", color: "white" }}
-            to={"/audit"}
+            to={"/contracts"}
           >
-            {t("audit")}{" "}
+          Contracts
           </NavLink>
-
+ { /*
           <NavLink
             to={"/lab"}
             onClick={(e) => {
