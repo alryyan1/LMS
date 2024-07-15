@@ -1,6 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -17,12 +18,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosClient from "./../../axios-client";
+import dayjs from "dayjs";
 
 function Contracts() {
   const [page, setPage] = useState(7);
   const [links, setLinks] = useState([]);
   const [contracts, setContracts] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedContract, setSelectedContract] = useState();
 
   const {
     handleSubmit,
@@ -33,16 +36,19 @@ function Contracts() {
   const [loading, setLoading] = useState();
   const handleFormSubmit = (data) => {
     setLoading(true);
-    axiosClient.post('contracts', data).then(({data})=>{
-      console.log(data)
-      if (data.status) {
-        reset();
-      }
-    }).finally(()=>{
-      setLoading(false);
-     
-    })
+    axiosClient
+      .post("contracts", data)
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          reset();
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
   useEffect(() => {
     //fetch all Items
     axiosClient
@@ -54,9 +60,8 @@ function Contracts() {
         console.log(links);
         setLinks(links);
       })
-      .catch(({ response: { data } }) => {
-      });
-  }, [ page,search]);
+      .catch(({ response: { data } }) => {});
+  }, [page, search]);
 
   return (
     <div
@@ -74,10 +79,10 @@ function Contracts() {
           Contract
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <Stack gap={4} direction={"column"}>
+          <Stack gap={2} direction={"column"}>
             <TextField
-            error={errors?.tenant_name != null }
-            helperText={errors?.tenant_name && errors?.tenant_name.message}
+              error={errors?.tenant_name != null}
+              helperText={errors?.tenant_name && errors?.tenant_name.message}
               {...register("tenant_name", {
                 required: {
                   value: true,
@@ -87,9 +92,8 @@ function Contracts() {
               label="tenant name"
             ></TextField>
             <TextField
-            error={errors?.room_no != null }
-            helperText={errors?.room_no && errors?.room_no.message}
-              
+              error={errors?.room_no != null}
+              helperText={errors?.room_no && errors?.room_no.message}
               {...register("room_no", {
                 required: {
                   value: true,
@@ -98,8 +102,8 @@ function Contracts() {
               })}
               label="room number"
             ></TextField>
-             <TextField
-              error={errors?.building_no!= null }
+            <TextField
+              error={errors?.building_no != null}
               helperText={errors?.building_no && errors?.building_no.message}
               {...register("building_no", {
                 required: {
@@ -109,9 +113,22 @@ function Contracts() {
               })}
               label="building number"
             ></TextField>
-            
+            <TextField
+              error={errors?.notes != null}
+              helperText={errors?.notes && errors?.notes.message}
+              {...register("notes", {
+                required: {
+                  value: true,
+                  message: "الحقل مطلوب",
+                },
+              })}
+              label="notes"
+            ></TextField>
             <FormGroup>
-              <FormControlLabel control={<Checkbox {...register('checklist')} />} label="checklist" />
+              <FormControlLabel
+                control={<Checkbox {...register("checklist")} />}
+                label="checklist"
+              />
             </FormGroup>
 
             <LoadingButton variant="contained" type="submit" loading={loading}>
@@ -122,28 +139,32 @@ function Contracts() {
       </Box>
       <Box>
         <TableContainer>
-        <Stack sx={{ mb: 1 }} direction={"row"} justifyContent={"space-between"}>
-        <select
-          onChange={(val) => {
-            setPage(val.target.value);
-          }}
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
-        <TextField
-        type="search"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          label="بحث"
-        ></TextField>
-      </Stack>
+          <Stack
+            sx={{ mb: 1 }}
+            direction={"row"}
+            justifyContent={"space-between"}
+          >
+            <select
+              onChange={(val) => {
+                setPage(val.target.value);
+              }}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <TextField
+              type="search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              label="بحث"
+            ></TextField>
+          </Stack>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -152,6 +173,8 @@ function Contracts() {
                 <TableCell>Building No</TableCell>
                 <TableCell>Room No</TableCell>
                 <TableCell>Checklist Recieved</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>-</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -161,13 +184,32 @@ function Contracts() {
                   <TableCell>{contract.tenant_name}</TableCell>
                   <TableCell>{contract.building_no}</TableCell>
                   <TableCell>{contract.room_no}</TableCell>
-                  <TableCell>{contract.checklist? "Yes" : "No"}</TableCell>
+                  <TableCell>{contract.checklist ? "Yes" : "No"}</TableCell>
+                  <TableCell>
+                    {dayjs(Date.parse(contract.created_at)).format(
+                      "YYYY/MM/DD"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => {
+                        setSelectedContract(contract);
+                      }}
+                      variant="contained"
+                    >
+                      Select
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
+      <Box>{selectedContract && <Box>
+        <Typography>Add new state</Typography>
+        
+        </Box>}</Box>
     </div>
   );
 }
