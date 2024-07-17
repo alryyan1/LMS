@@ -19,8 +19,8 @@ body {
 .nav{
   /* color: white !important; */
   text-decoration: none !important;
-  font-size: large;
-  font-weight: bold;
+  /* font-size: large; */
+  /* font-weight: bold; */
 }
 .nav .active{
   /* color: white; */

@@ -9,6 +9,9 @@ import { cacheRtl } from "../constants";
 function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
   const [activeSell, setActiveSell] = useState();
+  const [selectedDrugs, setSelectedDrugs] = useState([]);
+  const [showPanel, setShowPanel] = useState();
+
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
     title: "",
@@ -61,6 +64,7 @@ function PharmacyLayout() {
       <CacheProvider value={cacheRtl}> 
         <Outlet
           context={{
+            selectedDrugs, setSelectedDrugs,
             deduct,
             setDeduct,
             dialog,
@@ -78,7 +82,7 @@ function PharmacyLayout() {
             activeSell, setActiveSell,
             showDialogMoney, setShowDialogMoney,
             opendDrugDialog,setOpendDrugDialog,
-          
+            showPanel, setShowPanel
           }}
         />
         </CacheProvider>

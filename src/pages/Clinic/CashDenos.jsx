@@ -128,7 +128,7 @@ function CashDenos() {
                     الدخل
                   </Typography>
                   <Divider />
-                  <Typography variant="h4">
+                  <Typography textAlign={'center'} variant="h4">
                     {totalIncome.toLocaleString({ minimumFractionDigits: 2 }) }
                   </Typography>
                 </Stack>

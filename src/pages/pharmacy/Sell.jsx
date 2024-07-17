@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Item, webUrl } from "../constants";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DescriptionIcon from "@mui/icons-material/Description";
 import {
   Divider,
@@ -16,10 +15,10 @@ import {
   CardContent,
   TextField,
   Skeleton,
+  Button,
 } from "@mui/material";
 import {
   Calculate,
-  DeleteOutline,
   DeleteOutlineSharp,
   Print,
 } from "@mui/icons-material";
@@ -29,13 +28,12 @@ import AddDrugAutocomplete from "../../components/AddDrugAutocomplete";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
 import MyTableCell from "../inventory/MyTableCell";
-import PatientLab from "../Laboratory/PatientLab";
 import SellBox from "./SellBox";
 import PayOptions from "../../components/PayOptions";
 import SellsMoneyDialog from "./SellsMoneyDialog";
 import printJS from "print-js";
 import AddDrugDialog from "./AddDrugDialog";
-import dayjs from "dayjs";
+import ItemGroups from "./ItemGroups";
 function toFixed(num, fixed) {
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
   return num.toString().match(re)[0];
@@ -47,15 +45,14 @@ function SellDrug() {
   const [recieved, setRecieved] = useState(0);
   const {
     setDialog,
-    deduct,
     setDeduct,
     shift,
     shiftIsLoading,
     activeSell,
     setActiveSell,
     setShift,
-    showDialogMoney,
     setShowDialogMoney,
+    showPanel, setShowPanel
   } = useOutletContext();
   console.log(shift, "shift");
   console.log(activeSell, "active sell");
@@ -66,34 +63,6 @@ function SellDrug() {
       setDeduct(data);
     });
   }, []);
-  const [layOut, setLayout] = useState({
-    form: "1fr",
-    tests: "1fr",
-    hideForm: false,
-    testWidth: "400px",
-    requestedDiv: "minmax(0,1.5fr)",
-    showTestPanel: false,
-    patientDetails: "0.7fr",
-  });
-
-  const hideForm = () => {
-    setLayout((prev) => {
-      return {
-        ...prev,
-        form: "0fr",
-        hideForm: true,
-        tests: "2fr",
-        testWidth: "500px",
-        showTestPanel: false,
-        patientDetails: "0.7fr",
-      };
-    });
-  };
-  const showFormHandler = () => {
-    setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
-    });
-  };
 
   const showShiftMoney = () => {
     setShowDialogMoney(true);
@@ -105,10 +74,11 @@ function SellDrug() {
   let total = activeSell?.deducted_items
     ?.reduce(
       (prev, current) =>
-        prev + (current.item.sell_price / current.item.strips) * current.strips,
+        prev + current.item.sell_price  * current.box,
       0
     )
     .toFixed(2);
+   
   return (
     <>
       <div
@@ -161,6 +131,7 @@ function SellDrug() {
                   sell={p}
                   activeSell={activeSell}
                   onClick={setActiveSell}
+                  setShowPanel= {setShowPanel}
                   index={i + 1}
                 />
               ))
@@ -168,12 +139,17 @@ function SellDrug() {
           </div>
         </div>
         <div style={{ overflow: "auto" }}>
-          <Table className="white" key={updater} size="small">
+        {  activeSell && <Button onClick={()=>{
+            setShowPanel((prev)=>{
+              return!prev;
+            })
+          }}>Panel</Button>}
+       {  showPanel && <ItemGroups/>}
+        {activeSell && activeSell?.deducted_items.length  > 0 && <Table className="white" key={updater} size="small">
             <thead>
               <TableRow>
                 <TableCell>Item</TableCell>
                 <TableCell>Price</TableCell>
-                <TableCell>Strips</TableCell>
                 <TableCell>Box</TableCell>
                 <TableCell>Subtotal</TableCell>
                 <TableCell width={"5%"}>action</TableCell>
@@ -185,22 +161,7 @@ function SellDrug() {
                   <TableCell>{deductedItem.item?.market_name}</TableCell>
                   <TableCell> {deductedItem.item?.sell_price}</TableCell>
 
-                  {activeSell.complete ? (
-                    <TableCell> {deductedItem.strips}</TableCell>
-                  ) : (
-                    <MyTableCell
-                      stateUpdater={setUpdater}
-                      setData={setActiveSell}
-                      sx={{ width: "70px" }}
-                      type={"number"}
-                      item={deductedItem}
-                      table="deductedItem"
-                      colName={"strips"}
-                      setShift={setShift}
-                    >
-                      {deductedItem.strips}
-                    </MyTableCell>
-                  )}
+          
                   {activeSell.complete ? (
                     <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                   ) : (
@@ -219,11 +180,7 @@ function SellDrug() {
                   )}
                   <TableCell>
                     {toFixed(
-                      (deductedItem.item?.sell_price /
-                        deductedItem.item?.strips) *
-                        deductedItem.strips,
-                      1
-                    )}
+                      deductedItem.item?.sell_price * deductedItem.box  ,1  )}
                   </TableCell>
                   <TableCell>
                     <LoadingButton
@@ -247,7 +204,7 @@ function SellDrug() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </Table>}
         </div>
 
         <Box

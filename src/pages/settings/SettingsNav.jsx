@@ -44,8 +44,8 @@ function SettingsNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"doctors"}>{t('doctors')}</NavLink>
-        <NavLink to={"specialists"}>{t('Specialists')}</NavLink>
+        {/* <NavLink to={"doctors"}>{t('doctors')}</NavLink> */}
+        {/* <NavLink to={"specialists"}>{t('Specialists')}</NavLink> */}
         <NavLink to={"users"}>{t('users')}</NavLink>
         <NavLink to={"permissions"}>{t('permissions')}</NavLink>
         <NavLink to={"paperConfig"}>{t('other')}</NavLink>

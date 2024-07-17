@@ -8,7 +8,7 @@ function GuestLayout() {
   if (token) {
     // alert(token);
     // user.routes[0].route.name
-    return <Navigate to={"/contracts"} />;
+    return <Navigate to={"/pos/sell"} />;
   }
   return (
     <div>

@@ -290,7 +290,7 @@ export const router = createBrowserRouter([
 
 
       {
-        path: "/pharmacy",
+        path: "/pos",
         element: <PharmacyLayout />,
         children: [
           {

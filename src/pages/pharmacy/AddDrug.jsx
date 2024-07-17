@@ -26,10 +26,8 @@ function AddDrug() {
   const { setDialog} = useOutletContext();
   const [items,setItems] = useState([]);
   const [update,setUpdate] = useState([]);
- 
 
 
- 
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
@@ -118,11 +116,9 @@ function AddDrug() {
               <thead>
                 <TableRow>
                   <TableCell>No </TableCell>
-                  <TableCell>Scientific Name</TableCell>
                   <TableCell>Market Name</TableCell>
                   <TableCell>Cost price</TableCell>
                   <TableCell>Sell Price</TableCell>
-                  <TableCell> Strips per Box </TableCell>
                   <TableCell> Expire</TableCell>
                 </TableRow>
               </thead>
@@ -132,13 +128,7 @@ function AddDrug() {
                   return (
                     <TableRow key={drug.id}>
                        <TableCell>{drug.id}</TableCell>
-                      <MyTableCell
-                        colName={"sc_name"}
-                        item={drug}
-                        table="items"
-                      >
-                        {drug.sc_name}
-                      </MyTableCell>
+                  
                       <MyTableCell
                         colName={"market_name"}
                         item={drug}
@@ -162,9 +152,7 @@ function AddDrug() {
                       >
                         {drug.sell_price}
                       </MyTableCell>
-                      <MyTableCell colName={"strips"} item={drug} table="items">
-                        {drug.strips}
-                      </MyTableCell>
+                     
                       <TableCell>
                         <MyDateField val={drug.expire} item={drug} />
                       </TableCell>

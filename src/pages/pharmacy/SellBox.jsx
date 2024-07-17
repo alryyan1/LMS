@@ -2,7 +2,7 @@ import { Lock } from "@mui/icons-material";
 import { Badge, Box, Grow,  } from "@mui/material";
 import 'animate.css';
 
-function SellBox({ onClick, sell,index,activeSell }) {
+function SellBox({ onClick, sell,index,activeSell,setShowPanel }) {
   
   
 
@@ -28,6 +28,7 @@ function SellBox({ onClick, sell,index,activeSell }) {
         
             onClick={() => {
               onClick(sell);
+              setShowPanel(true);
             }}
             
             sx={ activeSell?.id == sell.id ? {
@@ -50,6 +51,8 @@ function SellBox({ onClick, sell,index,activeSell }) {
             
           onClick={() => {
             onClick(sell);
+            setShowPanel(true);
+
           }}
           sx={ activeSell?.id == sell.id ? {
             borderBottom:"4px solid blue",

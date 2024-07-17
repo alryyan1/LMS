@@ -117,12 +117,12 @@ const Nav = () => {
     <Box sx={{ width: 250 }} role="presentation">
       <List>
         {[
-          { title: t('define') , to: "/pharmacy/add" },
-          { title:t('pos') , to: "/pharmacy/sell" },
-          { title: t('items'), to: "/pharmacy/items" },
-          { title: t('sales'), to: "/pharmacy/reports" },
-          { title: t('inventory'), to: "/pharmacy/inventory" },
-          { title: t("income"), to: "/pharmacy/deposit" },
+          { title: t('define') , to: "/pos/add" },
+          { title:t('pos2') , to: "/pos/sell" },
+          { title: t('items'), to: "/pos/items" },
+          { title: t('sales'), to: "/pos/reports" },
+          { title: t('inventory'), to: "/pos/inventory" },
+          { title: t("income"), to: "/pos/deposit" },
           { title: t("expenses"), to: "/clinic/denos" },
         ].map((item, index) => (
           <ListItem key={item.title} disablePadding>
@@ -275,7 +275,7 @@ const Nav = () => {
                 }}
               >
               {
-                t('pharma')
+                t('pos')
               }
               </NavLink>
               }
@@ -290,12 +290,12 @@ const Nav = () => {
               )
             })
           }
-           <NavLink
+           {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/contracts"}
           >
           Contracts
-          </NavLink>
+          </NavLink> */}
  { /*
           <NavLink
             to={"/lab"}

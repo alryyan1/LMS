@@ -29,8 +29,33 @@ function DrugItems() {
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
   const [items, setItems] = useState([]);
-  const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
-
+  const { setDialog, drugCategory } = useOutletContext();
+   
+  const [file, setFile] = useState(null);
+  const [src, setSrc] = useState(null);
+  const handleFileChange = (e,id) => {
+    encodeImageFileAsURL(e.target.files[0],id);
+    const url = URL.createObjectURL(e.target.files[0]);
+    console.log(url, "path");
+    setSrc(url);
+    console.log("upload", e.target.files[0]);
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+  function encodeImageFileAsURL(file,id) {
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      console.log("RESULT", reader.result);
+      saveToDb(id, reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+  const saveToDb = (id, data) => {
+    axiosClient.patch(`items/${id}`,{ colName:'images' , val : data}).then(({ data }) => {
+      console.log(data);
+    });
+  };
 
   useEffect(() => {
     //fetch all Items
@@ -93,7 +118,7 @@ function DrugItems() {
         });
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search,page]);
   return (
     <Box>
       <Stack sx={{ mb: 1 }} direction={"row"} justifyContent={"space-between"}>
@@ -126,10 +151,10 @@ function DrugItems() {
               <TableCell>الاسم </TableCell>
               <TableCell>سعر الشراء</TableCell>
               <TableCell>سعر البيع </TableCell>
-              <TableCell> عدد الشرائط</TableCell>
-              <TableCell> الصلاحيه</TableCell>
+              {/* <TableCell> الصلاحيه</TableCell> */}
               <TableCell> المجموعه</TableCell>
               <TableCell> الباركود</TableCell>
+              <TableCell> رفع</TableCell>
               <TableCell> الصوره</TableCell>
               
               <TableCell> -</TableCell>
@@ -137,17 +162,20 @@ function DrugItems() {
           </thead>
           <tbody>
             {items.map((drug) => {
+              
+  let image1 = new Image(100,100)
+  image1.src = drug?.images;
               console.log(drug, "drug ");
               return (
                 <TableRow
-                  sx={{
-                    color: (theme) => {
-                      return !dayjs(drug.expire).isAfter(dayjs())
-                        ? theme.palette.error.light
-                        : theme.palette.background.defaultLight;
-                    },
-                    fontWeight: "500",
-                  }}
+                  // sx={{
+                  //   color: (theme) => {
+                  //     return !dayjs(drug.expire).isAfter(dayjs())
+                  //       ? theme.palette.error.light
+                  //       : theme.palette.background.defaultLight;
+                  //   },
+                  //   fontWeight: "500",
+                  // }}
                   key={drug.id}
                 >
                   <TableCell>{drug.id}</TableCell>
@@ -175,12 +203,10 @@ function DrugItems() {
                   >
                     {drug.sell_price}
                   </MyTableCell>
-                  <MyTableCell colName={"strips"} item={drug} table="items">
-                    {drug.strips}
-                  </MyTableCell>
+{/*                   
                   <TableCell>
                     <MyDateField val={drug.expire} item={drug} />
-                  </TableCell>
+                  </TableCell> */}
                   <MyAutoCompeleteTableCell
                     sections={drugCategory}
                     val={drug.category}
@@ -194,38 +220,12 @@ function DrugItems() {
                   <MyTableCell colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
-                  <TableCell><input type="file" name="" id="" /></TableCell>
+                  <TableCell><input onChange={(e)=>{
+          handleFileChange(e,drug.id)
+        }} type="file" name="" id="" /></TableCell>
+        <TableCell> <img height={100} width={100} src={image1.src} alt="" /> </TableCell>
                   <TableCell>
-                    {!dayjs(drug.expire).isAfter(dayjs()) ? (
-                      <Badge
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        badgeContent={"Expired"}
-                        color="error"
-                      >
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                            setLoading(true);
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                              })
-                              .finally(() => setLoading(false));
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
-                      </Badge>
-                    ) : (
+                 
                      
                         <LoadingButton
                           loading={loading}
@@ -252,7 +252,7 @@ function DrugItems() {
                           <DeleteOutlineOutlined />
                         </LoadingButton>
                    
-                    )}
+                    
                 
                   </TableCell>
                 </TableRow>

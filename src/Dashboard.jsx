@@ -155,7 +155,7 @@ function Dashboard() {
           </Card>
 
           <Grid spacing={2} container>
-            <Grid item xs={12} md={6} lg={3}>
+            {/* <Grid item xs={12} md={6} lg={3}>
               <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
                 <CardContent>
                   <Stack direction={"row"} justifyContent={"space-around"}>
@@ -183,7 +183,7 @@ function Dashboard() {
                   </Stack>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={6} lg={3}>
               <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
                 <CardContent>

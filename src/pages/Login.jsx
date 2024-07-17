@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import logo from "../assets/images/pharmaStar.png";
 import logo2 from "../assets/images/hitech.png";
+import bohome from "../assets/images/bohome_logo.png";
 import {t} from 'i18next'
 function App() {
   console.log("login page");
@@ -40,9 +41,22 @@ function App() {
       .finally(() => setLoading(false));
   };
   return (
-    <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
+    <Box  style={{
+      marginTop:'5px',
+      gap: "15px",
+      transition: "0.3s all ease-in-out",
+      height: "75vh",
+      display: "grid",
+      direction:'rtl',
+      gridTemplateColumns: `0.1fr  1fr 1fr  1fr  0.1fr   `,
+    }}>
+      <div></div>
+      <div></div>
+    
+        
+    
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='200px'  src={logo2}/>
+      <img width={'100%'} src={bohome}/>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
                   <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
                     {t('login')}
