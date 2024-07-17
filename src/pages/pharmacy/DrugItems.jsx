@@ -123,15 +123,15 @@ function DrugItems() {
           <thead>
             <TableRow>
               <TableCell> الكود</TableCell>
-              <TableCell>الاسم العلمي</TableCell>
-              <TableCell>الاسم التجاري</TableCell>
+              <TableCell>الاسم </TableCell>
               <TableCell>سعر الشراء</TableCell>
               <TableCell>سعر البيع </TableCell>
               <TableCell> عدد الشرائط</TableCell>
               <TableCell> الصلاحيه</TableCell>
               <TableCell> المجموعه</TableCell>
-              <TableCell> الشكل</TableCell>
               <TableCell> الباركود</TableCell>
+              <TableCell> الصوره</TableCell>
+              
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
@@ -151,9 +151,7 @@ function DrugItems() {
                   key={drug.id}
                 >
                   <TableCell>{drug.id}</TableCell>
-                  <MyTableCell colName={"sc_name"} item={drug} table="items">
-                    {drug.sc_name}
-                  </MyTableCell>
+               
                   <MyTableCell
                     colName={"market_name"}
                     item={drug}
@@ -192,18 +190,11 @@ function DrugItems() {
                   >
                     {drug.category?.name}
                   </MyAutoCompeleteTableCell>
-                  <MyAutoCompeleteTableCell
-                    sections={pharmacyTypes}
-                    colName={"pharmacy_type_id"}
-                    val={drug.type}
-                    item={drug}
-                    table="items"
-                  >
-                    {drug.type?.name}
-                  </MyAutoCompeleteTableCell>
+           
                   <MyTableCell colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
+                  <TableCell><input type="file" name="" id="" /></TableCell>
                   <TableCell>
                     {!dayjs(drug.expire).isAfter(dayjs()) ? (
                       <Badge
