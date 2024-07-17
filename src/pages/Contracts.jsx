@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -67,8 +68,7 @@ function Contracts() {
   const [loading, setLoading] = useState();
   const onStateSubmit = (data) => {
     axiosClient.post(`addStateToContract/${selectedContract.id}`,{
-      state_id: data.state.id,
-      user_id: data.user,
+      state_id: data.state.id
     }).then(({data})=>{
       setSelectedContract(data.contract)
     })
@@ -118,7 +118,7 @@ function Contracts() {
         transition: "0.3s all ease-in-out",
 
         display: "grid",
-        gridTemplateColumns: `0.1fr ${layOut.form}  2fr  1fr   1fr     `,
+        gridTemplateColumns: `0.1fr ${layOut.form}  2fr  1fr       `,
       }}
     >
       <Box>
@@ -131,7 +131,7 @@ function Contracts() {
         </Stack>
       </Box>
       <Box>
-        {layOut.showForm && <>
+        {user?.id == 1 && <>
           <Typography textAlign={"center"} variant="h4">
           Contract
         </Typography>
@@ -233,6 +233,7 @@ function Contracts() {
                 <TableCell>Checklist Recieved</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>handed</TableCell>
+                <TableCell>notes</TableCell>
                 <TableCell>-</TableCell>
               </TableRow>
             </TableHead>
@@ -258,6 +259,7 @@ function Contracts() {
                     )}
                   </TableCell>
                   <TableCell><UserSelect setUpdate={setUpdate} user={contract.user_handed} users={users}  selectedContract={contract} /></TableCell>
+                  <TableCell>{contract.notes}</TableCell>
 
                   <TableCell>
                     <Button
@@ -285,7 +287,7 @@ function Contracts() {
             <form onSubmit={handleSubmit2(onStateSubmit)}>
               <Stack direction={"column"} gap={2}>
                 <ContractStateAutocomplete control={control} />{" "}
-                <Controller
+                {/* <Controller
                   name="user"
                   control={control}
                   rules={{ required: {
@@ -309,16 +311,14 @@ function Contracts() {
                       <MenuItem selected></MenuItem>
                     </Select>
                   )}
-                ></Controller>
+                ></Controller> */}
                 <Button type="submit" fullWidth variant="contained">
                   Save
                 </Button>
               </Stack>
             </form>
-          </Box>
-        )}
-      </Box>
-      <Box>
+            <Divider/>
+            <Box>
          {selectedContract  &&<>
          <a href={`${webUrl}contractStates/${selectedContract.id}`}>PDF</a>
           <Typography textAlign={'center'}>Contract States</Typography>
@@ -343,6 +343,10 @@ function Contracts() {
     
          </>}
       </Box>
+          </Box>
+        )}
+      </Box>
+ 
     </div>
   );
 }
