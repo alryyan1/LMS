@@ -13,13 +13,13 @@ import MyCacheProvider from './MyCacheProvider';
 createRoot(document.querySelector("#root")).render(
   <UserContextProvider>
     <ThemeContextProvider>
-      {/* <CacheProvider value={cacheRtl}> */}
+      <CacheProvider value={cacheRtl}>
       {/* <MyCacheProvider> */}
 
         <RouterProvider router={router} />
       {/* </MyCacheProvider> */}
 
-      {/* </CacheProvider> */}
+      </CacheProvider>
     </ThemeContextProvider>
   </UserContextProvider>
 );

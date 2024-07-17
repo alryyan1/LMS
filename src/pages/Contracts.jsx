@@ -5,6 +5,9 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  IconButton,
+  MenuItem,
+  Select,
   Stack,
   Table,
   TableBody,
@@ -16,24 +19,60 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import axiosClient from "./../../axios-client";
 import dayjs from "dayjs";
+import ContractStateAutocomplete from "../components/ContractStateAutocomplete";
+import { Item, webUrl } from "./constants";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import UserSelect from "../components/UserSelect";
+import { useStateContext } from "../appContext";
 
 function Contracts() {
   const [page, setPage] = useState(7);
   const [links, setLinks] = useState([]);
+  // const []
+  const {user} =  useStateContext()
   const [contracts, setContracts] = useState([]);
   const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
+  const [update, setUpdate] = useState(0);
   const [selectedContract, setSelectedContract] = useState();
-
+  const [layOut, setLayout] = useState({
+    form: "1fr",
+    showForm:true,
+  });
+  const showFormHandler = () => {
+    setLayout((prev) => {
+      return { ...prev, form: "1fr",showForm:true };
+    });
+  };
+  const hideFormHandler = () => {
+    setLayout((prev) => {
+      return { ...prev, form: "0fr",showForm:false };
+    });
+  };
   const {
     handleSubmit,
     register,
     reset,
-    formState: { errors },
+    formState: {isSubmitSuccessful,isLoading, errors },
+  } = useForm();
+  const {
+    handleSubmit: handleSubmit2,
+    control,
+    reset: reset2,
+    formState: { errors: errors2 },
   } = useForm();
   const [loading, setLoading] = useState();
+  const onStateSubmit = (data) => {
+    axiosClient.post(`addStateToContract/${selectedContract.id}`,{
+      state_id: data.state.id,
+      user_id: data.user,
+    }).then(({data})=>{
+      setSelectedContract(data.contract)
+    })
+  }
   const handleFormSubmit = (data) => {
     setLoading(true);
     axiosClient
@@ -41,6 +80,9 @@ function Contracts() {
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
+          setUpdate((prev)=>{
+            return prev+1
+          })
           reset();
         }
       })
@@ -48,7 +90,12 @@ function Contracts() {
         setLoading(false);
       });
   };
-
+  useEffect(() => {
+    axiosClient("users").then(({ data }) => {
+      setUsers(data);
+      console.log(data, "users");
+    });
+  }, []);
   useEffect(() => {
     //fetch all Items
     axiosClient
@@ -61,7 +108,7 @@ function Contracts() {
         setLinks(links);
       })
       .catch(({ response: { data } }) => {});
-  }, [page, search]);
+  }, [page, search,update]);
 
   return (
     <div
@@ -71,11 +118,21 @@ function Contracts() {
         transition: "0.3s all ease-in-out",
 
         display: "grid",
-        gridTemplateColumns: `1fr  2fr  1fr   1fr     `,
+        gridTemplateColumns: `0.1fr ${layOut.form}  2fr  1fr   1fr     `,
       }}
     >
       <Box>
-        <Typography textAlign={"center"} variant="h4">
+        <Stack>
+        <Item>
+              <IconButton variant="contained" onClick={showFormHandler}>
+                <CreateOutlinedIcon />
+              </IconButton>
+            </Item>
+        </Stack>
+      </Box>
+      <Box>
+        {layOut.showForm && <>
+          <Typography textAlign={"center"} variant="h4">
           Contract
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -136,6 +193,7 @@ function Contracts() {
             </LoadingButton>
           </Stack>
         </form>
+        </>}
       </Box>
       <Box>
         <TableContainer>
@@ -174,12 +232,21 @@ function Contracts() {
                 <TableCell>Room No</TableCell>
                 <TableCell>Checklist Recieved</TableCell>
                 <TableCell>Date</TableCell>
+                <TableCell>handed</TableCell>
                 <TableCell>-</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {contracts.map((contract) => (
-                <TableRow key={contract.id}>
+              {contracts.filter((c)=>{
+                if (user?.id != 1) {
+                  return  c.user_handed == user?.id
+                    
+                  
+                }else{
+                  return c
+                }
+              }).map((contract) => (
+                <TableRow sx={{backgroundColor :(theme)=> selectedContract?.id == contract.id ? theme.palette.primary.light : ''}} key={contract.id}>
                   <TableCell>{contract.id}</TableCell>
                   <TableCell>{contract.tenant_name}</TableCell>
                   <TableCell>{contract.building_no}</TableCell>
@@ -190,9 +257,12 @@ function Contracts() {
                       "YYYY/MM/DD"
                     )}
                   </TableCell>
+                  <TableCell><UserSelect setUpdate={setUpdate} user={contract.user_handed} users={users}  selectedContract={contract} /></TableCell>
+
                   <TableCell>
                     <Button
                       onClick={() => {
+                        hideFormHandler()
                         setSelectedContract(contract);
                       }}
                       variant="contained"
@@ -206,10 +276,73 @@ function Contracts() {
           </Table>
         </TableContainer>
       </Box>
-      <Box>{selectedContract && <Box>
-        <Typography>Add new state</Typography>
-        
-        </Box>}</Box>
+      <Box>
+        {selectedContract && (
+          <Box>
+            <Typography textAlign={"center"} variant="h4">
+              Add new state
+            </Typography>
+            <form onSubmit={handleSubmit2(onStateSubmit)}>
+              <Stack direction={"column"} gap={2}>
+                <ContractStateAutocomplete control={control} />{" "}
+                <Controller
+                  name="user"
+                  control={control}
+                  rules={{ required: {
+                    value: true,
+                    message: "الحقل مطلوب",
+                  } }}
+                  render={({ field }) => (
+                    <Select
+            value={field.value ?? ''}
+                    
+                    onChange={(e)=>{
+                      field.onChange(e.target.value);
+                    }} variant="filled" label="user" fullWidth>
+                      {users.map((user) => {
+                        return (
+                          <MenuItem value={user.id} key={user.id}>
+                            {user.username}
+                          </MenuItem>
+                        );
+                      })}
+                      <MenuItem selected></MenuItem>
+                    </Select>
+                  )}
+                ></Controller>
+                <Button type="submit" fullWidth variant="contained">
+                  Save
+                </Button>
+              </Stack>
+            </form>
+          </Box>
+        )}
+      </Box>
+      <Box>
+         {selectedContract  &&<>
+         <a href={`${webUrl}contractStates/${selectedContract.id}`}>PDF</a>
+          <Typography textAlign={'center'}>Contract States</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>State</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {selectedContract.states.map((state) => (
+              <TableRow key={state.id}>
+                <TableCell>{state.state.name}</TableCell>
+                <TableCell>{state.user.username}</TableCell>
+                <TableCell>{dayjs(Date.parse(state.created_at)).format('YYYY/MM/DD')}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+    
+         </>}
+      </Box>
     </div>
   );
 }

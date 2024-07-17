@@ -59,11 +59,11 @@ function ReceptionDoctorsDialog() {
          })
         })
       }else{
-      setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
+      setDialog((prev)=>({...prev,openError:true,message:data.message}))
       }
     }).catch(({response:{data}})=>{
       console.log(data)
-      setDialog((prev)=>({...prev,openError:true,msg:data.msg}))
+      setDialog((prev)=>({...prev,openError:true,message:data.message}))
 
     }).finally(()=>{
       setLoading(false)
@@ -90,7 +90,7 @@ function ReceptionDoctorsDialog() {
       }
     }).catch(({response:{data}})=>{
       setDialog((prev)=>{
-        return {...prev,open:true,msg:data.message,color:'error'}
+        return {...prev,open:true,message:data.message,color:'error'}
       })
     }).finally(()=>setIsLoading(false));
   };

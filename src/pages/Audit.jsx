@@ -75,13 +75,7 @@ function Audit() {
       <Box sx={{direction:'ltr'}}> 
         {/* <SimpleMediaQuery/> */}
         <Stack direction={'row'} alignContent={'center'} alignItems={'center'} display={'inline-flex'}>
-           <Button
-          onClick={searchShiftByDateHandler}
-          size="medium"
-          variant="contained"
-        >
-          بحث
-        </Button>
+       
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateField
             onChange={(val) => {
@@ -93,14 +87,21 @@ function Audit() {
             label="تاريخ"
           />
         </LocalizationProvider>
+        <Button
+          onClick={searchShiftByDateHandler}
+          size="medium"
+          variant="contained"
+        >
+          بحث
+        </Button>
         </Stack>
        
       
         {shifts.length > 0 && (
-          <span>
+         
            
            
-             <Stack sx={{display:'inline-block'}} direction={'row'}>
+             <Stack  textAlign={'center'} alignItems={'center'} justifyContent={'center'}  gap={1} direction={'column'}>
              {shifts.map((shift, index) => (
                 <Button variant="contained" onClick={()=>{
                   setSelectedShift(shift)
@@ -111,14 +112,14 @@ function Audit() {
 
                 </Button>
               ))}
-             </Stack>
 
             {selectedShift && (
               <a href={`${webUrl}clinics/all?shift=${selectedShift.id}`}>
                 التقرير العام للورديه رقم {selectedShift.id}
               </a>
             )}
-          </span>
+             </Stack>
+      
         )}
      
       </Box>

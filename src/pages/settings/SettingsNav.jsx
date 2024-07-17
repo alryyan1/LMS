@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useStateContext } from "../../appContext";
 import Login from "../Login";
 import axiosClient from "../../../axios-client";
+import {t} from 'i18next'
 function SettingsNav() {
   const { setToken, setUser } = useStateContext();
   const [doctors, setDoctors] = useState([]);
@@ -43,11 +44,11 @@ function SettingsNav() {
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"doctors"}>Doctors</NavLink>
-        <NavLink to={"specialists"}>Specialists</NavLink>
-        <NavLink to={"users"}>Users</NavLink>
-        <NavLink to={"permissions"}>Permissions</NavLink>
-        <NavLink to={"paperConfig"}>Logo</NavLink>
+        <NavLink to={"doctors"}>{t('doctors')}</NavLink>
+        <NavLink to={"specialists"}>{t('Specialists')}</NavLink>
+        <NavLink to={"users"}>{t('users')}</NavLink>
+        <NavLink to={"permissions"}>{t('permissions')}</NavLink>
+        <NavLink to={"paperConfig"}>{t('other')}</NavLink>
       </ul>
 
           {" "}

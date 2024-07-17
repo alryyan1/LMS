@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import logo from "../assets/images/pharmaStar.png";
 import logo2 from "../assets/images/hitech.png";
-
+import {t} from 'i18next'
 function App() {
   console.log("login page");
   const [error, setError] = useState({ val: false, msg: "" });
@@ -42,10 +42,10 @@ function App() {
   return (
     <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='200px' width={'500px'} src={logo}/>
+      <img height='200px'  src={logo2}/>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
                   <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
-                    Login
+                    {t('login')}
                   </Typography>
                   <div className="form">
                     <TextField
@@ -53,17 +53,17 @@ function App() {
                       {...register("username", {
                         required: {
                           value: true,
-                          message: "username is required",
+                          message: t('usernameValidation'),
                         },
                         minLength: {
                           value: 6,
                           message:
-                            "username must be at least 6 characters long",
+                           t('usernameValidationMessage'),
                         },
                       })}
                       sx={{ mb: 1 }}
                       variant="standard"
-                      label="Username"
+                      label={t('username')}
                       helperText={errors?.username?.message}
                       value={username}
                       onChange={(value) => setUsername(value.target.value)}
@@ -74,15 +74,15 @@ function App() {
                       {...register("password", {
                         required: {
                           value: true,
-                          message: "password is required",
+                          message: t('passwordValidationMessage'),
                         },
                         minLength: {
                           value: 8,
-                          message: "password must be 8 chrachters long",
+                          message: t('passwordValidationMessageLength'),
                         },
                       })}
                       variant="standard"
-                      label="Password"
+                      label={t("password")}
                       type="password"
                       helperText={errors?.password?.message}
                       value={password}
@@ -94,7 +94,7 @@ function App() {
                       sx={{ m: 1 }}
                       variant="contained"
                     >
-                      تسجيل دخول
+                      {t('login')}
                     </LoadingButton>
                     {/* <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link> */}
                   </div>

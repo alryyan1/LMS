@@ -17,7 +17,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 inventory:'المخزن',
                 audit:'التدقيق',
                 signup:'انشاء حساب ',
-                login:'الدخول',
+                login:'تسجيل الدخول',
                 lab:'المختبر',
                 clinic:'العيادات',
                 pharma:'الصيدليه',
@@ -44,10 +44,34 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 save:'حفظ',
                 search:'بحث',
                 pharmacy:'الصيدليه',
+                usernameValidation :'استم المستخدم مطلوب',
+                usernameValidationMessage :' يجب اسم المتسخدم ان يكون اكثر من 6 احرف',
+                password:'كلمه السر',
+                username:'اسم المستخدم',
+                passwordValidationMessage :"الحقل مطلوب",
+                passwordValidationMessageLength :'لا يمكن ان يكون الباسورد اقل من 8 احرف',
+                doctors:'الاطباء',
+                specialists:'التخصصات',
+                users:'المستخدمين',
+                permissions:'الصلاحيات',
+                other:'اخري'
+                
             }
         },
         en:{
             translation:{
+                other:'other',
+                permissions:'permissions',
+
+                doctors:'doctors',
+                users:'users',
+                specialists:'Specialists',
+                password: 'password',
+                username:'username',
+                passwordValidationMessageLength: "password must be 8 chrachters long",
+                  passwordValidationMessage: "password is required",
+                usernameValidationMessage: "username must be at least 6 characters long",
+                usernameValidation:"username is required",
                 pharmacy:'pharmacy',
 
                 invoiceDate:"Invoice Purchase Date",
