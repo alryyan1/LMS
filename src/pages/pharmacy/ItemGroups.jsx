@@ -35,7 +35,9 @@ function ItemGroups()  {
           return <Tab key={p.id} label={p.name} />;
         })}
       </Tabs>
-      {drugCategory.map((p, index) => {
+      {drugCategory.filter((g)=>{
+        return g.items.length > 0 
+      }).map((p, index) => {
         return (
           <TabItem key={p.id} index={index} value={value}>
             {p.items.map((t) =>{ 

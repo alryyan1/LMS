@@ -21,6 +21,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
+import { webUrl } from "../constants.js";
 
 function DrugItems() {
   const [loading, setLoading] = useState(false);
@@ -144,6 +145,7 @@ function DrugItems() {
         ></TextField>
       </Stack>
       <TableContainer>
+        <a href={`${webUrl}excel/items`}>Excel</a>
         <Table dir="rtl" size="small">
           <thead>
             <TableRow>
