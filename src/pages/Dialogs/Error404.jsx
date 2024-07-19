@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 import { Button, Stack } from "@mui/material";
 
 function Error404() {
+  const error =  useRouteError()
   return (
     <div>
       {/* <Stack  spacing={2}> */}
@@ -16,6 +17,9 @@ function Error404() {
         </Stack>
 
       <h1>404 Not Found</h1>
+      <h1>{error?.status}</h1>
+      <h1>{error?.message}</h1>
+      <h1>{JSON.stringify(error)}</h1>
       <Link to={"/"}>Home</Link>
     </div>
   );

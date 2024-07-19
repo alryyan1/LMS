@@ -56,13 +56,13 @@ const Nav = () => {
       setUser(data);
     });
   }, []);
-  useEffect(() => {
-    axiosClient.get("/settings").then(({ data }) => {
-      setSettings(data);
-      setMode(data.theme);
-      i18n.changeLanguage(data.lang);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axiosClient.get("/settings").then(({ data }) => {
+  //     setSettings(data);
+  //     setMode(data.theme);
+  //     i18n.changeLanguage(data.lang);
+  //   });
+  // }, []);
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
@@ -73,7 +73,7 @@ const Nav = () => {
       i18n.changeLanguage("ar");
       localStorage.setItem("lang","ar")
 
-      axiosClient.post("settings", { colName: "lang", data: 'ar' });
+      // axiosClient.post("settings", { colName: "lang", data: 'ar' });
     }
   };
   const changeMode = () => {
@@ -85,7 +85,7 @@ const Nav = () => {
       setMode("light");
       localStorage.setItem("theme", "light");
 
-      axiosClient.post("settings", { colName: "theme", data: "light" });
+      // axiosClient.post("settings", { colName: "theme", data: "light" });
     }
   };
  
