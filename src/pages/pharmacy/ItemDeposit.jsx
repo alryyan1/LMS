@@ -243,7 +243,7 @@ function ItemDeposit() {
           transition: "0.3s all ease-in-out",
           height: "70vh",
           display: "grid",
-          gridTemplateColumns: `  1fr  1fr   1fr   1fr  ${layOut.newForm}  0.1fr `,
+          gridTemplateColumns: `  2fr  1.2fr   0.7fr     ${layOut.newForm}  0.1fr `,
         }}
       >
         <div style={layOut.incomeItemsStyleObj}>

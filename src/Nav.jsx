@@ -88,115 +88,12 @@ const Nav = () => {
       axiosClient.post("settings", { colName: "theme", data: "light" });
     }
   };
-  const DrawerClinicList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: "الحجز", to: "/clinic" },
-          { title: "استحقاق الاطباء", to: "/clinic/doctors" },
-          { title: "حساب الفئات", to: "/clinic/denos" },
-        ].map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setClinicDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+ 
   console.log('nav updated')
-  const DrawerPharmacyList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {[
-          { title: t('define') , to: "/pharmacy/add" },
-          { title:t('pos') , to: "/pharmacy/sell" },
-          { title: t('items'), to: "/pharmacy/items" },
-          { title: t('sales'), to: "/pharmacy/reports" },
-          { title: t('inventory'), to: "/pharmacy/inventory" },
-          { title: t("income"), to: "/pharmacy/deposit" },
-          { title: t("expenses"), to: "/clinic/denos" },
-        ].map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setPharmacyDrawer(false)}
-              LinkComponent={Link}
-              to={item.to}
-            >
-              <ListItemIcon>
-                <ArrowRight />
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+
   return (
     <>
-      <Drawer
-        ModalProps={{
-          onBackdropClick: () => {
-            setLabDrawer(false);
-          },
-        }}
-        open={labDrawer}
-      >
-        {" "}
-        {[
-          { title: "تسجيل مريض", to: "/laboratory/add" },
-          { title: "ادخال النتائج ", to: "/laboratory/result" },
-          { title: "سحب العينات", to: "/laboratory/sample" },
-          { title: " اداره التحاليل", to: "/laboratory/tests" },
-          { title: "قائمه الاسعار", to: "/laboratory/price" },
-          { title: "CBC LIS", to: "/laboratory/cbc-lis" },
-          { title: "Chemistry LIS", to: "/laboratory/chemistry-lis" },
-        ].map((item) => {
-          return (
-            <ListItem key={item.title} disablePadding>
-              <ListItemButton
-                onClick={() => setLabDrawer(false)}
-                LinkComponent={Link}
-                to={item.to}
-              >
-                <ListItemIcon>
-                  <Mail />
-                </ListItemIcon>
-                <ListItemText primary={item.title} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </Drawer>
-      <Drawer
-        ModalProps={{
-          onBackdropClick: () => {
-            setClinicDrawer(false);
-          },
-        }}
-        open={clinicDrawer}
-      >
-        {DrawerClinicList}
-      </Drawer>
-      <Drawer
-        ModalProps={{
-          onBackdropClick: () => {
-            setPharmacyDrawer(false);
-          },
-        }}
-        open={pharmcyDrawer}
-      >
-        {DrawerPharmacyList}
-      </Drawer>
+    
       <AppBar
         sx={{
           backgroundColor: "#485765",
@@ -221,171 +118,24 @@ const Nav = () => {
           >
             {t('login')}
           </NavLink>
-          {
-            user?.routes.map((r)=>{
-              if (r.route.id == 4) {
-                return (<NavLink
-                 key={r.id}
-                  to={"/lab"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setLabDrawer(true);
-                  }}
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  {t('lab')}
-                </NavLink>)
-              }
-              else if(r.route_id == 5){
-                return (
-                  <NavLink
-                   key={r.id}
-                  to={"clinic"}
-                  onClick={(e) => {
-                    e.preventDefault();
-      
-                    setClinicDrawer(true);
-                  }}
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  {t('clinic')}
-                </NavLink>
-                )
-              }else if(r.route_id == 2){
-               return <NavLink
-                key={r.id}
-                // to={"pharma"}
-                onClick={(e) => {
-                  e.preventDefault();
-    
-                  setPharmacyDrawer(true);
-                }}
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  cursor: "pointer",
-                }}
-              >
-              {
-                t('pharma')
-              }
-              </NavLink>
-              }
-              return (
-                <NavLink
-                 key={r.id}
-            style={{ textDecoration: "none", color: "white" }}
-            to={r.route.path}
-          >
-            {t(r.route.name)}
-          </NavLink>
-              )
-            })
-          }
-           <NavLink
+       
+           {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/contracts"}
           >
           Contracts
-          </NavLink>
- { /*
-          <NavLink
-            to={"/lab"}
-            onClick={(e) => {
-              e.preventDefault();
-              setLabDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            {t('lab')}
-          </NavLink>
-          <NavLink
-            to={"clinic"}
-            onClick={(e) => {
-              e.preventDefault();
-
-              setClinicDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            {t('clinic')}
-          </NavLink>
-          <NavLink
-            to={"pharma"}
-            onClick={(e) => {
-              e.preventDefault();
-
-              setPharmacyDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-          {
-            t('pharma')
-          }
-          </NavLink>
-          <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/insurance"}
-          >
-            {
-              t('insurance')
-            }
           </NavLink> */}
-          {/* <NavLink
-          
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/services"}
-          >
-            {
-              t('services')
-            }
-          </NavLink> */}
-          {/* <NavLink
+ 
+    
+  
+          <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/ship"}
           >
             shipping
-          </NavLink> */}
-          {/* {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
-            <NavLink
-              style={{ textDecoration: "none", color: "white" }}
-              to={"/settings"}
-            >
-              {
-                t('settings')
-              }
-            </NavLink>
-          ) : (
-            ""
-          )} */}
-          {/* <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/dashboard"}
-          >
-            {
-              t('dashboard')
-            }
-          </NavLink> */}
+          </NavLink>
+       
+      
 
           <div style={{ flexGrow: 1 }}></div>
           <Typography color={"white"} variant="h5">

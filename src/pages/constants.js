@@ -2,8 +2,8 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-export const url = "https://intaj-starstechnology.com/contracts/public/api/"
-export const webUrl = "https://intaj-starstechnology.com/contracts/public/"
+export const url = "https://majan-express.com/shipping/public/api/"
+export const webUrl = "https://majan-express.com/shipping/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],
@@ -32,4 +32,7 @@ export const theme = createTheme({
     color: theme.palette.text.secondary,
   }));
 
-  
+  export function toFixed(num, fixed) {
+    var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
+    return num.toString().match(re)[0];
+  }

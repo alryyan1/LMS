@@ -12,7 +12,10 @@ import { useOutletContext } from 'react-router-dom';
 import axiosClient from '../../axios-client';
 import { LoadingButton } from '@mui/lab';
 
-const options = [{ id:1 ,name:'Cash'},{ id:2,name:'Transfer'}, {id:3,name:'Bank'}];
+const options = [{ id:1 ,name:'Cash'}
+  // ,{ id:2,name:'Transfer'}
+  
+  , {id:3,name:'Bank'}];
 
 export default function PayOptions() {
   const [open, setOpen] = React.useState(false);

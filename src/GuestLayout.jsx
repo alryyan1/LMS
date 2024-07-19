@@ -7,8 +7,8 @@ function GuestLayout() {
   // alert(token);
   if (token) {
     // alert(token);
-    // user.routes[0].route.name
-    return <Navigate to={"/contracts"} />;
+    // user.sub_routes[0].route.name
+    return <Navigate to={"/ship"} />;
   }
   return (
     <div>

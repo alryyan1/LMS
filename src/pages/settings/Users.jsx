@@ -3,19 +3,21 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  List,
+  ListItem,
   ListItemButton,
   ListItemText,
   Paper,
   Typography,
 } from "@mui/material";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import CustomCheckBoxUser from "../../components/CustomCheckBoxUser";
 import SignUp from "../Singeup";
 import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
-import {t} from 'i18next'
+import { t } from "i18next";
 function Users() {
   const { setDialog } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(false);
@@ -23,6 +25,8 @@ function Users() {
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
   const [routes, setRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  console.log(selectedRoute,'selected Route')
   useEffect(() => {
     document.title = "المستخدمين";
   }, []);
@@ -34,7 +38,6 @@ function Users() {
   } = useForm();
   console.log(selectedUser, "selected selectedUser");
 
- 
   useEffect(() => {
     axiosClient("users").then(({ data }) => {
       setUsers(data);
@@ -57,7 +60,7 @@ function Users() {
   }, []);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <Box sx={{ p: 1 }}>
           <Typography textAlign={"center"} variant="h3">
             Users
@@ -68,7 +71,6 @@ function Users() {
                 style={{
                   border: "1px dashed ",
                   marginBottom: "2px",
-             
                 }}
                 sx={{
                   backgroundColor: (theme) =>
@@ -87,7 +89,7 @@ function Users() {
           })}
         </Box>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         {selectedUser && (
           <Box sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
@@ -119,28 +121,75 @@ function Users() {
           </Box>
         )}
       </Grid>
-      <Grid item xs={3}>
+      <Grid key={selectedUser?.id} item xs={2}>
         {selectedUser && (
           <Box sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
               User Routes {selectedUser.name}{" "}
             </Typography>
-            <FormGroup>
+            <List>
               {routes.map((route) => {
-                console.log(route, "route check box");
-                const checked = selectedUser.routes
+                  const checked = selectedUser.routes
                   .map((r) => r.route_id)
+                  .includes(route.id);
+                return (
+                  <ListItem 
+                  onClick={()=>{
+                    setSelectedRoute(route);
+                  }}
+                  sx={{
+                    backgroundColor: (theme) =>
+                      selectedRoute?.id == route.id
+                       ? theme.palette.primary.main
+                        : "",
+                  }}
+                  secondaryAction={
+                    <CustomCheckboxUserRoute
+                    selectedUser={selectedUser}
+                    setDialog={setDialog}
+                    setUpdater={setUpdater}
+                    route_id={route.id}
+                    isChecked={checked}
+                  />
+                  } key={route.route_id}>
+                    <ListItemButton
+                      key={route.route_id}
+                      onClick={() => setSelectedRoute(route)}
+                    >
+                      <ListItemText>{t(route.name)}</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+           
+          </Box>
+        )}
+      </Grid>
+      <Grid item xs={2}>
+        {selectedUser && (
+          <Box sx={{ p: 1 }}>
+            <Typography textAlign={"center"} variant="h5">
+              User sub Routes
+            </Typography>
+            <FormGroup>
+              {selectedRoute?.sub_routes.map((route) => {
+                console.log(route, "route check box");
+                const checked = selectedUser.sub_routes
+                  .map((r) => r.sub_route_id)
                   .includes(route.id);
                 return (
                   <FormControlLabel
                     key={route.id}
                     control={
                       <CustomCheckboxUserRoute
+                      sub_route_id={route.id}
                         selectedUser={selectedUser}
                         setDialog={setDialog}
                         setUpdater={setUpdater}
-                        route_id={route.id}
+                        route_id={route.route_id}
                         isChecked={checked}
+                        path="subRoutes"
                       />
                     }
                     label={t(route.name)}
@@ -151,7 +200,7 @@ function Users() {
           </Box>
         )}
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <SignUp setUsers={setUsers} />
       </Grid>
     </Grid>

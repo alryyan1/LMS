@@ -21,7 +21,7 @@ function SettingsNav() {
     open: false,
     openError: false,
     openLabReport: false,
-    msg: "تمت الاضافه بنجاح",
+    message: "تمت الاضافه بنجاح",
   });
   useEffect(() => {
     Promise.all([
@@ -79,7 +79,7 @@ function SettingsNav() {
           
           sx={{ width: "100%" ,color: "black" }}
         >
-          {dialog.msg}
+          {dialog.message}
         </Alert>
       </Snackbar>
     </>

@@ -17,7 +17,7 @@ import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
 import { DeleteOutline } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
-import { webUrl } from "../constants";
+import { toFixed, webUrl } from "../constants";
 
 function SalesReport() {
   const { setDialog } = useOutletContext();
@@ -87,11 +87,13 @@ function SalesReport() {
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
+            <TableCell>sale number</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Price</TableCell>
             <TableCell>User</TableCell>
             <TableCell>Payment</TableCell>
             <TableCell>Items</TableCell>
+            <TableCell>profit</TableCell>
             <TableCell>Delete</TableCell>
           </TableRow>
         </TableHead>
@@ -99,6 +101,7 @@ function SalesReport() {
           {deducts.map((item) => (
             <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
+                <TableCell>{item.number}</TableCell>
               <TableCell>
                 {dayjs(new Date(Date.parse(item.created_at))).format('YYYY/MM/DD H;m A')}
               </TableCell>
@@ -110,6 +113,7 @@ function SalesReport() {
                   (deducted) => `${deducted.item.market_name}-`
                 )}
               </TableCell>
+              <TableCell>{toFixed(item.profit,1)}</TableCell>
               <TableCell>
                 <LoadingButton
                   loading={loading}
