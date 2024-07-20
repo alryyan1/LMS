@@ -9,6 +9,8 @@ import { cacheRtl } from "../constants";
 function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
   const [activeSell, setActiveSell] = useState();
+  const [suppliers, setSuppliers] = useState([]);
+
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
     title: "",
@@ -27,6 +29,14 @@ function PharmacyLayout() {
   const [pharmacyTypes, setPharmacyTypes] = useState([]);
   const [items, setItems] = useState([]);
   const [deduct, setDeduct] = useState(null);
+  useEffect(() => {
+    //fetch all suppliers
+    axiosClient.get(`suppliers/all`).then(({ data }) => {
+      //set suppliers
+      setSuppliers(data);
+      // console.log(data);
+    });
+  }, []);
   useEffect(()=>{
     setShiftIsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
@@ -78,6 +88,7 @@ function PharmacyLayout() {
             activeSell, setActiveSell,
             showDialogMoney, setShowDialogMoney,
             opendDrugDialog,setOpendDrugDialog,
+            suppliers, setSuppliers
           
           }}
         />

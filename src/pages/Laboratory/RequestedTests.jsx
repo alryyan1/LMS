@@ -142,7 +142,7 @@ function RequestedTests({ setPatients }) {
   return (
     <>
       <Box sx={{p:1}}  className="requested-tests">
-        <div  style={{height:'400px',overflow:'auto'}} className="requested-table">
+        <div   className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>

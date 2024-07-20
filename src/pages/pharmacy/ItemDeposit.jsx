@@ -50,8 +50,7 @@ function ItemDeposit() {
   };
   // console.log(items);
   //create state variable to store all suppliers
-  const { setDialog, items } = useOutletContext();
-  const [suppliers, setSuppliers] = useState([]);
+  const { setDialog, items ,suppliers} = useOutletContext();
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -80,17 +79,7 @@ function ItemDeposit() {
         console.log(data, "is data");
         setIncome(data);
         console.log(data);
-        setLayout((prev) => {
-          return {
-            ...prev,
-            incomeItemsStyleObj: {
-              gridColumnStart: 1,
-              gridRowStart: 1,
-              gridColumnEnd: 3,
-            },
-            addToInventoryStyleObj: { gridColumnStart: 3 },
-          };
-        });
+ 
         setIncomeItems(data.items);
         if (data.complete) {
           setLayout((prev) => {
@@ -107,32 +96,6 @@ function ItemDeposit() {
       }
     });
   }, [update]);
-  const finishInvoice = (id) => {
-    setLoading(true);
-    axiosClient
-      .patch(`inventory/deposit/finish/${id}`)
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          setShow(true);
-          setLayout((prev) => {
-            return {
-              ...prev,
-              incomeItemsStyleObj: {},
-              addToInventoryStyleObj: {},
-            };
-          });
-
-          console.log("set updating function");
-          setUpdate((pev) => pev + 1);
-          setDialog({
-            open: true,
-            msg: "تمت العمليه  بنجاح",
-          });
-        }
-      })
-      .finally(() => setLoading(false));
-  };
 
   useEffect(() => {
     document.title = "اذن وارد";
@@ -151,14 +114,7 @@ function ItemDeposit() {
       }
     });
   };
-  useEffect(() => {
-    //fetch all suppliers
-    axiosClient.get(`suppliers/all`).then(({ data }) => {
-      //set suppliers
-      setSuppliers(data);
-      // console.log(data);
-    });
-  }, []);
+
   const [billNumber, setBillNumber] = useState("");
   const [date, setDate] = useState(dayjs(new Date()));
   const showDepositBySupplier = (supplier) => {
@@ -241,7 +197,6 @@ function ItemDeposit() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "70vh",
           display: "grid",
           gridTemplateColumns: `  2fr  1.2fr   0.7fr     ${layOut.newForm}  0.1fr `,
         }}

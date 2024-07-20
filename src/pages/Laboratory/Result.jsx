@@ -24,6 +24,7 @@ import {
   TextField,
   Typography,
   Box,
+  Card,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
@@ -142,7 +143,7 @@ function Result() {
 
       
         </div>
-        <Box sx={{ overflow: "auto",p:1 }}  >
+        <Card sx={{ overflow: "auto",p:1 }}  >
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
@@ -231,8 +232,8 @@ function Result() {
                 )
             )}
           </div>
-        </Box>
-        <Box sx={{height: "80vh", overflow: "auto" }} >
+        </Card>
+        <Card sx={{height: "80vh", overflow: "auto" }} >
           {console.log(actviePatient, "activve pateint")}
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <List>
@@ -275,8 +276,8 @@ function Result() {
               })}
             </List>
           )}
-        </Box>
-        <Box sx={{height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
+        </Card>
+        <Card sx={{height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -343,7 +344,7 @@ function Result() {
               />
             </Box>
           )}
-        </Box>
+        </Card>
 
         <div>
           {/** add card using material   */}

@@ -84,6 +84,7 @@ function NewInvoiceForm({
             render={({ field }) => {
               return (
                 <Autocomplete
+                   
                   fullWidth
                   isOptionEqualToValue={(option, val) => option.id === val.id}
                   sx={{ mb: 1 }}
@@ -108,7 +109,7 @@ function NewInvoiceForm({
               );
             }}
           />
-          {errors2.supplier && errors2.supplier.message}
+          
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller

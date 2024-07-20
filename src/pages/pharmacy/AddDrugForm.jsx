@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
     Paper,
     Stack,
@@ -16,15 +17,19 @@ import {
   import dayjs from "dayjs";
   import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
   import generator from 'generate-serial-number'
+  import {t} from 'i18next'
 function AddDrugForm({setUpdate}) {
     const [loading, setLoading] = useState(false);
     const [stripPrice, setStripPrice] = useState(0);
     const [itemsIsLoading, setItemsIsLoading] = useState(false);
     const [page, setPage] = useState(7);
     const [error, setError] = useState(null);
+    const [market, setMarket] = useState('');
     const [links, setLinks] = useState([]);
     const [barcode,setBarcode] = useState(null);
+    const [deposits,setDeposits] = useState([]);
     const { setDialog,setItems,setOpendDrugDialog } = useOutletContext();
+     
   
     const {
       register,
@@ -34,10 +39,24 @@ function AddDrugForm({setUpdate}) {
       reset,
       handleSubmit,
       watch
-    } = useForm();
-  
+    } = useForm({
+      defaultValues:{
+        deposit:deposits[0]
+      }
+    });
+    useEffect(()=>{
+      if (deposits.length > 0) {
+        
+        setValue('deposit',deposits[0])
+      }
+    },[deposits.length])
     const sell_price = watch("sell_price");
+    const sc_name = watch("sc_name");
     const strips = watch("strips");
+    useEffect(()=>{
+      setValue('market_name',sc_name)
+      setMarket(sc_name)
+    },[sc_name])
     useEffect(()=>{
       console.log(typeof sell_price,'type of sellprice')
       console.log(typeof strips,'type of strips')
@@ -46,6 +65,14 @@ function AddDrugForm({setUpdate}) {
         setStripPrice((sell_price/strips).toFixed(1))
       }
     },[sell_price,strips])
+
+    useEffect(()=>{
+      axiosClient.get("inventory/deposit/all").then(({data})=>{
+        setDeposits(data)
+        console.log(data,'all deposits')
+      })
+ 
+    },[])
     useEffect(() => {
       setItemsIsLoading(true);
       //fetch all Items
@@ -82,6 +109,7 @@ function AddDrugForm({setUpdate}) {
           sc_name: formData.sc_name,
           market_name: formData.market_name,
           batch: formData.batch,
+          deposit:formData.deposit?.id
         })
         .then(({ data }) => {
           console.log(data, "addded drug");
@@ -162,7 +190,7 @@ function AddDrugForm({setUpdate}) {
                 message: " Sc name is required",
               },
             })}
-            label="Scientific Name"
+            label="الاسم العلمي"
             variant="standard"
             helperText={errors.sc_name && errors.sc_name.message}
           />
@@ -177,7 +205,8 @@ function AddDrugForm({setUpdate}) {
                 message: "market name is required",
               },
             })}
-            label="market name"
+            defaultValue={market}
+            label="الاسم التجاري"
             variant="standard"
             helperText={errors.market_name && errors.market_name.message}
           />
@@ -195,7 +224,7 @@ function AddDrugForm({setUpdate}) {
                 message: "price is required",
               },
             })}
-            label="Sell price"
+            label="سعر البيع"
             variant="standard"
             helperText={errors.sell_price && errors.sell_price.message}
           />
@@ -218,7 +247,7 @@ function AddDrugForm({setUpdate}) {
                 message: "Cost is required",
               },
             })}
-            label="Cost Price(Box)"
+            label="سعر التكلفه"
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
@@ -230,7 +259,7 @@ function AddDrugForm({setUpdate}) {
             fullWidth
             disabled={true}
     
-            label="Strip price"
+            label="سعر الشريط"
             variant="standard"
           />
           <TextField
@@ -245,7 +274,7 @@ function AddDrugForm({setUpdate}) {
                 message: "Strips count is required",
               },
             })}
-            label="Strips per box"
+            label="عدد الشرائط"
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
@@ -268,15 +297,26 @@ function AddDrugForm({setUpdate}) {
           <TextField
             size="small"
             type="number"
+            error={errors.require_amount !=null }
+            helperText={
+              errors.require_amount && errors.require_amount.message
+            }
+            
             fullWidth
-            {...register("require_amount")}
-            label="Minimum amount"
+            {...register("require_amount",{
+              required: {
+                value: true,
+                message: "Require amount is required",
+              },
+            })}
+            label="الكميه (الفاتوره)"
             variant="outlined"
           />
           <TextField
             size="small"
             fullWidth
             value={barcode}
+            
             helperText={errors.barcode && errors.barcode.message}
             error={errors.barcode}
             
@@ -298,7 +338,7 @@ function AddDrugForm({setUpdate}) {
 
             }}
 
-            label="Barcode"
+            label="الباركود"
             variant="outlined"
           />
         </Stack>
@@ -309,7 +349,7 @@ function AddDrugForm({setUpdate}) {
          
             fullWidth
             {...register("batch")}
-            label="Batch"
+            label="باتش"
             variant="outlined"
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -326,11 +366,46 @@ function AddDrugForm({setUpdate}) {
                   value={field.value}
                   onChange={(val) => field.onChange(val)}
                   sx={{ mb: 1 }}
-                  label="Expire Date"
+                  label="تاريخ الانتهاء"
                 />
               )}
             />
           </LocalizationProvider>
+        </Stack>
+        <Stack direction={"column"}>
+        {deposits.length > 0 && <Controller
+            name="deposit"
+          
+            control={control}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                    
+                  fullWidth
+                  isOptionEqualToValue={(option, val) => option.id === val.id}
+                  sx={{ mb: 1 }}
+                  {...field}
+                  value={deposits[0]}
+                  options={deposits}
+                  getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number}`}
+                  onChange={(e, data) => field.onChange(data)}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        error={errors.supplier != null}
+                        helperText={
+                          errors.supplier && errors.supplier.message
+                        }
+                        label={'فاتوره' }
+                        {...params}
+                      />
+                    );
+                  }}
+                ></Autocomplete>
+              );
+            }}
+          />
+}
         </Stack>
 
         <LoadingButton

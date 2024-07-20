@@ -16,6 +16,7 @@ import {
   Box,
   Grid,
   Button,
+  Card,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
@@ -222,7 +223,7 @@ function AddPatient() {
             />
           )}
         </div>
-        <div style={{ overflow: "auto" }}>
+        <Card sx={{p:1}} style={{ height:'70vh', overflow: "auto" }}>
           <AddTestAutoComplete setPatients={setPatients} />
           <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
@@ -243,9 +244,9 @@ function AddPatient() {
               ))
             )}
           </div>
-        </div>
+        </Card>
 
-        <Box  style={{height:'70vh',overflow:'auto'}} sx={{ p: 1 }}>
+        <Card  style={{height:'68vh',overflow:'auto'}} sx={{ p: 1 }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
@@ -257,7 +258,7 @@ function AddPatient() {
               </div>
             </Slide>
           )}
-        </Box>
+        </Card>
         <div>
           {/** add card using material   */}
           {actviePatient && (

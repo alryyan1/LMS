@@ -219,7 +219,7 @@ function Dashboard() {
                       justifyContent={"space-between"}
                       direction={"column"}
                     >
-                      <Typography>Expenses</Typography>
+                      <Typography>المصروفات</Typography>
                       <Divider />
                       <Typography variant="h4">
                         {shift?.cost?.reduce((p, c) => p + c.amount, 0)}
@@ -239,7 +239,7 @@ function Dashboard() {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6} lg={3}>
+            {/* <Grid item xs={12} md={6} lg={3}>
               <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
                 <CardContent>
                   <Stack
@@ -271,7 +271,41 @@ function Dashboard() {
                   </Stack>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid> */}
+              <Grid item xs={12} md={6} lg={3}>
+              <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
+                <CardContent>
+                  <Stack
+                    direction={"row"}
+                    justifyContent={"space-evenly"}
+                    gap={2}
+                  >
+                    <Stack
+                      justifyContent={"space-between"}
+                      direction={"column"}
+                    >
+                      <Typography>المختبر</Typography>
+                      <Divider />
+                      <Typography variant="h4">
+                        {shift &&
+                          toFixed(shift?.totalDeductsPrice, 1) -
+                            shift?.cost?.reduce((p, c) => p + c.amount, 0)}
+                      </Typography>
+                    </Stack>
+                    <Stack direction={"column"} justifyContent={"center"}>
+                      <IconButton>
+                        <Lottie
+                          options={defaultOptions}
+                          height={100}
+                          width={100}
+                        />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid> 
+            
           </Grid>
           <Grid sx={{ mt: 1 }} spacing={2} container>
             <Grid item xs={12} md={6} lg={3}>

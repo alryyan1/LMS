@@ -1,5 +1,6 @@
 import {
     Grid,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -10,6 +11,7 @@ import {
 import React from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
+import { webUrl } from "../constants";
 
 function PriceList() {
   const { tests } = useOutletContext();
@@ -17,7 +19,12 @@ function PriceList() {
   
 
   return (
-    <Grid spacing={2} container>
+    <>
+      <Stack direction={'row'} gap={2}>
+      <a href={`${webUrl}labPrices`}>PDF</a>
+      <a href={`${webUrl}excel/labPrices`}>Excel</a>
+      </Stack>
+       <Grid spacing={2} container>
       <Grid item xs={3}>
         <TableContainer>
           <Table size="small">
@@ -99,6 +106,8 @@ function PriceList() {
         </TableContainer>
       </Grid>
     </Grid>
+    </>
+ 
   );
 }
 

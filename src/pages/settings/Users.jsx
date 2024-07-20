@@ -89,9 +89,9 @@ function Users() {
           })}
         </Box>
       </Grid>
-      <Grid item xs={2}>
+      <Grid   item xs={2}>
         {selectedUser && (
-          <Box sx={{ p: 1 }}>
+          <Box key={selectedUser?.id} sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
               Roles {selectedUser.name}{" "}
             </Typography>
@@ -140,7 +140,7 @@ function Users() {
                   sx={{
                     backgroundColor: (theme) =>
                       selectedRoute?.id == route.id
-                       ? theme.palette.primary.main
+                       ? theme.palette.warning.light
                         : "",
                   }}
                   secondaryAction={
@@ -168,7 +168,7 @@ function Users() {
       </Grid>
       <Grid item xs={2}>
         {selectedUser && (
-          <Box sx={{ p: 1 }}>
+          <Box key={selectedUser.id} sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
               User sub Routes
             </Typography>
