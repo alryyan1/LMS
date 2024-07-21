@@ -2,8 +2,8 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-export const url = "http://192.168.0.100/laravel-react-app/public/api/"
-export const webUrl = "http://192.168.0.100/laravel-react-app/public/"
+export const url = "https://majan-express.com/shipping/public/api/"
+export const webUrl = "https://majan-express.com/shipping/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],

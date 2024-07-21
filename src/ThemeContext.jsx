@@ -12,12 +12,12 @@ export const ThemeContextProvider = ({ children }) => {
 
   useEffect(()=>{
     if(mode === "light"){
-        document.documentElement.style.setProperty("--clr-2", "#FFFFFF");
+        document.documentElement.style.setProperty("--clr-2", "#f4f6f9");
         document.documentElement.style.setProperty("--clr-1", "#000000");
 
     }else{
         document.documentElement.style.setProperty("--clr-2", "#073438");
-        document.documentElement.style.setProperty("--clr-1", "#FFFFFF");
+        document.documentElement.style.setProperty("--clr-1", "#f4f6f9");
 
     }
 

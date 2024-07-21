@@ -23,10 +23,13 @@ import AddItemToDepositForm from "./AddItemToDepositForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {t} from 'i18next'
+import { ArrowDropDown, Download } from "@mui/icons-material";
 function ItemDeposit() {
   const [layOut, setLayout] = useState({
     newForm: "1fr",
     showNewForm: true,
+    showAddtoDeposit: false,
+    addToDepositForm:'0fr',
     addToInventoryStyleObj: {},
     incomeItemsStyleObj: {},
   });
@@ -45,6 +48,24 @@ function ItemDeposit() {
         ...prev,
         showNewForm: false,
         newForm: "0fr",
+      };
+    });
+  };
+  const showAddToDeposit = () => {
+    setLayout((prev) => {
+      return {
+        ...prev,
+        showAddtoDeposit: true,
+        addToDepositForm: "1fr",
+      };
+    });
+  };
+  const hideAddToDeposit = () => {
+    setLayout((prev) => {
+      return {
+        ...prev,
+        showAddtoDeposit: false,
+        addToDepositForm: "0fr",
       };
     });
   };
@@ -158,7 +179,7 @@ function ItemDeposit() {
   }, [billNumber]);
   return (
     <>
-      <Stack direction={"row"} gap={3} style={{ textAlign: "right" }}>
+      <Stack direction={"row"} alignItems={'center'} gap={3} style={{ textAlign: "right" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Button onClick={searchDeposits} size="medium" variant="contained">
             {t('search')}
@@ -198,13 +219,14 @@ function ItemDeposit() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `  2fr  1.2fr   0.7fr     ${layOut.newForm}  0.1fr `,
+          gridTemplateColumns: `  2fr  ${layOut.addToDepositForm}   0.7fr     ${layOut.newForm}  0.1fr `,
         }}
       >
         <div style={layOut.incomeItemsStyleObj}>
           {/* create table with all suppliers */}
           {selectedDeposit && (
             <DepoistItemsTable
+            setSelectedDeposit ={setSelectedDeposit}
               deleteIncomeItemHandler={deleteIncomeItemHandler}
               loading={loading}
               selectedDeposit={selectedDeposit}
@@ -212,7 +234,7 @@ function ItemDeposit() {
           )}
         </div>
         <div style={layOut.addToInventoryStyleObj}>
-          {selectedDeposit && (
+          {selectedDeposit && layOut.showAddtoDeposit && (
             <AddItemToDepositForm
               setUpdate={setUpdate}
               setSelectedDeposit={setSelectedDeposit}
@@ -246,6 +268,7 @@ function ItemDeposit() {
                           : "",
                     }}
                     onClick={() => {
+                      hideAddToDeposit()
                       hideNewFormHandler();
                       setSelectedDeposit(deposit);
                     }}
@@ -266,7 +289,7 @@ function ItemDeposit() {
             suppliers={suppliers}
           />
         )}
-        <div>
+        <Stack direction={'column'} gap={2}>
           <Item>
             <IconButton
               onClick={() => {
@@ -277,7 +300,17 @@ function ItemDeposit() {
               <CreateOutlinedIcon />
             </IconButton>
           </Item>
-        </div>
+          <Item>
+            <IconButton
+              onClick={() => {
+                showAddToDeposit();
+              }}
+              variant="contained"
+            >
+              <Download />
+            </IconButton>
+          </Item>
+        </Stack>
       </div>
     </>
   );

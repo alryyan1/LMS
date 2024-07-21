@@ -1,12 +1,23 @@
 import { Delete } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import React from 'react'
+import { Button, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import React, { useState } from 'react'
 import { webUrl } from '../constants';
-
-function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler}) {
+import axiosClient from '../../../axios-client';
+import MyTableCell from '../inventory/MyTableCell';
+function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit}) {
+  const [ld,setLd] = useState(false)
   return (
     <TableContainer sx={{height:'80vh',overflow:'auto',p:1}}>
+      <LoadingButton loading={ld} onClick={()=>{
+        setLd(true)
+       const result =   confirm('هل انت متاكد من اضافه كل الاصناف لهذه الفاتوره')
+       if (result) {
+         axiosClient.post(`income-item/bulk/${selectedDeposit.id}`).then(({data}) => {
+          setSelectedDeposit(data.deposit)
+          }).finally(()=>setLd(false));
+       }
+      }} >تعريف كل الاصناف للفاتوره</LoadingButton>
         <a
               href={`${webUrl}pdf?id=${selectedDeposit.id}`}
             >
@@ -32,7 +43,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler}) {
                   <TableRow key={i}>
                     <TableCell>{i + 1}</TableCell>
                     <TableCell>{depositItem.item.market_name}</TableCell>
-                    <TableCell>{depositItem.quantity}</TableCell>
+                    <MyTableCell  item={depositItem} show table='depositItems/update'  colName={'quantity'}>{depositItem.quantity}</MyTableCell>
                     <TableCell>{depositItem.price}</TableCell>
                     <TableCell>
                       {depositItem.quantity * depositItem.price}

@@ -56,24 +56,24 @@ const Nav = () => {
       setUser(data);
     });
   }, []);
-  useEffect(() => {
-    axiosClient.get("/settings").then(({ data }) => {
-      setSettings(data);
-      setMode(data.theme);
-      i18n.changeLanguage(data.lang);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axiosClient.get("/settings").then(({ data }) => {
+  //     setSettings(data);
+  //     setMode(data.theme);
+  //     i18n.changeLanguage(data.lang);
+  //   });
+  // }, []);
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
-      i18n.changeLanguage("en");
-      localStorage.setItem("lang","en")
-      axiosClient.post("settings", { colName: "lang", data: 'en' });
+      i18n.changeLanguage("ch");
+      // localStorage.setItem("lang","en")
+      // axiosClient.post("settings", { colName: "lang", data: 'en' });
     } else {
-      i18n.changeLanguage("ar");
-      localStorage.setItem("lang","ar")
+      i18n.changeLanguage("ch");
+      // localStorage.setItem("lang","ar")
 
-      axiosClient.post("settings", { colName: "lang", data: 'ar' });
+      // axiosClient.post("settings", { colName: "lang", data: 'ar' });
     }
   };
   const changeMode = () => {
@@ -111,31 +111,31 @@ const Nav = () => {
     </Box>
   );
   console.log('nav updated')
-  const DrawerPharmacyList = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-         {user?.sub_routes.filter((s)=>{
-         return   s.sub_route.route_id == 2
-        }).map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setPharmacyDrawer(false)}
-              LinkComponent={Link}
-              to={item.sub_route.path}
-            >
-              <ListItemIcon>
-                <ArrowRight />
-              </ListItemIcon>
-              <ListItemText primary={t(item.sub_route.name)} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  // const DrawerPharmacyList = (
+  //   <Box sx={{ width: 250 }} role="presentation">
+  //     <List>
+  //        {user?.sub_routes.filter((s)=>{
+  //        return   s.sub_route.route_id == 2
+  //       }).map((item, index) => (
+  //         <ListItem key={item.title} disablePadding>
+  //           <ListItemButton
+  //             onClick={() => setPharmacyDrawer(false)}
+  //             LinkComponent={Link}
+  //             to={item.sub_route.path}
+  //           >
+  //             <ListItemIcon>
+  //               <ArrowRight />
+  //             </ListItemIcon>
+  //             <ListItemText primary={t(item.sub_route.name)} />
+  //           </ListItemButton>
+  //         </ListItem>
+  //       ))}
+  //     </List>
+  //   </Box>
+  // );
   return (
     <>
-      <Drawer
+      {/* <Drawer
         ModalProps={{
           onBackdropClick: () => {
             setLabDrawer(false);
@@ -183,7 +183,7 @@ const Nav = () => {
         open={pharmcyDrawer}
       >
         {DrawerPharmacyList}
-      </Drawer>
+      </Drawer> */}
       <AppBar
         sx={{
           backgroundColor: "#485765",
