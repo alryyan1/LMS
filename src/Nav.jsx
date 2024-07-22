@@ -91,7 +91,7 @@ const Nav = () => {
   const DrawerClinicList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
-      {user?.sub_routes.filter((s)=>{
+      {user?.sub_routes?.filter((s)=>{
          return   s.sub_route.route_id == 5
         }).map((item, index) => (
           <ListItem key={item.title} disablePadding>
@@ -111,31 +111,31 @@ const Nav = () => {
     </Box>
   );
   console.log('nav updated')
-  // const DrawerPharmacyList = (
-  //   <Box sx={{ width: 250 }} role="presentation">
-  //     <List>
-  //        {user?.sub_routes.filter((s)=>{
-  //        return   s.sub_route.route_id == 2
-  //       }).map((item, index) => (
-  //         <ListItem key={item.title} disablePadding>
-  //           <ListItemButton
-  //             onClick={() => setPharmacyDrawer(false)}
-  //             LinkComponent={Link}
-  //             to={item.sub_route.path}
-  //           >
-  //             <ListItemIcon>
-  //               <ArrowRight />
-  //             </ListItemIcon>
-  //             <ListItemText primary={t(item.sub_route.name)} />
-  //           </ListItemButton>
-  //         </ListItem>
-  //       ))}
-  //     </List>
-  //   </Box>
-  // );
+  const DrawerPharmacyList = (
+    <Box sx={{ width: 250 }} role="presentation">
+      <List>
+         {user?.sub_routes?.filter((s)=>{
+         return   s.sub_route.route_id == 2
+        }).map((item, index) => (
+          <ListItem key={item.title} disablePadding>
+            <ListItemButton
+              onClick={() => setPharmacyDrawer(false)}
+              LinkComponent={Link}
+              to={item.sub_route.path}
+            >
+              <ListItemIcon>
+                <ArrowRight />
+              </ListItemIcon>
+              <ListItemText primary={t(item.sub_route.name)} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
   return (
     <>
-      {/* <Drawer
+      <Drawer
         ModalProps={{
           onBackdropClick: () => {
             setLabDrawer(false);
@@ -144,7 +144,7 @@ const Nav = () => {
         open={labDrawer}
       >
         {" "}
-        {user?.sub_routes.filter((s)=>{
+        {user?.sub_routes?.filter((s)=>{
          return   s.sub_route.route_id == 4
         }).map((item) => {
           // alert('s')
@@ -183,7 +183,7 @@ const Nav = () => {
         open={pharmcyDrawer}
       >
         {DrawerPharmacyList}
-      </Drawer> */}
+      </Drawer>
       <AppBar
         sx={{
           backgroundColor: "#485765",
@@ -209,7 +209,7 @@ const Nav = () => {
             {t('login')}
           </NavLink>
           {
-            user?.routes.map((r)=>{
+            user?.routes?.map((r)=>{
               if (r.route.id == 4) {
                 return (<NavLink
                  key={r.id}
