@@ -13,9 +13,10 @@ import {
 import  { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import { useOutletContext } from "react-router-dom";
 
 function ItemState() {
-  const items = useLoaderData();
+  const {items} = useOutletContext()
   const [selectedItem, setSelectedItem] = useState(null);
   const [states, setSates] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(1);

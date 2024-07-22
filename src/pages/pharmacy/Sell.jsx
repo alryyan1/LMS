@@ -37,6 +37,9 @@ import printJS from "print-js";
 import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 function toFixed(num, fixed) {
+  if (num == null) {
+    return 0
+  }
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
   return num.toString().match(re)[0];
 }

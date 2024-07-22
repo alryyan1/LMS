@@ -164,10 +164,7 @@ export const router = createBrowserRouter([
           {
             path: "item/state",
             element: <ItemState />,
-            loader: ({ request: { signal } }) => {
-              //fetch all items
-              return fetch(`${url}items/all`, { signal });
-            },
+       
             
           },
           {
@@ -182,10 +179,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "item/create",
-            loader: ({ request: { signal } }) => {
-              //fetch all sections
-              return fetch(`${url}sections/all`, { signal });
-            },
+       
             element: <Item />,
           },
           {

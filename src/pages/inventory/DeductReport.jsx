@@ -20,9 +20,8 @@ import { useOutletContext } from "react-router-dom";
   
   function DeductReport() {
     const [date, setDate] = useState(null);
-    const [deduct, setDeduct] = useState([]);
-    const [deductItems, setDeductItems] = useState([]);
-    const [selectDeduct, setSelectedDeduct] = useState(null);
+    const [deduct, setDeduct] = useState(null);
+    const [deducts, setDeducts] = useState([]);
    const {setDialog} = useOutletContext()
 
 
@@ -35,23 +34,23 @@ import { useOutletContext } from "react-router-dom";
         .then(({ data: { data } }) => {
 
         //   setDeductItems([]);
-          setDeduct(data);
+        setDeducts(data);
           console.log(data, "response");
         });
     };
   
   
     const showDeductById = (id) => {
-      axiosClient.get(`inventory/deduct/showDeductById/${id}`).then(
-        ({
-          data: {
-            data: { items },
-          },
-        }) => {
-          setDeductItems(items);
-          console.log(items, "response");
-        }
-      ).catch((error)=>console.log(error));
+      // axiosClient.get(`inventory/deduct/showDeductById/${id}`).then(
+      //   ({
+      //     data: {
+      //       data: { items },
+      //     },
+      //   }) => {
+      //     setDeductItems(items);
+      //     console.log(items, "response");
+      //   }
+      // ).catch((error)=>console.log(error));
     };
   
     useEffect(() => {
@@ -78,10 +77,10 @@ import { useOutletContext } from "react-router-dom";
           <Typography variant="h4" align="center" sx={{ mb: 1 }}>
             استعلام اذن طلب
           </Typography>
-          {deductItems.length > 0 ? (
+          {deduct?.deducted_items.length > 0 ? (
             <TableContainer>
               <a
-                href={`${webUrl}deduct/report?id=${selectDeduct}`}
+                href={`${webUrl}deduct/report?id=${deduct.id}`}
               >
                 pdf
               </a>
@@ -96,11 +95,11 @@ import { useOutletContext } from "react-router-dom";
                 </thead>
   
                 <TableBody>
-                  {deductItems.map((income, i) => (
+                  {deduct?.deducted_items.map((income, i) => (
                     <TableRow key={i}>
                       <TableCell>{i + 1}</TableCell>
                       <TableCell>{income.name}</TableCell>
-                      <TableCell>{income.pivot.quantity}</TableCell>
+                      <TableCell>{income.box}</TableCell>
                       
                     </TableRow>
                   ))}
@@ -145,7 +144,7 @@ import { useOutletContext } from "react-router-dom";
                 </TableRow>
               </thead>
               <TableBody>
-                {deduct.map((item) => {
+                {deducts.map((item) => {
                   return (
                     <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
@@ -154,7 +153,7 @@ import { useOutletContext } from "react-router-dom";
                         <Button
                         size="small"
                           onClick={() => {
-                            setSelectedDeduct(item.id);
+                            setDeduct(item);
                             showDeductById(item.id);
                           }}
                         >

@@ -273,10 +273,14 @@ function AddDrugForm({setUpdate}) {
                 value: true,
                 message: "Strips count is required",
               },
+              min: {
+                value: 1,
+                message: "Strips count must be at least 1",
+              },
             })}
             label="عدد الشرائط"
             variant="standard"
-            helperText={errors.cost_price && errors.cost_price.message}
+            helperText={errors.strips && errors.strips.message}
           />
         </Stack>
         <Stack gap={2} direction={"row"}>

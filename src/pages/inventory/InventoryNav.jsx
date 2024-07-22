@@ -7,8 +7,7 @@ import { useStateContext } from "../../appContext";
 import Login from "../Login";
 import axiosClient from "../../../axios-client";
 function InventoryNav() {
- const {setToken,setUser } =useStateContext()
-
+  const [items,setItems] = useState()
  const [dialog, setDialog] = useState({
   showMoneyDialog:false,
   title:'',
@@ -18,6 +17,13 @@ function InventoryNav() {
   openLabReport: false,
   message: "تمت الاضافه بنجاح",
 });
+useEffect(()=>{
+  axiosClient.get('items/all').then(({data})=>{
+    setItems(data)
+  }).catch((error)=>{
+   
+  })
+},[])
   const handleClose = () => {
     
     setDialog((prev) => ({ ...prev, open: false }));
@@ -32,7 +38,7 @@ function InventoryNav() {
         <NavLink to={"item/state"}> <Item>حركه الاصناف</Item></NavLink>
         <NavLink to={"section/create"}> <Item>قسم جديد</Item></NavLink>
         <NavLink to={"income/request"}><Item>اذن  طلب</Item></NavLink>
-        <NavLink to={"income/create"}><Item>اذن وارد</Item></NavLink>
+        <NavLink to={"/pharmacy/deposit"}><Item>اذن وارد</Item></NavLink>
         <NavLink to={"income/deduct"}><Item>اذن منصرف</Item></NavLink>
         <NavLink to={"inventory/balance"}><Item>المخزون</Item></NavLink>
         <NavLink to={"item/statistics"}><Item>الرسم البياني</Item></NavLink>
@@ -40,7 +46,7 @@ function InventoryNav() {
 
       {/* <ThemeProvider theme={theme}> */}
         {/* <CacheProvider value={cacheRtl}> { */}
-          <Outlet context={{dialog, setDialog}}></Outlet>
+          <Outlet context={{dialog, setDialog,items,setItems}}></Outlet>
           {/* </CacheProvider> */}
       {/* </ThemeProvider> */}
       <Snackbar
