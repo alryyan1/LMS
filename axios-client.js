@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient =  axios.create({
-    baseURL : `https://majan-express.com/shipping/public/api`
+    baseURL : `https://intaj-starstechnology.com/contracts/public/api`
 })
 
 axiosClient.interceptors.request.use((config)=>{

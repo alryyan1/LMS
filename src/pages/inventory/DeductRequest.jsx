@@ -164,7 +164,7 @@ import axiosClient from "../../../axios-client.js";
               </thead>
   
               <TableBody>
-                {deduct && deduct.items.map((deductedItem, i) => (
+                {deduct && deduct.deducted_items.map((deductedItem, i) => (
                   <TableRow key={i}>
                     <TableCell>{i + 1}</TableCell>
                     <TableCell>{deductedItem.name}</TableCell>

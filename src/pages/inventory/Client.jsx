@@ -16,7 +16,6 @@ import { LoadingButton } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
-import { useStateContext } from "../../appContext.jsx";
 
 function Client() {
   const [loading, setLoading] = useState(false);
@@ -69,9 +68,8 @@ function Client() {
         if (data.status) {
           setDialog((prev) => ({
             ...prev,
-            color: "error",
             open: true,
-            message: data.message,
+            message: 'تم العمليه بنجاح'
           }));
           //delete client by id
           setClients(clients.filter((client) => client.id != id));

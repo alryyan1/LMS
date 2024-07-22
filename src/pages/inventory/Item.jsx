@@ -54,7 +54,7 @@ function Item() {
     setLoading(true);
     axiosClient
       .post(`items/create`, {
-        name: formData.name,
+        market_name: formData.name,
         section: formData.section.id,
         require_amount: formData.require_amount,
         initial_balance: formData.initial_balance,
@@ -218,7 +218,7 @@ function Item() {
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <MyTableCell  colName={"name"} item={item}>
-                      {item.name}
+                      {item.market_name}
                     </MyTableCell>
                     <MyAutoCompeleteTableCell
                       val={item.section}

@@ -12,7 +12,7 @@ function GuestLayout() {
     if (user?.sub_routes?.length > 0) {
       return <Navigate to={user?.sub_routes[0].sub_route.path} />;
     }else{
-      return <Navigate to='/ship' />;
+      return <Navigate to='/contracts' />;
 
     }
   }

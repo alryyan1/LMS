@@ -55,7 +55,7 @@ function InventoryNav() {
               variant="filled"
               sx={{ width: "100%" }}
             >
-              {dialog.msg}
+              {dialog.message}
             </Alert>
           </Snackbar>
     </>

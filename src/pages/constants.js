@@ -2,8 +2,8 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-export const url = "https://majan-express.com/shipping/public/api/"
-export const webUrl = "https://majan-express.com/shipping/public/"
+export const url = "https://intaj-starstechnology.com/contracts/public/api/"
+export const webUrl = "https://intaj-starstechnology.com/contracts/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],

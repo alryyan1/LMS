@@ -256,7 +256,7 @@ function RequestedTests({ setPatients }) {
           <div className="money-info">
             {actviePatient.is_lab_paid ? (
               <LoadingButton
-              disabled={user.id !=actviePatient.user_id}
+             
                 loading={loading}
                 color="error"
                 onClick={cancelPayHandler}

@@ -153,7 +153,11 @@ function Supplier() {
                     <TableCell>
                       <IconButton
                         onClick={() => {
-                          deleteSupplierHandler(supplier.id);
+                         const result = confirm('هل انت متاكد من حذف المورد سيتم حذف جميع العمليات المتعلقه بالمورد من فواتير وغيرها')
+                         if (result) {
+                          
+                           deleteSupplierHandler(supplier.id);
+                         }
                         }}
                       >
                         <Delete></Delete>

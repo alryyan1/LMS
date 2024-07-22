@@ -62,12 +62,12 @@ function ItemState() {
         </Grid>
         <Grid item xs={7}>
           <Autocomplete
+         
             fullWidth
             getOptionKey={(option) => option.id}
             sx={{ mb: 1 }}
             options={items}
-            isOptionEqualToValue={(option, val) => option.id === val.id}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={(option) => option.market_name}
             onChange={(_, valu) => {
               setSelectedItem(valu);
             }}
