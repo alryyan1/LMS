@@ -31,6 +31,7 @@ function DeductRequest() {
   // console.log(items);
   //create state variable to store all suppliers
   const { dialog, setDialog } = useOutletContext();
+  const [selectedItem,setSelectedItem]=useState(null)
   const [deduct, setDeduct] = useState(null);
   const [deducts, setDeducts] = useState([]);
   const [items, setItems] = useState([]);
@@ -388,16 +389,43 @@ function DeductRequest() {
                         getOptionDisabled={(option) => option.remaining <= 0}
                         sx={{ mb: 1 }}
                         {...field}
-                        value={field.value || null}
+                        value={selectedItem}
                         options={items}
-                        isOptionEqualToValue={(option, val) =>
-                          option.id === val.id
-                        }
+                        
                         getOptionLabel={(option) => option.market_name}
                         onChange={(e, data) => field.onChange(data)}
                         renderInput={(params) => {
                           return (
                             <TextField
+
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                console.log("enter pressed");
+                              
+                                  
+                                //get test from tests using find
+                                const barcode = e.target.value.trim();
+                                const itemFounded =  items.find((item)=>{
+                                  return item.barcode?.trim() === barcode
+                                })
+                                console.log(itemFounded,'founed')
+                                if (itemFounded ) {
+                                 
+                                 setValue('item',itemFounded)
+                                 setSelectedItem(itemFounded)
+                                 console.log(itemFounded)
+                               
+                                  // setSelectedDrugs((prev)=>{
+                                  //   console.log(prev)
+                                  //   return [...prev, itemFounded]
+                                  // })
+                                }
+          
+                              
+                              }
+                            }}
+
                               helperText={errors.item && errors.item.message}
                               error={errors.item}
                               label={"الصنف"}

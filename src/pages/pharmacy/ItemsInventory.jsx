@@ -108,7 +108,7 @@ import {
                 <TableCell>No</TableCell>
                 <TableCell>Market Name</TableCell>
                 <TableCell>Scientific Name</TableCell>
-                <TableCell>Price</TableCell>
+                <TableCell>Sell Price</TableCell>
                 <TableCell>Expire</TableCell>
                 <TableCell>Out </TableCell>
                 <TableCell>in </TableCell>

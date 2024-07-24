@@ -204,7 +204,7 @@ const Nav = () => {
         >
           <NavLink
             style={{ textDecoration: "none", color: "white" }}
-            to={"/login"}
+            to={"login"}
           >
             {t('login')}
           </NavLink>
@@ -277,12 +277,12 @@ const Nav = () => {
               )
             })
           }
-           <NavLink
+           {/* <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"/contracts"}
           >
           Contracts
-          </NavLink>
+          </NavLink> */}
  { /*
           <NavLink
             to={"/lab"}

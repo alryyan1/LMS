@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Grid,
   Stack,
   Table,
@@ -30,11 +31,18 @@ function DrugItems() {
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
   const [items, setItems] = useState([]);
+  const [selectedFutureDate, setSelectedFutureDate] = useState(null);
+  const [futureDates,setFutureDates] = useState([]);
   const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
 
 
   useEffect(() => {
     //fetch all Items
+
+    axiosClient.get('expireMonthPanel').then(({data})=>{
+      console.log(data)
+      setFutureDates(data.data)
+    })
     axiosClient
       .get(`items/all/pagination/${page}`)
       .then(({ data: { data, links } }) => {
@@ -110,6 +118,24 @@ function DrugItems() {
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
+        <Stack alignItems={'center'} gap={2} direction={'row'}>
+          {futureDates.map((item)=>{
+            return(
+              <Badge
+              badgeContent={item.items.length}
+                key={item.monthname}
+                color="error"
+              >
+                <Button sx={{
+                  backgroundColor :(theme)=>item.monthname == selectedFutureDate?.monthname ? theme.palette.warning.light : ''
+                }} onClick={()=>{
+                  setSelectedFutureDate(item)
+                  setItems(item.items)
+                }} size="small" variant="contained">{item.monthname}</Button>
+              </Badge>
+            )
+          })}
+        </Stack>
         <TextField
         type="search"
           value={search}
@@ -120,7 +146,11 @@ function DrugItems() {
         ></TextField>
       </Stack>
       <TableContainer>
+        <Stack direction={'row'} justifyContent={'space-around'}>
         <a href={`${webUrl}excel/items`}>EXCEL</a>
+        {selectedFutureDate &&  <a href={`${webUrl}expired/items?firstOfMonth=${selectedFutureDate?.firstofMonth}&lastOfMonth=${selectedFutureDate?.lastofmonth}&monthname=${selectedFutureDate.monthname}&year=${selectedFutureDate.year}`}>Expired</a> }
+        </Stack>
+      
         <Table dir="rtl" size="small">
           <thead>
             <TableRow>
@@ -272,7 +302,7 @@ function DrugItems() {
           </tbody>
         </Table>
       </TableContainer>
-      <Grid sx={{ gap: "4px",mt:1 }} container>
+    {!selectedFutureDate &&  <Grid sx={{ gap: "4px",mt:1 }} container>
         {links.map((link, i) => {
           if (i == 0) {
             return (
@@ -316,7 +346,7 @@ function DrugItems() {
               </Grid>
             );
         })}
-      </Grid>
+      </Grid>}
     </Box>
   );
 }

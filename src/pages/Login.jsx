@@ -26,7 +26,7 @@ function App() {
     setLoading(true);
     console.log(data);
     axiosClient
-      .post("/login", data)
+      .post("login", data)
       .then(({ data }) => {
         console.log(data, "success data");
         if (data.status) {

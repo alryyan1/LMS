@@ -265,15 +265,15 @@ function Reception() {
                             type: "pdf",
                           });
 
-                          fetch("http://127.0.0.1:4000/", {
-                            method: "POST",
-                            headers: {
-                              "Content-Type":
-                                "application/x-www-form-urlencoded",
-                            },
+                          // fetch("http://127.0.0.1:4000/", {
+                          //   method: "POST",
+                          //   headers: {
+                          //     "Content-Type":
+                          //       "application/x-www-form-urlencoded",
+                          //   },
 
-                            body: form,
-                          }).then(() => {});
+                          //   body: form,
+                          // }).then(() => {});
                         });
                     }}
                     color="warning"

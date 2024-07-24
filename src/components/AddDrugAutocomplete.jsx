@@ -14,9 +14,19 @@ function AddDrugAutocomplete({setUpdater}) {
   console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
+    if (activeSell.complete) {
+      alert('يجب الغاء السداد اولا')
+      return;
+    }
     setLoading(true)
-    
-    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.map((d)=>d.id)}).then(({data})=>{
+     selectedDrugs.forEach((drug)=>{
+       if (drug.strips == 0) {
+         alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
+       }
+       return 
+     })
+   
+    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
         setActiveSell(data.data)
         setShift(data.shift)
@@ -76,6 +86,10 @@ function AddDrugAutocomplete({setUpdater}) {
                       })
                       console.log(itemFounded,'founed')
                       if (itemFounded ) {
+                        if (itemFounded.strips == 0) {
+                          alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
+                          return
+                        }
                         console.log(itemFounded.expire,'expire')
                         console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
                         if (!dayjs(itemFounded.expire).isAfter(dayjs())) {
