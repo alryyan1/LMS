@@ -157,7 +157,7 @@ function SellDrug() {
                 height={400}
               />
             ) : (
-              shift?.deducts.map((p, i) => (
+              shift?.deducts.filter((d)=>d.is_sell != 0).map((p, i) => (
                 <SellBox
                   delay={i * 100}
                   key={p.id}
@@ -418,7 +418,7 @@ function SellDrug() {
                     onClick={() => {
                       setLoading(true);
                       axiosClient
-                        .get(`inventory/deduct/complete/${activeSell.id}`)
+                        .get(`inventory/deduct/complete/${activeSell.id}?is_sell=1`)
                         .then(({ data }) => {
                           try {
                             setDialog((prev) => {
@@ -473,7 +473,7 @@ function SellDrug() {
               onClick={() => {
                 setLoading(true);
                 axiosClient
-                  .get(`inventory/deduct/new`)
+                  .get(`inventory/deduct/new?is_sell=1`)
                   .then(({ data }) => {
                     try {
                       setRecieved(0);
@@ -518,15 +518,15 @@ function SellDrug() {
                       type: "pdf",
                     });
 
-                    // fetch("http://127.0.0.1:4000/", {
-                    //   method: "POST",
-                    //   headers: {
-                    //     "Content-Type":
-                    //       "application/x-www-form-urlencoded",
-                    //   },
+                    fetch("http://127.0.0.1:4000/", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type":
+                          "application/x-www-form-urlencoded",
+                      },
 
-                    //   body: form,
-                    // }).then(() => {});
+                      body: form,
+                    }).then(() => {});
                   });
               }}
             >

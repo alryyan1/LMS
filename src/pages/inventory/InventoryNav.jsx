@@ -39,8 +39,8 @@ useEffect(()=>{
         <NavLink to={"section/create"}> <Item>قسم جديد</Item></NavLink>
         <NavLink to={"income/request"}><Item>اذن  طلب</Item></NavLink>
         <NavLink to={"/pharmacy/deposit"}><Item>اذن وارد</Item></NavLink>
-        <NavLink to={"income/deduct"}><Item>اذن منصرف</Item></NavLink>
-        <NavLink to={"inventory/balance"}><Item>المخزون</Item></NavLink>
+        {/* <NavLink to={"income/deduct"}><Item>اذن منصرف</Item></NavLink> */}
+        {/* <NavLink to={"inventory/balance"}><Item>المخزون</Item></NavLink> */}
         <NavLink to={"item/statistics"}><Item>الرسم البياني</Item></NavLink>
       </ul>
 

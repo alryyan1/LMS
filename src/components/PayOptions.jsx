@@ -13,7 +13,7 @@ import axiosClient from '../../axios-client';
 import { LoadingButton } from '@mui/lab';
 
 const options = [{ id:1 ,name:'Cash'}
-  // ,{ id:2,name:'Transfer'}
+  ,{ id:2,name:'Transfer'}
   
   , {id:3,name:'Bank'}];
 

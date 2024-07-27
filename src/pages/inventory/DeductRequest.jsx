@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Button,
+  Divider,
   Grid,
   IconButton,
   Paper,
@@ -68,7 +69,6 @@ function DeductRequest() {
         item_id: formData.item.id,
         box: formData.amount,
         client_id: formData.client.id,
-        notes: formData.notes,
       })
       .then((data) => {
         console.log(data);
@@ -234,6 +234,7 @@ function DeductRequest() {
       </Stack>
       <Paper sx={{ p: 1 }}>
         <TableContainer>
+          <Typography textAlign={'center'}>طلبات الصرف</Typography>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -304,7 +305,7 @@ function DeductRequest() {
                     <Button
                       onClick={() => {
                         console.log(d);
-                        hideAddItemToDepositFrm();
+                    //    hideAddItemToDepositFrm();
                         setDeduct(d);
                         showDeductedItemTable();
                       }}
@@ -318,48 +319,16 @@ function DeductRequest() {
           </Table>
         </TableContainer>
       </Paper>
-      <div>
-        {layout.showDeductedItemTable && (
-          <Paper sx={{ p: 1 }}>
-            <Typography sx={{ m: 1 }} variant="h5" textAlign={"center"}>
-              {deduct && deduct.id} اذن طلب رقم
-            </Typography>
-            {/* create table with all suppliers */}
-            <TableContainer>
-              <Table sx={{ mb: 2 }} dir="rtl" size="small">
-                <thead>
-                  <TableRow>
-                    <TableCell>رقم</TableCell>
-                    <TableCell>الصنف</TableCell>
-                    <TableCell>العميل</TableCell>
-                    <TableCell>الكميه</TableCell>
-                  </TableRow>
-                </thead>
-
-                <TableBody>
-                  {deduct &&
-                    deduct.deducted_items.map((deductedItem, i) => (
-                      <TableRow key={i}>
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>{deductedItem.item.market_name}</TableCell>
-                        <TableCell>{deductedItem?.client?.name}</TableCell>
-                        <TableCell>{deductedItem.box}</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        )}
-      </div>
+      
 
       <div>
         <Link to={"/inventory/reports/deduct"}>reports</Link>
 
         {layout.showAddItemToDepositFrm && (
+          <>
           <Paper sx={{ p: 1 }}>
             <Typography
-              sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
+              sx={{  textAlign: "center", mb: 1 }}
               variant="h5"
             >
               طلب من المخزن
@@ -476,6 +445,7 @@ function DeductRequest() {
                 />
 
                 <TextField
+            
                   fullWidth
                   error={errors.amount}
                   {...register("amount", {
@@ -487,11 +457,7 @@ function DeductRequest() {
                   type="number"
                   helperText={errors.amount && errors.amount.message}
                 />
-                <TextField
-                  {...register("notes")}
-                  multiline
-                  label="الملاحظات"
-                ></TextField>
+               
 
                 <LoadingButton
                   fullWidth
@@ -503,6 +469,57 @@ function DeductRequest() {
                 </LoadingButton>
               </Stack>
             </form>
+
+           
+          </Paper>
+           <Divider></Divider>
+           <TextField       onChange={(e)=>{
+                    axiosClient.patch(`deduct/${deduct.id}`,{colName:'notes',val:e.target.value}).then(({data})=>{
+                      console.log(data)
+                    })
+                  }} sx={{mt:2}}
+                
+                 rows={5}
+                 multiline
+                 label="الملاحظات"
+                 variant="filled"
+                 fullWidth
+               ></TextField>
+          </>
+          
+        )}
+      </div>
+      <div>
+        {layout.showDeductedItemTable && (
+          <Paper sx={{ p: 1 }}>
+            <Typography sx={{ m: 1 }} variant="h5" textAlign={"center"}>
+              {deduct && deduct.id} اذن طلب رقم
+            </Typography>
+            {/* create table with all suppliers */}
+            <TableContainer>
+              <Table sx={{ mb: 2 }} dir="rtl" size="small">
+                <thead>
+                  <TableRow>
+                    <TableCell>رقم</TableCell>
+                    <TableCell>الصنف</TableCell>
+                    <TableCell>العميل</TableCell>
+                    <TableCell>الكميه</TableCell>
+                  </TableRow>
+                </thead>
+
+                <TableBody>
+                  {deduct &&
+                    deduct.deducted_items.map((deductedItem, i) => (
+                      <TableRow key={i}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>{deductedItem.item.market_name}</TableCell>
+                        <TableCell>{deductedItem?.client?.name}</TableCell>
+                        <TableCell>{deductedItem.box}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Paper>
         )}
       </div>

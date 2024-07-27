@@ -12,8 +12,13 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
   const [page, setPage] = useState(0);
 
   useEffect(()=>{
-    if (search !=null && search != '') {
-
+    if (search !=null ) {
+      if (search =='') {
+        // alert('empty search')
+        console.log(data,'data')
+        setSelectedDeposit(data)
+        return
+      }
        if ( !isNaN(search)) {
        setPage(()=>{
         return 0
@@ -36,7 +41,11 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
           }
         })
        }else{
- 
+        if (search =='') {
+          alert('empty search')
+          setSelectedDeposit(data)
+          return
+        }
         setSelectedDeposit((prev)=>{
           return {
             ...prev,
@@ -89,7 +98,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
                   <TableRow key={i}>
                     <TableCell>{depositItem.item.id}</TableCell>
                     <TableCell>{depositItem.item.market_name}</TableCell>
-                    <MyTableCell key={page}  item={depositItem} show table='depositItems/update'  colName={'quantity'}>{depositItem.quantity}</MyTableCell>
+                    <MyTableCell key={page}  setSelectedDeposit={setSelectedDeposit} item={depositItem} show table='depositItems/update'  colName={'quantity'}>{depositItem.quantity}</MyTableCell>
                     <TableCell>{depositItem.price}</TableCell>
                     <TableCell>
                       {depositItem.quantity * depositItem.price}

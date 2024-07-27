@@ -39,10 +39,8 @@ function SellBox({ onClick, sell,index,activeSell }) {
                 
               }}   
           >
-            {index}
-            <span>
-             {sell.result_is_locked ?  <Lock/> :""}
-            </span>
+            {sell.number}
+          
           </Box>
         </Badge>
       ) : (
@@ -60,9 +58,7 @@ function SellBox({ onClick, sell,index,activeSell }) {
             
           }}        >
           {sell.number}
-          <span >
-             {sell.result_is_locked ?  <Lock/> :""}
-            </span>
+        
         </Box>
       )}
     </Grow>

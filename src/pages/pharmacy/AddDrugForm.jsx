@@ -41,13 +41,13 @@ function AddDrugForm({setUpdate}) {
       watch
     } = useForm({
       defaultValues:{
-        deposit:deposits[0]
+        // deposit:deposits[0]
       }
     });
     useEffect(()=>{
       if (deposits.length > 0) {
         
-        setValue('deposit',deposits[0])
+        // setValue('deposit',deposits[0])
       }
     },[deposits.length])
     const sell_price = watch("sell_price");
@@ -389,7 +389,7 @@ function AddDrugForm({setUpdate}) {
                   isOptionEqualToValue={(option, val) => option.id === val.id}
                   sx={{ mb: 1 }}
                   {...field}
-                  value={deposits[0]}
+                  // value={deposits[0]}
                   options={deposits}
                   getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number}`}
                   onChange={(e, data) => field.onChange(data)}

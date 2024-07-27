@@ -7,6 +7,11 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -23,7 +28,7 @@ import AddItemToDepositForm from "./AddItemToDepositForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {t} from 'i18next'
-import { ArrowDropDown, Download } from "@mui/icons-material";
+import { ArrowDropDown, DeleteOutline, Download } from "@mui/icons-material";
 function ItemDeposit() {
   const [layOut, setLayout] = useState({
     newForm: "1fr",
@@ -181,10 +186,10 @@ function ItemDeposit() {
     <>
       <Stack direction={"row"} alignItems={'center'} gap={3} style={{ textAlign: "right" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Button onClick={searchDeposits} size="medium" variant="contained">
+          <Button  onClick={searchDeposits} size="medium" variant="contained">
             {t('search')}
           </Button>
-          <DateField
+          <DateField size="small"
             onChange={(val) => {
               setDate(val);
             }}
@@ -194,13 +199,14 @@ function ItemDeposit() {
             label="Purchase Invoice Date"
           />
         </LocalizationProvider>
-        <TextField
+        <TextField size="small"
           onChange={(event) => {
             setBillNumber(event.target.value);
           }}
           label="Search by invoice number"
         ></TextField>
         <Autocomplete
+        size="small"
           sx={{ width: "400px" }}
           isOptionEqualToValue={(option, val) => option.id === val.id}
           options={suppliers}
@@ -245,6 +251,39 @@ function ItemDeposit() {
           )}
         </div>
         <div>
+          {/* <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>رقم فاتورة</TableCell>
+                <TableCell>تاريخ الفاتورة</TableCell>
+                <TableCell>المورد</TableCell>
+                <TableCell> المبلغ</TableCell>
+                <TableCell>حذف</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {todayDeposits.map((deposit) => {
+                return (
+                  <TableRow key={deposit.id}>
+                    <TableCell>{deposit.bill_number}</TableCell>
+                    <TableCell>{dayjs(Date.parse(deposit.bill_number)).format("YYYY-MM-DD")}</TableCell>
+                    <TableCell>{deposit.supplier.name}</TableCell>
+                    <TableCell>{deposit.total_amount}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => {
+                          deleteIncomeItemHandler(deposit.id);
+                        }}
+                      >
+                        <DeleteOutline />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+
+            </TableBody>
+          </Table> */}
           {todayDeposits.map((deposit) => {
             return (
               <Badge

@@ -18,7 +18,8 @@ function MyTableCell({
   stateUpdater = null,
   setShift=null,
   sx = null,
-  setData=null
+  setData=null,
+  setSelectedDeposit=null,
 }) {
   const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
@@ -70,6 +71,16 @@ function MyTableCell({
             if (stateUpdater) {
             stateUpdater((prev) => prev + 1);
               
+            }
+            if (setSelectedDeposit) {
+              setSelectedDeposit((prev)=>{
+                return {...prev, items:prev.items.map((depositItem)=>{
+                  if(depositItem.id === item.id){
+                    return {...depositItem, quantity:val}
+                  }
+                  return depositItem
+                })};
+              })
             }
             setDialog((prev) => {
               return {
