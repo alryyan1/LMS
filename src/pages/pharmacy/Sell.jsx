@@ -16,6 +16,9 @@ import {
   CardContent,
   TextField,
   Skeleton,
+  Slide,
+  Grow,
+  Zoom,
 } from "@mui/material";
 import {
   Calculate,
@@ -45,6 +48,7 @@ function toFixed(num, fixed) {
 }
 function SellDrug() {
   const [loading, setLoading] = useState();
+  const [userSettings, setUserSettings] = useState(null);
 
   const [updater, setUpdater] = useState(0);
   const [recieved, setRecieved] = useState(0);
@@ -69,6 +73,12 @@ function SellDrug() {
       setDeduct(data);
     });
   }, []);
+  useEffect(()=>{
+    axiosClient.get("userSettings").then(({ data }) => {
+      console.log(data,'user settings from axios')
+      setUserSettings(data);
+    });
+  },[])
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -171,7 +181,7 @@ function SellDrug() {
           </div>
         </div>
         <div style={{ overflow: "auto" }}>
-          <Table className="white" key={updater} size="small">
+        {activeSell &&   <Table className="white" key={updater} size="small">
             <thead>
               <TableRow>
                 <TableCell>Item</TableCell>
@@ -184,6 +194,7 @@ function SellDrug() {
             </thead>
             <TableBody>
               {activeSell?.deducted_items?.map((deductedItem) => (
+                       <Zoom   key={deductedItem.id} direction="up" in mountOnEnter unmountOnExit>
                 <TableRow key={deductedItem.id}>
                   <TableCell>{deductedItem.item?.market_name}</TableCell>
                   <TableCell> {deductedItem.item?.sell_price}</TableCell>
@@ -248,9 +259,10 @@ function SellDrug() {
                     </LoadingButton>
                   </TableCell>
                 </TableRow>
+                </Zoom >
               ))}
             </TableBody>
-          </Table>
+          </Table>}
         </div>
 
         <Box
@@ -511,14 +523,17 @@ function SellDrug() {
                   .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
                   .then(({ data }) => {
                     form.append("data", data);
+                    form.append("node_direct", userSettings.node_direct);
                     console.log(data, "daa");
-                    printJS({
+                    if (userSettings?.web_dialog) {
+                       printJS({
                       printable: data.slice(data.indexOf("JVB")),
                       base64: true,
                       type: "pdf",
                     });
-
-                    fetch("http://127.0.0.1:4000/", {
+                    }
+                    if (userSettings?.node_dialog) {
+                      fetch("http://127.0.0.1:4000/", {
                       method: "POST",
                       headers: {
                         "Content-Type":
@@ -527,6 +542,9 @@ function SellDrug() {
 
                       body: form,
                     }).then(() => {});
+                    }
+
+                    
                   });
               }}
             >

@@ -4,10 +4,12 @@ import { Item } from '../constants';
 import { Download, FilterTiltShift, FormatListBulleted, Lock, LockOpen, StarBorder } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import axiosClient from '../../../axios-client';
+import { useOutlet, useOutletContext } from 'react-router-dom';
 
-function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActivePatient,selectedTest,setResultUpdated,setDialog}) {
+function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActivePatient,selectedTest,setResultUpdated,setDialog,setShift}) {
   return (
     <Stack
+ 
     sx={{ mr: 1 }}
     gap={"5px"}
     divider={<Divider orientation="vertical" flexItem />}
@@ -16,6 +18,24 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
     <Item>
     <IconButton
     size="small"
+    title='add organism'
+    onClick={()=>{
+     const result =  confirm("add organism to result ? ")
+     if (result) {
+          axiosClient.post(`addOrganism/${selectedTest.id}`).then(({data})=>{
+            setActivePatient(data.patient)
+            setShift((prev)=>{
+              return {...prev, patients:prev.patients.map((p)=>{
+                if(p.id === data.patient.id){
+                  return {...data.patient, active:true}
+                }
+                return p;
+              }) };
+            })
+      })
+    }}
+     }
+  
         
         variant="contained"
       >
@@ -24,6 +44,7 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
     </Item>
     {actviePatient && (
         <LoadingButton
+        color='info'
         size="small"
          loading={loading}
           onClick={() => {
@@ -36,7 +57,14 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
                   console.log(prev, "previous selected test");
                   return data.patient.labrequests.find((labr)=>labr.id == prev.id)
                 });
-               
+                setShift((prev)=>{
+                  return {...prev, patients:prev.patients.map((p)=>{
+                    if(p.id === data.patient.id){
+                      return {...data.patient, active:true}
+                    }
+                    return p;
+                  }) };
+                })
                 setActivePatient(data.patient)
                 ?.map((prev) => {
                   return prev.map((patient) => {

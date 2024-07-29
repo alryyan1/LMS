@@ -25,6 +25,8 @@ import {
   Typography,
   Box,
   Card,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
@@ -38,6 +40,8 @@ import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatien
 import ResultSidebar from "./ResultSidebar";
 import axios from "axios";
 import printJS from "print-js";
+import OrganismPanel from "./OrganismPanel";
+import ResultSection from "./ResultSection";
 
 function Result() {
   const {
@@ -119,7 +123,7 @@ function Result() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "inline-grid",
-          gridTemplateColumns: `0.2fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
+          gridTemplateColumns: `0.1fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.1fr  `,
         }}
       >
         <div></div>
@@ -240,7 +244,17 @@ function Result() {
               {actviePatient.labrequests.map((test) => {
                 return (
                   <ListItem
+                  onClick={() => {
+                    setSelectedTest(test);
+                    console.log(test, "selected test");
+                  }}
+                  style={selectedTest && selectedTest.id == test.id
+                    ? {
+                        backgroundColor: 'lightblue'
+                      }
+                    : null}
                     sx={{
+                      cursor:'pointer',
                       "&:hover": {
                         backgroundColor: "lightblue",
                         color: "white",
@@ -251,7 +265,7 @@ function Result() {
                     }
                     key={test.main_test.id}
                   >
-                    <ListItemButton
+                    {/* <ListItemButton
                       sx={
                         selectedTest && selectedTest.id == test.id
                           ? {
@@ -268,9 +282,9 @@ function Result() {
                         marginBottom: "2px",
                        
                       }}
-                    >
+                    > */}
                       <ListItemText primary={test.main_test.main_test_name} />
-                    </ListItemButton>
+                    {/* </ListItemButton> */}
                   </ListItem>
                 );
               })}
@@ -278,72 +292,7 @@ function Result() {
           )}
         </Card>
         <Card sx={{height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell width="80%">Result</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedTest &&
-                selectedTest.requested_results.map((req,i) => {
-                  console.log(selectedTest, "req result in table");
-                  return (
-                    <TableRow key={req.id}>
-                      <TableCell sx={{ p: 0.5 }}>
-                        {req.child_test.child_test_name}
-                      </TableCell>
-                      <TableCell sx={{ p: 0.5 }}>
-                        <AutocompleteResultOptions
-                         index={i}
-                          setShift={setShift}
-                          setActivePatient={setActivePatient}
-                          setSelectedResult={setSelectedResult}
-                          result={req.result}
-                          id={req.id}
-                          req={req}
-                          child_test={req.child_test}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          {selectedReslult && (
-            <Box key={selectedReslult.id} sx={{ p: 1, mt: 1 }}>
-              <Typography>Normal Range</Typography>
-              <TextField
-                onChange={(val) => {
-                  axiosClient.patch(
-                    `requestedResult/normalRange/${selectedReslult.id}`,
-                    { val: val.target.value }
-                  );
-                }}
-                multiline
-                fullWidth
-                defaultValue={selectedReslult.normal_range}
-              />
-            </Box>
-          )}
-          <Divider />
-
-          {selectedTest && (
-            <Box sx={{ p: 1, mt: 1 }}>
-              <Typography>Comment</Typography>
-              <TextField
-                onChange={(val) => {
-                  axiosClient.patch(`comment/${selectedTest.id}`, {
-                    val: val.target.value,
-                  });
-                }}
-                multiline
-                fullWidth
-                defaultValue={selectedTest.comment}
-              />
-            </Box>
-          )}
+         {actviePatient && <ResultSection selectedReslult={selectedReslult} selectedTest={selectedTest} setActivePatient={setActivePatient} setSelectedResult={setSelectedResult} setShift={setShift} />}
         </Card>
 
         <div>
@@ -399,6 +348,7 @@ function Result() {
           )}
         </div>
         <ResultSidebar
+        setShift={setShift}
             actviePatient={actviePatient}
             loading={loading}
             selectedTest={selectedTest}

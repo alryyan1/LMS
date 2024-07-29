@@ -172,7 +172,7 @@ function AddPatient() {
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
-          direction:'rtl',
+          // direction:'rtl',
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
         }}
       >

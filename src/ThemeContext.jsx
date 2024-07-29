@@ -34,7 +34,7 @@ export const ThemeContextProvider = ({ children }) => {
     },
    
     
-    direction: "rtl",
+    // direction: "rtl",
      
     typography: {
        

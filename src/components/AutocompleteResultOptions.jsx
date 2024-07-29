@@ -8,29 +8,41 @@ import Button from "@mui/material/Button";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../axios-client";
+import { useOutletContext } from "react-router-dom";
 function isNumeric(str) {
+  if (str.includes('-')) {
+    return true
+  }
   if (typeof str != "string") return false // we only process strings!  
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setPatients,index}) {
-  
+export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setShift,index}) {
+   const {setDialog} =  useOutletContext()
     // console.log('inside table option result rebuilt with result',result)
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [options,setOptions] = React.useState([])
+
   React.useEffect(()=>{
-    axiosClient
+    const localStorageOption =  localStorage.getItem(child_test.id)
+    if (localStorageOption == null) {
+        axiosClient
      .get(`childTestOption/${child_test.id}`)
      .then(({ data }) => {
         setOptions(data);
+        localStorage.setItem(child_test.id, JSON.stringify(data))
       })
      .catch((err) => {
         console.log(err);
       });
+    }else{
+      setOptions(JSON.parse(localStorageOption))
+    }
+  
   },[])
 
   const handleClose = () => {
@@ -90,7 +102,11 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
             setValue(newValue);
             // console.log(first)
             axiosClient.patch(`requestedResult/${id}`,{val:newValue?.name ?? ''}).then(({data})=>{
-                console.log(data)
+               if (data.status) {
+                setDialog((prev)=>{
+                   return {...prev, open: true, message:'تم الحفظ' };
+                })
+               }
             })
            // axiosClient.patch(`editChildTestGroup/${child_id}`,{id:newValue.id})
           }
@@ -137,14 +153,19 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
             setValue(val.target.value)
             axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
                 setActivePatient(data.patient)
-                setPatients((prev)=>{
-                    return  prev.map((patient)=>{
-                        if(patient.id === data.patient.id){
-                            return{ ...data.patient, active: true }
-                        }
-                        return patient
-                    })
-                })
+                if (data.status) {
+                  setShift((prev)=>{
+                    return {...prev, patients:prev.patients.map((p)=>{
+                      if(p.id === data.patient.id){
+                        return {...data.patient, active:true}
+                      }
+                      return p;
+                    }) };
+                  })
+                  setDialog((prev)=>{
+                    return {...prev, open: true, message:'تم الحفظ' };
+                  })
+                }
 
                 console.log(data,'result saved')
             })

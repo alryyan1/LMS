@@ -35,6 +35,7 @@ function PaperConfig() {
       setSettings(data);
     });
   },[])
+  
   console.log(settings,'settings are set')
   const handleFileChange = (e,colName) => {
     encodeImageFileAsURL(e.target.files[0],colName);

@@ -10,11 +10,32 @@ function AddServiceAutocomplete({ patients, setPatients }) {
 
   const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate} = useOutletContext();
   const [loading, setLoading] = useState(false);
+  console.log(activeShift,'active shift doctor')
   console.log(actviePatient,'active visit')
   const addServiceHandler = async () => {
     setLoading(true);
     try {
-      const payload = selectedServices.map((test) => test.id);
+      let payload = selectedServices.map((test) => test.id);
+      activeShift.doctor.services.map((s)=>{
+        if (!payload.includes(s.service.id)) {
+          setDialog((prev)=>{
+            return {
+             ...prev,
+              open:true,
+              color:'error',
+              message:'هذه الخدمه غير معرفه للطبيب'
+            }
+          })
+        }
+      })
+     payload =  payload.filter((s)=>{
+        return activeShift.doctor.services.map((ds)=>ds.service.id).includes(s)
+      })
+      if (payload.length == 0 ) {
+        setLoading(false)
+         return
+
+      }
       const { data: data } = await axiosClient.post(
         `patient/service/add/${actviePatient.id}`,
         { services: payload,doctor_id:activeShift.doctor.id }

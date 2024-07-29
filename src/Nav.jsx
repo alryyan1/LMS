@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import { useThemeContext } from "./ThemeContext";
 import { t } from "i18next";
+import UserDropDown from "./components/UserDropDown";
 const Nav = () => {
   const {
     settings,
@@ -375,9 +376,10 @@ const Nav = () => {
           </NavLink> */}
 
           <div style={{ flexGrow: 1 }}></div>
-          <Typography color={"white"} variant="h5">
+          {/* <Typography color={"white"} variant="h5">
             {user?.username}
-          </Typography>
+          </Typography> */}
+          <UserDropDown user={user}/>
           <IconButton onClick={changeLang}>
             <Language />
           </IconButton>

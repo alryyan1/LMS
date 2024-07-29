@@ -363,7 +363,7 @@ function AddDrugForm({setUpdate}) {
               name="expire"
               render={({ field }) => (
                 <DateField
-                
+                format="YYYY-MM-DD"
                 size="small"
                 fullWidth
                   {...field}

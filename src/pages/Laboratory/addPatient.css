@@ -76,13 +76,13 @@
 }
 .patients  div {
     position: relative;
-    border: 1px solid antiquewhite;
-    height: 50px;
+    border: 1px solid #695d4d;
+    height:45px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px;
+    width: 50px;
     /* background-color: whitesmoke; */
     margin:5px;
     text-align: center;
