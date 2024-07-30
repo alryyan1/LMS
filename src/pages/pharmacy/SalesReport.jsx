@@ -87,18 +87,19 @@ function SalesReport() {
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
-            <TableCell>sale number</TableCell>
+            <TableCell> No</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Price</TableCell>
             <TableCell>User</TableCell>
             <TableCell>Payment</TableCell>
             <TableCell>Items</TableCell>
             <TableCell>profit</TableCell>
+            <TableCell>Invoice</TableCell>
             <TableCell>Delete</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {deducts.map((item) => (
+          {deducts.reverse().map((item) => (
             <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
                 <TableCell>{item.number}</TableCell>
@@ -114,6 +115,7 @@ function SalesReport() {
                 )}
               </TableCell>
               <TableCell>{toFixed(item.profit,1)}</TableCell>
+              <TableCell>                    <a href={`${webUrl}deduct/invoice?id=${item.id}`}>Invoice PDF</a></TableCell>
               <TableCell>
                 <LoadingButton
                   loading={loading}

@@ -163,7 +163,7 @@ function DrugItems() {
               <TableCell> الصلاحيه</TableCell>
               <TableCell> المجموعه</TableCell>
               <TableCell> الشكل</TableCell>
-              <TableCell> الباركود</TableCell>
+              <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
@@ -233,7 +233,7 @@ function DrugItems() {
                   >
                     {drug.type?.name}
                   </MyAutoCompeleteTableCell>
-                  <MyTableCell colName={"barcode"} item={drug} table="items">
+                  <MyTableCell  show colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
                   <TableCell>
@@ -241,9 +241,9 @@ function DrugItems() {
                       <Badge
                         anchorOrigin={{
                           vertical: "top",
-                          horizontal: "right",
+                          horizontal: "left",
                         }}
-                        badgeContent={"Expired"}
+                        badgeContent={"EX"}
                         color="error"
                       >
                         <LoadingButton

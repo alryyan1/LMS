@@ -40,9 +40,9 @@ function DeductRequest() {
   const [loading, setLoading] = useState(false);
   const [deductComplete, setDeductComplete] = useState(1);
   const [layout, setLayout] = useState({
-    addItemToDepositFrm: "0fr",
+    addItemToDepositFrm: "0.5fr",
     showAddItemToDepositFrm: false,
-    deductedItemTable: "0fr",
+    deductedItemTable: "0.5fr",
     showDeductedItemTable: false,
   });
   const {

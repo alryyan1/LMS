@@ -7,7 +7,7 @@ import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LoadingButton } from '@mui/lab';
 
-function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSelectedDeposit}) {
+function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSelectedDeposit,setData}) {
     const[loading,setLoading] =useState()
     const {
         setValue,
@@ -21,6 +21,8 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
         },
         handleSubmit,
       } = useForm();
+  const [selectedItem,setSelectedItem]=useState(null)
+
       const submitHandler = async (formData) => {
         const dayJsObj = formData.expire;
     
@@ -28,14 +30,14 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
           item_id: formData.item.id,
           quantity: formData.amount,
           price: formData.price,
-          expire: `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}`,
+          expire: dayJsObj ? `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}` : null,
     
-          notes: formData.notes,
-          barcode: formData.barcode,
-          batch: formData.batch,
+          notes: formData.notes ?? '',
+          barcode: formData.barcode ?? '',
+          batch: formData.batch ?? '',
         };
         console.log(formData);
-        console.log(formData.expire.$d.toJSON());
+        // console.log(formData.expire.$d.toJSON());
         setLoading(true);
         console.log(isSubmitting);
         axiosClient
@@ -45,6 +47,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
             setLoading(false);
             if (data.status) {
                 setSelectedDeposit(data.data.deposit)
+                setData(data.data.deposit)
               setLoading(false);
               setUpdate((prev)=>prev+1)
               reset();
@@ -71,20 +74,20 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
               sx={{ fontFamily: "Tajawal-Regular", textAlign: "center", mb: 1 }}
               variant="h5"
             >
-               Add To Inventory
+               اضافه للمخزون
             </Typography>
             <form noValidate onSubmit={handleSubmit(submitHandler)}>
               <Grid container>
-                <Grid sx={{ gap: "5px" }} item xs={6}>
+                {/* <Grid sx={{ gap: "5px" }} item xs={6}>
                   <TextField
                     {...register("batch")}
                     sx={{ mb: 1 }}
-                    label={"Batch"}
+                    label={"الباتش"}
                   ></TextField>
                   <TextField
                     {...register("barcode")}
                     sx={{ mb: 1 }}
-                    label={"Barcode"}
+                    label={"الباركود"}
                   ></TextField>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Controller
@@ -103,7 +106,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                           value={field.value}
                           onChange={(val) => field.onChange(val)}
                           sx={{ mb: 1 }}
-                          label="Expire Date"
+                          label="تاريخ الصلاحيه"
                         />
                       )}
                     />
@@ -113,10 +116,10 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                     rows={3}
                     {...register("notes")}
                     sx={{ mb: 1 }}
-                    label={"Notes"}
+                    label={"الملاحظات"}
                   ></TextField>
-                </Grid>
-                <Grid item xs={6}>
+                </Grid> */}
+                <Grid item xs={12}>
                   <Controller
                     name="item"
                     rules={{
@@ -129,16 +132,49 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                     render={({ field }) => {
                       return (
                         <Autocomplete
+                        
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            console.log("enter pressed");
+                          
+                              
+                            //get test from tests using find
+                            const barcode = e.target.value.trim();
+                            const itemFounded =  items.find((item)=>{
+                              return item.barcode?.trim() === barcode
+                            })
+                            console.log(itemFounded,'founed')
+                            if (itemFounded ) {
+                             
+                             setValue('item',itemFounded)
+                             setSelectedItem(itemFounded)
+                             console.log(itemFounded)
+                           
+                              // setSelectedDrugs((prev)=>{
+                              //   console.log(prev)
+                              //   return [...prev, itemFounded]
+                              // })
+                            }
+      
+                          
+                          }
+                        }}
                           getOptionKey={(option) => option.id}
                           sx={{ mb: 1 }}
                           {...field}
-                          value={field.value || null}
+                          
+                        value={selectedItem}
+                         
                           options={items}
                           isOptionEqualToValue={(option, val) =>
                             option.id === val.id
                           }
                           getOptionLabel={(option) => option.market_name}
-                          onChange={(e, data) => field.onChange(data)}
+                          onChange={(e, data) =>{
+                            field.onChange(data)
+                            setSelectedItem(data)
+                          }}
                           renderInput={(params) => {
                             return (
                               <TextField
@@ -166,7 +202,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                         required: { value: true, message: "Amount must be provided" },
                       })}
                       id="outlined-basic"
-                      label="Amount"
+                      label="الكميه"
                       variant="filled"
                     />
                     {errors.amount && errors.amount.message}
@@ -183,7 +219,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                         },
                       })}
                       id="outlined-basic"
-                      label="Box Price"
+                      label="سعر الصندوق"
                       variant="filled"
                     />
                     {errors.price && errors.price.message}

@@ -2,15 +2,16 @@ import { Delete } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { Button, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import { webUrl } from '../constants';
+import { toFixed, webUrl } from '../constants';
 import axiosClient from '../../../axios-client';
 import MyTableCell from '../inventory/MyTableCell';
-function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit}) {
+function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit,data}) {
   const [ld,setLd] = useState(false)
   const [search,setSearch] = useState(null)
-  const [data,setData] = useState(selectedDeposit)
-  const [page, setPage] = useState(0);
 
+  const [page, setPage] = useState(0);
+  console.log('data in deposit items table',data)
+  console.log('selectedDeposit in deposit items table',selectedDeposit)
   useEffect(()=>{
     if (search !=null ) {
       if (search =='') {
@@ -73,11 +74,11 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
             >
               pdf
             </a>
-            <Stack sx={{m:1}} alignItems={'center'} justifyContent={'space-around'} direction={'row'}>
+            <Stack sx={{m:1}} alignItems={'center'} justifyContent={'space-between'} direction={'row'}>
             <Typography align="center" variant="h5" sx={{ mb: 1 }}>
-              {selectedDeposit.supplier.name}
+              {`${selectedDeposit.supplier.name} /  ${selectedDeposit.bill_number}`}
             </Typography>
-            <TextField   autoComplete='false' value={search} onChange={(e)=>setSearch(e.target.value)} size='small' label='بحث' type='search'></TextField>
+            <TextField   autoComplete='false' placeholder='Barcode/Market name' value={search} onChange={(e)=>setSearch(e.target.value)} size='small' label='بحث' type='search'></TextField>
             </Stack>
          
             <Table key={selectedDeposit.items.length} dir="rtl" size="small">
@@ -101,7 +102,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
                     <MyTableCell key={page}  setSelectedDeposit={setSelectedDeposit} item={depositItem} show table='depositItems/update'  colName={'quantity'}>{depositItem.quantity}</MyTableCell>
                     <TableCell>{depositItem.price}</TableCell>
                     <TableCell>
-                      {depositItem.quantity * depositItem.price}
+                      {toFixed(depositItem.quantity * depositItem.price,3)}
                     </TableCell>
                     <TableCell>{depositItem.item.barcode}</TableCell>
 

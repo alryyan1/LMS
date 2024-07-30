@@ -19,13 +19,18 @@ import {
   Slide,
   Grow,
   Zoom,
+  Autocomplete,
+  Button,
 } from "@mui/material";
 import {
   Calculate,
   DeleteOutline,
   DeleteOutlineSharp,
+  LockOpen,
+  PersonAdd,
   Print,
 } from "@mui/icons-material";
+import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from "@mui/icons-material/Add";
 import { useOutletContext } from "react-router-dom";
 import AddDrugAutocomplete from "../../components/AddDrugAutocomplete";
@@ -39,6 +44,7 @@ import SellsMoneyDialog from "./SellsMoneyDialog";
 import printJS from "print-js";
 import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
+import AddClientDialog from "./AddClientDialog";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0
@@ -49,6 +55,7 @@ function toFixed(num, fixed) {
 function SellDrug() {
   const [loading, setLoading] = useState();
   const [userSettings, setUserSettings] = useState(null);
+  const [clients, setClients] = useState([]);
 
   const [updater, setUpdater] = useState(0);
   const [recieved, setRecieved] = useState(0);
@@ -63,6 +70,8 @@ function SellDrug() {
     setShift,
     showDialogMoney,
     setShowDialogMoney,
+    openClientDialog,setOpenClientDialog
+
   } = useOutletContext();
   console.log(shift, "shift");
   console.log(activeSell, "active sell");
@@ -88,25 +97,31 @@ function SellDrug() {
     showTestPanel: false,
     patientDetails: "0.7fr",
   });
-
-  const hideForm = () => {
-    setLayout((prev) => {
-      return {
-        ...prev,
-        form: "0fr",
-        hideForm: true,
-        tests: "2fr",
-        testWidth: "500px",
-        showTestPanel: false,
-        patientDetails: "0.7fr",
-      };
+  useEffect(() => {
+    //fetch all clients
+    axiosClient(`client/all`).then(({ data }) => {
+      setClients(data);
+      console.log(data);
     });
-  };
-  const showFormHandler = () => {
-    setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
-    });
-  };
+  }, []);
+  // const hideForm = () => {
+  //   setLayout((prev) => {
+  //     return {
+  //       ...prev,
+  //       form: "0fr",
+  //       hideForm: true,
+  //       tests: "2fr",
+  //       testWidth: "500px",
+  //       showTestPanel: false,
+  //       patientDetails: "0.7fr",
+  //     };
+  //   });
+  // };
+  // const showFormHandler = () => {
+  //   setLayout((prev) => {
+  //     return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
+  //   });
+  // };
 
   const showShiftMoney = () => {
     setShowDialogMoney(true);
@@ -181,7 +196,47 @@ function SellDrug() {
           </div>
         </div>
         <div style={{ overflow: "auto" }}>
-        {activeSell &&   <Table className="white" key={updater} size="small">
+        {activeSell &&   
+        
+        
+        <>
+          <Stack direction={'row'} alignContent={'center'}>
+            
+          <Autocomplete
+          value={activeSell.client}
+           sx={{width:'200px',mb:1}}
+                    
+                    options={clients}
+                    isOptionEqualToValue={(option, val) =>
+                      option.id === val.id
+                    }
+                    getOptionLabel={(option) => option.name}
+                    onChange={(e, data) => {
+                      axiosClient.patch(`deduct/${activeSell.id}`,{colName:'client_id',val:data.id}).then(({data})=>{
+                        setActiveSell(data.data)
+                      })
+                    }}
+                    renderInput={(params) => {
+                      return (
+                        <TextField
+                         variant="standard"
+                          label={"العميل"}
+                          {...params}
+                        />
+                      );
+                    }}
+                  ></Autocomplete>
+                  <IconButton onClick={()=>{
+                    setOpenClientDialog(true)
+                  }}><PersonAdd/></IconButton>
+                  {activeSell.client && 
+                    <a href={`${webUrl}deduct/invoice?id=${activeSell.id}`}>Invoice PDF</a>
+                   }
+          </Stack>
+                 
+
+
+        <Table className="white" key={updater} size="small">
             <thead>
               <TableRow>
                 <TableCell>Item</TableCell>
@@ -194,7 +249,6 @@ function SellDrug() {
             </thead>
             <TableBody>
               {activeSell?.deducted_items?.map((deductedItem) => (
-                       <Zoom   key={deductedItem.id} direction="up" in mountOnEnter unmountOnExit>
                 <TableRow key={deductedItem.id}>
                   <TableCell>{deductedItem.item?.market_name}</TableCell>
                   <TableCell> {deductedItem.item?.sell_price}</TableCell>
@@ -228,7 +282,7 @@ function SellDrug() {
                       table="deductedItem"
                       colName={"box"}
                     >
-                      {toFixed(deductedItem.box, 1)}
+                      {toFixed(deductedItem.box, 3)}
                     </MyTableCell>
                   )}
                   <TableCell>
@@ -236,7 +290,7 @@ function SellDrug() {
                       (deductedItem.item?.sell_price /
                         deductedItem.item?.strips) *
                         deductedItem.strips,
-                      1
+                      3
                     )}
                   </TableCell>
                   <TableCell>
@@ -259,10 +313,10 @@ function SellDrug() {
                     </LoadingButton>
                   </TableCell>
                 </TableRow>
-                </Zoom >
               ))}
             </TableBody>
-          </Table>}
+          </Table>
+        </>}
         </div>
 
         <Box
@@ -302,7 +356,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                          {toFixed(total, 1)}
+                          {total}
                         </Typography>
                       )}
                     </Stack>
@@ -374,7 +428,7 @@ function SellDrug() {
                       <Typography variant="h3">
                         {" "}
                         {total > 0 &&
-                          toFixed(activeSell.total_amount_received - total, 1)}
+                          toFixed(activeSell.total_amount_received - total, 3)}
                       </Typography>
                     </Stack>
                     <Stack
@@ -518,7 +572,6 @@ function SellDrug() {
            {activeSell  &&  <IconButton
               onClick={() => {
                 const form = new URLSearchParams();
-
                 axiosClient
                   .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
                   .then(({ data }) => {
@@ -549,11 +602,18 @@ function SellDrug() {
               }}
             >
               <Print />
-            </IconButton>}
+            </IconButton>
+            }
+            {activeSell && <IconButton onClick={()=>{
+                axiosClient.get('print')
+
+            }} >
+              <LockOpen/></IconButton>}
           </Stack>
         </Box>
         <SellsMoneyDialog />
         <AddDrugDialog />
+        <AddClientDialog loading={loading} setClients={setClients} setLoading={setLoading} />
       </div>
     </>
   );
