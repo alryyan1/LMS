@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { toFixed, webUrl } from '../constants';
 import axiosClient from '../../../axios-client';
 import MyTableCell from '../inventory/MyTableCell';
+import MyCheckbox from '../../components/MyCheckBox';
 function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit,data}) {
   const [ld,setLd] = useState(false)
   const [search,setSearch] = useState(null)
@@ -91,6 +92,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
                   <TableCell>Subtotal</TableCell>
                   <TableCell>barcode</TableCell>
                   <TableCell>Dlt</TableCell>
+                  <TableCell>purchase return</TableCell>
                 </TableRow>
               </thead>
 
@@ -116,6 +118,7 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
                         }}
                       ></LoadingButton>
                     </TableCell>
+                    <TableCell><MyCheckbox setSelectedDeposit={setSelectedDeposit} path={`depositItems/update/${depositItem.id}`} isChecked={depositItem.return} colName={'return'}  /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>

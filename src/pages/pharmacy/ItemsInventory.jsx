@@ -1,4 +1,5 @@
 import {
+  Button,
     Grid,
     Table,
     TableBody,
@@ -91,7 +92,7 @@ import {
           <option value="100">100</option>
         </select>
         <TableContainer>
-          <a href={`${webUrl}balance`}>pdf</a>
+          <Button sx={{mt:1}} variant="contained"  href={`${webUrl}balance`}>pdf</Button>
           <div style={{ textAlign: "right", marginBottom: "5px" }}>
             <TextField
               value={search}

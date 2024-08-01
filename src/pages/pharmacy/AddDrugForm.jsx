@@ -21,11 +21,7 @@ import {
 function AddDrugForm({setUpdate}) {
     const [loading, setLoading] = useState(false);
     const [stripPrice, setStripPrice] = useState(0);
-    const [itemsIsLoading, setItemsIsLoading] = useState(false);
-    const [page, setPage] = useState(7);
-    const [error, setError] = useState(null);
     const [market, setMarket] = useState('');
-    const [links, setLinks] = useState([]);
     const [barcode,setBarcode] = useState(null);
     const [deposits,setDeposits] = useState([]);
     const { setDialog,setItems,setOpendDrugDialog } = useOutletContext();
@@ -66,30 +62,30 @@ function AddDrugForm({setUpdate}) {
       }
     },[sell_price,strips])
 
-    useEffect(()=>{
-      axiosClient.get("inventory/deposit/all").then(({data})=>{
-        setDeposits(data)
-        console.log(data,'all deposits')
-      })
+    // useEffect(()=>{
+    //   axiosClient.get("inventory/deposit/all").then(({data})=>{
+    //     setDeposits(data)
+    //     console.log(data,'all deposits')
+    //   })
  
-    },[])
-    useEffect(() => {
-      setItemsIsLoading(true);
-      //fetch all Items
-      axiosClient
-        .get(`items/all/pagination/${page}`)
-        .then(({ data: { data, links } }) => {
-          console.log(data, "items");
-          console.log(links);
-          setItems(data);
-          console.log(links);
-          setLinks(links);
-        })
-        .catch(({ response: { data } }) => {
-          setError(data.message);
-        })
-        .finally(() => setItemsIsLoading(false));
-    }, [isSubmitted, page]);
+    // },[])
+    // useEffect(() => {
+    //   setItemsIsLoading(true);
+    //   //fetch all Items
+    //   axiosClient
+    //     .get(`items/all/pagination/${page}`)
+    //     .then(({ data: { data, links } }) => {
+    //       console.log(data, "items");
+    //       console.log(links);
+    //       setItems(data);
+    //       console.log(links);
+    //       setLinks(links);
+    //     })
+    //     .catch(({ response: { data } }) => {
+    //       setError(data.message);
+    //     })
+    //     .finally(() => setItemsIsLoading(false));
+    // }, [isSubmitted, page]);
     console.log(isSubmitting);
     const submitHandler = async (formData) => {
       const dayJsObj = formData.expire;

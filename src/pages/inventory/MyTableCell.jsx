@@ -20,6 +20,7 @@ function MyTableCell({
   sx = null,
   setData=null,
   setSelectedDeposit=null,
+  isNum = false,
 }) {
   const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
@@ -152,7 +153,7 @@ function MyTableCell({
           type={type}
         ></TextField>
       ) : (
-        iniVal
+        isNum ? Number(iniVal).toFixed(3) : iniVal
       )}
     </TableCell>
   );

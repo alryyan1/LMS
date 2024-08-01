@@ -151,6 +151,7 @@ function AddDrug() {
                         colName={"cost_price"}
                         item={drug}
                         table="items"
+                        
                       >
                         {drug.cost_price}
                       </MyTableCell>
@@ -159,6 +160,7 @@ function AddDrug() {
                         colName={"sell_price"}
                         item={drug}
                         table="items"
+                        isNum
                       >
                         {drug.sell_price}
                       </MyTableCell>

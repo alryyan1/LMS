@@ -7,13 +7,14 @@ import axiosClient from "../../axios-client";
 import dayjs from "dayjs";
 
 function AddDrugAutocomplete({setUpdater}) {
-  const { items,setDeduct   ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
+  const { items,setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
+    setShiftIsLoading(true);
     if (activeSell.complete) {
       alert('يجب الغاء السداد اولا')
       return;
@@ -28,12 +29,14 @@ function AddDrugAutocomplete({setUpdater}) {
    
     axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
+        
         setActiveSell(data.data)
         setShift(data.shift)
         setUpdater((prev)=>prev+1)
         setSelectedDrugs([])
     }).finally(()=>{
       setLoading(false)
+      setShiftIsLoading(false)
     })
   }
 
@@ -49,6 +52,8 @@ function AddDrugAutocomplete({setUpdater}) {
           }}
         >
           <Autocomplete
+          
+          autoFocus={true}
           value={selectedDrugs}
           inputValue={field}
             onInputChange={(e,v)=>{
@@ -76,7 +81,10 @@ function AddDrugAutocomplete({setUpdater}) {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       console.log("enter pressed");
-                    
+                        if (selectedDrugs.length > 0) {
+                          addDrugsHandler()
+                          return
+                        }
                         
                       //get test from tests using find
                       const barcode = e.target.value.trim();
@@ -104,6 +112,8 @@ function AddDrugAutocomplete({setUpdater}) {
                           // return
                         }
                         setLoading(true);
+                        setShiftIsLoading(true)
+
                         axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
                           console.log(data,'add by barcode')
                           setActiveSell((prev)=>{
@@ -115,6 +125,8 @@ function AddDrugAutocomplete({setUpdater}) {
                           setField('')
                         }).finally(()=>{
                           setLoading(false)
+                          setShiftIsLoading(false)
+
                         }) 
                         // setSelectedDrugs((prev)=>{
                         //   console.log(prev)

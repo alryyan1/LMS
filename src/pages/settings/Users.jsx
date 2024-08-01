@@ -20,7 +20,7 @@ import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
 import { t } from "i18next";
 function Users() {
   const { setDialog } = useOutletContext();
-  const [selectedUser, setSelectedUser] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
@@ -74,7 +74,7 @@ function Users() {
                 }}
                 sx={{
                   backgroundColor: (theme) =>
-                    selectedUser.id == user.id
+                    selectedUser?.id == user.id
                       ? theme.palette.primary.main
                       : "",
                 }}
@@ -145,6 +145,7 @@ function Users() {
                   }}
                   secondaryAction={
                     <CustomCheckboxUserRoute
+                    setSelectedUser={setSelectedUser}
                     selectedUser={selectedUser}
                     setDialog={setDialog}
                     setUpdater={setUpdater}
@@ -183,6 +184,8 @@ function Users() {
                     key={route.id}
                     control={
                       <CustomCheckboxUserRoute
+                      setSelectedUser={setSelectedUser}
+
                       sub_route_id={route.id}
                         selectedUser={selectedUser}
                         setDialog={setDialog}

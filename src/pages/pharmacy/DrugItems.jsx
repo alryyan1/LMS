@@ -155,10 +155,11 @@ function DrugItems() {
           <thead>
             <TableRow>
               <TableCell> الكود</TableCell>
-              <TableCell>الاسم العلمي</TableCell>
+              {/* <TableCell>الاسم العلمي</TableCell> */}
               <TableCell>الاسم التجاري</TableCell>
               <TableCell>سعر الشراء</TableCell>
               <TableCell>سعر البيع </TableCell>
+              <TableCell> الضريبه </TableCell>
               <TableCell> عدد الشرائط</TableCell>
               <TableCell> الصلاحيه</TableCell>
               <TableCell> المجموعه</TableCell>
@@ -183,9 +184,9 @@ function DrugItems() {
                   key={drug.id}
                 >
                   <TableCell>{drug.id}</TableCell>
-                  <MyTableCell colName={"sc_name"} item={drug} table="items">
+                  {/* <MyTableCell colName={"sc_name"} item={drug} table="items">
                     {drug.sc_name}
-                  </MyTableCell>
+                  </MyTableCell> */}
                   <MyTableCell
                     colName={"market_name"}
                     item={drug}
@@ -198,6 +199,7 @@ function DrugItems() {
                     colName={"cost_price"}
                     item={drug}
                     table="items"
+                    isNum={true}
                   >
                     {drug.cost_price}
                   </MyTableCell>
@@ -206,8 +208,18 @@ function DrugItems() {
                     colName={"sell_price"}
                     item={drug}
                     table="items"
+                    isNum={true}
                   >
                     {drug.sell_price}
+                  </MyTableCell>
+                  <MyTableCell
+                    sx={{ width: "70px" }}
+                    colName={"tax"}
+                    item={drug}
+                    table="items"
+                    isNum={true}
+                  >
+                    {drug.tax}
                   </MyTableCell>
                   <MyTableCell colName={"strips"} item={drug} table="items">
                     {drug.strips}

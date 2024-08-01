@@ -13,7 +13,7 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
         handleSubmit,
       } = useForm();
       const submitHandler = async (formData) => {
-        // setLoading(true);
+        setLoading(true);
         try {
           const { data } = await axiosClient.post(
             "client/create",
@@ -40,7 +40,10 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
               message: data.message,
             }));
             setLoading(false);
+
         }
+        setLoading(false);
+
       };
   return (
     <Paper sx={{p:1}}>
