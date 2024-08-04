@@ -124,7 +124,7 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
         </LoadingButton>
     )}
        {selectedTest && (
-        <LoadingButton
+        <LoadingButton color='inherit'
         size="small"
         loading={loading}
           onClick={() => {
@@ -175,7 +175,7 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
           }}
           variant="contained"
         >
-          <FormatListBulleted />
+          <FormatListBulleted color={actviePatient.hasCbc ? 'error':'inherit'} />
         </LoadingButton>
     )}
      {selectedTest && (

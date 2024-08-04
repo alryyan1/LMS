@@ -7,26 +7,14 @@ import { webUrl } from "../constants";
 import {
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
   Divider,
   IconButton,
   Stack,
   Skeleton,
   Slide,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Button,
-  TextField,
-  Typography,
-  Box,
   Card,
-  Tabs,
-  Tab,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
@@ -34,13 +22,10 @@ import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
 import ErrorDialog from "../Dialogs/ErrorDialog";
 import MoneyDialog from "../Dialogs/MoneyDialog";
-import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
 import MyCheckBoxLab from "../../components/MyCheckBoxLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import ResultSidebar from "./ResultSidebar";
-import axios from "axios";
 import printJS from "print-js";
-import OrganismPanel from "./OrganismPanel";
 import ResultSection from "./ResultSection";
 
 function Result() {
@@ -50,6 +35,7 @@ function Result() {
     searchByName,
     foundedPatients,
     update,
+    setUpdate,
     setDialog,
   } = useOutletContext();
 
@@ -96,22 +82,32 @@ function Result() {
     const data = shift?.patients.find((p) => p.id === pat.id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     console.log(data, "patient from db");
+    axiosClient.get(`shift/last`).then(({ data: data }) => {
+      console.log(data.data, "today patients");
+      //add activeProperty to patient object
+      data.data.patients.forEach((patient) => {
+        patient.active = false;
+      });
+      setShift(data.data);
+      setPatientsLoading(false);
+    });
     setActivePatient({ ...pat, active: true });
     setSelectedTest(pat.labrequests[0]);
-
-    setShift((prev) => {
-      return {
-        ...prev,
-        patients: prev.patients.map((patient) => {
-          if (patient.id === pat.id) {
-            console.log("founded");
-            return { ...data, active: true };
-          } else {
-            return { ...patient, active: false };
-          }
-        }),
-      };
-    });
+    
+  // setUpdate((prev)=>prev+1)
+    // setShift((prev) => {
+    //   return {
+    //     ...prev,
+    //     patients: prev.patients.map((patient) => {
+    //       if (patient.id === pat.id) {
+    //         console.log("founded");
+    //         return { ...data, active: true };
+    //       } else {
+    //         return { ...patient, active: false };
+    //       }
+    //     }),
+    //   };
+    // });
     //}//).catch((error)=>console.log(error))
     // setActivePatient({...foundedPatient,active:true});
   };
@@ -214,7 +210,7 @@ function Result() {
               />
             ) : (
               shift?.patients
-                ?.filter((patient) => patient.labrequests.length > 0)
+                ?.filter((patient) => patient.labrequests.length > 0).reverse()
                 .map((p, i) => {
                   let unfinshed_count = 0;
                   let allResultsFinished = true;
@@ -223,6 +219,7 @@ function Result() {
     
                   })
                  return <Patient
+                 actviePatient={actviePatient}
                  unfinshed_count = {unfinshed_count}
                     delay={i * 100}
                     key={p.id}

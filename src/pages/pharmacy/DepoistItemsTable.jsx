@@ -6,7 +6,8 @@ import { toFixed, webUrl } from '../constants';
 import axiosClient from '../../../axios-client';
 import MyTableCell from '../inventory/MyTableCell';
 import MyCheckbox from '../../components/MyCheckBox';
-function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit,data}) {
+function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setSelectedDeposit,data,setData}) {
+  console.log(data,'data of cloned deposit')
   const [ld,setLd] = useState(false)
   const [search,setSearch] = useState(null)
 
@@ -67,6 +68,8 @@ function DepoistItemsTable({selectedDeposit,loading,deleteIncomeItemHandler,setS
        if (result) {
          axiosClient.post(`income-item/bulk/${selectedDeposit.id}`).then(({data}) => {
           setSelectedDeposit(data.deposit)
+          setData(data)
+          
           }).finally(()=>setLd(false));
        }
       }} >تعريف كل الاصناف للفاتوره</LoadingButton>

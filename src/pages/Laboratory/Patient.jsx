@@ -2,7 +2,7 @@ import { Delete, Lock, LockOpen } from "@mui/icons-material";
 import { Badge, Box, Grow, Icon, breadcrumbsClasses } from "@mui/material";
 import 'animate.css';
 
-function Patient({ onClick, patient, delay,unfinshed_count }) {
+function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
   let patientState= ''
   if (patient.result_print_date == null){
  
@@ -35,16 +35,16 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
         >
           <Box
           
-            style= { patient.result_print_date !=null? {
+            style= { patient.result_print_date !=null &&   actviePatient?.id != patient.id ? {
               
-              backgroundColor :'#00b0ff!important' 
+              backgroundColor :'#00b0ff' 
 
     
             }:null}
             onClick={() => {
               onClick(patient.id);
             }}
-            sx={ patient.active ? {
+            sx={ patient.id == actviePatient?.id ? {
               backgroundColor :(theme)=>theme.palette.warning.light
             }:null}
           >
@@ -56,16 +56,16 @@ function Patient({ onClick, patient, delay,unfinshed_count }) {
         </Badge>
       ) : (
         <Box
-        style= { patient.result_print_date !=null? {
+        style= { patient.result_print_date !=null &&  actviePatient?.id != patient.id ? {
               
-          backgroundColor :'#00b0ff!important' 
+          backgroundColor :'#00b0ff' 
 
 
         }:null}
           onClick={() => {
             onClick(patient.id);
           }}
-          sx={ patient.active ? {
+          sx={ patient.id == actviePatient?.id ? {
             backgroundColor :(theme)=>theme.palette.warning.light
 
           }:null}        >

@@ -278,6 +278,7 @@ function ItemDeposit() {
           {/* create table with all suppliers */}
           {selectedDeposit && layOut.showDopsitItemTable && (
             <DepoistItemsTable
+            setData={setData}
              data={data}
               setSelectedDeposit={setSelectedDeposit}
               deleteIncomeItemHandler={deleteIncomeItemHandler}
@@ -352,7 +353,8 @@ function ItemDeposit() {
                           // hideNewFormHandler();
                           showDepositItemsTable()
                           setSelectedDeposit(deposit);
-                          setData(data);
+                          
+                          setData(deposit);
                         }}
                       >
                         التفاصيل

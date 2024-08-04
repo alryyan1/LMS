@@ -78,6 +78,7 @@ function Audit() {
        
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateField
+          format="YYYY/MM/DD"
             onChange={(val) => {
               setDate(val);
             }}
