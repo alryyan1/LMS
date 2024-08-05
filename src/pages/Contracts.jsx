@@ -133,7 +133,7 @@ function Contracts() {
       <Box>
         {(user?.id == 1  || user?.id == 4 )  && <>
           <Typography textAlign={"center"} variant="h4">
-          Contract
+          Contract (v 1.2)
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <Stack gap={2} direction={"column"}>
