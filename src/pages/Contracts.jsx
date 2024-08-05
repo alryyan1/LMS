@@ -131,7 +131,7 @@ function Contracts() {
         </Stack>
       </Box>
       <Box>
-        {user?.id == 1 && <>
+        {user?.id == 1  || user?.id == 4   && <>
           <Typography textAlign={"center"} variant="h4">
           Contract
         </Typography>
