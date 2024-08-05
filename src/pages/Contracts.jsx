@@ -131,7 +131,7 @@ function Contracts() {
         </Stack>
       </Box>
       <Box>
-        {user?.id == 1  || user?.id == 4   && <>
+        {(user?.id == 1  || user?.id == 4 )  && <>
           <Typography textAlign={"center"} variant="h4">
           Contract
         </Typography>
@@ -239,7 +239,7 @@ function Contracts() {
             </TableHead>
             <TableBody>
               {contracts.filter((c)=>{
-                if (user?.id != 1) {
+                if (user?.id != 1 && user?.id != 4  ) {
                   return  c.user_handed == user?.id
                     
                   
