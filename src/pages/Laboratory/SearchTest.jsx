@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 import { useOutletContext} from 'react-router-dom'
 export default function MyAutoComplete() {
   const [val, setVal] = React.useState(null);
-  const {selectTestHandler ,tests,setActiveTestObj,loading} =  useOutletContext()
+  const {selectTestHandler ,tests,setActiveTestObj,loading,setShowAddTest} =  useOutletContext()
 
   return (
     <React.Fragment>
@@ -23,6 +23,8 @@ export default function MyAutoComplete() {
             setActiveTestObj(newValue);
             console.log(newValue);
             setVal(newValue);
+            setShowAddTest(false);
+
           }}
           renderInput={(params) => {
             return <TextField   label="Tests" {...params} />;

@@ -2,13 +2,16 @@ import {
   Autocomplete,
   Divider,
   Paper,
+  Stack,
   TextField,
 } from "@mui/material";
 import axiosClient from "../../../axios-client";
+import {t} from 'i18next'
+import { useTranslation } from "react-i18next";
 
 function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPatient = false }) {
 
-
+ const {i18n} =  useTranslation()
 
 
 
@@ -17,74 +20,81 @@ function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPat
 
   return (
     <>
-      <Paper sx={{backgroundColor: '#ffffffbb!important',p:2}} elevation={3} >
+      <Paper  style={i18n.language == 'ar' ? {direction:'rtl'} : null} sx={{backgroundColor: '#ffffffbb!important',p:2}} elevation={3} >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
         <div className="patientId">{patient.id}</div>
         <div className="form-control">
+          <div>{t('name')} </div>
           <div>{patient.name}</div>
-          <div>اسم </div>
         </div>
         <Divider />
         <div className="form-control">
+          <div>{t('doctor')}</div>
           <div>{patient?.doctor?.name}</div>
-          <div>الطبيب</div>
         </div>
         <Divider />
 
         <div className="form-control">
+        <div>{t('date')}</div>
+
           <div>
             {
               //print iso date
               date.toLocaleDateString()
             }
           </div>
-          <div>التاريخ</div>
         </div>
         <Divider />
         <div className="form-control">
+        <div>{t('phone')}</div>
+
           <div>
             {
               //print iso date
               patient.phone
             }
           </div>
-          <div>الهاتف</div>
         </div>
         <Divider />
         <div className="form-control">
+        <div>{t('time')}</div>
+
           <div>
             {
               //print iso date
               date.toLocaleTimeString()
             }
           </div>
-          <div>الزمن</div>
         </div>
         <Divider />
         <div className="form-control">
+        <div> {t('registered_by')}</div>
+
           <div>
             {
               //print iso date
               patient.user.username
             }
           </div>
-          <div>سجل بواسطه</div>
         </div>
         <Divider />
         <div className="form-control">
+        <div>{t('gender')}</div>
+
           <div>
             {
               //print iso date
               patient.gender
             }
           </div>
-          <div>النوع</div>
         </div>
         <Divider />
         <div className="form-control">
+        <div>{t('age')}</div>
+
           <div>
             {
               //print iso date
@@ -97,39 +107,41 @@ function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPat
               } `
             }
           </div>
-          <div>العمر</div>
         </div>
         {patient.company_id && (
           <div>
             <div className="form-control">
+            <div>{t('company')}</div>
+
               <div>
                 {
                   //print iso date
                   patient.company.name
                 }
               </div>
-              <div>الشركه</div>
             </div>
             <div className="form-control">
+            <div>{t('cardNo')}</div>
+
               <div>
                 {
                   //print iso date
                   patient.insurance_no
                 }
               </div>
-              <div>رقم البطاقه</div>
             </div>
             {
               //print iso date
               patient.subcompany_id && (
                 <div className="form-control">
+                  <div>{t('sub_company')}</div>
+
                   <div>
                     {
                       //print iso date
                       patient?.subcompany?.name
                     }
                   </div>
-                  <div>الجهه</div>
                 </div>
               )
             }
@@ -137,19 +149,35 @@ function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPat
               //print iso date
               patient.company_relation_id && (
                 <div className="form-control">
+                  <div>{t('relation_name')}</div>
+
                   <div>
                     {
                       //print iso date
                       patient?.relation?.name
                     }
                   </div>
-                  <div>العلاقه</div>
                 </div>
               )
             }
+            
           </div>
         )}
-      
+       {
+              //print iso date
+              patient.result_print_date && (
+                <div className="form-control">
+                  <div>{t('print_time')}</div>
+                  <div>
+                    {
+                      //print iso date
+                    (new Date(patient.result_print_date)).toLocaleTimeString()
+                    }
+                  </div>
+                  
+                </div>
+              )
+            }
         <Divider sx={{ m: 1 }} />
         {copyPatient && patient.doctor_id == activeShift.doctor.id && (
           <Autocomplete
@@ -176,7 +204,7 @@ function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPat
             renderInput={(params) => {
               // console.log(params)
 
-              return <TextField {...params} label="نسخ المريض" />;
+              return <TextField {...params} label={t('copy_patient')} />;
             }}
           />
         )}

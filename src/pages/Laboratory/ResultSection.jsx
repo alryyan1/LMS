@@ -60,17 +60,32 @@ function ResultSection({
               <TableBody>
                 {selectedTest &&
                   selectedTest.requested_results.map((req, i) => {
+                  
                     console.log(selectedTest, "req result in table");
                     if (req.child_test == null) {
                       return;
                     }
+                    const low = Number( req.child_test.lowest)
+                    const max =  Number(req.child_test.max)
+                    const result =  Number(req.result)
+                    let type = ''
+                    if (result !='') {
+                        if (low > 0 && max > 0) {
+                       if (result < low || result > max) {
+                        // alert('err')
+                         type='error'
+                       }
+                    }
+                    }
+                  
                     return (
                       <TableRow key={req.id}>
-                        <TableCell sx={{ p: 0.5, textAlign: "right" }}>
+                        <TableCell sx={{ p: 0.5, textAlign: "right",backgroundColor:(theme)=> type =='error'? theme.palette.error.light : '' }}>
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
                           <AutocompleteResultOptions
+                          type={type}
                             index={i}
                             setShift={setShift}
                             setActivePatient={setActivePatient}

@@ -24,9 +24,8 @@ import { useThemeContext } from "./ThemeContext";
 import { t } from "i18next";
 import UserDropDown from "./components/UserDropDown";
 const Nav = () => {
+  const [activeLink, setActiveLink] = useState(null);
   const {
-    settings,
-    setSettings,
     user,
     setToken,
     setUser,
@@ -57,24 +56,15 @@ const Nav = () => {
       setUser(data);
     });
   }, []);
-  // useEffect(() => {
-  //   axiosClient.get("/settings").then(({ data }) => {
-  //     setSettings(data);
-  //     setMode(data.theme);
-  //     i18n.changeLanguage(data.lang);
-  //   });
-  // }, []);
+ 
   console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
-      i18n.changeLanguage("ch");
-      // localStorage.setItem("lang","en")
-      // axiosClient.post("settings", { colName: "lang", data: 'en' });
-    } else {
-      i18n.changeLanguage("ch");
-      // localStorage.setItem("lang","ar")
+      i18n.changeLanguage("en");
+    
+    } else if (i18n.language === "en") {
+      i18n.changeLanguage("ar");
 
-      // axiosClient.post("settings", { colName: "lang", data: 'ar' });
     }
   };
   const changeMode = () => {
@@ -92,45 +82,56 @@ const Nav = () => {
   const DrawerClinicList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
-      {user?.sub_routes?.filter((s)=>{
-         return   s.sub_route.route_id == 5
-        }).map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setClinicDrawer(false)}
-              LinkComponent={Link}
-              to={item.sub_route.path}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={item.sub_route.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {user?.sub_routes
+          ?.filter((s) => {
+            return s.sub_route.route_id == 5;
+          })
+          .map((item, index) => (
+            <ListItem key={item.title} disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  setClinicDrawer(false);
+                  setActiveLink(5);
+                }}
+                LinkComponent={Link}
+                to={item.sub_route.path}
+              >
+                <ListItemIcon>
+                  <ArrowRight />
+                </ListItemIcon>
+                <ListItemText primary={item.sub_route.name} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
     </Box>
   );
-  console.log('nav updated')
+  console.log("nav updated");
   const DrawerPharmacyList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
-         {user?.sub_routes?.filter((s)=>{
-         return   s.sub_route.route_id == 2
-        }).map((item, index) => (
-          <ListItem key={item.title} disablePadding>
-            <ListItemButton
-              onClick={() => setPharmacyDrawer(false)}
-              LinkComponent={Link}
-              to={item.sub_route.path}
-            >
-              <ListItemIcon>
-                <ArrowRight />
-              </ListItemIcon>
-              <ListItemText primary={t(item.sub_route.name)} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {user?.sub_routes
+          ?.filter((s) => {
+            return s.sub_route.route_id == 2;
+          })
+          .map((item, index) => (
+            <ListItem key={item.title} disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  // setActiveLink(2);
+
+                  setPharmacyDrawer(false);
+                }}
+                LinkComponent={Link}
+                to={item.sub_route.path}
+              >
+                <ListItemIcon>
+                  <ArrowRight />
+                </ListItemIcon>
+                <ListItemText primary={t(item.sub_route.name)} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
     </Box>
   );
@@ -145,25 +146,31 @@ const Nav = () => {
         open={labDrawer}
       >
         {" "}
-        {user?.sub_routes?.filter((s)=>{
-         return   s.sub_route.route_id == 4
-        }).map((item) => {
-          // alert('s')
-          return (
-            <ListItem key={item.title} disablePadding>
-              <ListItemButton
-                onClick={() => setLabDrawer(false)}
-                LinkComponent={Link}
-                to={item.sub_route.path}
-              >
-                <ListItemIcon>
-                  <Mail />
-                </ListItemIcon>
-                <ListItemText primary={item.sub_route.name} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+        {user?.sub_routes
+          ?.filter((s) => {
+            return s.sub_route.route_id == 4;
+          })
+          .map((item) => {
+            // alert('s')
+            return (
+              <ListItem key={item.title} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    // setActiveLink(4);
+
+                    setLabDrawer(false);
+                  }}
+                  LinkComponent={Link}
+                  to={item.sub_route.path}
+                >
+                  <ListItemIcon>
+                    <ArrowRight />
+                  </ListItemIcon>
+                  <ListItemText primary={t(`${item.sub_route.name}`)} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
       </Drawer>
       <Drawer
         ModalProps={{
@@ -207,17 +214,19 @@ const Nav = () => {
             style={{ textDecoration: "none", color: "white" }}
             to={"login"}
           >
-            {t('login')}
+            {t("login")}
           </NavLink>
-          {
-            user?.routes?.map((r)=>{
-              if (r.route.id == 4) {
-                return (<NavLink
-                 key={r.id}
+          {user?.routes?.map((r) => {
+            if (r.route.id == 4) {
+              return (
+                <NavLink
+                  className={activeLink == 4 ? "active" : ""}
+                  key={r.id}
                   to={"/lab"}
                   onClick={(e) => {
                     e.preventDefault();
                     setLabDrawer(true);
+                    setActiveLink(4);
                   }}
                   style={{
                     textDecoration: "none",
@@ -225,17 +234,19 @@ const Nav = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {t('lab')}
-                </NavLink>)
-              }
-              else if(r.route_id == 5){
-                return (
-                  <NavLink
-                   key={r.id}
+                  {t("lab")}
+                </NavLink>
+              );
+            } else if (r.route_id == 5) {
+              return (
+                <NavLink
+                  className={activeLink == 5 ? "active" : ""}
+                  key={r.id}
                   to={"clinic"}
                   onClick={(e) => {
                     e.preventDefault();
-      
+                    setActiveLink(5);
+
                     setClinicDrawer(true);
                   }}
                   style={{
@@ -244,142 +255,49 @@ const Nav = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {t('clinic')}
+                  {t("clinic")}
                 </NavLink>
-                )
-              }else if(r.route_id == 2){
-               return <NavLink
-                key={r.id}
-                // to={"pharma"}
-                onClick={(e) => {
-                  e.preventDefault();
-    
-                  setPharmacyDrawer(true);
-                }}
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  cursor: "pointer",
-                }}
-              >
-              {
-                t('pharma')
-              }
-              </NavLink>
-              }
+              );
+            } else if (r.route_id == 2) {
               return (
                 <NavLink
-                 key={r.id}
-            style={{ textDecoration: "none", color: "white" }}
-            to={r.route.path}
-          >
-            {t(r.route.name)}
-          </NavLink>
-              )
-            })
-          }
-           {/* <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/contracts"}
-          >
-          Contracts
-          </NavLink> */}
- { /*
-          <NavLink
-            to={"/lab"}
-            onClick={(e) => {
-              e.preventDefault();
-              setLabDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            {t('lab')}
-          </NavLink>
-          <NavLink
-            to={"clinic"}
-            onClick={(e) => {
-              e.preventDefault();
+                  className={activeLink == 2 ? "active" : ""}
+                  key={r.id}
+                  to={"pharma"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveLink(2);
 
-              setClinicDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            {t('clinic')}
-          </NavLink>
-          <NavLink
-            to={"pharma"}
-            onClick={(e) => {
-              e.preventDefault();
-
-              setPharmacyDrawer(true);
-            }}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-          {
-            t('pharma')
-          }
-          </NavLink>
-          <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/insurance"}
-          >
-            {
-              t('insurance')
+                    setPharmacyDrawer(true);
+                  }}
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t("pharma")}
+                </NavLink>
+              );
             }
-          </NavLink> }
-          <NavLink
-          
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/services"}
-          >
-            {
-              t('services')
-            }
-          </NavLink>
-          // <NavLink
-          //   style={{ textDecoration: "none", color: "white" }}
-          //   to={"/ship"}
-          // >
-          //   shipping
-          // </NavLink>
-          {/* {user?.roles.map((r) => r.name).includes("admin") || user?.id == 1 ? (
-            <NavLink
-              style={{ textDecoration: "none", color: "white" }}
-              to={"/settings"}
-            >
-              {
-                t('settings')
-              }
-            </NavLink>
-          ) : (
-            ""
-          )} */}
-          {/* <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"/dashboard"}
-          >
-            {
-              t('dashboard')
-            }
-          </NavLink> */}
+            return (
+              <NavLink
+                className={activeLink == r.id ? "active" : ""}
+                onClick={() => {
+                  setActiveLink(r.id);
+                }}
+                key={r.id}
+                style={{ textDecoration: "none", color: "white" }}
+                to={r.route.path}
+              >
+                {t(r.route.name)}
+              </NavLink>
+            );
+          })}
 
           <div style={{ flexGrow: 1 }}></div>
-          {/* <Typography color={"white"} variant="h5">
-            {user?.username}
-          </Typography> */}
-          <UserDropDown user={user}/>
+
+          <UserDropDown user={user} />
           <IconButton onClick={changeLang}>
             <Language />
           </IconButton>

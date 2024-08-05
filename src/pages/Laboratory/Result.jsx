@@ -27,6 +27,7 @@ import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatien
 import ResultSidebar from "./ResultSidebar";
 import printJS from "print-js";
 import ResultSection from "./ResultSection";
+import { LoadingButton } from "@mui/lab";
 
 function Result() {
   const {
@@ -82,7 +83,9 @@ function Result() {
     const data = shift?.patients.find((p) => p.id === pat.id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     console.log(data, "patient from db");
-    axiosClient.get(`shift/last`).then(({ data: data }) => {
+    // alert(shift.id)
+    if (pat.shift_id == shift.maxShiftId) {
+        axiosClient.get(`shift/last`).then(({ data: data }) => {
       console.log(data.data, "today patients");
       //add activeProperty to patient object
       data.data.patients.forEach((patient) => {
@@ -91,25 +94,12 @@ function Result() {
       setShift(data.data);
       setPatientsLoading(false);
     });
+    }
+  
     setActivePatient({ ...pat, active: true });
     setSelectedTest(pat.labrequests[0]);
     
-  // setUpdate((prev)=>prev+1)
-    // setShift((prev) => {
-    //   return {
-    //     ...prev,
-    //     patients: prev.patients.map((patient) => {
-    //       if (patient.id === pat.id) {
-    //         console.log("founded");
-    //         return { ...data, active: true };
-    //       } else {
-    //         return { ...patient, active: false };
-    //       }
-    //     }),
-    //   };
-    // });
-    //}//).catch((error)=>console.log(error))
-    // setActivePatient({...foundedPatient,active:true});
+  
   };
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
@@ -164,40 +154,42 @@ function Result() {
             </div>
           </Stack>
           <Stack justifyContent={"space-around"} direction={"row"}>
-            <IconButton
+            <LoadingButton
+            loading={loading}
             disabled={shift?.id == 1}
               onClick={() => {
                 if (shift.id == 1) {
                   return;
                 }
-
+                setLoading(true)
                 axiosClient
                   .get(`shiftById/${shift.id - 1}`)
                   .then(({ data }) => {
                     console.log(data.data, "shift left");
                     setShift(data.data);
-                  });
+                  }).finally(()=>setLoading(false));
               }}
             >
               <ArrowBack />
-            </IconButton>
-            <IconButton
+            </LoadingButton>
+            <LoadingButton
+            loading={loading}
             disabled={shift?.id == shift?.maxShiftId}
               onClick={() => {
                 // if (shift.id == 1) {
                 //   return
                 // }
-
+                setLoading(true)
                 axiosClient
                   .get(`shiftById/${shift.id + 1}`)
                   .then(({ data }) => {
                     console.log(data.data, "shift left");
                     setShift(data.data);
-                  });
+                  }).finally(()=>setLoading(false));
               }}
             >
               <ArrowForward />
-            </IconButton>
+            </LoadingButton>
           </Stack>
           <Divider></Divider>
           <div className="patients" style={{ padding: "15px" }}>
@@ -234,10 +226,10 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card sx={{height: "80vh", overflow: "auto" }} >
+        <Card sx={{height: "80vh", overflow: "auto"}} >
           {console.log(actviePatient, "activve pateint")}
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <List>
+            <List  sx={{direction:'ltr'}}>
               {actviePatient.labrequests.map((test) => {
                 return (
                   <ListItem
@@ -262,26 +254,7 @@ function Result() {
                     }
                     key={test.main_test.id}
                   >
-                    {/* <ListItemButton
-                      sx={
-                        selectedTest && selectedTest.id == test.id
-                          ? {
-                              backgroundColor: (theme) =>
-                                theme.palette.primary.main,
-                            }
-                          : null
-                      }
-                      onClick={() => {
-                        setSelectedTest(test);
-                        console.log(test, "selected test");
-                      }}
-                      style={{
-                        marginBottom: "2px",
-                       
-                      }}
-                    > */}
                       <ListItemText primary={test.main_test.main_test_name} />
-                    {/* </ListItemButton> */}
                   </ListItem>
                 );
               })}
@@ -303,16 +276,36 @@ function Result() {
                 setShift={setShift}
               />
               <Stack>
-                <Button sx={{mb:1}}
+                {/* <Button sx={{mb:1}}
                   disabled={actviePatient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button>
+                </Button> */}
                 <Button
-                  disabled={actviePatient.result_is_locked == 1}
+                
+                sx={{mt:1}}
+                  disabled={actviePatient.result_is_locked == 1 || actviePatient.is_lab_paid == 0}
                   onClick={()=>{
+
+                     actviePatient.labrequests.map((lr)=>{
+                       lr.requested_results.map((req)=>{
+                        if (req.child_test != null) {
+                          const low = Number( req.child_test.lowest)
+                          const max =  Number(req.child_test.max)
+                          const result =  Number(req.result)
+                          console.log(low)
+                          console.log(max)
+                          if (low > 0 && max > 0) {
+                             if (result < low || result > max) {
+                               alert(`abnormal result for  ${req.child_test.child_test_name} `)
+                             }
+                          }
+                        }
+                       
+                       })
+                     })
                     const form = new URLSearchParams()
                     axiosClient.get(`result?pid=${actviePatient.id}&base64=1`).then(({data})=>{
                     form.append('data',data)
@@ -335,7 +328,7 @@ function Result() {
                   }}
                   variant="contained"
                 >
-                  print direct
+                  print 
                 </Button>
               </Stack>
             </div>

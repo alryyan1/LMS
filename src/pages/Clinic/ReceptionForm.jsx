@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { Item } from "../constants";
+import {t} from 'i18next'
 
 function ReceptionForm({ hideForm,lab }) {
   const [loading, setIsLoading] = useState(false);
@@ -126,8 +127,7 @@ function ReceptionForm({ hideForm,lab }) {
   return (
     <Item elevation={2} sx={{ padding: "10px" }}>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-        التسجيل
-      </Typography>
+        {t('register')}      </Typography>
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
           <Slide in={selectedCompany != null } unmountOnExit mountOnEnter>
@@ -138,16 +138,16 @@ function ReceptionForm({ hideForm,lab }) {
               {...register("insurance_no", {
                 required: {
                   value: selectedCompany ? true : false,
-                  message: "يجب ادخال رقم البطاقه",
+                  message: t('cardNoValidation'),
                 }
               })}
-              label="رقم البطاقه "
+              label={t('cardNo')}
               helperText={errors?.insurance_no && errors.insurance_no.message}
             />
             <TextField
               error={errors?.guarantor != null}
               {...register("guarantor")}
-              label="اسم الضامن"
+              label={t('guarantor_name')}
             />
           {selectedCompany &&   <Autocomplete
                   onChange={(e, newVal) => {
@@ -163,7 +163,7 @@ function ReceptionForm({ hideForm,lab }) {
                     return (
                       <TextField
                         {...params}
-                        label="الجهه"
+                        label={t('sub_company')}
                       />
                     );
                   }}
@@ -181,7 +181,7 @@ function ReceptionForm({ hideForm,lab }) {
                     return (
                       <TextField
                         {...params}
-                        label="العلاقه"
+                        label={t('relation_name')}
                       />
                     );
                   }}
@@ -229,18 +229,18 @@ function ReceptionForm({ hideForm,lab }) {
               {...register("phone", {
                 required: {
                   value: true,
-                  message: "يجب ادخال رقم الهاتف",
+                  message: t('phoneValidation'),
                 },
-                minLength: {
-                  value: 10,
-                  message: "يجب ان يكون رقم الهاتف مكون من 10 ارقام",
-                },
-                maxLength: {
-                  value: 10,
-                  message: "يجب ان يكون رقم الهاتف مكون من 10 ارقام",
-                },
+                // minLength: {
+                //   value: 10,
+                //   message: t('phoneLengthValidation'),
+                // },
+                // maxLength: {
+                //   value: 10,
+                //   message:  t('phoneLengthValidation'),
+                // },
               })}
-              label="رقم الهاتف "
+              label={t('phone')}
               helperText={errors?.phone && errors.phone.message}
             />
             <TextField
@@ -248,10 +248,10 @@ function ReceptionForm({ hideForm,lab }) {
               {...register("name", {
                 required: {
                   value: true,
-                  message: "يجب ادخال اسم المريض",
+                  message: t('patientNameValidation'),
                 },
               })}
-              label="اسم المريض"
+              label={t('patient_name')}
               helperText={errors?.name && errors.name.message}
             />
                 {lab && <Controller
@@ -278,7 +278,7 @@ function ReceptionForm({ hideForm,lab }) {
                         inputRef={field.ref}
                         error={errors?.doctor}
                         {...params}
-                        label="الطبيب"
+                        label={t('doctor_name')}
                       />
                     );
                   }}
@@ -305,11 +305,11 @@ function ReceptionForm({ hideForm,lab }) {
                   {...register("age_year", {
                     required: {
                       value: true,
-                      message: "يجب ادخال العمر بالسنه",
+                      message: t('ageValidation'),
                     },
                   })}
                   type="number"
-                  label="السنه"
+                  label={t('ageInYear')}
                   variant="standard"
                 />
               </Item>
@@ -323,7 +323,7 @@ function ReceptionForm({ hideForm,lab }) {
                   }}
                   {...register("age_month")}
                   type="number"
-                  label="الشهر"
+                  label={t('ageInMonth')}
                   variant="standard"
                 />
               </Item>
@@ -337,7 +337,8 @@ function ReceptionForm({ hideForm,lab }) {
                     }
                   }}
                   {...register("age_day")}
-                  label="اليوم"
+                  label={t('ageInDays')}
+
                   variant="standard"
                 />
               </Item>
@@ -345,7 +346,7 @@ function ReceptionForm({ hideForm,lab }) {
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
-                النوع
+                {t('gender')}
               </InputLabel>
               <Controller
                 name="gender"
@@ -358,10 +359,10 @@ function ReceptionForm({ hideForm,lab }) {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
                       }}
-                      label="النوع"
+                      label={t('gender')}
                     >
-                      <MenuItem value={"ذكر"}>ذكر</MenuItem>
-                      <MenuItem value={"انثي"}>انثي</MenuItem>
+                      <MenuItem value={"ذكر"}>{t('male')}</MenuItem>
+                      <MenuItem value={"انثي"}>{t('female')}</MenuItem>
                     </Select>
                   );
                 }}
@@ -391,7 +392,7 @@ function ReceptionForm({ hideForm,lab }) {
                         inputRef={field.ref}
                         error={errors?.doctor}
                         {...params}
-                        label="الشركه"
+                        label={t('company')}
                       />
                     );
                   }}
@@ -405,7 +406,7 @@ function ReceptionForm({ hideForm,lab }) {
             type="submit"
             variant="contained"
           >
-            حفظ
+            {t('save')}
           </LoadingButton>
         </Stack>
       </form>

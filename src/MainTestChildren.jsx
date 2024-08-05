@@ -124,8 +124,8 @@ function MainTestChildren() {
               <TableCell>Unit</TableCell>
               <TableCell>Default value</TableCell>
               <TableCell>Normal range</TableCell>
-              <TableCell>Max</TableCell>
-              <TableCell>Lowest</TableCell>
+              <TableCell>Low</TableCell>
+              <TableCell>High</TableCell>
               <TableCell>childGroup</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -175,15 +175,7 @@ function MainTestChildren() {
                   >
                     {child.normalRange}
                   </MyTableCell>
-                  <MyTableCell
-                    table="child_tests"
-                    colName={"max"}
-                    item={child}
-                    child_id={child.id}
-                    stateUpdater={setUpdateTests}
-                  >
-                    {child.max}
-                  </MyTableCell>
+                
                   <MyTableCell
                     table="child_tests"
                     colName={"lowest"}
@@ -192,6 +184,15 @@ function MainTestChildren() {
                     stateUpdater={setUpdateTests}
                   >
                     {child.lowest}
+                  </MyTableCell>
+                  <MyTableCell
+                    table="child_tests"
+                    colName={"max"}
+                    item={child}
+                    child_id={child.id}
+                    stateUpdater={setUpdateTests}
+                  >
+                    {child.max}
                   </MyTableCell>
                   <TableCell width={"13%"}>
                     <ChildGroupAutoComplete

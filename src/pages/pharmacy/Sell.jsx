@@ -352,7 +352,7 @@ function SellDrug() {
                   borderRadius: 10,
                   width: "200px",
                   textAlign: "center",
-                  height: "90px",
+                  height: "120px",
                 }}
               >
                 <CardContent>
@@ -381,7 +381,7 @@ function SellDrug() {
                   borderRadius: 10,
                   width: "200px",
                   mt: 2,
-                  height: "90px",
+                  height: "120px",
                 }}
               >
                 <CardContent>
@@ -423,7 +423,7 @@ function SellDrug() {
                   borderRadius: 10,
                   width: "200px",
                   mt: 2,
-                  height: "90px",
+                  height: "120px",
                 }}
               >
                 <CardContent>
