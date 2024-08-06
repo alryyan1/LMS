@@ -78,6 +78,7 @@ function Result() {
 
   const setActivePatientHandler = (pat) => {
     // setSelectedTest(null)
+    // setSelectedResult(null)
     setSelectedResult(null);
     console.log("start active patient clicked");
     const data = shift?.patients.find((p) => p.id === pat.id);
@@ -235,6 +236,7 @@ function Result() {
                   <ListItem
                   onClick={() => {
                     setSelectedTest(test);
+                    setSelectedResult(null);
                     console.log(test, "selected test");
                   }}
                   style={selectedTest && selectedTest.id == test.id

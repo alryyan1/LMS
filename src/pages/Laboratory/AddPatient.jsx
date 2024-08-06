@@ -251,15 +251,16 @@ function AddPatient() {
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
-          {!actviePatient && foundedPatients.length > 0 && (
+      
+        </Card>
+        <div>
+        {!actviePatient && foundedPatients.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div style={{ position: "relative" }}>
                 <SearchDialog lab={true} />
               </div>
             </Slide>
           )}
-        </Card>
-        <div>
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail

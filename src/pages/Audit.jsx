@@ -32,9 +32,11 @@ import AuditPanel from "../components/AuditPanel";
 import AuditClinics from "./AuditClinics";
 import AuditCost from "./AuditCost";
 import AuditLab from "./AuditLab";
+import { LoadingButton } from "@mui/lab";
 
 function Audit() {
   const [date, setDate] = useState(dayjs( new Date()));
+  const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState({
     showMoneyDialog:false,
     title:'',
@@ -54,12 +56,13 @@ function Audit() {
   const [selectedDoctorShift, setSelectedDoctorShift] = useState(null);
   const [selectedVisit, setSelectedVisit] = useState(null);
   const searchShiftByDateHandler = () => {
+    setLoading(true);
     axiosClient
       .get(`getShiftByDate?date=${date.format("YYYY-MM-DD")}`)
       .then(({ data }) => {
         console.log(data);
         setShifts(data);
-      });
+      }).finally(()=>setLoading(false));
   };
   useEffect(() => {
     axiosClient.get("company/all").then(({ data }) => {
@@ -88,13 +91,14 @@ function Audit() {
             label="تاريخ"
           />
         </LocalizationProvider>
-        <Button
+        <LoadingButton
+         loading={loading}
           onClick={searchShiftByDateHandler}
           size="medium"
           variant="contained"
         >
           بحث
-        </Button>
+        </LoadingButton>
         </Stack>
        
       

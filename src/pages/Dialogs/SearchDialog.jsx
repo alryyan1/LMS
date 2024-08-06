@@ -55,12 +55,12 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <Box sx={{position:'absolute'}} >
-      <TableContainer>
+    <Box  >
+      <TableContainer sx={{height:'70vh',overflow:'auto'}}>
         <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
           <thead>
             <TableRow>
-              <TableCell>الاسم</TableCell>
+              <TableCell style={{ width: '40%'}}>الاسم</TableCell>
               <TableCell>التاريخ</TableCell>
               <TableCell> الطبيب</TableCell>
               <TableCell> اضافه</TableCell>
@@ -69,7 +69,7 @@ function SearchDialog({lab=false}) {
           <TableBody>
             {foundedPatients.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
+                <TableCell  width={'40%'}>{item.name}</TableCell>
                 <TableCell>
                   {new Date(Date.parse(item.created_at)).toLocaleDateString()}
                 </TableCell>

@@ -1,24 +1,31 @@
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, TextField } from "@mui/material";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 
-import { useOutletContext } from "react-router-dom";
-import axiosClient from "../../axios-client";
 import dayjs from "dayjs";
+import axiosClient from "../../../axios-client";
 
-function AddDrugAutocomplete({setUpdater}) {
-  const { items,setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
+function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePatient}) {
+
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
-  console.log('AddDrugAutocomplete rendered',selectedDrugs)
+  const [items, setItems] = useState([]);
 
+  console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
+   useEffect(()=>{
+    axiosClient.get(`items/all`).then(({ data: data }) => {
+        setItems(data);
+        if (data.status == false) {
+          setDialog((prev)=>{
+            return {...prev,open: true, msg: data.message}
+          })
+        }
+  
+    });
+   },[])
   const addDrugsHandler = ()=>{
-    setShiftIsLoading(true);
-    if (activeSell.complete) {
-      alert('يجب الغاء السداد اولا')
-      return;
-    }
+ 
     setLoading(true)
      selectedDrugs.forEach((drug)=>{
        if (drug.strips == 0) {
@@ -27,16 +34,14 @@ function AddDrugAutocomplete({setUpdater}) {
        return 
      })
    
-    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
+    axiosClient.post(`addPrescribedDrug/${patient.id}`,{'doctor_id': patient.doctor_id,'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
-        
-        setActiveSell(data.data)
-        setShift(data.shift)
-        setUpdater((prev)=>prev+1)
+        setActivePatient((prev)=>{
+          return {...prev,patient:data.patient}
+        })
         setSelectedDrugs([])
     }).finally(()=>{
       setLoading(false)
-      setShiftIsLoading(false)
     })
   }
 
@@ -52,7 +57,7 @@ function AddDrugAutocomplete({setUpdater}) {
           }}
         >
           <Autocomplete
-          
+           fullWidth
           autoFocus={true}
           value={selectedDrugs}
           inputValue={field}
@@ -112,20 +117,15 @@ function AddDrugAutocomplete({setUpdater}) {
                           // return
                         }
                         setLoading(true);
-                        setShiftIsLoading(true)
 
-                        axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
+                        axiosClient.post(`addPrescribedDrug/${patient.id}`,{doctor_id:patient.doctor_id,product_id:itemFounded.id}).then(({data})=>{
                           console.log(data,'add by barcode')
-                          setActiveSell((prev)=>{
-                            return {...prev,...data.data}
-                          })
-                          setShift(data.shift)
+                     
 
                           setUpdater((prev)=>prev + 1)
                           setField('')
                         }).finally(()=>{
                           setLoading(false)
-                          setShiftIsLoading(false)
 
                         }) 
                         // setSelectedDrugs((prev)=>{
@@ -133,7 +133,7 @@ function AddDrugAutocomplete({setUpdater}) {
                         //   return [...prev, itemFounded]
                         // })
                       }else{
-                        setOpendDrugDialog(true)
+                      
                         setDialog((prev)=>{
                           return {...prev, open: true,message:'Item Not Defined',color:'error'}
                         })
@@ -162,4 +162,4 @@ function AddDrugAutocomplete({setUpdater}) {
   );
 }
 
-export default AddDrugAutocomplete;
+export default AddPrescribedDrugAutocomplete;

@@ -62,6 +62,7 @@ import ItemsInventory from "./pages/pharmacy/ItemsInventory";
 import ItemDeposit from "./pages/pharmacy/ItemDeposit";
 import Audit from "./pages/Audit";
 import Contracts from "./pages/Contracts";
+import Doctor from "./pages/doctor/doctor";
 
 export const router = createBrowserRouter([
   {
@@ -134,6 +135,12 @@ export const router = createBrowserRouter([
 
         element : <ProtectedRoute><Dashboard/></ProtectedRoute> ,
         path:"/dashboard",
+
+      },
+      {
+
+        element : <ProtectedRoute><Doctor/></ProtectedRoute> ,
+        path:"doctor/:id",
 
       },
       {

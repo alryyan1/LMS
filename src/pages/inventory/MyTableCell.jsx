@@ -21,8 +21,8 @@ function MyTableCell({
   setData=null,
   setSelectedDeposit=null,
   isNum = false,
+  setDialog= null
 }) {
-  const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
   const [intial, setInitialVal] = useState(children);
   const [iniVal, setInitVal] = useState(children);
@@ -83,7 +83,8 @@ function MyTableCell({
                 })};
               })
             }
-            setDialog((prev) => {
+            if(setDialog){
+                setDialog((prev) => {
               return {
                 ...prev,
                 open: true,
@@ -91,11 +92,14 @@ function MyTableCell({
                 color: "success",
               };
             });
+            }
+          
           }
         })
         .catch(({ response: { data, status } }) => {
           if (status == 406) {
-            setDialog((prev) => {
+            if (setDialog) {
+               setDialog((prev) => {
               return {
                 ...prev,
                 open: true,
@@ -103,9 +107,12 @@ function MyTableCell({
                 message: data.message,
               };
             });
+            }
+           
           }
           if (status == 400) {
-            setDialog((prev) => {
+            if (setDialog) {
+               setDialog((prev) => {
               return {
                 ...prev,
                 open: true,
@@ -113,6 +120,8 @@ function MyTableCell({
                 message: data.message,
               };
             });
+            }
+           
           }
           
           console.log(data, "err in axios", status);
