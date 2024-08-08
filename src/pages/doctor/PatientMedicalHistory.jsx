@@ -7,8 +7,8 @@ import {
   import axiosClient from "../../../axios-client";
   
   function PatientMedicalHistory(props) {
-    const { value, index, patient, setDialog, ...other } = props;
-  
+    const { value, index, patient, setDialog,setShift,setActivePatient,  ...other } = props;
+      
     return (
       <div
         role="tabpanel"
@@ -21,6 +21,7 @@ import {
         {value === index && (
           <Box sx={{ justifyContent: "space-around" }} className="group">
              <TextField  onChange={(e) => {
+
                         axiosClient
                           .patch(`patients/${patient.id}`, {
                             history_of_present_illness: e.target.value,
@@ -28,6 +29,18 @@ import {
                           .then(({ data }) => {
                             console.log(data);
                             if (data.status) {
+                              setActivePatient((prev)=>{
+                                return {...prev,patient:data.patient}
+                              })
+                             
+                              setShift((prev)=>{
+                                return {...prev, visits:prev.visits.map((v)=>{
+                                  if(v.patient_id === patient.id){
+                                    return {...v,patient:data.patient}
+                                  }
+                                  return v;
+                                })}
+                              })
                               setDialog((prev) => {
                                 return {
                                   ...prev,

@@ -7,7 +7,7 @@ function PatientPanel({value,setValue}) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.log("start fetching", "packages and their tests");
+  // console.log("start fetching", "packages and their tests");
 
   return (
     <Box>

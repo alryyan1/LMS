@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../Laboratory/addPatient.css";
 
-import { Divider, Stack, Skeleton, Card, Snackbar, Alert } from "@mui/material";
+import { Divider, Stack, Skeleton, Card, Snackbar, Alert, List, ListItem } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -13,10 +13,21 @@ import GeneralExaminationPanel from "./generalExaminationPanel";
 import PresentingComplain from "./PresentingComplain";
 import PatientMedicalHistory from "./PatientMedicalHistory";
 import PatientPrescribedMedsTab from "./PatientPrescribedMedsTab";
+import dayjs from "dayjs";
 
 function Doctor() {
   const [value, setValue] = useState(0);
+  const [file, setFile] = useState(null);
+  const [complains, setComplains] = useState([]);
 
+  useEffect(()=>{
+    // alert('start of use effect')
+    axiosClient.get('complains').then(({data})=>{
+      console.log(data)
+      setComplains(data.map((c)=>c.name))
+    })
+  },[])
+ 
   const { id } = useParams();
   
   const [dialog, setDialog] = useState({
@@ -33,7 +44,9 @@ function Doctor() {
   const [shifts, setShifts] = useState([]);
   const [doctor, setDoctor] = useState();
   const [activePatient, setActivePatient] = useState(null);
-
+  let visitCount = activePatient?.patient.visit_count;
+  console.log(visitCount,'visitCount')
+   console.log(shift,'doc shift')
   useEffect(() => {
     document.title = "صفحه الطبيب";
   }, []);
@@ -46,8 +59,14 @@ function Doctor() {
       console.log(data.shifts, "data shifts");
       console.log(data.shifts[0]);
     });
-  }, []);
-
+  }, [activePatient?.id]);
+  useEffect(()=>{
+    // alert('start of use effect')
+    axiosClient.get(`file/${activePatient?.patient?.id}`).then(({data})=>{
+      setFile(data.data)
+      console.log(data,'file')
+    })
+  },[activePatient?.patient?.id])
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };
@@ -64,7 +83,7 @@ function Doctor() {
   //     });
   //   }, []);
   let count = (shift?.visits.length ?? 0) + 1;
-
+  console.log(file,'is file')
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
@@ -73,7 +92,7 @@ function Doctor() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `0.2fr     1fr 2fr 0.5fr   0.2fr   `,
+          gridTemplateColumns: `0.2fr     1fr 0.5fr 2fr 0.5fr   0.2fr   `,
         }}
       >
         <div></div>
@@ -89,7 +108,7 @@ function Doctor() {
           transition: "0.3s all ease-in-out",
           height: "80vh",
           display: "grid",
-          gridTemplateColumns: `0.2fr     1fr 2fr 0.5fr   0.2fr  `,
+          gridTemplateColumns: `0.2fr     1fr  0.5fr 2fr 0.5fr   0.2fr  `,
         }}
       >
         <div></div>
@@ -148,9 +167,10 @@ function Doctor() {
             alignItems={"center"}
             style={{ padding: "15px" }}
           >
-            {shift?.visits.map((visit) => {
+            {shift?.visits.map((visit,i) => {
               return (
                 <DoctorPatient
+                delay={i * 100}
                   activePatient={activePatient}
                   setActivePatient={setActivePatient}
                   index={count--}
@@ -162,6 +182,19 @@ function Doctor() {
             })}
           </Stack>
         </Card>
+        <Card>
+            <List >
+              {
+             
+               file && file.patients.map((patient,i ) => {
+                  return <ListItem sx={{
+                    cursor:'pointer',
+                    backgroundColor:(theme)=>patient.id == activePatient?.patient.id ? theme.palette.warning.light : ''
+                  }} key={patient.id}>sheet ({visitCount--}) {dayjs(new Date(Date.parse(patient.created_at))).format('YYYY/MM/DD')}</ListItem>
+                })
+              }
+            </List>
+        </Card>
 
         <Card key={activePatient?.patient?.id} sx={{ height: "80vh", overflow: "auto", p: 1 }}>
           {activePatient && (
@@ -172,10 +205,10 @@ function Doctor() {
                 patient={activePatient.patient}
               />
               {/* <GeneralTab index={1} value={value}></GeneralTab> */}
-              <GeneralExaminationPanel setDialog={setDialog} patient={activePatient.patient}  index={1} value={value} />
-              <PresentingComplain setDialog={setDialog} patient={activePatient.patient}  index={2} value={value} />
-              <PatientMedicalHistory setDialog={setDialog} patient={activePatient.patient}  index={4} value={value} />
-              <PatientPrescribedMedsTab setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={3} value={value} />
+              <GeneralExaminationPanel setShift={setShift}  setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={1} value={value} />
+              <PresentingComplain setShift={setShift} complains={complains} setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={2} value={value} />
+              <PatientMedicalHistory setShift={setShift}  setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={4} value={value} />
+              <PatientPrescribedMedsTab setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={3} value={value} />
             </>
           )}
         </Card>

@@ -5,14 +5,14 @@ import {  useEffect, useState } from "react";
 import dayjs from "dayjs";
 import axiosClient from "../../../axios-client";
 
-function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePatient}) {
+function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePatient,setShift}) {
 
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [items, setItems] = useState([]);
 
-  console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
+  // console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
    useEffect(()=>{
     axiosClient.get(`items/all`).then(({ data: data }) => {
         setItems(data);
@@ -38,6 +38,15 @@ function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePa
         console.log(data,'data')
         setActivePatient((prev)=>{
           return {...prev,patient:data.patient}
+        })
+       
+        setShift((prev)=>{
+          return {...prev, visits:prev.visits.map((v)=>{
+            if(v.patient_id === patient.id){
+              return {...v,patient:data.patient}
+            }
+            return v;
+          })}
         })
         setSelectedDrugs([])
     }).finally(()=>{

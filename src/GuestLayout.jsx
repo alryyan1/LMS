@@ -6,6 +6,10 @@ function GuestLayout() {
   console.log(token);
   // alert(token);
   if (token) {
+
+    if (user?.doctor_id != null) {
+      return <Navigate to={`/doctor/${user.doctor_id}`} />;
+    }
     // alert(token);
     // user.routes[0].route.name
     // alert(user?.sub_routes[0].route.name)

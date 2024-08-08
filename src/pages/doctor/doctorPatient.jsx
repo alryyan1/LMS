@@ -1,5 +1,5 @@
 import { FavoriteBorder } from "@mui/icons-material";
-import { Badge, Chip, Icon, Paper, Stack, styled } from "@mui/material";
+import { Badge, Chip, Grow, Icon, Paper, Stack, styled } from "@mui/material";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
 const Item = styled(Paper)(({ theme }) => ({
@@ -9,13 +9,14 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function DoctorPatient({ visit, setActivePatient, index,activePatient }) {
+function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay}) {
 
   return (
+    <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
     <Badge
       color="primary"
       badgeContent={
-      1
+        visit.patient.visit_count
       }
       key={visit.id}
     >
@@ -67,6 +68,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient }) {
         <Item className="patient-no">{index - 1}</Item>
       </Stack>
     </Badge>
+    </Grow>
   );
 }
 

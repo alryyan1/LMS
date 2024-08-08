@@ -1,19 +1,21 @@
-import { Alert, Box, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Autocomplete, Box, Paper, Stack, TextField, Typography } from "@mui/material";
 import "./login.css";
 import { LoadingButton } from "@mui/lab";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../appContext";
 import { useState } from "react";
 import {t} from 'i18next'
-const SignUp = ({ setUsers }) => {
+const SignUp = ({ setUsers,doctors }) => {
   const { setToken, setUser } = useStateContext();
+  console.log(doctors,'doctorrs')
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ val: false, msg: "" });
 
   console.log(setToken);
   const {
     handleSubmit,
+     control,
     formState: { errors, isSubmitted },
     register,
   } = useForm();
@@ -23,6 +25,7 @@ const SignUp = ({ setUsers }) => {
       username: data.username,
       password: data.password,
       password_confirmation: data.confirm,
+      doctor_id: data.doctor?.id,
     };
     console.log(payload);
     axiosClient
@@ -96,6 +99,38 @@ const SignUp = ({ setUsers }) => {
             label="confirm password"
           ></TextField>
           {errors.confirm && errors.confirm.message}
+          <Controller
+            name="doctor"
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: "يجب اختيار اسم الطبيب",
+            //   },
+            // }}
+            control={control}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                  onChange={(e, newVal) => field.onChange(newVal)}
+                  getOptionKey={(op) => op.id}
+                  getOptionLabel={(option) => option.name}
+                  options={doctors}
+                  renderInput={(params) => {
+                    // console.log(params)
+
+                    return (
+                      <TextField
+                        inputRef={field.ref}
+                        error={errors?.doctor}
+                        {...params}
+                        label={t('doctor_name')}
+                      />
+                    );
+                  }}
+                ></Autocomplete>
+              );
+            }}
+          />
           <LoadingButton
             loading={loading}
             type="submit"

@@ -7,7 +7,9 @@ function PatientEditSelect({
   myVal,
   patient,
   colName,
-  setDialog
+  setDialog,
+  setActivePatient,
+  setShift
 }) {
 
   const [iniVal, setInitVal] = useState(myVal);
@@ -26,7 +28,24 @@ function PatientEditSelect({
       console.log('diffent value')
     axiosClient.patch(`patients/${patient.id}`,{[colName]:val})
       .then(({data}) => {
+      
         if (data.status) {
+          try {
+                 setActivePatient((prev) => {
+            return {...prev, patient: data.patient };
+          });
+          setShift((prev)=>{
+            return {...prev, visits:prev.visits.map((v)=>{
+              if(v.patient_id === patient.id){
+                return {...v,patient:data.patient}
+              }
+              return v;
+            })}
+          })
+          } catch (error) {
+            console.log(error)
+          }
+     
           setDialog((prev) => {
             return { ...prev, open: true, message: "تم التعديل بنجاح" };
           });

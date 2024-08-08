@@ -98,7 +98,7 @@ function PatientDetail({ patient, openedDoctors, setUpdate, activeShift, copyPat
           <div>
             {
               //print iso date
-              patient.file_patient.file_id
+              patient?.file_patient?.file_id
             }
           </div>
         </div>

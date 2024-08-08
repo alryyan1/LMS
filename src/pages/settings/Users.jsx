@@ -19,7 +19,7 @@ import SignUp from "../Singeup";
 import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
 import { t } from "i18next";
 function Users() {
-  const { setDialog } = useOutletContext();
+  const { setDialog,doctors } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
@@ -204,7 +204,7 @@ function Users() {
         )}
       </Grid>
       <Grid item xs={2}>
-        <SignUp setUsers={setUsers} />
+        <SignUp doctors={doctors} setUsers={setUsers} />
       </Grid>
     </Grid>
   );
