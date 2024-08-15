@@ -8,8 +8,9 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     resources :{
         ar:{
             translation:{
+                finance:'الحسابات',
                 print_time:'زمن الطباعه',
-                register_lab_patient:'تسجيل مريض للمختبر',
+                register_lab_patient:'التسجيل  ',
                 patient_name:'اسم المريض',
                 patientNameValidation:'يجب ادخال اسم المريض',
                 cardNoValidation:"يجب ادخال رقم البطاقه",
@@ -86,14 +87,19 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 test_management:'اداره التحاليل',
                 price_list:'قائمه الاسعار ',
                 doctor_reclaim:'استحقاق الاطباء',
-                cash_count:'حساب الفئات'
+                cash_count:'حساب الفئات',
+                moneyIncome:" الايرادات",
+                MoneyExpenses:"المصروفات ",
                 
             }
         },
         en:{
             translation:{
+                moneyIncome:"Money Income",
+                MoneyExpenses:"Money Expenses",
                 cash_count:'Cash count' ,
                 print_time:'print time',
+                finance:'finance',
 
                 booking:'booking',
                 doctor_reclaim:"doctor_reclaim",

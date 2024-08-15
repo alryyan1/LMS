@@ -18,6 +18,7 @@ import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import ServiceCountSelect from "./ServiceCountSelect";
+import RequestedServiceOptions from "./RequestedServiceOptions";
 function RequestedServices({ actviePatient , setDialog, setActivePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift,companies}) {
   const [loading, setLoading] = useState(false);
   console.log(companies,'companies')
@@ -60,7 +61,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
         })
       });
   };
-  const cancelPayHandler = (id,setLoading) => {
+  const cancelPayHandler = (id) => {
     setLoading(true);
      axiosClient.patch(`requestedService/cancel/${id}`).then(({ data }) => {
       if(data.status) {
@@ -144,13 +145,10 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                   <TableCell align="right">Price</TableCell>
                   { actviePatient.company_id ? <TableCell align="right">Endurance</TableCell>:   "" }
                   <TableCell align="right">paid</TableCell>
-                  { actviePatient.company_id ? "":   <TableCell align="right">Discount</TableCell> }
                 
-                  { actviePatient.company_id ? "": <TableCell align="right">Bankak</TableCell>}
-                  <TableCell align="right">count</TableCell>
-                  <TableCell width={'5%'} align="right">delete</TableCell>
-                  <TableCell width={'5%'} align="right">cancel</TableCell>
+                  { actviePatient.company_id ? "": <TableCell align="right">Bank</TableCell>}
                   <TableCell width={'5%'} align="right">pay</TableCell>
+                  <TableCell width={'5%'} align="right">options</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -191,15 +189,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                       <TableCell sx={{ border: "none" }} align="right">
                         {service.amount_paid}
                       </TableCell>
-                      { actviePatient.company_id ? "": <TableCell sx={{ border: "none" }} align="right">
-                        <DiscountSelectService
-                        setDialog={setDialog}
-                        setActivePatient={setActivePatient}
-                          service={service}
-                          id={service.id}
-                          actviePatient={actviePatient}
-                        />
-                      </TableCell>}
+                    
                       { actviePatient.company_id ? "":  <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
                         setUpdate={setUpdate}
@@ -209,36 +199,9 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                           id={service.id}
                         ></MyCheckboxReception>
                       </TableCell>}
-                      <TableCell sx={{ border: "none" }} align="right">
-                        <ServiceCountSelect
-                        setUpdate={setUpdate}
-                        setActivePatient={setActivePatient}
-                          service={service}
-                          id={service.id}
-                          actviePatient={actviePatient}
-                          disabled={service.is_paid == 1}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
-                        <IconButton
-                          disabled={actviePatient?.is_lab_paid == 1}
-                          aria-label="delete"
-                          onClick={() => deleteService(service.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ border: "none" }} align="right">
-                      <MyLoadingButton
-                         disabled={service.is_paid == 0}
-
-                        loading={loading}
-                         
-                          onClick={(setLoading) => cancelPayHandler(service.id,setLoading)}
-                        >
-                          <Close />
-                        </MyLoadingButton>
-                      </TableCell>
+                      
+                    
+                   
                       <TableCell sx={{ border: "none" }} align="right">
                         <MyLoadingButton
                         
@@ -252,6 +215,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                           <Download />
                         </MyLoadingButton>
                       </TableCell>
+                      <TableCell><RequestedServiceOptions setDialog={setDialog} setActivePatient={setActivePatient} setUpdate={setUpdate} deleteService={deleteService} actviePatient={actviePatient} cancelPayHandler={cancelPayHandler} loading={loading} service={service}  /></TableCell>
                     </TableRow>
                   );
                 })}
@@ -262,8 +226,8 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
         <div className="requested-total">
           <div className="money-info">
         
-            <div className="total-price">
-              <div className="sub-price">
+            <div className="total-price" style={{width:'100%',justifyContent:'space-around'}}>
+              <div className="sub-price" >
                 <div className="title">Total</div>
                 
                 <Typography  variant="h3">

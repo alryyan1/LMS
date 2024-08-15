@@ -83,7 +83,7 @@ function AuditClinics({
                     sx={{
                       backgroundColor: (theme) =>
                         selectedDoctorShift?.id == doctorShift.id
-                          ? theme.palette.primary.main
+                          ? theme.palette.secondary.light
                           : "",
                     }}
                     secondaryAction={
@@ -125,7 +125,7 @@ function AuditClinics({
                   sx={{
                     backgroundColor: (theme) =>
                       selectedVisit?.id == visit.id
-                        ? theme.palette.primary.main
+                        ? theme.palette.warning.light
                         : "",
                   }}
                   secondaryAction={

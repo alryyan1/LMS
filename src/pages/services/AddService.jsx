@@ -1,5 +1,7 @@
 import {
   Autocomplete,
+  Button,
+  Card,
   Divider,
   Grid,
   Skeleton,
@@ -8,6 +10,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
   TextField,
   Typography,
@@ -24,13 +27,14 @@ import { useOutletContext } from "react-router-dom";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 
 function AddService() {
+  const [selectedService , setSelectedService] = useState(null)
   const [search, setSearch] = useState(null);
   const [loading, setLoading] = useState(false);
   const [services, setservices] = useState([]);
   const [links, setLinks] = useState([]);
   const [page, setPage] = useState(5);
   const { dialog, setDialog, serviceGroups } = useOutletContext();
-
+   const {register:register2,handleSubmit:handleSubmit2,formState:{errors:errors2}} = useForm()
   const searchHandler = (word) => {
     setSearch(word);
     axiosClient
@@ -58,13 +62,53 @@ function AddService() {
       })
       .then(({ data, links }) => {
         console.log(data, links);
-        setservices(data)
-        setLinks(links)
+        setservices(data);
+        setLinks(links);
       })
       .finally(() => {
         setLoading(false);
       });
   };
+  
+  const removeServiceCost = (id)=>{
+    setLoading(true);
+
+    axiosClient.delete(`removeServiceCost/${id}`).then(({data})=>{
+      console.log(data)
+      if (data.status) {
+        setSelectedService(data.service)
+        setDialog((prev) => {
+          return {
+            ...prev,
+            open: true,
+            color: "success",
+            msg: "تمت الاضافه بنجاح",
+          };
+        });
+        reset();
+      }
+    }).finally(() => setLoading(false));
+  }
+  const addServiceCostHandler = (data)=>{
+    console.log(data)
+    setLoading(true);
+
+    axiosClient.post(`addServiceCost/${selectedService.id}`,{...data,service_id:selectedService.id}).then(({data})=>{
+      console.log(data)
+      if (data.status) {
+        setSelectedService(data.service)
+        setDialog((prev) => {
+          return {
+            ...prev,
+            open: true,
+            color: "success",
+            msg: "تمت الاضافه بنجاح",
+          };
+        });
+        reset();
+      }
+    }).finally(() => setLoading(false));
+  }
   //create state variable to store all Items
   const submitHandler = (data) => {
     setLoading(true);
@@ -116,14 +160,14 @@ function AddService() {
       .finally(() => setLoading(false));
   }, [page, isSubmitting]);
   useEffect(() => {
-    document.title = 'الخدمات' ;
+    document.title = "الخدمات";
   }, []);
   return (
-    <Stack direction={"row"} gap={3}>
+    <Grid container  gap={3}>
       {loading ? (
-        <Skeleton height={400} style={{ flexGrow: "1" }}></Skeleton>
+        <Skeleton height={400} ></Skeleton>
       ) : (
-        <div style={{ flexGrow: 1 }}>
+        <Grid item xs={6}  >
           <TableContainer sx={{ mb: 1 }}>
             <Stack
               sx={{ mb: 1 }}
@@ -159,12 +203,13 @@ function AddService() {
                   <TableCell>الاسم</TableCell>
                   <TableCell>السعر</TableCell>
                   <TableCell>القسم</TableCell>
+                  <TableCell>مصروفات </TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
                 {services.map((item) => (
-                  <TableRow key={item.id}>
+                  <TableRow sx={{background:(theme)=>selectedService?.id == item.id ? theme.palette.warning.light :''}} key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <MyTableCell table="service" colName={"name"} item={item}>
                       {item.name}
@@ -177,35 +222,49 @@ function AddService() {
                     >
                       {item.price}
                     </MyTableCell>
-                   
-                
+
                     <MyAutoCompeleteTableCell
                       table="service"
                       val={item.service_group}
                       item={item}
                       colName={"service_group_id"}
                       sections={serviceGroups}
-                    >{item.service_group}</MyAutoCompeleteTableCell>
+                    >
+                      {item.service_group}
+                    </MyAutoCompeleteTableCell>
                     <TableCell>
-                      <MyLoadingButton  onClick={()=>{
+                      <Button onClick={()=>{
+                        setSelectedService(item)
+                      }}>اختيار</Button>
+                    </TableCell>
 
-                        const result =  confirm('هل انت متاكد من حذف الخدمه')
-                        if (result) {
-                          axiosClient.delete(`service/${item.id}`).then((data)=>{
-                            if (data.status) {
-                              setDialog((prev) => {
-                                return {
-                                 ...prev,
-                                  open: true,
-                                  color: "success",
-                                  msg: "تمت الحذف بنجاح",
-                                };
+                    <TableCell>
+                      <MyLoadingButton
+                        onClick={() => {
+                          const result = confirm(" \n سيتم حذف العمليات الماليه المتلقه بالخدمه-- هل انت متاكد من حذف الخدمه");
+                          if (result) {
+                            axiosClient
+                              .delete(`service/${item.id}`)
+                              .then((data) => {
+                                if (data.status) {
+                                  setDialog((prev) => {
+                                    return {
+                                      ...prev,
+                                      open: true,
+                                      color: "success",
+                                      msg: "تمت الحذف بنجاح",
+                                    };
+                                  });
+                                  setservices((prev) =>
+                                    prev.filter((ser) => ser.id != item.id)
+                                  );
+                                }
                               });
-                             setservices((prev)=>prev.filter((ser)=>ser.id != item.id))
-                            }
-                          })
-                        }
-                      }}>Delete</MyLoadingButton>
+                          }
+                        }}
+                      >
+                        Delete
+                      </MyLoadingButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -258,9 +317,9 @@ function AddService() {
                 );
             })}
           </Grid>
-        </div>
+        </Grid>
       )}
-      <div style={{ flexGrow: "1" }}>
+      <Grid item xs={3} >
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
           <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
             اضافه خدمه جديده
@@ -291,7 +350,6 @@ function AddService() {
               variant="filled"
               helperText={errors.price?.message}
             />
-          
 
             <Controller
               control={control}
@@ -338,8 +396,44 @@ function AddService() {
             </LoadingButton>
           </Stack>
         </form>
-      </div>
-    </Stack>
+      </Grid>
+    {selectedService &&   <Card sx={{p:1}}>
+        <h5>مصروفات الخدمه</h5>
+        <form onSubmit={handleSubmit2(addServiceCostHandler)}>
+          <Stack direction={"column"} gap={2}>
+            <TextField variant="standard"   label='وصف المصروف' {...register2('name')}/>
+            <TextField  variant="standard" label='النسبه' {...register2('percentage')}/>
+            <TextField variant="standard"  label='مبلغ' {...register2('fixed')}/>
+            <LoadingButton type="submit">حفظ</LoadingButton>
+          </Stack>
+        </form>
+      </Card>}
+      <Grid>
+      {selectedService && <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell> الوصف</TableCell>
+              <TableCell>النسبة</TableCell>
+              <TableCell>المبلغ</TableCell>
+              <TableCell>حذف</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {selectedService?.service_costs.map((cost) => (
+              <TableRow key={cost.id}>
+                <TableCell>{cost.name}</TableCell>
+                <TableCell>{cost.percentage}%</TableCell>
+                <TableCell>{cost.fixed}</TableCell>
+                <TableCell>
+                  <Button onClick={() => removeServiceCost(cost.id)}>حذف</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
+          </TableBody>
+        </Table>}
+      </Grid>
+    </Grid>
   );
 }
 

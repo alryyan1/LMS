@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 import DiscountSelect from "./DiscountSelect";
-import {  useState } from "react";
+import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { url } from "../constants";
 import { LoadingButton } from "@mui/lab";
@@ -18,6 +18,7 @@ import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { useStateContext } from "../../appContext";
+import printJS from "print-js";
 function RequestedTests({ setPatients }) {
   console.log("requested tests rendered");
   const {
@@ -26,9 +27,9 @@ function RequestedTests({ setPatients }) {
     actviePatient,
     tests,
     companies,
-
+    userSettings,
   } = useOutletContext();
-  const {user} = useStateContext()
+  const { user } = useStateContext();
   console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
   console.log(actviePatient, "active patient", setActivePatient);
@@ -39,19 +40,49 @@ function RequestedTests({ setPatients }) {
       const discount = Number((test.discount_per * test.price) / 100);
       return accum + (test.price - discount);
     }, 0);
+    const result = confirm(`هل توكد استلامك مبلغ قدره  ${totalPaid}`);
+    if (!result) {
+      return;
+    }
     setLoading(true);
     axiosClient
       .patch(`labRequest/payment/${actviePatient.id}`, { paid: totalPaid })
       .then(({ data: data }) => {
-        console.log(data,'patient paid data');
+        console.log(data, "patient paid data");
         if (data.status) {
           setActivePatient(data.data);
+
+          const form = new URLSearchParams();
+          axiosClient
+            .get(`printLab?pid=${actviePatient.id}&base64=1`)
+            .then(({ data }) => {
+              form.append("data", data);
+              form.append("node_direct", userSettings.node_direct);
+              console.log(data, "daa");
+              if (userSettings?.web_dialog) {
+                printJS({
+                  printable: data.slice(data.indexOf("JVB")),
+                  base64: true,
+                  type: "pdf",
+                });
+              }
+              if (userSettings?.node_dialog) {
+                fetch("http://127.0.0.1:4000/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+
+                  body: form,
+                }).then(() => {});
+              }
+            });
 
           setLoading(false);
           setPatients((prevPatients) => {
             return prevPatients.map((p) => {
               if (p.id === actviePatient.id) {
-                return {...data.data,active:true}
+                return { ...data.data, active: true };
               } else {
                 return p;
               }
@@ -63,17 +94,19 @@ function RequestedTests({ setPatients }) {
             open: true,
           }));
         }
-      }).catch(({response:{data}})=>{
-        setDialog((prev)=>{
-
-          return {...prev, open:true, message:data.message,color:'error'}
-        })
-      }).finally(()=>setLoading(false));
+      })
+      .catch(({ response: { data } }) => {
+        setDialog((prev) => {
+          return { ...prev, open: true, message: data.message, color: "error" };
+        });
+      })
+      .finally(() => setLoading(false));
   };
   const cancelPayHandler = () => {
     setLoading(true);
-    axiosClient.patch(`${url}labRequest/cancelPayment/${actviePatient.id}`)
-      .then(({data}) => {
+    axiosClient
+      .patch(`${url}labRequest/cancelPayment/${actviePatient.id}`)
+      .then(({ data }) => {
         console.log(data, "data from cancel");
         if (data.status) {
           setLoading(false);
@@ -84,8 +117,7 @@ function RequestedTests({ setPatients }) {
                   ...p,
                   is_lab_paid: false,
                   lab_paid: 0,
-           active:true
-
+                  active: true,
                 };
               } else {
                 return p;
@@ -101,12 +133,13 @@ function RequestedTests({ setPatients }) {
             return { ...p, is_lab_paid: false, lab_paid: 0 };
           });
         }
-      }).catch(({response:{data}})=>{
-       
-        setDialog((prev)=>{
-          return {...prev, open:true, message:data.message,color:'error'}
-        })
-      }).finally(()=>setLoading(false));
+      })
+      .catch(({ response: { data } }) => {
+        setDialog((prev) => {
+          return { ...prev, open: true, message: data.message, color: "error" };
+        });
+      })
+      .finally(() => setLoading(false));
   };
   // useEffect(() => {
   //   axiosClient.get(`labRequest/${actviePatient.id}`)
@@ -120,143 +153,163 @@ function RequestedTests({ setPatients }) {
 
   const deleteTest = (id) => {
     console.log(id);
-    axiosClient.delete(`labRequest/${id}`)
-      .then(({data}) => {
-
-        console.log(data,'data')
-        if (data.status) {
-          setActivePatient(data.data);
-          setPatients((prev) => {
-            return prev.map((p) => {
-              if (p.id === actviePatient.id) {
-                return {...data.data,active:true}
-              } else {
-                return p;
-              }
-            });
+    axiosClient.delete(`labRequest/${id}`).then(({ data }) => {
+      console.log(data, "data");
+      if (data.status) {
+        setActivePatient(data.data);
+        setPatients((prev) => {
+          return prev.map((p) => {
+            if (p.id === actviePatient.id) {
+              return { ...data.data, active: true };
+            } else {
+              return p;
+            }
           });
-        }
-      });
+        });
+      }
+    });
   };
   let total_endurance = 0;
   return (
     <>
-      <Box sx={{p:1}}  className="requested-tests">
-        <div   className="requested-table">
+      <Box sx={{ p: 1 }} className="requested-tests">
+        <div className="requested-table">
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell> Name</TableCell>
                   <TableCell align="right">Price</TableCell>
-                  {actviePatient.company ? "": <TableCell align="right">Discount</TableCell>}
-                  {actviePatient.company ? "":   <TableCell align="right">Bankak</TableCell>}
-                  {actviePatient.company ?  <TableCell align="right">Endurance</TableCell>: "" }
+                  {actviePatient.company ? (
+                    ""
+                  ) : (
+                    <TableCell align="right">Discount</TableCell>
+                  )}
+                  {actviePatient.company ? (
+                    ""
+                  ) : (
+                    <TableCell align="right">Bank</TableCell>
+                  )}
+                  {actviePatient.company ? (
+                    <TableCell align="right">Endurance</TableCell>
+                  ) : (
+                    ""
+                  )}
                   <TableCell align="right">Action</TableCell>
                 </TableRow>
               </TableHead>
-                <TableBody>
-                  {actviePatient.labrequests.map((test) => {
-                    console.log(test,'test')
-                        let price  
-                        let company
-                        let endurance
-                        if(actviePatient.company_id != null) {
-                           company = companies.find((c)=>c.id == actviePatient.company_id)
-                           console.log('founded company',company)
-                           const founedTest  = company.tests.find((t)=>t.id == test.main_test_id)
-                           console.log(test,'patient test')
-                           console.log(founedTest,'founed test')
-                           price  = founedTest.pivot.price
-                           endurance =   (price * company.lab_endurance) /100
-                           total_endurance+= endurance;
-                          console.log(company,'patient company')
-                        }else{
-                          price  = test.main_test.price
-                        }
-                    console.log(
-                      "test.pivot.is_bankak",
-                      typeof test.is_bankak
+              <TableBody>
+                {actviePatient.labrequests.map((test) => {
+                  console.log(test, "test");
+                  let price;
+                  let company;
+                  let endurance;
+                  if (actviePatient.company_id != null) {
+                    company = companies.find(
+                      (c) => c.id == actviePatient.company_id
                     );
-                    console.log(
-                      "test.pivot.is_bankak = ",
-                      test.is_bankak
+                    console.log("founded company", company);
+                    const founedTest = company.tests.find(
+                      (t) => t.id == test.main_test_id
                     );
+                    console.log(test, "patient test");
+                    console.log(founedTest, "founed test");
+                    price = founedTest.pivot.price;
+                    endurance = (price * company.lab_endurance) / 100;
+                    total_endurance += endurance;
+                    console.log(company, "patient company");
+                  } else {
+                    price = test.main_test.price;
+                  }
+                  console.log("test.pivot.is_bankak", typeof test.is_bankak);
+                  console.log("test.pivot.is_bankak = ", test.is_bankak);
 
-                    return (
-                        <TableRow
-                          sx={{
-                            borderBottom: "1px solid rgba(224, 224, 224, 1)",
-                          }}
-                          key={test.id}
+                  return (
+                    <TableRow
+                      sx={{
+                        borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                      }}
+                      key={test.id}
+                    >
+                      <TableCell sx={{ border: "none" }} scope="row">
+                        {test.main_test.main_test_name}
+                      </TableCell>
+
+                      <TableCell sx={{ border: "none" }} align="right">
+                        {price}
+                      </TableCell>
+                      {actviePatient.company ? (
+                        ""
+                      ) : (
+                        <TableCell sx={{ border: "none" }} align="right">
+                          <DiscountSelect
+                            setDialog={setDialog}
+                            setPatients={setPatients}
+                            id={test.id}
+                            disc={test.discount_per}
+                            actviePatient={actviePatient}
+                          />
+                        </TableCell>
+                      )}
+                      {actviePatient.company ? (
+                        ""
+                      ) : (
+                        <TableCell sx={{ border: "none" }} align="right">
+                          <MyCheckBox
+                            setPatients={setPatients}
+                            key={actviePatient.id}
+                            isbankak={test.is_bankak == 1}
+                            id={test.id}
+                          ></MyCheckBox>
+                        </TableCell>
+                      )}
+                      {actviePatient.company ? (
+                        <TableCell align="right">{endurance}</TableCell>
+                      ) : (
+                        ""
+                      )}
+
+                      <TableCell sx={{ border: "none" }} align="right">
+                        <IconButton
+                          disabled={actviePatient?.is_lab_paid == 1}
+                          aria-label="delete"
+                          onClick={() => deleteTest(test.id)}
                         >
-                          <TableCell sx={{ border: "none" }} scope="row">
-                            {test.main_test.main_test_name}
-                          </TableCell>
-
-                          <TableCell sx={{ border: "none" }} align="right">
-                            {price}
-                          </TableCell>
-                          {actviePatient.company ? "":  <TableCell sx={{ border: "none" }} align="right">
-                            <DiscountSelect
-                              setDialog={setDialog}
-                              setPatients={setPatients}
-                              id={test.id}
-                              disc={test.discount_per}
-                              actviePatient={actviePatient}
-                            />
-                          </TableCell>}
-                          {actviePatient.company ? "":   <TableCell sx={{ border: "none" }} align="right">
-                            <MyCheckBox
-                              setPatients={setPatients}
-                              key={actviePatient.id}
-                              isbankak={test.is_bankak == 1}
-                              id={test.id}
-                            ></MyCheckBox>
-                          </TableCell>}
-                  {actviePatient.company ?  <TableCell align="right">{endurance}</TableCell>: "" }
-
-                          <TableCell sx={{ border: "none" }} align="right">
-                            <IconButton
-                              disabled={actviePatient?.is_lab_paid == 1}
-                              aria-label="delete"
-                              onClick={() => deleteTest(test.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                    );
-                  })}
-                </TableBody>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
             </Table>
           </TableContainer>
         </div>
-        
-        <div style={{marginTop:'10px'}} className="total-price">
-              <div className="sub-price">
-                <div className="title">Total</div>
-                <div>
-                  {actviePatient.company_id ==null  ? actviePatient.labrequests.reduce((accum, test) => {
+
+        <div style={{ marginTop: "10px" }} className="total-price">
+          <div className="sub-price">
+            <div className="title">Total</div>
+            <div>
+              {actviePatient.company_id == null
+                ? actviePatient.labrequests.reduce((accum, test) => {
                     const discount = Number(
                       (test.discount_per * test.main_test.price) / 100
                     );
                     return accum + (test.main_test.price - discount);
-                  }, 0):total_endurance}
-                </div>
-              </div>
-              <div className="sub-price">
-                <div className="title">Paid</div>
-                <div>
-                  {actviePatient.is_lab_paid ? actviePatient.paid : 0}
-                </div>
-              </div>
+                  }, 0)
+                : total_endurance}
             </div>
+          </div>
+          <div className="sub-price">
+            <div className="title">Paid</div>
+            <div>{actviePatient.is_lab_paid ? actviePatient.paid : 0}</div>
+          </div>
+        </div>
         <div className="requested-total">
           <div className="money-info">
             {actviePatient.is_lab_paid ? (
               <LoadingButton
-                disabled={actviePatient.result_print_date}
+                // disabled={actviePatient.result_print_date}
                 loading={loading}
                 color="error"
                 onClick={cancelPayHandler}
@@ -277,11 +330,9 @@ function RequestedTests({ setPatients }) {
                 دفع الرسوم
               </LoadingButton>
             )}
-          
           </div>
         </div>
       </Box>
-     
     </>
   );
 }

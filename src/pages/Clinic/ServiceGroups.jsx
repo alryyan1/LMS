@@ -57,7 +57,7 @@ const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServ
                       borderBottom:"4px solid blue",
                       fontWeight:"bolder",
                     }:null}
-                    className={ founedService ? 'active' : ''}
+                    className={ founedService ? 'active testGroupItem' : ' testGroupItem'}
                       onClick={()=>serviceAddHandler(service)}
                       sx={{cursor:"pointer", p: 1, minWidth: "80px"}}
                  

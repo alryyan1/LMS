@@ -16,6 +16,14 @@
     
     
 }
+.testGroupItem{
+    width: 123px;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    padding: 10px;
+    
+}
 .add-tests {
     height: 65vh;
     overflow: auto;
@@ -30,8 +38,8 @@
 .money-info{
     margin-bottom: 10px;
     display: flex;
-    flex-direction: column;
-    height:7rem ;
+    /* flex-direction: column; */
+    /* height:7rem ; */
     /* background-color: #3f51b5; */
     justify-content: space-between;
     padding: 1rem;
@@ -46,6 +54,7 @@
 .total-price {
     display: flex;
     justify-content: space-around;
+
     /* padding: 10px; */
     border-radius: 5px;
     /* box-shadow: 2px 5px 6px lightblue; */

@@ -51,15 +51,19 @@ console.log(packageData,'packages in groups')
              const founded =  selectedTests.find((ts)=>ts.id == t.id)
 
               return <Card
+              variant="elevation"
+              square
                 onClick={()=>handleTestAdd(p,t)}
-                sx={{ p: 1, minWidth: "80px" ,cursor:'pointer' }}
+                className="testGroupItem"
+                
+                // sx={{ p: 1, minWidth: "80px" ,cursor:'pointer' }}
                 style={  founded ? {
                   borderBottom:"4px solid blue",
                   fontWeight:"bolder",
                 }:null}
                 key={t.id}
               >
-                {t.main_test_name}
+              <span title= {t.main_test_name}> {t.main_test_name}</span> 
               </Card>}
             )}
           </TestGroupChildren>

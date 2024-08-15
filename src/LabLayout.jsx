@@ -39,6 +39,7 @@ function LabLayout() {
   const [updateTests, setUpdateTests] = useState(0);
   const [companies, setCompanies] = useState([]);
   const [selectedTests, setSelectedTests] = useState([]);
+  const [userSettings, setUserSettings] = useState(null);
 
   const [update, setUpdate] = useState(0);
 
@@ -46,7 +47,12 @@ function LabLayout() {
   useEffect(() => {
 
     Promise.all([
-
+  
+        axiosClient.get("userSettings").then(({ data }) => {
+          console.log(data, "user settings from axios");
+          setUserSettings(data);
+        }),
+      
       axiosClient.get("company/all").then(({ data }) => {
         console.log(data, "comapnies");
         setCompanies(data);
@@ -166,7 +172,8 @@ useEffect(()=>{
             foundedPatients,
             setFoundedPatients,
             updateTests,setUpdateTests,
-            openEdit, setOpenEdit
+            openEdit, setOpenEdit,
+            userSettings, setUserSettings
           }}
         />}</CacheProvider>
 

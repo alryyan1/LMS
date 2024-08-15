@@ -63,6 +63,13 @@ import ItemDeposit from "./pages/pharmacy/ItemDeposit";
 import Audit from "./pages/Audit";
 import Contracts from "./pages/Contracts";
 import Doctor from "./pages/doctor/doctor";
+import MoneyIncome from "./pages/Finance/MoneyIncome";
+import MoneyExpenses from "./pages/Finance/MoneyExpenses";
+import FinanceNav from "./pages/Finance/FinanceNav";
+import FinanceSection from "./pages/Finance/FinanceSection";
+import FinanceAccount from "./pages/Finance/FinanceAccount";
+import AccountEntries from "./pages/Finance/AccountEntries";
+import Ledger from "./pages/Finance/Ledger";
 
 export const router = createBrowserRouter([
   {
@@ -149,6 +156,19 @@ export const router = createBrowserRouter([
         path:"/contracts",
 
       },
+      
+      {
+
+        element : <ProtectedRoute><MoneyIncome/></ProtectedRoute> ,
+        path:"/moneyIncome",
+
+      },
+      {
+
+        element : <ProtectedRoute><MoneyExpenses/></ProtectedRoute> ,
+        path:"/MoneyExpenses",
+
+      },
       {
 
         element :<ProtectedRoute>
@@ -156,6 +176,40 @@ export const router = createBrowserRouter([
         </ProtectedRoute>,
         path:"/audit",
 
+      },
+      {
+        path: "/finance",
+        element: (
+          <ProtectedRoute>
+            <FinanceNav />
+           </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: "account",
+            element: <FinanceAccount />,
+          },
+         
+          {
+            path: "entries",
+            element: <AccountEntries />,
+          },
+          {
+            path: "ledger",
+            element: <Ledger />,
+          },
+          
+          {
+            path: "section",
+            element: <FinanceSection />,
+          },
+
+       
+        
+      
+        
+        
+        ],
       },
       {
         path: "/inventory",

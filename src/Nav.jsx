@@ -210,12 +210,12 @@ const Nav = () => {
           direction={"row-reverse"}
           gap={3}
         >
-          <NavLink
+          {user  == null &&  <NavLink
             style={{ textDecoration: "none", color: "white" }}
             to={"login"}
           >
             {t("login")}
-          </NavLink>
+          </NavLink>}
           {user?.routes?.map((r) => {
             if (r.route.id == 4) {
               return (
