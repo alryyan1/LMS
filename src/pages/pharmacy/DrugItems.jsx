@@ -35,7 +35,31 @@ function DrugItems() {
   const [futureDates,setFutureDates] = useState([]);
   const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
 
-
+  const [file, setFile] = useState(null);
+  const [src, setSrc] = useState(null);
+  const handleFileChange = (e,id) => {
+    encodeImageFileAsURL(e.target.files[0],id);
+    const url = URL.createObjectURL(e.target.files[0]);
+    console.log(url, "path");
+    setSrc(url);
+    console.log("upload", e.target.files[0]);
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+  function encodeImageFileAsURL(file,id) {
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      console.log("RESULT", reader.result);
+      saveToDb(id, reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+  const saveToDb = (id, data) => {
+    axiosClient.patch(`items/${id}`,{ colName:'images' , val : data}).then(({ data }) => {
+      console.log(data);
+    });
+  };
   useEffect(() => {
     //fetch all Items
 
@@ -118,24 +142,7 @@ function DrugItems() {
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
-        <Stack alignItems={'center'} gap={2} direction={'row'}>
-          {futureDates.map((item)=>{
-            return(
-              <Badge
-              badgeContent={item.items.length}
-                key={item.monthname}
-                color="error"
-              >
-                <Button sx={{
-                  backgroundColor :(theme)=>item.monthname == selectedFutureDate?.monthname ? theme.palette.warning.light : ''
-                }} onClick={()=>{
-                  setSelectedFutureDate(item)
-                  setItems(item.items)
-                }} size="small" variant="contained">{item.monthname}</Button>
-              </Badge>
-            )
-          })}
-        </Stack>
+        
         <TextField
         type="search"
           value={search}
@@ -156,20 +163,19 @@ function DrugItems() {
             <TableRow>
               <TableCell> الكود</TableCell>
               {/* <TableCell>الاسم العلمي</TableCell> */}
-              <TableCell>الاسم التجاري</TableCell>
+              <TableCell>الاسم </TableCell>
               <TableCell>سعر الشراء</TableCell>
               <TableCell>سعر البيع </TableCell>
-              <TableCell> الضريبه </TableCell>
-              <TableCell> عدد الشرائط</TableCell>
-              <TableCell> الصلاحيه</TableCell>
               <TableCell> المجموعه</TableCell>
-              <TableCell> الشكل</TableCell>
-              <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
+              <TableCell> رفع</TableCell>
+              <TableCell> الصوره</TableCell>
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
           <tbody>
             {items.map((drug) => {
+               let image1 = new Image(100,100)
+               image1.src = drug?.images;
               console.log(drug, "drug ");
               return (
                 <TableRow
@@ -212,21 +218,7 @@ function DrugItems() {
                   >
                     {drug.sell_price}
                   </MyTableCell>
-                  <MyTableCell
-                    sx={{ width: "70px" }}
-                    colName={"tax"}
-                    item={drug}
-                    table="items"
-                    isNum={true}
-                  >
-                    {drug.tax}
-                  </MyTableCell>
-                  <MyTableCell colName={"strips"} item={drug} table="items">
-                    {drug.strips}
-                  </MyTableCell>
-                  <TableCell>
-                    <MyDateField val={drug.expire} item={drug} />
-                  </TableCell>
+          
                   <MyAutoCompeleteTableCell
                     sections={drugCategory}
                     val={drug.category}
@@ -236,18 +228,10 @@ function DrugItems() {
                   >
                     {drug.category?.name}
                   </MyAutoCompeleteTableCell>
-                  <MyAutoCompeleteTableCell
-                    sections={pharmacyTypes}
-                    colName={"pharmacy_type_id"}
-                    val={drug.type}
-                    item={drug}
-                    table="items"
-                  >
-                    {drug.type?.name}
-                  </MyAutoCompeleteTableCell>
-                  <MyTableCell  show colName={"barcode"} item={drug} table="items">
-                    {drug.barcode}
-                  </MyTableCell>
+                  <TableCell><input onChange={(e)=>{
+          handleFileChange(e,drug.id)
+        }} type="file" name="" id="" /></TableCell>
+        <TableCell> <img height={100} width={100} src={image1.src} alt="" /> </TableCell>
                   <TableCell>
                     {!dayjs(drug.expire).isAfter(dayjs()) ? (
                       <Badge

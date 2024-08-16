@@ -117,13 +117,10 @@ function AddDrug() {
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>No </TableCell>
-                  <TableCell>Scientific Name</TableCell>
-                  <TableCell>Market Name</TableCell>
-                  <TableCell>Cost price</TableCell>
-                  <TableCell>Sell Price</TableCell>
-                  <TableCell> Strips per Box </TableCell>
-                  <TableCell> Expire</TableCell>
+                  <TableCell>الكود </TableCell>
+                  <TableCell>الاسم </TableCell>
+                  <TableCell>سعر الشراء </TableCell>
+                  <TableCell> سعر البيع</TableCell>
                 </TableRow>
               </thead>
               <tbody>
@@ -132,13 +129,7 @@ function AddDrug() {
                   return (
                     <TableRow key={drug.id}>
                        <TableCell>{drug.id}</TableCell>
-                      <MyTableCell
-                        colName={"sc_name"}
-                        item={drug}
-                        table="items"
-                      >
-                        {drug.sc_name}
-                      </MyTableCell>
+                    
                       <MyTableCell
                         colName={"market_name"}
                         item={drug}
@@ -164,12 +155,8 @@ function AddDrug() {
                       >
                         {drug.sell_price}
                       </MyTableCell>
-                      <MyTableCell colName={"strips"} item={drug} table="items">
-                        {drug.strips}
-                      </MyTableCell>
-                      <TableCell>
-                        <MyDateField val={drug.expire} item={drug} />
-                      </TableCell>
+                  
+                      
                     </TableRow>
                   );
                 })}

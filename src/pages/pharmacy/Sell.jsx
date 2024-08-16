@@ -46,6 +46,7 @@ import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
 import SaleDiscountSelect from "../../components/SaleDiscountSelect";
+import ItemGroups from "./ItemGroups";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -73,6 +74,7 @@ function SellDrug() {
     setShowDialogMoney,
     openClientDialog,
     setOpenClientDialog,
+    showPanel,setShowPanel
   } = useOutletContext();
   console.log(shift, "shift");
   console.log(activeSell, "active sell");
@@ -242,13 +244,19 @@ function SellDrug() {
                 width={"100%"}
                 height={400}
               /> : 
+
+              <>
+                {  activeSell && <Button onClick={()=>{
+            setShowPanel((prev)=>{
+              return!prev;
+            })
+          }}>Panel</Button>}
+       {  showPanel && <ItemGroups/>}
               <Table className="white" key={updater} size="small">
                 <thead>
                   <TableRow>
                     <TableCell>Item</TableCell>
-                    <TableCell>Disc</TableCell>
                     <TableCell>Price</TableCell>
-                    <TableCell>Strips</TableCell>
                     <TableCell>Box</TableCell>
                     <TableCell>Subtotal</TableCell>
                     <TableCell width={"5%"}>action</TableCell>
@@ -258,27 +266,11 @@ function SellDrug() {
                   {activeSell?.deducted_items?.map((deductedItem) => (
                     <TableRow key={deductedItem.id}>
                       <TableCell>{deductedItem.item?.market_name}</TableCell>
-                      <TableCell><SaleDiscountSelect disabled={activeSell?.complete == 1}  disc={deductedItem.discount} setSelectedSale={setActiveSell}  id={deductedItem.id} /></TableCell>
-                      <TableCell > {Number(deductedItem.price).toFixed(3)}</TableCell>
+                      <TableCell > {Number(deductedItem.price).toFixed(1)}</TableCell>
 
+                     
                       {activeSell.complete ? (
-                        <TableCell> {deductedItem.strips}</TableCell>
-                      ) : (
-                        <MyTableCell
-                          stateUpdater={setUpdater}
-                          setData={setActiveSell}
-                          sx={{ width: "70px" }}
-                          type={"number"}
-                          item={deductedItem}
-                          table="deductedItem"
-                          colName={"strips"}
-                          setShift={setShift}
-                        >
-                          {deductedItem.strips}
-                        </MyTableCell>
-                      )}
-                      {activeSell.complete ? (
-                        <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
+                        <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                       ) : (
                         <MyTableCell
                           stateUpdater={setUpdater}
@@ -290,16 +282,11 @@ function SellDrug() {
                           table="deductedItem"
                           colName={"box"}
                         >
-                          {toFixed(deductedItem.box, 3)}
+                          {toFixed(deductedItem.box, 1)}
                         </MyTableCell>
                       )}
                       <TableCell>
-                        {toFixed(
-                          (deductedItem.price /
-                            deductedItem.item?.strips) *
-                            deductedItem.strips,
-                          3
-                        )}
+                       {deductedItem.box * deductedItem.price}
                       </TableCell>
                       <TableCell>
                         <LoadingButton
@@ -323,7 +310,9 @@ function SellDrug() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>}
+              </Table>
+              </>
+              }
             </>
           )}
         </Card>
@@ -365,7 +354,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                          {Number(activeSell?.total_price_unpaid).toFixed(3)}
+                          {Number(activeSell?.total_price_unpaid).toFixed(1)}
                         </Typography>
                       )}
                     </Stack>
@@ -438,7 +427,7 @@ function SellDrug() {
                       <Typography variant="h3">
          
                           
-                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(3)}
+                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(1)}
                               
                             
                           

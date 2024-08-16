@@ -88,24 +88,23 @@ function AddDrugForm({setUpdate}) {
     // }, [isSubmitted, page]);
     console.log(isSubmitting);
     const submitHandler = async (formData) => {
-      const dayJsObj = formData.expire;
   
       console.log(formData, "formdata");
       setLoading(true);
       axiosClient
         .post(`drugs`, {
-          expire: `${dayJsObj.format('YYYY-MM-DD')}}`,
+          expire:  '2024-09-01',
           cost_price: formData.cost_price,
-          require_amount: formData.require_amount,
+          require_amount: formData?.require_amount ?? null,
           sell_price: formData.sell_price,
-          pharmacy_type_id: formData.pharmacyType?.id,
+          pharmacy_type_id: formData.pharmacyType?.id ?? null,
           drug_category_id: formData.drugCategory?.id,
-          barcode: formData.barcode,
-          strips: formData.strips,
-          sc_name: formData.sc_name,
+          barcode: formData?.barcode ?? null,
+          strips: formData?.strips ?? 1,
+          sc_name:  '1',
           market_name: formData.market_name,
-          batch: formData.batch,
-          deposit:formData.deposit?.id
+          batch: formData?.batch ?? null,
+          deposit:formData?.deposit?.id ?? null
         })
         .then(({ data }) => {
           console.log(data, "addded drug");
@@ -170,26 +169,12 @@ function AddDrugForm({setUpdate}) {
       textAlign={"center"}
       variant="h3"
     >
-      Item Definition
+      تعريف منتج
     </Typography>
     <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
       <Stack direction={"column"} spacing={3}>
         <Stack gap={2} direction={"row"}>
-          <TextField
-      
-            size="small"
-            fullWidth
-            error={errors.sc_name}
-            {...register("sc_name", {
-              required: {
-                value: true,
-                message: " Sc name is required",
-              },
-            })}
-            label="الاسم العلمي"
-            variant="standard"
-            helperText={errors.sc_name && errors.sc_name.message}
-          />
+        
           <TextField
             size="small"
             fullWidth
@@ -198,16 +183,15 @@ function AddDrugForm({setUpdate}) {
             {...register("market_name", {
               required: {
                 value: true,
-                message: "market name is required",
+                message: "الحقل مطلوب",
               },
             })}
             defaultValue={market}
-            label="الاسم التجاري"
+            label="اسم المنتج "
             variant="standard"
             helperText={errors.market_name && errors.market_name.message}
           />
         </Stack>
-        <Stack gap={2} direction={"row"}>
           <TextField
             size="small"
             type="number"
@@ -247,166 +231,17 @@ function AddDrugForm({setUpdate}) {
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
-        </Stack>
-        <Stack gap={2} direction={"row"}>
-          <TextField
-          value={stripPrice}
-            size="small"
-            fullWidth
-            disabled={true}
-    
-            label="سعر الشريط"
-            variant="standard"
-          />
-          <TextField
-            size="small"
-            type="number"
-         
-            error={errors.strips && errors.strips.message}
-            fullWidth
-            {...register("strips", {
-              required: {
-                value: true,
-                message: "Strips count is required",
-              },
-              min: {
-                value: 1,
-                message: "Strips count must be at least 1",
-              },
-            })}
-            label="عدد الشرائط"
-            variant="standard"
-            helperText={errors.strips && errors.strips.message}
-          />
-        </Stack>
-        <Stack gap={2} direction={"row"}>
-          <PharmacyTypeAutocomplete
-            errors={errors}
-            Controller={Controller}
-            control={control}
-            setValue={setValue}
-          />
+       
+        
           <DrugCategoryAutocomplete
             errors={errors}
             Controller={Controller}
             control={control}
             setValue={setValue}
           />
-        </Stack>
-        <Stack gap={2} direction={"row"}>
-          <TextField
-            size="small"
-            type="number"
-            error={errors.require_amount !=null }
-            helperText={
-              errors.require_amount && errors.require_amount.message
-            }
-            
-            fullWidth
-            {...register("require_amount",{
-              required: {
-                value: true,
-                message: "Require amount is required",
-              },
-            })}
-            label="الكميه (الفاتوره)"
-            variant="outlined"
-          />
-          <TextField
-            size="small"
-            fullWidth
-            value={barcode}
-            
-            helperText={errors.barcode && errors.barcode.message}
-            error={errors.barcode}
-            
-            onDoubleClick={()=>{
-             const serial =  generator.generate(10)
-             setBarcode(serial)
-             setValue('barcode',serial)
-            }}
-          
-            {...register("barcode", {
-              required: {
-                value: true,
-                message: "Barcode is required",
-              },
-            })}
-            onChange={(e)=>{
-              setBarcode(e.target.value)
-              setValue('barcode',e.target.value)
-
-            }}
-
-            label="الباركود"
-            variant="outlined"
-          />
-        </Stack>
-        <Stack gap={2} direction={"row"}>
-          <TextField
-            size="small"
-          
-         
-            fullWidth
-            {...register("batch")}
-            label="باتش"
-            variant="outlined"
-          />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Controller
-              defaultValue={dayjs(new Date())}
-              control={control}
-              name="expire"
-              render={({ field }) => (
-                <DateField
-                format="YYYY-MM-DD"
-                size="small"
-                fullWidth
-                  {...field}
-                  value={field.value}
-                  onChange={(val) => field.onChange(val)}
-                  sx={{ mb: 1 }}
-                  label="تاريخ الانتهاء"
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Stack>
-        <Stack direction={"column"}>
-        {deposits.length > 0 && <Controller
-            name="deposit"
-          
-            control={control}
-            render={({ field }) => {
-              return (
-                <Autocomplete
-                    
-                  fullWidth
-                  isOptionEqualToValue={(option, val) => option.id === val.id}
-                  sx={{ mb: 1 }}
-                  {...field}
-                  // value={deposits[0]}
-                  options={deposits}
-                  getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number}`}
-                  onChange={(e, data) => field.onChange(data)}
-                  renderInput={(params) => {
-                    return (
-                      <TextField
-                        error={errors.supplier != null}
-                        helperText={
-                          errors.supplier && errors.supplier.message
-                        }
-                        label={'فاتوره' }
-                        {...params}
-                      />
-                    );
-                  }}
-                ></Autocomplete>
-              );
-            }}
-          />
-}
-        </Stack>
+    
+      
+       
 
         <LoadingButton
           fullWidth

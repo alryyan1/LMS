@@ -10,6 +10,7 @@ function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
   const [activeSell, setActiveSell] = useState();
   const [suppliers, setSuppliers] = useState([]);
+  const [showPanel, setShowPanel] = useState();
 
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
@@ -90,7 +91,8 @@ function PharmacyLayout() {
             showDialogMoney, setShowDialogMoney,
             opendDrugDialog,setOpendDrugDialog,
             suppliers, setSuppliers,
-            openClientDialog,setOpenClientDialog
+            openClientDialog,setOpenClientDialog,
+            showPanel, setShowPanel
           
           }}
         />
