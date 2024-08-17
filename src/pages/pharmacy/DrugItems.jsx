@@ -164,7 +164,7 @@ function DrugItems() {
               <TableCell> الكود</TableCell>
               {/* <TableCell>الاسم العلمي</TableCell> */}
               <TableCell>الاسم </TableCell>
-              <TableCell>سعر الشراء</TableCell>
+              <TableCell>سعر التكلفه</TableCell>
               <TableCell>سعر البيع </TableCell>
               <TableCell> المجموعه</TableCell>
               <TableCell> رفع</TableCell>

@@ -11,7 +11,7 @@ function PharmacyLayout() {
   const [activeSell, setActiveSell] = useState();
   const [suppliers, setSuppliers] = useState([]);
   const [showPanel, setShowPanel] = useState();
-
+  const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
     title: "",
@@ -92,7 +92,8 @@ function PharmacyLayout() {
             opendDrugDialog,setOpendDrugDialog,
             suppliers, setSuppliers,
             openClientDialog,setOpenClientDialog,
-            showPanel, setShowPanel
+            showPanel, setShowPanel,
+            selectedDrugs, setSelectedDrugs
           
           }}
         />

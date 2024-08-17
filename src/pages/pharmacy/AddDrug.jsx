@@ -119,7 +119,7 @@ function AddDrug() {
                 <TableRow>
                   <TableCell>الكود </TableCell>
                   <TableCell>الاسم </TableCell>
-                  <TableCell>سعر الشراء </TableCell>
+                  <TableCell>سعر التكلفه </TableCell>
                   <TableCell> سعر البيع</TableCell>
                 </TableRow>
               </thead>

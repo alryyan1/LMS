@@ -100,7 +100,19 @@ function SellDrug() {
     showTestPanel: false,
     patientDetails: "0.7fr",
   });
+  useEffect(()=>{
+
+    // alert(activeSell?.deducted_items.length)
+    if (activeSell?.deducted_items.length == 0) {
+      // alert(activeSell?.deducted_items.length)
+      setShowPanel(true)
+    }else{
+      setShowPanel(false)
+
+    }
+  },[activeSell?.id])
   useEffect(() => {
+   
     //fetch all clients
     axiosClient(`client/all`).then(({ data }) => {
       setClients(data);
@@ -140,7 +152,7 @@ function SellDrug() {
           userSelect: "none",
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "75vh",
+          height: "88vh",
           display: "grid",
           gridTemplateColumns: `0.1fr  1fr  2fr 1fr 0.1fr      `,
         }}
@@ -167,7 +179,7 @@ function SellDrug() {
             </Item>
           </Stack>
         </div>
-        <Card sx={{p:1}}>
+        <Card sx={{p:1,height:'87vh'}}>
           {activeSell && <AddDrugAutocomplete setLoading={setLoading} loading={loading} setUpdater={setUpdater} />}
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
@@ -252,6 +264,8 @@ function SellDrug() {
             })
           }}>Panel</Button>}
        {  showPanel && <ItemGroups/>}
+       {activeSell && activeSell?.deducted_items.length  > 0 && 
+
               <Table className="white" key={updater} size="small">
                 <thead>
                   <TableRow>
@@ -310,7 +324,7 @@ function SellDrug() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table>}
               </>
               }
             </>

@@ -47,7 +47,6 @@ export default function CardItem({myItem,handleTestAdd,active}) {
                 {myItem.market_name}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                Full resolution 1920x1080 • JPEG
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 ID: {myItem.id}
@@ -61,7 +60,7 @@ export default function CardItem({myItem,handleTestAdd,active}) {
           </Grid>
           <Grid item>
             <Typography variant="subtitle1" component="div">
-              OMR {myItem.sell_price}
+              SDG {myItem.sell_price}
             </Typography>
           </Grid>
         </Grid>

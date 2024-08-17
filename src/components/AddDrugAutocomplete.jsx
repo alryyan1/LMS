@@ -7,10 +7,10 @@ import axiosClient from "../../axios-client";
 import dayjs from "dayjs";
 
 function AddDrugAutocomplete({setUpdater}) {
-  const { items,setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
+  const { items,setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog,            selectedDrugs, setSelectedDrugs,setShowPanel
+  } = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
-  const [selectedDrugs, setSelectedDrugs] = useState([]);
   console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
@@ -34,6 +34,7 @@ function AddDrugAutocomplete({setUpdater}) {
         setShift(data.shift)
         setUpdater((prev)=>prev+1)
         setSelectedDrugs([])
+        setShowPanel(false)
     }).finally(()=>{
       setLoading(false)
       setShiftIsLoading(false)
