@@ -50,7 +50,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
           >
             {patient.visit_number}
             <span>
-             {patient.result_is_locked ?  <Lock/> :""}
+             {patient.result_is_locked ?  <Lock sx={{width:'16px'}}/> :""}
             </span>
           </Box>
         </Badge>
@@ -71,7 +71,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
           }:null}        >
           {patient.visit_number}
           <span >
-             {patient.result_is_locked ?  <Lock/> :""}
+             {patient.result_is_locked ?  <Lock  sx={{width:'16px'}} /> :""}
             </span>
         </Box>
       )}

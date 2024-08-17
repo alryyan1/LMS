@@ -100,6 +100,8 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
       })
     });
   };
+  // console.log(actviePatient,'active patient')
+  // alert(actviePatient.company_id)
 
   const deleteService = (id) => {
     axiosClient
@@ -141,30 +143,35 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
             <Table size="small" style={{ direction: "rtl" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell> Name</TableCell>
-                  <TableCell align="right">Price</TableCell>
-                  { actviePatient.company_id ? <TableCell align="right">Endurance</TableCell>:   "" }
-                  <TableCell align="right">paid</TableCell>
+                  <TableCell> الاسم</TableCell>
+                  <TableCell align="right">السعر</TableCell>
+                  { actviePatient.patient.company ?( <TableCell align="right">التحمل</TableCell>):   "" }
+                  <TableCell align="right">المدفوع</TableCell>
                 
-                  { actviePatient.company_id ? "": <TableCell align="right">Bank</TableCell>}
-                  <TableCell width={'5%'} align="right">pay</TableCell>
-                  <TableCell width={'5%'} align="right">options</TableCell>
+                  { actviePatient.patient.company ? "": <TableCell align="right">بنك</TableCell>}
+                  <TableCell width={'5%'} align="right">سداد</TableCell>
+                  <TableCell width={'5%'} align="right">اخري</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {actviePatient.services.filter((service)=>{
+                {actviePatient?.services.filter((service)=>{
                   return service.doctor_id ==activeShift.doctor.id
                 }).map((service) => {
 
                   let price  
                   let company
                   let endurance
-                  if(actviePatient.company_id != null) {
-                     company = companies.find((c)=>c.id == actviePatient.company_id)
-                     price  = company.services.find((s)=>s.id == service.id).price
+                  if(actviePatient.patient.company != null) {
+                     company = companies.find((c)=>c.id == actviePatient.patient.company_id)
+                     console.log(company,'finded company')
+                     console.log(service,'service')
+                     const companyService  = company.services.find((s)=>s.pivot.service_id == service.service.id)
+                     console.log(companyService,'company service')
+                     price  = companyService.pivot.price
+                    //  alert(price)
                      endurance =   (price * service.count) *company.service_endurance /100
                      total_endurance+= endurance;
-                    console.log(company,'patient company')
+                    // console.log(company,'patient company')
                   }else{
                     price  = service.price
                   }
@@ -183,14 +190,14 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                       <TableCell sx={{ border: "none" }} align="right">
                         {price}
                       </TableCell>
-                      { actviePatient.company_id ?  <TableCell sx={{ border: "none" ,color:'red'}} align="right">
+                      { actviePatient.patient.company ?  <TableCell sx={{ border: "none" ,color:'red'}} align="right">
                        {endurance}
                       </TableCell>: ""}
                       <TableCell sx={{ border: "none" }} align="right">
                         {service.amount_paid}
                       </TableCell>
                     
-                      { actviePatient.company_id ? "":  <TableCell sx={{ border: "none" }} align="right">
+                      { actviePatient.patient.company ? "":  <TableCell sx={{ border: "none" }} align="right">
                         <MyCheckboxReception
                         setUpdate={setUpdate}
                           disabled={service.is_paid == 0}
@@ -231,7 +238,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                 <div className="title">Total</div>
                 
                 <Typography  variant="h3">
-                  {actviePatient.company_id ==null  ? actviePatient.services.filter((service)=>{
+                  {actviePatient.company_id ==null  ? actviePatient?.services.filter((service)=>{
                   return service.doctor_id == activeShift.doctor.id
                 }).reduce((accum, service) => {
                     console.log(service.count,'service.count)')
@@ -246,7 +253,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
               <div className="sub-price">
                 <div className="title">Paid</div>
                 <Typography  variant="h3">
-                {actviePatient.services.filter((service)=>{
+                {actviePatient?.services.filter((service)=>{
                   return service.doctor_id ==activeShift.doctor.id
                 }).reduce((accum, service) => {
                    

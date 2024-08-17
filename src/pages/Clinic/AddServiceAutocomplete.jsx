@@ -13,11 +13,23 @@ function AddServiceAutocomplete({ patients, setPatients }) {
   console.log(activeShift,'active shift doctor')
   console.log(actviePatient,'active visit')
   const addServiceHandler = async () => {
-    setLoading(true);
     try {
       let payload = selectedServices.map((test) => test.id);
+      console.log(payload,'payload')
+      if (activeShift.doctor.services.length == 0) {
+        setDialog((prev)=>{
+          return {
+           ...prev,
+            open:true,
+            color:'error',
+            message:'لا توجد خدمات معرفه لهذا الطبيب'
+          }
+        })
+        return
+      }
       activeShift.doctor.services.map((s)=>{
         if (!payload.includes(s.service.id)) {
+          alert('هذه الخدمه غير معرفه من ضمن خدمات الطبيب')
           setDialog((prev)=>{
             return {
              ...prev,
@@ -28,14 +40,15 @@ function AddServiceAutocomplete({ patients, setPatients }) {
           })
         }
       })
-     payload =  payload.filter((s)=>{
+      payload =  payload.filter((s)=>{
         return activeShift.doctor.services.map((ds)=>ds.service.id).includes(s)
       })
       if (payload.length == 0 ) {
         setLoading(false)
-         return
-
+        return
+        
       }
+      setLoading(true);
       const { data: data } = await axiosClient.post(
         `patient/service/add/${actviePatient.id}`,
         { services: payload,doctor_id:activeShift.doctor.id }

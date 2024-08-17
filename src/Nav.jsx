@@ -99,7 +99,7 @@ const Nav = () => {
                 <ListItemIcon>
                   <ArrowRight />
                 </ListItemIcon>
-                <ListItemText primary={item.sub_route.name} />
+                <ListItemText primary={t(item.sub_route.name)} />
               </ListItemButton>
             </ListItem>
           ))}

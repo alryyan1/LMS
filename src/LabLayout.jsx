@@ -43,11 +43,12 @@ function LabLayout() {
 
   const [update, setUpdate] = useState(0);
 
+  const [patientsLoading, setPatientsLoading] = useState(false);
 
   useEffect(() => {
 
+    setPatientsLoading(true)
     Promise.all([
-  
         axiosClient.get("userSettings").then(({ data }) => {
           console.log(data, "user settings from axios");
           setUserSettings(data);
@@ -81,7 +82,9 @@ function LabLayout() {
       }),
      
      
-    ]).finally(() => {});
+    ]).finally(() => {
+      setPatientsLoading(false);
+    });
   }, []);
   useEffect(() => {
     console.log("start fetching units");
@@ -173,7 +176,7 @@ useEffect(()=>{
             setFoundedPatients,
             updateTests,setUpdateTests,
             openEdit, setOpenEdit,
-            userSettings, setUserSettings
+            userSettings, setUserSettings,patientsLoading,setPatientsLoading
           }}
         />}</CacheProvider>
 

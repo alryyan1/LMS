@@ -54,10 +54,10 @@ function AddPatient() {
     setUpdate,
     openEdit,
     setOpenEdit,
-    dialog
+    dialog,patientsLoading, setPatientsLoading
   } = useOutletContext();
   console.log(searchByName, "searchByname");
-  const [patientsLoading, setPatientsLoading] = useState(false);
+  // const [patientsLoading, setPatientsLoading] = useState(false);
   console.log(actviePatient);
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
@@ -71,14 +71,14 @@ function AddPatient() {
   });
 
   useEffect(() => {
-    setPatientsLoading(true);
+    // setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
       console.log(data.data, "today patients");
       //add activeProperty to patient object
       data.data.patients.forEach((patient) => {
         patient.active = false;
       });
-      setPatientsLoading(false);
+      // setPatientsLoading(false);
 
       setPatients(data.data.patients);
     });

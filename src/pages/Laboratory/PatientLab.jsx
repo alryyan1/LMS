@@ -1,4 +1,4 @@
-import { Lock } from "@mui/icons-material";
+import { FavoriteBorder, HeatPumpRounded, Lock } from "@mui/icons-material";
 import { Badge, Box, Grow,  } from "@mui/material";
 import 'animate.css';
 import { useOutletContext } from "react-router-dom";
@@ -40,7 +40,7 @@ function PatientLab({ onClick, patient }) {
           >
             {patient.visit_number}
             <span>
-             {patient.result_is_locked ?  <Lock/> :""}
+             {patient.company_id != null ?  <FavoriteBorder sx={{width:'16px'}} /> :""}
             </span>
           </Box>
         </Badge>
