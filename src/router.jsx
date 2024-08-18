@@ -70,6 +70,7 @@ import FinanceSection from "./pages/Finance/FinanceSection";
 import FinanceAccount from "./pages/Finance/FinanceAccount";
 import AccountEntries from "./pages/Finance/AccountEntries";
 import Ledger from "./pages/Finance/Ledger";
+import CopyContract from "./pages/insurance/CopyContract";
 
 export const router = createBrowserRouter([
   {
@@ -450,6 +451,10 @@ export const router = createBrowserRouter([
           {
             path: "service",
             element: <ServiceList />,
+          },
+          {
+            path: "copy",
+            element: <CopyContract />,
           },
         ],
       },

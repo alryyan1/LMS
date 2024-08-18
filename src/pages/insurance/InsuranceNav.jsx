@@ -25,8 +25,7 @@ function InsuranceNav() {
         <NavLink to={"service"}>الخدمات الطبيه</NavLink>
         <NavLink to={"subcomapny"}> الجهات </NavLink>
         <NavLink to={"relation"}> العلاقات </NavLink>
-        <NavLink to={"section/create"}>نسخ تعاقد</NavLink>
-        <NavLink to={"income/create"}>المراجعه والتدقيق</NavLink>
+        <NavLink to={"copy"}>نسخ تعاقد</NavLink>
         <NavLink to={"income/deduct"}>المطالبات</NavLink>
         <NavLink to={"inventory/balance"}>التقارير</NavLink>
       </ul>
