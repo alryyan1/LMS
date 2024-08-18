@@ -259,7 +259,7 @@ function SellDrug() {
                     <TableRow key={deductedItem.id}>
                       <TableCell>{deductedItem.item?.market_name}</TableCell>
                       <TableCell><SaleDiscountSelect disabled={activeSell?.complete == 1}  disc={deductedItem.discount} setSelectedSale={setActiveSell}  id={deductedItem.id} /></TableCell>
-                      <TableCell > {Number(deductedItem.price).toFixed(3)}</TableCell>
+                      <TableCell > {Number(deductedItem.price).toFixed(1)}</TableCell>
 
                       {activeSell.complete ? (
                         <TableCell> {deductedItem.strips}</TableCell>
@@ -278,7 +278,7 @@ function SellDrug() {
                         </MyTableCell>
                       )}
                       {activeSell.complete ? (
-                        <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
+                        <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                       ) : (
                         <MyTableCell
                           stateUpdater={setUpdater}
@@ -290,7 +290,7 @@ function SellDrug() {
                           table="deductedItem"
                           colName={"box"}
                         >
-                          {toFixed(deductedItem.box, 3)}
+                          {toFixed(deductedItem.box, 1)}
                         </MyTableCell>
                       )}
                       <TableCell>
@@ -298,7 +298,7 @@ function SellDrug() {
                           (deductedItem.price /
                             deductedItem.item?.strips) *
                             deductedItem.strips,
-                          3
+                          1
                         )}
                       </TableCell>
                       <TableCell>
@@ -365,7 +365,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                          {Number(activeSell?.total_price_unpaid).toFixed(3)}
+                          {Number(activeSell?.total_price_unpaid).toFixed(1)}
                         </Typography>
                       )}
                     </Stack>
@@ -438,7 +438,7 @@ function SellDrug() {
                       <Typography variant="h3">
          
                           
-                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(3)}
+                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(1)}
                               
                             
                           

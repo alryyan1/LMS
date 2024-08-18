@@ -38,3 +38,15 @@ export const theme = createTheme({
     var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
     return num.toString().match(re)[0];
   }
+
+  export  function formatNumber(number){
+     return String(number).replace(
+    /^\d+/,
+    number => [...number].map(
+        (digit, index, digits) => (
+            !index || (digits.length - index) % 3 ? '' : ','
+        ) + digit
+    ).join('')
+);
+  }
+  

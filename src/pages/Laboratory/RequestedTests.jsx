@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   Table,
   TableBody,
@@ -35,18 +36,18 @@ function RequestedTests({ setPatients }) {
   console.log(actviePatient, "active patient", setActivePatient);
   console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
-    const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
-      console.log(Number((test.discount_per * test.price) / 100));
-      const discount = Number((test.discount_per * test.price) / 100);
-      return accum + (test.price - discount);
-    }, 0);
-    const result = confirm(`هل توكد استلامك مبلغ قدره  ${totalPaid}`);
+    // const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
+    //   console.log(Number((test.discount_per * test.price) / 100));
+    //   const discount = Number((test.discount_per * test.price) / 100);
+    //   return accum + (test.price - discount);
+    // }, 0);
+    const result = confirm(`هل توكد استلامك مبلغ قدره  ${actviePatient?.total_lab_value_will_pay}`);
     if (!result) {
       return;
     }
     setLoading(true);
     axiosClient
-      .patch(`labRequest/payment/${actviePatient.id}`, { paid: totalPaid })
+      .patch(`labRequest/payment/${actviePatient.id}`, { paid: actviePatient?.total_lab_value_will_pay })
       .then(({ data: data }) => {
         console.log(data, "patient paid data");
         if (data.status) {
@@ -178,24 +179,29 @@ function RequestedTests({ setPatients }) {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell> Name</TableCell>
+                  <TableCell> الاسم</TableCell>
                   <TableCell align="right">Price</TableCell>
                   {actviePatient.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">Discount</TableCell>
+                    <TableCell align="right">التخفيض</TableCell>
                   )}
                   {actviePatient.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">Bank</TableCell>
+                    <TableCell align="right">البنك</TableCell>
                   )}
                   {actviePatient.company ? (
-                    <TableCell align="right">Endurance</TableCell>
+                    <TableCell align="right">التحمل</TableCell>
                   ) : (
                     ""
                   )}
-                  <TableCell align="right">Action</TableCell>
+                      {actviePatient.company ? (
+                    <TableCell align="right">الموافقه</TableCell>
+                  ) : (
+                    ""
+                  )}
+                  <TableCell align="right">-</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -204,18 +210,32 @@ function RequestedTests({ setPatients }) {
                   let price;
                   let company;
                   let endurance;
+                  let founedTest;
                   if (actviePatient.company_id != null) {
                     company = companies.find(
                       (c) => c.id == actviePatient.company_id
                     );
                     console.log("founded company", company);
-                    const founedTest = company.tests.find(
+                     founedTest = company.tests.find(
                       (t) => t.id == test.main_test_id
                     );
                     console.log(test, "patient test");
                     console.log(founedTest, "founed test");
-                    price = founedTest.pivot.price;
-                    endurance = (price * company.lab_endurance) / 100;
+                    price = test.price;
+                    if (founedTest.pivot.endurance_static > 0) {
+                      // alert('s')
+                      endurance =founedTest.pivot.endurance_static
+                      
+                    }else{
+                       if(founedTest.pivot.endurance_percentage > 0 ){
+                      endurance = (price * founedTest.pivot.endurance_percentage) / 100;
+
+                    }else{
+                      endurance = (price * company.lab_endurance) / 100;
+
+                    }
+                    }
+                   
                     total_endurance += endurance;
                     console.log(company, "patient company");
                   } else {
@@ -268,7 +288,11 @@ function RequestedTests({ setPatients }) {
                       ) : (
                         ""
                       )}
-
+  {actviePatient.company ? (
+                    <TableCell align="right">{founedTest.pivot.approve ? <Button>الموافقه</Button> :'لا يحتاج موافقه' } </TableCell>
+                  ) : (
+                    ""
+                  )}
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
                           disabled={actviePatient?.is_lab_paid == 1}
@@ -290,14 +314,7 @@ function RequestedTests({ setPatients }) {
           <div className="sub-price">
             <div className="title">Total</div>
             <div>
-              {actviePatient.company_id == null
-                ? actviePatient.labrequests.reduce((accum, test) => {
-                    const discount = Number(
-                      (test.discount_per * test.main_test.price) / 100
-                    );
-                    return accum + (test.main_test.price - discount);
-                  }, 0)
-                : total_endurance}
+              {actviePatient?.total_lab_value_unpaid}
             </div>
           </div>
           <div className="sub-price">

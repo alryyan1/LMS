@@ -58,6 +58,9 @@ function PatientLab({ onClick, patient }) {
           }:{
           }}        >
           {patient.visit_number}
+          <span>
+             {patient.company_id != null ?  <FavoriteBorder sx={{width:'16px'}} /> :""}
+            </span>
           <span >
              {patient.result_is_locked ?  <Lock/> :""}
             </span>

@@ -224,6 +224,7 @@ function AddPatient() {
           )}
         </div>
         <Card sx={{p:1}} style={{ height:'70vh', overflow: "auto" }}>
+          
           <AddTestAutoComplete setPatients={setPatients} />
           <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
@@ -247,6 +248,13 @@ function AddPatient() {
         </Card>
 
         <Card  style={{height:'68vh',overflow:'auto'}} sx={{ p: 1 }}>
+        {!actviePatient && foundedPatients.length > 0 && (
+            <Slide       style={{position: "absolute"}} direction="up" in mountOnEnter unmountOnExit>
+              <div >
+                <SearchDialog lab={true} />
+              </div>
+            </Slide>
+          )}
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
@@ -254,13 +262,7 @@ function AddPatient() {
       
         </Card>
         <div>
-        {!actviePatient && foundedPatients.length > 0 && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div style={{ position: "relative" }}>
-                <SearchDialog lab={true} />
-              </div>
-            </Slide>
-          )}
+      
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail

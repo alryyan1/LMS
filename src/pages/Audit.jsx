@@ -128,7 +128,10 @@ function Audit() {
               <a href={`${webUrl}lab/report?shift=${selectedShift.id}`}>
                    تقرير المختبر {selectedShift.id}
               </a>
-              
+              <Divider></Divider>
+              <a href={`${webUrl}insurance/report?shift=${selectedShift.id}`}>
+                   تقرير التامين {selectedShift.id}
+              </a>
               </Box>
          
             )}

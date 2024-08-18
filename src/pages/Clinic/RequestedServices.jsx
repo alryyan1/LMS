@@ -19,6 +19,7 @@ import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import ServiceCountSelect from "./ServiceCountSelect";
 import RequestedServiceOptions from "./RequestedServiceOptions";
+import { formatNumber, toFixed } from "../constants";
 function RequestedServices({ actviePatient , setDialog, setActivePatient,setShowServicePanel,setShowPatientServices,setUpdate,activeShift,companies}) {
   const [loading, setLoading] = useState(false);
   console.log(companies,'companies')
@@ -131,6 +132,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
       });
   };
   let total_endurance = 0
+  let total_price = 0
 
   return (
     <>
@@ -157,6 +159,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                 {actviePatient?.services.filter((service)=>{
                   return service.doctor_id ==activeShift.doctor.id
                 }).map((service) => {
+                  console.log(actviePatient,'active patient')
 
                   let price  
                   let company
@@ -167,14 +170,30 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
                      console.log(service,'service')
                      const companyService  = company.services.find((s)=>s.pivot.service_id == service.service.id)
                      console.log(companyService,'company service')
-                     price  = companyService.pivot.price
+                     price  = service.price
                     //  alert(price)
-                     endurance =   (price * service.count) *company.service_endurance /100
+
+                    if (companyService.pivot.static_endurance > 0) {
+                      endurance =  service.count * companyService.pivot.static_endurance
+                      
+                    }else{
+                      if (companyService.pivot.percentage_endurance > 0) {
+                        // alert(companyService.percentage_endurance)
+                        endurance =   (price * service.count) *companyService.pivot.percentage_endurance /100
+                        
+                      }else{
+  
+                        endurance =   (price * service.count) *company.service_endurance /100
+                      }
+                    }
+                  
+
                      total_endurance+= endurance;
                     // console.log(company,'patient company')
                   }else{
                     price  = service.price
                   }
+                  total_price+=price
                   console.log(price,'price ')
                   return (
                     <TableRow
@@ -253,12 +272,7 @@ function RequestedServices({ actviePatient , setDialog, setActivePatient,setShow
               <div className="sub-price">
                 <div className="title">Paid</div>
                 <Typography  variant="h3">
-                {actviePatient?.services.filter((service)=>{
-                  return service.doctor_id ==activeShift.doctor.id
-                }).reduce((accum, service) => {
-                   
-                    return accum + service.amount_paid ;
-                  }, 0)}
+                {formatNumber(actviePatient?.total_paid_services)}
                 </Typography>
               </div>
             </div>

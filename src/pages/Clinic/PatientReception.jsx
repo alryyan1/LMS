@@ -81,11 +81,7 @@ function PatientReception({ visit, hideForm, index }) {
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {visit.company_id && (
-              <Icon>
-                <FavoriteBorder />
-              </Icon>
-            )}
+          
 
             {visit.totalservicebank > 0 && (
               <Chip
@@ -103,14 +99,19 @@ function PatientReception({ visit, hideForm, index }) {
         </Item>
         <Item className="patient-no">
           {index - 1}
-          <span style={{ position: 'absolute',
-    top: '-6px',
-    right: '3px',width:'10px'}}> 
+          {visit.patient.company && <span
+            style={{
+              position: "absolute",
+              top: "-6px",
+              right: "3px",
+              width: "10px",
+            }}
+          >
             {" "}
             <Icon>
               <FavoriteBorder />
             </Icon>
-          </span>
+          </span>}
         </Item>
       </Stack>
     </Badge>

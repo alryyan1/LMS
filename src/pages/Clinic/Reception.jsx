@@ -217,7 +217,7 @@ function Reception() {
         <div>
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide
-          
+              style={{position: "absolute"}}
               direction="up"
               in
               mountOnEnter
