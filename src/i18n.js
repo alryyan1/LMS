@@ -17,6 +17,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 register:'التسجيل',
                 define:'تعريف منتج',
                 income:'فاتوره وارد جديد',
+                quantity:'الكميات',
                 
                 sales:'المبيعات',
                 items:'قائمه المنتجات',
@@ -95,6 +96,8 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
         },
         en:{
             translation:{
+                quantity:'quantity',
+
                 moneyIncome:"Money Income",
                 MoneyExpenses:"Money Expenses",
                 cash_count:'Cash count' ,

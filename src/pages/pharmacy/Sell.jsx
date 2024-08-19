@@ -140,7 +140,7 @@ function SellDrug() {
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr  1fr  2fr 1fr 0.1fr      `,
+          gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
         }}
       >
         <div>
@@ -165,7 +165,7 @@ function SellDrug() {
             </Item>
           </Stack>
         </div>
-        <Card sx={{p:1}}>
+        <Card sx={{p:1,height:'80vh'}}>
           {activeSell && <AddDrugAutocomplete setLoading={setLoading} loading={loading} setUpdater={setUpdater} />}
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
@@ -244,7 +244,7 @@ function SellDrug() {
               /> : 
               <Table className="white" key={updater} size="small">
                 <thead>
-                  <TableRow>
+                  <TableRow >
                     <TableCell>Item</TableCell>
                     <TableCell>Disc</TableCell>
                     <TableCell>Price</TableCell>
@@ -252,14 +252,22 @@ function SellDrug() {
                     <TableCell>Box</TableCell>
                     <TableCell>Subtotal</TableCell>
                     <TableCell width={"5%"}>action</TableCell>
+                    <TableCell >Expire</TableCell>
                   </TableRow>
                 </thead>
                 <TableBody>
                   {activeSell?.deducted_items?.map((deductedItem) => (
-                    <TableRow key={deductedItem.id}>
+                    <TableRow   sx={{
+                      background: (theme) => {
+                        return !dayjs(deductedItem.item.expire).isAfter(dayjs())
+                          ? theme.palette.error.light
+                          : theme.palette.background.defaultLight;
+                      },
+                      fontWeight: "500",
+                    }} key={deductedItem.id}>
                       <TableCell>{deductedItem.item?.market_name}</TableCell>
                       <TableCell><SaleDiscountSelect disabled={activeSell?.complete == 1}  disc={deductedItem.discount} setSelectedSale={setActiveSell}  id={deductedItem.id} /></TableCell>
-                      <TableCell > {Number(deductedItem.price).toFixed(1)}</TableCell>
+                      <TableCell > {Number(deductedItem.price).toFixed(3)}</TableCell>
 
                       {activeSell.complete ? (
                         <TableCell> {deductedItem.strips}</TableCell>
@@ -298,7 +306,7 @@ function SellDrug() {
                           (deductedItem.price /
                             deductedItem.item?.strips) *
                             deductedItem.strips,
-                          1
+                          3
                         )}
                       </TableCell>
                       <TableCell>
@@ -320,6 +328,7 @@ function SellDrug() {
                           <DeleteOutlineSharp />
                         </LoadingButton>
                       </TableCell>
+                      <TableCell>{dayjs(new Date(Date.parse(deductedItem.item.expire))).format('YYYY-MM-DD')}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -365,7 +374,7 @@ function SellDrug() {
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
-                          {Number(activeSell?.total_price_unpaid).toFixed(1)}
+                          {Number(activeSell?.total_price_unpaid).toFixed(3)}
                         </Typography>
                       )}
                     </Stack>
@@ -438,7 +447,7 @@ function SellDrug() {
                       <Typography variant="h3">
          
                           
-                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(1)}
+                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(3)}
                               
                             
                           

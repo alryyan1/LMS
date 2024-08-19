@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import logo from "../assets/images/pharmaStar.png";
 import logo2 from "../assets/images/hitech.png";
+import sahara from "../assets/images/sahara.png";
 import {t} from 'i18next'
 function App() {
   console.log("login page");
@@ -42,7 +43,7 @@ function App() {
   return (
     <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='200px'  src={logo2}/>
+      <img height='400px'  src={sahara}/>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
                   <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
                     {t('login')}
