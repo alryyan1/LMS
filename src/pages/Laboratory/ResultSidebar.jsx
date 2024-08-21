@@ -130,7 +130,7 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
           onClick={() => {
             setLoading(true)
             axiosClient
-              .post(`populatePatientCbcData/${actviePatient?.id}`,{'main_test_id':selectedTest?.main_test_id})
+              .post(`populatePatientCbc5Data/${actviePatient?.id}`,{'main_test_id':selectedTest?.main_test_id})
               .then(({ data }) => {
                 if(data.status == false){
                   setDialog((prev)=>{
@@ -175,7 +175,7 @@ function ResultSidebar({actviePatient,loading,setLoading,setSelectedTest,setActi
           }}
           variant="contained"
         >
-          <FormatListBulleted color={actviePatient.hasCbc ? 'error':'inherit'} />
+          <FormatListBulleted color={actviePatient.hasCbc5 ? 'error':'inherit'} />
         </LoadingButton>
     )}
      {selectedTest && (

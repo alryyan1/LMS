@@ -15,6 +15,7 @@ import MyTableCell from "../inventory/MyTableCell";
 
 function CBCLIS() {
   const [test, setTest] = useState();
+  const [cbc5MatchingRows, setCbc5MatchingRows] = useState([]);
   const [cbcMatchingRows, setCbcMatchingRows] = useState([]);
   const [sysmexColumns, setSysmexColumns] = useState([]);
   useEffect(() => {
@@ -35,8 +36,17 @@ function CBCLIS() {
       setCbcMatchingRows(data);
     });
   }, []);
+  useEffect(() => {
+    axiosClient.get("getCbcBindings").then(({ data }) => {
+      console.log(data);
+      setCbcMatchingRows(data);
+    });
+  }, []);
   const populateCbcTable = () => {
     axiosClient.post("populateCBCMatchingTable");
+  };
+  const populateCbc5Table = () => {
+    axiosClient.post("populateCBC5MatchingTable");
   };
   return (
     <Grid container spacing={2}>
@@ -63,8 +73,8 @@ function CBCLIS() {
           </TableBody>
         </Table>
       </Grid>
-      <Grid item xs={4}>
-        <Typography variant="h3">
+      <Grid item xs={2}>
+        <Typography >
             Sysmex Table Columns
 
         </Typography>
@@ -86,7 +96,30 @@ function CBCLIS() {
           </TableBody>
         </Table>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={2}>
+        <Typography >
+            Sysmex 5 Table Columns
+
+        </Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>index</TableCell>
+              <TableCell>name</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              sysmexColumns.map((item,i) => (
+                <TableRow key={i}>
+                  <TableCell>{i}</TableCell>
+                  <TableCell>{item}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </Grid>
+      <Grid item xs={2}>
         <Typography>Matching Table</Typography>
         <Button onClick={populateCbcTable}>populate</Button>
 
@@ -99,6 +132,35 @@ function CBCLIS() {
           </TableHead>
           <TableBody>
             {cbcMatchingRows.map((item) => (
+              <TableRow key={item.id}>
+                <MyTableCell   colName={"name_in_sysmex_table"}
+                  item={item}
+                  table="updateCbcBindings">{item.name_in_sysmex_table}</MyTableCell>
+                <MyTableCell
+                  colName={"child_id_array"}
+                  item={item}
+                  table="updateCbcBindings"
+                >
+                  {item.child_id_array}
+                </MyTableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+      <Grid item xs={2}>
+        <Typography>Matching cbc 5 Table</Typography>
+        <Button onClick={populateCbc5Table}>populate</Button>
+
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>sysmex table</TableCell>
+              <TableCell>child id array</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {cbc5MatchingRows.map((item) => (
               <TableRow key={item.id}>
                 <MyTableCell   colName={"name_in_sysmex_table"}
                   item={item}
