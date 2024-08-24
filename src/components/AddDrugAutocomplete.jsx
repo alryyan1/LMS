@@ -14,20 +14,28 @@ function AddDrugAutocomplete({setUpdater}) {
   console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
-    setShiftIsLoading(true);
+
     if (activeSell.complete) {
       alert('يجب الغاء السداد اولا')
       return;
     }
-    setLoading(true)
+    selectedDrugs.map((d)=>{
+      if (d.lastDepositItem == null) {
+        setDialog((prev)=>{
+          return {...prev, open: true, message:`Item (${d.market_name}) is not available in store `,color:'error'}
+        })
+      }
+    })
      selectedDrugs.forEach((drug)=>{
        if (drug.strips == 0) {
          alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
        }
        return 
      })
-   
-    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
+     
+   setShiftIsLoading(true);
+     setLoading(true)
+    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.lastDepositItem!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
         
         setActiveSell(data.data)

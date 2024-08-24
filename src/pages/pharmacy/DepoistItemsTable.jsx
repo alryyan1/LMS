@@ -146,11 +146,7 @@ function DepoistItemsTable({
           {selectedDeposit.items
             .slice(page, page + 10)
             .map((depositItem, i) => {
-              const final_cost_price =
-                (depositItem.vat_cost * depositItem.cost) / 100 + depositItem.cost;
-              const final_sell_price =
-                (depositItem.vat_sell * depositItem.sell_price) / 100 +
-                depositItem.sell_price;
+   
               return (
                 <TableRow key={depositItem.id}>
                   <TableCell>{depositItem.item.market_name}</TableCell>
@@ -184,14 +180,14 @@ function DepoistItemsTable({
                     setSelectedDeposit={setSelectedDeposit}
                     item={depositItem}
                     table="depositItems/update"
-                    colName={"vat"}
+                    colName={"vat_cost"}
                   >
                     {depositItem.vat_cost}
                   </MyTableCell>
                   <TableCell>
                     {(depositItem.vat_cost * depositItem.cost) / 100}
                   </TableCell>
-                  <TableCell >{final_cost_price}</TableCell>
+                  <TableCell >{depositItem.finalCostPrice}</TableCell>
                   <MyTableCell
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
@@ -214,10 +210,10 @@ function DepoistItemsTable({
                   >
                     {depositItem.vat_sell}
                   </MyTableCell>
-                  <TableCell>{final_sell_price}</TableCell>
+                  <TableCell>{depositItem.finalSellPrice}</TableCell>
 
                   <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>
-                    {toFixed(depositItem.quantity * final_cost_price, 3)}
+                    {toFixed(depositItem.quantity * depositItem.finalCostPrice, 3)}
                   </TableCell>
 
                   <TableCell>

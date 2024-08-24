@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import { useSymbologyScanner } from '@use-symbology-scanner/react';
+
 import DescriptionIcon from "@mui/icons-material/Description";
 import {
   Divider,
@@ -54,6 +56,12 @@ function toFixed(num, fixed) {
   return num.toString().match(re)[0];
 }
 function SellDrug() {
+  const ref = useRef(null)
+  const handleSymbol = (symbol, matchedSymbologies) => {
+    console.log(`Scanned ${symbol}`)
+}
+
+useSymbologyScanner(handleSymbol, { target: ref })
   const [loading, setLoading] = useState();
   const [userSettings, setUserSettings] = useState(null);
   const [clients, setClients] = useState([]);
@@ -208,6 +216,7 @@ function SellDrug() {
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
+                <input ref={ref}></input>
                 <Autocomplete
                   value={activeSell.client}
                   sx={{ width: "200px", mb: 1 }}
@@ -280,7 +289,7 @@ function SellDrug() {
                     }} key={deductedItem.id}>
                       <TableCell>{deductedItem.item?.market_name}</TableCell>
                       <TableCell><SaleDiscountSelect disabled={activeSell?.complete == 1}  disc={deductedItem.discount} setSelectedSale={setActiveSell}  id={deductedItem.id} /></TableCell>
-                      <TableCell > {Number(deductedItem.price).toFixed(3)}</TableCell>
+                      <TableCell > {Number(deductedItem?.item.lastDepositItem?.finalSellPrice).toFixed(3)}</TableCell>
 
                       {activeSell.complete ? (
                         <TableCell> {deductedItem.strips}</TableCell>
@@ -299,7 +308,7 @@ function SellDrug() {
                         </MyTableCell>
                       )}
                       {activeSell.complete ? (
-                        <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
+                        <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                       ) : (
                         <MyTableCell
                           stateUpdater={setUpdater}
@@ -311,7 +320,7 @@ function SellDrug() {
                           table="deductedItem"
                           colName={"box"}
                         >
-                          {toFixed(deductedItem.box, 1)}
+                          {toFixed(deductedItem.box, 3)}
                         </MyTableCell>
                       )}
                       <TableCell>
