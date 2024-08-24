@@ -1,6 +1,7 @@
 import {
   Button,
     Grid,
+    Icon,
     Table,
     TableBody,
     TableCell,
@@ -12,7 +13,7 @@ import {
   import {  webUrl } from "../constants.js";
   import axiosClient from "../../../axios-client.js";
   import MyLoadingButton from "../../components/MyLoadingButton.jsx";
-  import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+  import { ArrowBackIos, ArrowForwardIos, FileDownload, FileUpload } from "@mui/icons-material";
   
   function ItemsInventory() {
     const [items, setItems] = useState([]);
@@ -111,8 +112,8 @@ import {
                 <TableCell>Scientific Name</TableCell>
                 <TableCell>Sell Price</TableCell>
                 <TableCell>Expire</TableCell>
-                <TableCell>Out </TableCell>
-                <TableCell>in </TableCell>
+                <TableCell>Out<Icon sx={{color:(theme)=>theme.palette.error.light}}> <FileUpload/></Icon> </TableCell>
+                <TableCell>in  <Icon sx={{color:(theme)=>theme.palette.success.light}}><FileDownload/></Icon></TableCell>
                 <TableCell>Balance </TableCell>
               </TableRow>
             </thead>

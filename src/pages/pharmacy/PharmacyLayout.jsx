@@ -22,6 +22,7 @@ function PharmacyLayout() {
     msg: "تمت الاضافه بنجاح",
   });
   const [showDialogMoney, setShowDialogMoney] = useState(false);
+  const [showSummery, setShowSummery] = useState(false);
   
   const [opendDrugDialog,setOpendDrugDialog] = useState(false);
   const [openClientDialog,setOpenClientDialog] = useState(false);
@@ -90,7 +91,8 @@ function PharmacyLayout() {
             showDialogMoney, setShowDialogMoney,
             opendDrugDialog,setOpendDrugDialog,
             suppliers, setSuppliers,
-            openClientDialog,setOpenClientDialog
+            openClientDialog,setOpenClientDialog,
+            showSummery, setShowSummery
           
           }}
         />

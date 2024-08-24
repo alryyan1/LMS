@@ -138,7 +138,8 @@ function DepoistItemsTable({
             <TableCell> R.P + Vat </TableCell>
             <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>total cost</TableCell>
             <TableCell>Dlt</TableCell>
-            <TableCell>purchase return</TableCell>
+            <TableCell> return</TableCell>
+            <TableCell> free QYN</TableCell>
           </TableRow>
         </thead>
 
@@ -234,6 +235,17 @@ function DepoistItemsTable({
                       colName={"return"}
                     />
                   </TableCell>
+                  <MyTableCell
+                    setDialog={setDialog}
+                    sx={{ width: "60px", textAlign: "center" }}
+                    
+                    setSelectedDeposit={setSelectedDeposit}
+                    item={depositItem}
+                    table="depositItems/update"
+                    colName={"free_quantity"}
+                  >
+                    {depositItem.free_quantity}
+                  </MyTableCell>
                 </TableRow>
               );
             })}

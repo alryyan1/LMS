@@ -29,8 +29,10 @@ import AddItemToDepositForm from "./AddItemToDepositForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { t } from "i18next";
-import { ArrowDropDown, DeleteOutline, Download, FormatListBulleted } from "@mui/icons-material";
+import { ArrowDropDown, DeleteOutline, Download, FormatListBulleted, Info } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import PurchaseInvoiceSummery from "./PurchaseInvoiceSummery.jsx";
+import MyTableCell from "../inventory/MyTableCell.jsx";
 function ItemDeposit() {
   const [layOut, setLayout] = useState({
     newForm: "0fr",
@@ -118,7 +120,7 @@ function ItemDeposit() {
   };
   // console.log(items);
   //create state variable to store all suppliers
-  const { setDialog, items, suppliers } = useOutletContext();
+  const { setDialog, items, suppliers,showSummery, setShowSummery } = useOutletContext();
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -317,6 +319,8 @@ function ItemDeposit() {
                 <TableCell>عرض التفاصيل</TableCell>
                 <TableCell> دفع</TableCell>
                 <TableCell> التقرير</TableCell>
+                <TableCell> ملخص الفاتوره</TableCell>
+                <TableCell> %الخصم </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -388,6 +392,22 @@ function ItemDeposit() {
             >
               pdf
             </a></TableCell>
+            <TableCell><IconButton onClick={()=>{
+              console.log(deposit,'deposit')
+              setShowSummery(true)
+              setSelectedDeposit(deposit)
+            }} ><Info/></IconButton></TableCell>
+             <MyTableCell
+                    setDialog={setDialog}
+                    show
+                    sx={{ width: "60px", textAlign: "center" }}
+                    setSelectedDeposit={setSelectedDeposit}
+                    item={deposit}
+                    table="deposit/update"
+                    colName={"discount"}
+                  >
+                    {deposit.discount}
+                  </MyTableCell>
 
                   </TableRow>
                 );
@@ -456,6 +476,7 @@ function ItemDeposit() {
             </IconButton>
           </Item> */}
         </Stack>
+        {selectedDeposit &&<PurchaseInvoiceSummery deposit={selectedDeposit} />}
       </div>
     </>
   );

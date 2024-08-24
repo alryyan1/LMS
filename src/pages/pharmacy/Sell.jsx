@@ -162,7 +162,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
-          gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
+          gridTemplateColumns: `0.1fr  0.3fr  2fr 0.5fr 0.1fr      `,
         }}
       >
         <div>
@@ -187,7 +187,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
             </Item>
           </Stack>
         </div>
-        <Card sx={{p:1,height:'80vh'}}>
+        <Card sx={{p:1,height:'80vh',overflow:'auto'}}>
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -216,7 +216,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
-                <input ref={ref}></input>
+                {/* <input ref={ref}></input> */}
                 <Autocomplete
                   value={activeSell.client}
                   sx={{ width: "200px", mb: 1 }}
