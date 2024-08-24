@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Grid,
   Stack,
   Table,
@@ -22,6 +23,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { webUrl } from "../constants.js";
+import printJS from "print-js";
 
 function DrugItems() {
   const [loading, setLoading] = useState(false);
@@ -31,11 +33,11 @@ function DrugItems() {
   const [links, setLinks] = useState([]);
   const [items, setItems] = useState([]);
   const { setDialog, drugCategory } = useOutletContext();
-   
+
   const [file, setFile] = useState(null);
   const [src, setSrc] = useState(null);
-  const handleFileChange = (e,id) => {
-    encodeImageFileAsURL(e.target.files[0],id);
+  const handleFileChange = (e, id) => {
+    encodeImageFileAsURL(e.target.files[0], id);
     const url = URL.createObjectURL(e.target.files[0]);
     console.log(url, "path");
     setSrc(url);
@@ -44,7 +46,7 @@ function DrugItems() {
       setFile(e.target.files[0]);
     }
   };
-  function encodeImageFileAsURL(file,id) {
+  function encodeImageFileAsURL(file, id) {
     var reader = new FileReader();
     reader.onloadend = function () {
       console.log("RESULT", reader.result);
@@ -53,9 +55,11 @@ function DrugItems() {
     reader.readAsDataURL(file);
   }
   const saveToDb = (id, data) => {
-    axiosClient.patch(`items/${id}`,{ colName:'images' , val : data}).then(({ data }) => {
-      console.log(data);
-    });
+    axiosClient
+      .patch(`items/${id}`, { colName: "images", val: data })
+      .then(({ data }) => {
+        console.log(data);
+      });
   };
 
   useEffect(() => {
@@ -72,7 +76,7 @@ function DrugItems() {
       .catch(({ response: { data } }) => {
         setError(data.message);
       });
-  }, [ page]);
+  }, [page]);
 
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
@@ -119,7 +123,7 @@ function DrugItems() {
         });
     }, 300);
     return () => clearTimeout(timer);
-  }, [search,page]);
+  }, [search, page]);
   return (
     <Box>
       <Stack sx={{ mb: 1 }} direction={"row"} justifyContent={"space-between"}>
@@ -136,7 +140,7 @@ function DrugItems() {
           <option value="100">100</option>
         </select>
         <TextField
-        type="search"
+          type="search"
           value={search}
           onChange={(e) => {
             searchHandler(e.target.value);
@@ -158,15 +162,15 @@ function DrugItems() {
               <TableCell> الباركود</TableCell>
               <TableCell> رفع</TableCell>
               <TableCell> الصوره</TableCell>
-              
+              <TableCell> باركود</TableCell>
+
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
           <tbody>
             {items.map((drug) => {
-              
-  let image1 = new Image(100,100)
-  image1.src = drug?.images;
+              let image1 = new Image(100, 100);
+              image1.src = drug?.images;
               console.log(drug, "drug ");
               return (
                 <TableRow
@@ -181,7 +185,7 @@ function DrugItems() {
                   key={drug.id}
                 >
                   <TableCell>{drug.id}</TableCell>
-               
+
                   <MyTableCell
                     colName={"market_name"}
                     item={drug}
@@ -205,7 +209,7 @@ function DrugItems() {
                   >
                     {drug.sell_price}
                   </MyTableCell>
-{/*                   
+                  {/*                   
                   <TableCell>
                     <MyDateField val={drug.expire} item={drug} />
                   </TableCell> */}
@@ -218,44 +222,82 @@ function DrugItems() {
                   >
                     {drug.category?.name}
                   </MyAutoCompeleteTableCell>
-           
+
                   <MyTableCell colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
-                  <TableCell><input onChange={(e)=>{
-          handleFileChange(e,drug.id)
-        }} type="file" name="" id="" /></TableCell>
-        <TableCell> <img height={100} width={100} src={image1.src} alt="" /> </TableCell>
                   <TableCell>
-                 
-                     
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                           let result =   confirm("Are you sure you want to delete")
-                           if (result) {
-                            setLoading(true);
+                    <input
+                      onChange={(e) => {
+                        handleFileChange(e, drug.id);
+                      }}
+                      type="file"
+                      name=""
+                      id=""
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    <img
+                      height={100}
+                      width={100}
+                      src={image1.src}
+                      alt=""
+                    />{" "}
+                  </TableCell>
+                  <TableCell>
+                      <Button onClick={()=>{
+                const form = new URLSearchParams();
 
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                              })
-                              .finally(() => setLoading(false));
-                           }
-                          
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
+                               axiosClient
+                               .get(`barcode?item_id=${drug.id}&base64=1`)
+                               .then(({ data }) => {
+                                 form.append("data", data);
+                                 console.log(data, "daa");
+                                 printJS({
+                                   printable: data.slice(data.indexOf("JVB")),
+                                   base64: true,
+                                   type: "pdf",
+                                 });
+             
+                                 // fetch("http://127.0.0.1:4000/", {
+                                 //   method: "POST",
+                                 //   headers: {
+                                 //     "Content-Type":
+                                 //       "application/x-www-form-urlencoded",
+                                 //   },
+             
+                                 //   body: form,
+                                 // }).then(() => {});
+                               });
+
+                      }}  variant="contained">Barcode</Button>
+                    </TableCell>
+                  <TableCell>
                    
-                    
-                
+                    <LoadingButton
+                      loading={loading}
+                      onClick={() => {
+                        let result = confirm("Are you sure you want to delete");
+                        if (result) {
+                          setLoading(true);
+
+                          axiosClient
+                            .delete(`items/${drug.id}`)
+                            .then(({ data }) => {
+                              setItems((prev) => {
+                                return prev.filter(
+                                  (item) => item.id !== drug.id
+                                );
+                              });
+                            })
+                            .finally(() => setLoading(false));
+                        }
+                      }}
+                      color="error"
+                    >
+                      <DeleteOutlineOutlined />
+                    </LoadingButton>
                   </TableCell>
                 </TableRow>
               );
@@ -263,7 +305,7 @@ function DrugItems() {
           </tbody>
         </Table>
       </TableContainer>
-      <Grid sx={{ gap: "4px",mt:1 }} container>
+      <Grid sx={{ gap: "4px", mt: 1 }} container>
         {links.map((link, i) => {
           if (i == 0) {
             return (
