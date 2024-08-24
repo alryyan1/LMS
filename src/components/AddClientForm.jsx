@@ -1,14 +1,22 @@
-import { Paper, TextField, Typography } from '@mui/material'
-import React from 'react'
-import { useForm } from 'react-hook-form';
+import { Autocomplete, Paper, TextField, Typography } from '@mui/material'
+import React, { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form';
 import axiosClient from '../../axios-client';
 import { LoadingButton } from '@mui/lab';
+import CountryAutocomplete from './addCountryAutocomplete';
 
 function AddClientForm({setClients,setLoading,setDialog,loading}) {
-    
+    const [countries, setCountries] = React.useState([]);
+
+    useEffect(()=>{
+      axiosClient.get('country').then(({data})=>{
+        setCountries(data)
+      })
+    },[])
     const {
         register,
         reset,
+        control,
         formState: { errors, isSubmitted },
         handleSubmit,
       } = useForm();
@@ -50,7 +58,6 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
         
     <Typography textAlign={'center'} variant="h5">اضافه عميل </Typography>
     <form noValidate onSubmit={handleSubmit(submitHandler)}>
-      <div>
         <TextField
          fullWidth
           error={errors.name != null}
@@ -63,8 +70,6 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
           helperText ={errors.name && errors.name.message}
         />
         
-      </div>
-      <div>
         <TextField
           fullWidth
           error={errors.phone != null}
@@ -78,8 +83,6 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
           
           helperText ={errors.phone && errors.phone.message}
         />
-      </div>
-      <div>
         <TextField
           fullWidth
           error={errors.address != null}
@@ -91,8 +94,6 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
           variant="filled"
           helperText ={errors.address && errors.address.message}
         />
-      </div>
-      <div>
         <TextField
           sx={{ mb: 1 }}
           fullWidth
@@ -102,8 +103,18 @@ function AddClientForm({setClients,setLoading,setDialog,loading}) {
           variant="filled"
           helperText ={errors.email && errors.email.message}
         />
-      </div>
-      <div></div>
+        <CountryAutocomplete/>
+         <TextField
+          fullWidth
+          error={errors.state != null}
+          {...register("state", {
+            required: { value: true, message: "يجب ادخال الولايه" },
+          })}
+          id="outlined-basic"
+          label="الولايه"
+          variant="filled"
+          helperText ={errors.state && errors.state.message}
+        />
       <LoadingButton
         fullWidth
         loading={loading}

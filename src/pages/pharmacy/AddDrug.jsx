@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
 import MyTableCell from "../inventory/MyTableCell.jsx";
-import MyDateField from "../../components/MyDateField.jsx";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -47,7 +46,7 @@ function AddDrug() {
       });
   };
   useEffect(() => {
-    document.title = "اضافه صنف جديد";
+    document.title = "اضافه طلب جديد";
   }, []);
   const searchHandler = (word) => {
     setSearch(word);
@@ -118,12 +117,9 @@ function AddDrug() {
               <thead>
                 <TableRow>
                   <TableCell>No </TableCell>
-                  <TableCell>Scientific Name</TableCell>
-                  <TableCell>Market Name</TableCell>
+                  <TableCell> Name</TableCell>
                   <TableCell>Cost price</TableCell>
                   <TableCell>Sell Price</TableCell>
-                  <TableCell> Strips per Box </TableCell>
-                  <TableCell> Expire</TableCell>
                 </TableRow>
               </thead>
               <tbody>
@@ -132,13 +128,7 @@ function AddDrug() {
                   return (
                     <TableRow key={drug.id}>
                        <TableCell>{drug.id}</TableCell>
-                      <MyTableCell
-                        colName={"sc_name"}
-                        item={drug}
-                        table="items"
-                      >
-                        {drug.sc_name}
-                      </MyTableCell>
+                    
                       <MyTableCell
                         colName={"market_name"}
                         item={drug}
@@ -164,12 +154,7 @@ function AddDrug() {
                       >
                         {drug.sell_price}
                       </MyTableCell>
-                      <MyTableCell colName={"strips"} item={drug} table="items">
-                        {drug.strips}
-                      </MyTableCell>
-                      <TableCell>
-                        <MyDateField val={drug.expire} item={drug} />
-                      </TableCell>
+                 
                     </TableRow>
                   );
                 })}
