@@ -67,7 +67,7 @@ function ItemDeposit() {
       return {
         ...prev,
         showAddtoDeposit: true,
-        addToDepositForm: "1fr",
+        addToDepositForm: "0.5fr",
       };
     });
   };
@@ -271,7 +271,7 @@ function ItemDeposit() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `  ${layOut.depositItemTable}  ${layOut.addToDepositForm}   ${layOut.depositsTable}     ${layOut.newForm}  100px `,
+          gridTemplateColumns: `  ${layOut.depositItemTable}  ${layOut.addToDepositForm}    ${layOut.depositsTable}     ${layOut.newForm}  `,
         }}
       >
       <div>
@@ -295,6 +295,7 @@ function ItemDeposit() {
               setSelectedDeposit={setSelectedDeposit}
               items={items}
               selectedDeposit={selectedDeposit}
+              setLayout={setLayout}
               setDialog={setDialog}
             />
           )}

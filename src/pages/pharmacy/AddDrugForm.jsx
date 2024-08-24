@@ -95,16 +95,16 @@ function AddDrugForm({setUpdate}) {
       axiosClient
         .post(`drugs`, {
           expire: `${dayJsObj.format('YYYY-MM-DD')}}`,
-          cost_price: formData.cost_price,
-          require_amount: formData.require_amount,
-          sell_price: formData.sell_price,
+          cost_price:  0,
+          require_amount: formData?.require_amount,
+          sell_price:  0,
           pharmacy_type_id: formData.pharmacyType?.id,
           drug_category_id: formData.drugCategory?.id,
           barcode: formData.barcode,
           strips: formData.strips,
           sc_name: formData.sc_name,
           market_name: formData.market_name,
-          batch: formData.batch,
+          batch: formData?.batch ?? '0',
           deposit:formData.deposit?.id
         })
         .then(({ data }) => {
@@ -187,7 +187,7 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             label="الاسم العلمي"
-            variant="standard"
+            variant="outlined"
             helperText={errors.sc_name && errors.sc_name.message}
           />
           <TextField
@@ -203,11 +203,11 @@ function AddDrugForm({setUpdate}) {
             })}
             defaultValue={market}
             label="الاسم التجاري"
-            variant="standard"
+            variant="outlined"
             helperText={errors.market_name && errors.market_name.message}
           />
         </Stack>
-        <Stack gap={2} direction={"row"}>
+        {/* <Stack gap={2} direction={"row"}>
           <TextField
             size="small"
             type="number"
@@ -247,9 +247,10 @@ function AddDrugForm({setUpdate}) {
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
-        </Stack>
+        </Stack> */}
         <Stack gap={2} direction={"row"}>
-          <TextField
+          {/* <TextField
+          
           value={stripPrice}
             size="small"
             fullWidth
@@ -257,10 +258,11 @@ function AddDrugForm({setUpdate}) {
     
             label="سعر الشريط"
             variant="standard"
-          />
+          /> */}
           <TextField
             size="small"
             type="number"
+            
          
             error={errors.strips && errors.strips.message}
             fullWidth
@@ -275,7 +277,7 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             label="عدد الشرائط"
-            variant="standard"
+            variant="outlined"
             helperText={errors.strips && errors.strips.message}
           />
         </Stack>
@@ -294,7 +296,7 @@ function AddDrugForm({setUpdate}) {
           />
         </Stack>
         <Stack gap={2} direction={"row"}>
-          <TextField
+          {/* <TextField
             size="small"
             type="number"
             error={errors.require_amount !=null }
@@ -311,7 +313,7 @@ function AddDrugForm({setUpdate}) {
             })}
             label="الكميه (الفاتوره)"
             variant="outlined"
-          />
+          /> */}
           <TextField
             size="small"
             fullWidth
@@ -343,7 +345,7 @@ function AddDrugForm({setUpdate}) {
           />
         </Stack>
         <Stack gap={2} direction={"row"}>
-          <TextField
+          {/* <TextField
             size="small"
           
          
@@ -351,7 +353,7 @@ function AddDrugForm({setUpdate}) {
             {...register("batch")}
             label="باتش"
             variant="outlined"
-          />
+          /> */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller
               defaultValue={dayjs(new Date())}

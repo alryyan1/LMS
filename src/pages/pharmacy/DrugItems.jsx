@@ -194,24 +194,9 @@ function DrugItems() {
                   >
                     {drug.market_name}
                   </MyTableCell>
-                  <MyTableCell
-                    sx={{ width: "70px" }}
-                    colName={"cost_price"}
-                    item={drug}
-                    table="items"
-                    isNum={true}
-                  >
-                    {drug.cost_price}
-                  </MyTableCell>
-                  <MyTableCell
-                    sx={{ width: "70px" }}
-                    colName={"sell_price"}
-                    item={drug}
-                    table="items"
-                    isNum={true}
-                  >
-                    {drug.sell_price}
-                  </MyTableCell>
+                  <TableCell>{drug?.lastDepositItem?.finalCostPrice}</TableCell>
+                  <TableCell>{drug?.lastDepositItem?.finalSellPrice}</TableCell>
+                  
                   <MyTableCell
                     sx={{ width: "70px" }}
                     colName={"tax"}

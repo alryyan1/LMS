@@ -77,13 +77,14 @@ function MyTableCell({
               setSelectedDeposit((prev)=>{
                 return {...prev, items:prev.items.map((depositItem)=>{
                   if(depositItem.id === item.id){
-                    return {...depositItem, quantity:val}
+                    return {...data.data.data}
                   }
                   return depositItem
                 })};
               })
             }
             if(setDialog){
+              // alert('d')
                 setDialog((prev) => {
               return {
                 ...prev,

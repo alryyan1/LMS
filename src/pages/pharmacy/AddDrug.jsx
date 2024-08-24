@@ -120,9 +120,7 @@ function AddDrug() {
                   <TableCell>No </TableCell>
                   <TableCell>Scientific Name</TableCell>
                   <TableCell>Market Name</TableCell>
-                  <TableCell>Cost price</TableCell>
-                  <TableCell>Sell Price</TableCell>
-                  <TableCell> Strips per Box </TableCell>
+                  <TableCell> Strips  </TableCell>
                   <TableCell> Expire</TableCell>
                 </TableRow>
               </thead>
@@ -146,24 +144,8 @@ function AddDrug() {
                       >
                         {drug.market_name}
                       </MyTableCell>
-                      <MyTableCell
-                        sx={{ width: "70px" }}
-                        colName={"cost_price"}
-                        item={drug}
-                        table="items"
-                        
-                      >
-                        {drug.cost_price}
-                      </MyTableCell>
-                      <MyTableCell
-                        sx={{ width: "70px" }}
-                        colName={"sell_price"}
-                        item={drug}
-                        table="items"
-                        isNum
-                      >
-                        {drug.sell_price}
-                      </MyTableCell>
+                 
+              
                       <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
                       </MyTableCell>

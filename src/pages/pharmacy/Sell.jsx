@@ -138,6 +138,20 @@ function SellDrug() {
           userSelect: "none",
           gap: "15px",
           transition: "0.3s all ease-in-out",
+          display: "grid",
+          gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
+        }}
+      >
+        <div style={{marginRight:'65px'}}></div>
+          {activeSell && <AddDrugAutocomplete setLoading={setLoading} loading={loading} setUpdater={setUpdater} />}
+
+        </div>
+      <div
+        style={{
+          userSelect: "none",
+          gap: "15px",
+          marginTop:'5px',
+          transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
           gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
@@ -166,7 +180,6 @@ function SellDrug() {
           </Stack>
         </div>
         <Card sx={{p:1,height:'80vh'}}>
-          {activeSell && <AddDrugAutocomplete setLoading={setLoading} loading={loading} setUpdater={setUpdater} />}
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton

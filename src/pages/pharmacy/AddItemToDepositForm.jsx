@@ -7,7 +7,7 @@ import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LoadingButton } from '@mui/lab';
 
-function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSelectedDeposit,setData}) {
+function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSelectedDeposit,setData,setLayout}) {
     const[loading,setLoading] =useState()
     const {
         setValue,
@@ -24,17 +24,28 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
   const [selectedItem,setSelectedItem]=useState(null)
 
       const submitHandler = async (formData) => {
+        setLayout((prev)=>{
+          return {
+           ...prev,
+           showAddtoDeposit:false,
+           addToDepositForm: "0fr",
+          }
+
+        })
         const dayJsObj = formData.expire;
     
         const payload = {
           item_id: formData.item.id,
           quantity: formData.amount,
-          price: formData.price,
+          cost: formData.cost ?? 0,
           expire: dayJsObj ? `${dayJsObj.year()}/${dayJsObj.month() + 1}/${dayJsObj.date()}` : null,
     
           notes: formData.notes ?? '',
           barcode: formData.barcode ?? '',
           batch: formData.batch ?? '',
+          free_quantity: formData.free_quantity ?? 0,
+          sell_price: formData.sell_price ?? 0,
+          vat: formData.vat ?? 0,
         };
         console.log(formData);
         // console.log(formData.expire.$d.toJSON());
@@ -77,48 +88,25 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                اضافه للمخزون
             </Typography>
             <form noValidate onSubmit={handleSubmit(submitHandler)}>
-              <Grid container>
-                {/* <Grid sx={{ gap: "5px" }} item xs={6}>
-                  <TextField
-                    {...register("batch")}
-                    sx={{ mb: 1 }}
-                    label={"الباتش"}
-                  ></TextField>
-                  <TextField
+              <Grid  container>
+                {/* <Grid sx={{ gap: "5px" }} item xs={6}> */}
+           
+                  {/* <TextField
+                  fullWidth
                     {...register("barcode")}
                     sx={{ mb: 1 }}
                     label={"الباركود"}
-                  ></TextField>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Controller
-                      defaultValue={dayjs(new Date())}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: "Expire date must be provided",
-                        },
-                      }}
-                      control={control}
-                      name="expire"
-                      render={({ field }) => (
-                        <DateField
-                          {...field}
-                          value={field.value}
-                          onChange={(val) => field.onChange(val)}
-                          sx={{ mb: 1 }}
-                          label="تاريخ الصلاحيه"
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
-                  <TextField
+                  ></TextField> */}
+                
+                  {/* <TextField
+                  fullWidth
                     multiline
                     rows={3}
                     {...register("notes")}
                     sx={{ mb: 1 }}
                     label={"الملاحظات"}
-                  ></TextField>
-                </Grid> */}
+                  ></TextField> */}
+                {/* </Grid> */}
                 <Grid item xs={12}>
                   <Controller
                     name="item"
@@ -192,9 +180,14 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                     }}
                   />
                   {errors.item && errors.item.message}
+                  <TextField
+                  fullWidth
+                    {...register("batch")}
+                    sx={{ mb: 1 }}
+                    label={"الباتش"}
+                  ></TextField>
 
-                  <div>
-                    <TextField
+                     <TextField
                       fullWidth
                       sx={{ mb: 1 }}
                       error={errors.amount}
@@ -203,12 +196,36 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                       })}
                       id="outlined-basic"
                       label="الكميه"
-                      variant="filled"
+                      variant="outlined"
+                   
+                      helperText= {errors.amount && errors.amount.message}
                     />
-                    {errors.amount && errors.amount.message}
-                  </div>
-                  <div>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Controller
+                      defaultValue={dayjs(new Date())}
+                      rules={{
+                        required: {
+                          value: true,
+                          message: "Expire date must be provided",
+                        },
+                      }}
+                      control={control}
+                      name="expire"
+                      render={({ field }) => (
+                        <DateField
+                        fullWidth
+                          {...field}
+                          value={field.value}
+                          onChange={(val) => field.onChange(val)}
+                          sx={{ mb: 1 }}
+                          label="تاريخ الصلاحيه"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                    {/*
                     <TextField
+                      helperText=     {errors.price && errors.price.message}
                       sx={{ mb: 1 }}
                       fullWidth
                       error={errors.price}
@@ -219,11 +236,46 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                         },
                       })}
                       id="outlined-basic"
-                      label="سعر الصندوق"
+                      label="(cost price)سعر  التكلفه"
                       variant="filled"
+                      
                     />
-                    {errors.price && errors.price.message}
-                  </div>
+                      <TextField
+                      helperText=     {errors.sell_price && errors.sell_price.message}
+                      sx={{ mb: 1 }}
+                      fullWidth
+                      error={errors.sell_price}
+                      {...register("sell_price", {
+                        required: {
+                          value: true,
+                          message: "sell_price must be provided",
+                        },
+                      })}
+                      id="outlined-basic"
+                      label="(sell price)سعر البيع"
+                      variant="filled"
+                      
+                    />
+                     <TextField
+                      sx={{ mb: 1 }}
+                      fullWidth
+                      error={errors.vat}
+                      {...register("vat")}
+                      id="outlined-basic"
+                      label="%(vat)الضريبه "
+                      variant="filled"
+                      
+                    />
+                   <TextField
+                      sx={{ mb: 1 }}
+                      fullWidth
+                      error={errors.free_quantity}
+                      {...register("free_quantity")}
+                      id="outlined-basic"
+                      label="(free quantity)كميه المجانيه "
+                      variant="filled"
+                      
+                    /> */}
                 </Grid>
                 <LoadingButton
                   fullWidth
@@ -231,7 +283,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
                   variant="contained"
                   type="submit"
                 >
-                  Add to inventory 
+                  Add  
                 </LoadingButton>
               </Grid>
             </form>
