@@ -29,15 +29,21 @@ import AddItemToDepositForm from "./AddItemToDepositForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { t } from "i18next";
-import { ArrowDropDown, DeleteOutline, Download, FormatListBulleted, Info } from "@mui/icons-material";
+import {
+  ArrowDropDown,
+  DeleteOutline,
+  Download,
+  FormatListBulleted,
+  Info,
+} from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import PurchaseInvoiceSummery from "./PurchaseInvoiceSummery.jsx";
 import MyTableCell from "../inventory/MyTableCell.jsx";
 function ItemDeposit() {
   const [layOut, setLayout] = useState({
     newForm: "0fr",
-    depositsTable:'2fr',
-    showDepositsTable:true,
+    depositsTable: "2fr",
+    showDepositsTable: true,
     showNewForm: false,
     showDopsitItemTable: false,
     depositItemTable: "0fr",
@@ -90,7 +96,7 @@ function ItemDeposit() {
         depositItemTable: "3fr",
       };
     });
-  }
+  };
   const hideDepositsTable = () => {
     setLayout((prev) => {
       return {
@@ -120,7 +126,8 @@ function ItemDeposit() {
   };
   // console.log(items);
   //create state variable to store all suppliers
-  const { setDialog, items, suppliers,showSummery, setShowSummery } = useOutletContext();
+  const { setDialog, items, suppliers, showSummery, setShowSummery } =
+    useOutletContext();
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -128,7 +135,7 @@ function ItemDeposit() {
   const [update, setUpdate] = useState(0);
   const [todayDeposits, setTodayDeposits] = useState([]);
   const [selectedDeposit, setSelectedDeposit] = useState(null);
-  const [data,setData] = useState()
+  const [data, setData] = useState();
   console.log(income, "is equal to null", income === null);
   const dayJsObj = dayjs(new Date());
   console.log(`${dayJsObj.date()}/${dayJsObj.month() + 1}/${dayJsObj.year()}`);
@@ -276,12 +283,13 @@ function ItemDeposit() {
           gridTemplateColumns: `  ${layOut.depositItemTable}  ${layOut.addToDepositForm}    ${layOut.depositsTable}     ${layOut.newForm}  `,
         }}
       >
-      <div>
+        <div>
           {/* create table with all suppliers */}
           {selectedDeposit && layOut.showDopsitItemTable && (
             <DepoistItemsTable
-            setData={setData}
-             data={data}
+              setLayout={setLayout}
+              setData={setData}
+              data={data}
               setSelectedDeposit={setSelectedDeposit}
               deleteIncomeItemHandler={deleteIncomeItemHandler}
               loading={loading}
@@ -292,7 +300,7 @@ function ItemDeposit() {
         <div style={layOut.addToInventoryStyleObj}>
           {selectedDeposit && layOut.showAddtoDeposit && (
             <AddItemToDepositForm
-            setData={setData}
+              setData={setData}
               setUpdate={setUpdate}
               setSelectedDeposit={setSelectedDeposit}
               items={items}
@@ -303,119 +311,124 @@ function ItemDeposit() {
           )}
         </div>
         <div>
-          {layOut.showDepositsTable && 
-          
-          <TableContainer>
-
-               <Table style={{direction:'rtl'}} size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell> كود</TableCell>
-                <TableCell> الرقم المرجعي</TableCell>
-                <TableCell>تاريخ الانشاء</TableCell>
-                <TableCell>المورد</TableCell>
-                <TableCell>المبلغ</TableCell>
-                <TableCell>اضيفت بواسطه </TableCell>
-                <TableCell>عرض التفاصيل</TableCell>
-                <TableCell> دفع</TableCell>
-                <TableCell> التقرير</TableCell>
-                <TableCell> ملخص الفاتوره</TableCell>
-                <TableCell> %الخصم </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {todayDeposits.map((deposit) => {
-                return (
-                  <TableRow
-                    sx={{
-                      backgroundColor: (theme) =>
-                        selectedDeposit?.id == deposit.id
-                          ? theme.palette.warning.light
-                          : "",
-                    }}
-                    key={deposit.id}
-                  >
-                    <TableCell>{deposit.id}</TableCell>
-                    <TableCell>{deposit.bill_number}</TableCell>
-                    <TableCell>
-                      {dayjs(new Date(Date.parse(deposit.created_at))).format(
-                        "YYYY/MM/DD"
-                      )}
-                    </TableCell>
-                    <TableCell>{deposit.supplier.name}</TableCell>
-                    <TableCell>{deposit.total}</TableCell>
-               
-                    <TableCell>{deposit?.user?.username}</TableCell>
-
-                    <TableCell>
-                      <Button
-                        onClick={() => {
-
-                          hideDepositsTable()
-                          showAddToDeposit()
-                          
-                          // hideAddToDeposit();
-                          // hideNewFormHandler();
-                          showDepositItemsTable()
-                          setSelectedDeposit(deposit);
-                          
-                          setData(deposit);
-                        }}
-                      >
-                        التفاصيل
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <LoadingButton loading={loading} color={deposit.paid ? 'success' : 'error'} variant="contained"
-                        onClick={() => {
-                          setLoading(true);
-                          axiosClient.patch(`inventory/deposit/pay/${deposit.id}}`).then(({data})=>{
-                            setTodayDeposits((prev)=>{
-                              return prev.map(d=>{
-                                // console.log(d,data)
-                                if(d.id === data.data.id){
-                                  // alert('found')
-                                  return {...data.data}
-                                }else{
-                                  return d;
-                                }
-                              })
-                            })
-                          }).finally(()=>setLoading(false))
-                        }}
-                      >
-                        {deposit.paid ?'الغاء الدفع':'دفع'}
-                      </LoadingButton>
-                    </TableCell>
-                    <TableCell>  <a
-              href={`${webUrl}pdf?id=${deposit.id}`}
-            >
-              pdf
-            </a></TableCell>
-            <TableCell><IconButton onClick={()=>{
-              console.log(deposit,'deposit')
-              setShowSummery(true)
-              setSelectedDeposit(deposit)
-            }} ><Info/></IconButton></TableCell>
-             <MyTableCell
-                    setDialog={setDialog}
-                    show
-                    sx={{ width: "60px", textAlign: "center" }}
-                    setSelectedDeposit={setSelectedDeposit}
-                    item={deposit}
-                    table="deposit/update"
-                    colName={"discount"}
-                  >
-                    {deposit.discount}
-                  </MyTableCell>
-
+          {layOut.showDepositsTable && (
+            <TableContainer>
+              <Table style={{ direction: "rtl" }} size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell> كود</TableCell>
+                    <TableCell> الرقم المرجعي</TableCell>
+                    <TableCell>تاريخ الانشاء</TableCell>
+                    <TableCell>المورد</TableCell>
+                    <TableCell>اضيفت بواسطه </TableCell>
+                    <TableCell>عرض التفاصيل</TableCell>
+                    <TableCell> دفع</TableCell>
+                    <TableCell> التقرير</TableCell>
+                    <TableCell> ملخص الفاتوره</TableCell>
+                    <TableCell> %الخصم </TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          </TableContainer>
-       }
+                </TableHead>
+                <TableBody>
+                  {todayDeposits.map((deposit) => {
+                    return (
+                      <TableRow
+                        sx={{
+                          backgroundColor: (theme) =>
+                            selectedDeposit?.id == deposit.id
+                              ? theme.palette.warning.light
+                              : "",
+                        }}
+                        key={deposit.id}
+                      >
+                        <TableCell>{deposit.id}</TableCell>
+                        <TableCell>{deposit.bill_number}</TableCell>
+                        <TableCell>
+                          {dayjs(
+                            new Date(Date.parse(deposit.created_at))
+                          ).format("YYYY/MM/DD")}
+                        </TableCell>
+                        <TableCell>{deposit.supplier.name}</TableCell>
+
+                        <TableCell>{deposit?.user?.username}</TableCell>
+
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              hideDepositsTable();
+                              showAddToDeposit();
+
+                              // hideAddToDeposit();
+                              // hideNewFormHandler();
+                              showDepositItemsTable();
+                              setSelectedDeposit(deposit);
+
+                              setData(deposit);
+                            }}
+                          >
+                            التفاصيل
+                          </Button>
+                        </TableCell>
+                        <TableCell>
+                          <LoadingButton
+                            loading={loading}
+                            color={deposit.paid ? "success" : "error"}
+                            variant="contained"
+                            onClick={() => {
+                              setLoading(true);
+                              axiosClient
+                                .patch(`inventory/deposit/pay/${deposit.id}}`)
+                                .then(({ data }) => {
+                                  setTodayDeposits((prev) => {
+                                    return prev.map((d) => {
+                                      // console.log(d,data)
+                                      if (d.id === data.data.id) {
+                                        // alert('found')
+                                        return { ...data.data };
+                                      } else {
+                                        return d;
+                                      }
+                                    });
+                                  });
+                                })
+                                .finally(() => setLoading(false));
+                            }}
+                          >
+                            {deposit.paid ? "الغاء الدفع" : "دفع"}
+                          </LoadingButton>
+                        </TableCell>
+                        <TableCell>
+                          {" "}
+                          <a href={`${webUrl}pdf?id=${deposit.id}`}>pdf</a>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => {
+                              console.log(deposit, "deposit");
+                              setShowSummery(true);
+                              setSelectedDeposit(deposit);
+                            }}
+                          >
+                            <Info />
+                          </IconButton>
+                        </TableCell>
+                        <MyTableCell
+                          setDialog={setDialog}
+                          show
+                          sx={{ width: "60px", textAlign: "center" }}
+                          setDeposit={setSelectedDeposit}
+                          item={deposit}
+                          table="inventory/deposit/update"
+                          colName={"discount"}
+                        >
+                          {deposit.discount}
+                        </MyTableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </div>
 
         {layOut.showNewForm && (
@@ -427,15 +440,14 @@ function ItemDeposit() {
           />
         )}
         <Stack direction={"column"} gap={2}>
-        <Item>
+          <Item>
             <IconButton
-            title="اظهار الفواتير"
+              title="اظهار الفواتير"
               onClick={() => {
-                hideDepositItemsTable()
-                hideAddToDeposit()
-                hideNewFormHandler()
+                hideDepositItemsTable();
+                hideAddToDeposit();
+                hideNewFormHandler();
                 showDepositsTable();
-            
               }}
               variant="contained"
             >
@@ -444,19 +456,18 @@ function ItemDeposit() {
           </Item>
           <Item>
             <IconButton
-            title="انشاء فاتوره"
+              title="انشاء فاتوره"
               onClick={() => {
-                hideDepositItemsTable()
-                
-                hideAddToDeposit()
+                hideDepositItemsTable();
+
+                hideAddToDeposit();
                 showNewFormHandler();
-               setLayout((prev)=>{
-                 return {
-                  ...prev,
-                   depositsTable:'1fr'
-                 }
- 
-               })
+                setLayout((prev) => {
+                  return {
+                    ...prev,
+                    depositsTable: "1fr",
+                  };
+                });
               }}
               variant="contained"
             >
@@ -476,7 +487,9 @@ function ItemDeposit() {
             </IconButton>
           </Item> */}
         </Stack>
-        {selectedDeposit &&<PurchaseInvoiceSummery deposit={selectedDeposit} />}
+        {selectedDeposit && (
+          <PurchaseInvoiceSummery deposit={selectedDeposit} />
+        )}
       </div>
     </>
   );

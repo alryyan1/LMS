@@ -1,7 +1,9 @@
-import { Delete } from "@mui/icons-material";
+import { Add, Delete, SwapHoriz } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
+  Icon,
+  IconButton,
   Pagination,
   Stack,
   Table,
@@ -12,12 +14,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from "react";
 import { theme, toFixed, webUrl } from "../constants";
 import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyCheckbox from "../../components/MyCheckBox";
 import { useOutletContext } from "react-router-dom";
+import MyDateField from "../../components/MyDateField";
+import MyDateField2 from "../../components/MyDateField2";
 function DepoistItemsTable({
   selectedDeposit,
   loading,
@@ -25,6 +30,7 @@ function DepoistItemsTable({
   setSelectedDeposit,
   data,
   setData,
+  setLayout
 }) {
   const { setDialog } = useOutletContext();
   console.log(setDialog, "setdialog");
@@ -113,6 +119,27 @@ function DepoistItemsTable({
         <Typography align="center" variant="h5" sx={{ mb: 1 }}>
           {`${selectedDeposit.supplier.name} /  ${selectedDeposit.bill_number}`}
         </Typography>
+
+        <IconButton onClick={()=>{
+          setLayout((prev)=>{
+            return {
+             ...prev,
+             showAddtoDeposit:true,
+             addToDepositForm: "1fr",
+            }
+  
+          })
+        }} title="add item" color="success"><AddIcon/></IconButton>
+          <IconButton onClick={()=>{
+          setLayout((prev)=>{
+            return {
+             ...prev,
+             showAddtoDeposit:false,
+             addToDepositForm: "0fr",
+            }
+  
+          })
+        }} title="expand" color="success"><SwapHoriz/></IconButton>
         <TextField
           autoComplete="false"
           placeholder="Barcode/Market name"
@@ -140,6 +167,7 @@ function DepoistItemsTable({
             <TableCell>Dlt</TableCell>
             <TableCell> return</TableCell>
             <TableCell> free QYN</TableCell>
+            <TableCell>Expire</TableCell>
           </TableRow>
         </thead>
 
@@ -186,9 +214,9 @@ function DepoistItemsTable({
                     {depositItem.vat_cost}
                   </MyTableCell>
                   <TableCell>
-                    {(depositItem.vat_cost * depositItem.cost) / 100}
+                    {toFixed((depositItem.vat_cost * depositItem.cost) / 100,3)}
                   </TableCell>
-                  <TableCell >{depositItem.finalCostPrice}</TableCell>
+                  <TableCell >{toFixed(depositItem.finalCostPrice,3)}</TableCell>
                   <MyTableCell
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
@@ -209,9 +237,9 @@ function DepoistItemsTable({
                     table="depositItems/update"
                     colName={"vat_sell"}
                   >
-                    {depositItem.vat_sell}
+                    {toFixed(depositItem.vat_sell,3)}
                   </MyTableCell>
-                  <TableCell>{depositItem.finalSellPrice}</TableCell>
+                  <TableCell>{toFixed(depositItem.finalSellPrice,3)}</TableCell>
 
                   <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>
                     {toFixed(depositItem.quantity * depositItem.finalCostPrice, 3)}
@@ -246,6 +274,9 @@ function DepoistItemsTable({
                   >
                     {depositItem.free_quantity}
                   </MyTableCell>
+                  <TableCell>
+                    <MyDateField2 val={depositItem.expire} item={depositItem} />
+                  </TableCell>
                 </TableRow>
               );
             })}

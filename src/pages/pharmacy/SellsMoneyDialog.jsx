@@ -46,6 +46,12 @@ import {
               <Typography variant="h4" textAlign={'center'}>Cash</Typography>
               <Typography variant="h4" textAlign={'center'}>{shift && toFixed(shift.totalDeductsPriceCash,3)}</Typography>
             </Stack>
+            <Divider></Divider>
+
+            <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
+              <Typography variant="h4" textAlign={'center'}>Post paid</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift && toFixed(shift.totalDeductsPostPaid,3)}</Typography>
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button

@@ -159,23 +159,29 @@ function DrugItems() {
               <TableCell>الاسم التجاري</TableCell>
               <TableCell>سعر الشراء</TableCell>
               <TableCell>سعر البيع </TableCell>
-              <TableCell> الضريبه </TableCell>
               <TableCell> عدد الشرائط</TableCell>
-              <TableCell> الصلاحيه</TableCell>
               <TableCell> المجموعه</TableCell>
               <TableCell> الشكل</TableCell>
+              <TableCell> تاريخ الصلاحيه</TableCell>
+              <TableCell> المخزون </TableCell>
               <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
           <tbody>
             {items.map((drug) => {
+
+            const deposits = drug?.totalDeposit ?? 0 ; 
+            const out = drug?.totalOut ?? 0 ; 
+            const amountLeft = deposits - out;
+
+            
               console.log(drug, "drug ");
               return (
                 <TableRow
                   sx={{
                     color: (theme) => {
-                      return !dayjs(drug.expire).isAfter(dayjs())
+                      return !dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs())
                         ? theme.palette.error.light
                         : theme.palette.background.defaultLight;
                     },
@@ -197,21 +203,11 @@ function DrugItems() {
                   <TableCell>{drug?.lastDepositItem?.finalCostPrice}</TableCell>
                   <TableCell>{drug?.lastDepositItem?.finalSellPrice}</TableCell>
                   
-                  <MyTableCell
-                    sx={{ width: "70px" }}
-                    colName={"tax"}
-                    item={drug}
-                    table="items"
-                    isNum={true}
-                  >
-                    {drug.tax}
-                  </MyTableCell>
+              
                   <MyTableCell colName={"strips"} item={drug} table="items">
                     {drug.strips}
                   </MyTableCell>
-                  <TableCell>
-                    <MyDateField val={drug.expire} item={drug} />
-                  </TableCell>
+                 
                   <MyAutoCompeleteTableCell
                     sections={drugCategory}
                     val={drug.category}
@@ -230,11 +226,17 @@ function DrugItems() {
                   >
                     {drug.type?.name}
                   </MyAutoCompeleteTableCell>
+                  <TableCell>
+                    {drug?.lastDepositItem?.expire}
+                  </TableCell>
+                  <TableCell>
+                    {amountLeft}
+                  </TableCell>
                   <MyTableCell  show colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
                   <TableCell>
-                    {!dayjs(drug.expire).isAfter(dayjs()) ? (
+                    {!dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs()) ? (
                       <Badge
                         anchorOrigin={{
                           vertical: "top",

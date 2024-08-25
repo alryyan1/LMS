@@ -61,7 +61,6 @@ function AddDrugAutocomplete({setUpdater}) {
         >
           <Autocomplete
           
-          autoFocus={true}
           value={selectedDrugs}
           inputValue={field}
             onInputChange={(e,v)=>{
@@ -84,7 +83,7 @@ function AddDrugAutocomplete({setUpdater}) {
 
               return (
                 <TextField
-               
+                autoFocus
                  
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -92,6 +91,9 @@ function AddDrugAutocomplete({setUpdater}) {
                         if (selectedDrugs.length > 0) {
                           addDrugsHandler()
                           return
+                        }
+                        if (e.target.value.length < 4) {
+                           return
                         }
                         
                       //get test from tests using find
@@ -104,6 +106,12 @@ function AddDrugAutocomplete({setUpdater}) {
                       if (itemFounded ) {
                         if (itemFounded.strips == 0) {
                           alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
+                          return
+                        }
+                        if (itemFounded.lastDepositItem == null) {
+                          setDialog((prev)=>{
+                            return {...prev, open: true, message:`Item (${itemFounded.market_name}) is not available in store `,color:'error'}
+                          })
                           return
                         }
                         console.log(itemFounded.expire,'expire')

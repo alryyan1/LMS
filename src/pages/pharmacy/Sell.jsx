@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import { useSymbologyScanner } from '@use-symbology-scanner/react';
+import { useSymbologyScanner } from "@use-symbology-scanner/react";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import {
@@ -23,6 +23,9 @@ import {
   Zoom,
   Autocomplete,
   Button,
+  FormControlLabel,
+  Checkbox,
+  FormGroup,
 } from "@mui/material";
 import {
   Calculate,
@@ -48,6 +51,7 @@ import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
 import SaleDiscountSelect from "../../components/SaleDiscountSelect";
+import MyCheckbox from "../../components/MyCheckBox";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -56,12 +60,12 @@ function toFixed(num, fixed) {
   return num.toString().match(re)[0];
 }
 function SellDrug() {
-  const ref = useRef(null)
+  const ref = useRef(null);
   const handleSymbol = (symbol, matchedSymbologies) => {
-    console.log(`Scanned ${symbol}`)
-}
+    console.log(`Scanned ${symbol}`);
+  };
 
-useSymbologyScanner(handleSymbol, { target: ref })
+  useSymbologyScanner(handleSymbol, { target: ref });
   const [loading, setLoading] = useState();
   const [userSettings, setUserSettings] = useState(null);
   const [clients, setClients] = useState([]);
@@ -150,15 +154,21 @@ useSymbologyScanner(handleSymbol, { target: ref })
           gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
         }}
       >
-        <div style={{marginRight:'65px'}}></div>
-          {activeSell && <AddDrugAutocomplete setLoading={setLoading} loading={loading} setUpdater={setUpdater} />}
-
-        </div>
+        <div style={{ marginRight: "65px" }}></div>
+        {activeSell && (
+          <AddDrugAutocomplete
+            key={activeSell?.id}
+            setLoading={setLoading}
+            loading={loading}
+            setUpdater={setUpdater}
+          />
+        )}
+      </div>
       <div
         style={{
           userSelect: "none",
           gap: "15px",
-          marginTop:'5px',
+          marginTop: "5px",
           transition: "0.3s all ease-in-out",
           height: "75vh",
           display: "grid",
@@ -187,7 +197,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
             </Item>
           </Stack>
         </div>
-        <Card sx={{p:1,height:'80vh',overflow:'auto'}}>
+        <Card sx={{ p: 1, height: "80vh", overflow: "auto" }}>
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -212,7 +222,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
             )}
           </div>
         </Card>
-        <Card sx={{p:1}} style={{ overflow: "auto" }}>
+        <Card sx={{ p: 1 }} style={{ overflow: "auto" }}>
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
@@ -255,106 +265,148 @@ useSymbologyScanner(handleSymbol, { target: ref })
                     Invoice PDF
                   </a>
                 )}
+                {activeSell.client && (
+                  <FormGroup>
+                    <FormControlLabel
+                      label="Postpaid"
+                      control={
+                        <MyCheckbox
+                          setShift={setShift}
+                          setDialog={setDialog}
+                          path={`deduct/${activeSell?.id}`}
+                          colName={"is_postpaid"}
+                          isChecked={activeSell?.is_postpaid}
+                        />
+                      }
+                    ></FormControlLabel>
+                  </FormGroup>
+                )}
               </Stack>
 
-              {shiftIsLoading ? 
-              <Skeleton
-                animation="wave"
-                variant="rectangular"
-                width={"100%"}
-                height={400}
-              /> : 
-              <Table className="white" key={updater} size="small">
-                <thead>
-                  <TableRow >
-                    <TableCell>Item</TableCell>
-                    <TableCell>Disc</TableCell>
-                    <TableCell>Price</TableCell>
-                    <TableCell>Strips</TableCell>
-                    <TableCell>Box</TableCell>
-                    <TableCell>Subtotal</TableCell>
-                    <TableCell width={"5%"}>action</TableCell>
-                    <TableCell >Expire</TableCell>
-                  </TableRow>
-                </thead>
-                <TableBody>
-                  {activeSell?.deducted_items?.map((deductedItem) => (
-                    <TableRow   sx={{
-                      background: (theme) => {
-                        return !dayjs(deductedItem.item.expire).isAfter(dayjs())
-                          ? theme.palette.error.light
-                          : theme.palette.background.defaultLight;
-                      },
-                      fontWeight: "500",
-                    }} key={deductedItem.id}>
-                      <TableCell>{deductedItem.item?.market_name}</TableCell>
-                      <TableCell><SaleDiscountSelect disabled={activeSell?.complete == 1}  disc={deductedItem.discount} setSelectedSale={setActiveSell}  id={deductedItem.id} /></TableCell>
-                      <TableCell > {Number(deductedItem?.item.lastDepositItem?.finalSellPrice).toFixed(3)}</TableCell>
-
-                      {activeSell.complete ? (
-                        <TableCell> {deductedItem.strips}</TableCell>
-                      ) : (
-                        <MyTableCell
-                          stateUpdater={setUpdater}
-                          setData={setActiveSell}
-                          sx={{ width: "70px" }}
-                          type={"number"}
-                          item={deductedItem}
-                          table="deductedItem"
-                          colName={"strips"}
-                          setShift={setShift}
-                        >
-                          {deductedItem.strips}
-                        </MyTableCell>
-                      )}
-                      {activeSell.complete ? (
-                        <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
-                      ) : (
-                        <MyTableCell
-                          stateUpdater={setUpdater}
-                          setData={setActiveSell}
-                          setShift={setShift}
-                          sx={{ width: "70px" }}
-                          type={"number"}
-                          item={deductedItem}
-                          table="deductedItem"
-                          colName={"box"}
-                        >
-                          {toFixed(deductedItem.box, 3)}
-                        </MyTableCell>
-                      )}
-                      <TableCell>
-                        {toFixed(
-                          (deductedItem.price /
-                            deductedItem.item?.strips) *
-                            deductedItem.strips,
-                          3
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <LoadingButton
-                          disabled={activeSell.complete}
-                          size="small"
-                          loading={loading}
-                          onClick={() => {
-                            setLoading(true);
-                            axiosClient
-                              .delete(`inventory/deduct/${deductedItem.id}`)
-                              .then(({ data }) => {
-                                setLoading(false);
-                                setActiveSell(data.data);
-                                setShift(data.shift);
-                              });
-                          }}
-                        >
-                          <DeleteOutlineSharp />
-                        </LoadingButton>
-                      </TableCell>
-                      <TableCell>{dayjs(new Date(Date.parse(deductedItem.item.expire))).format('YYYY-MM-DD')}</TableCell>
+              {shiftIsLoading ? (
+                <Skeleton
+                  animation="wave"
+                  variant="rectangular"
+                  width={"100%"}
+                  height={400}
+                />
+              ) : (
+                <Table className="white" key={updater} size="small">
+                  <thead>
+                    <TableRow>
+                      <TableCell>Item</TableCell>
+                      <TableCell>Disc</TableCell>
+                      <TableCell>Price</TableCell>
+                      <TableCell>Strips</TableCell>
+                      <TableCell>Box</TableCell>
+                      <TableCell>Subtotal</TableCell>
+                      <TableCell width={"5%"}>action</TableCell>
+                      <TableCell>Expire</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>}
+                  </thead>
+                  <TableBody>
+                    {activeSell?.deducted_items?.map((deductedItem) => (
+                      <TableRow
+                        sx={{
+                          background: (theme) => {
+                            return !dayjs(
+                              deductedItem.item.lastDepositItem.expire
+                            ).isAfter(dayjs())
+                              ? theme.palette.error.light
+                              : theme.palette.background.defaultLight;
+                          },
+                          fontWeight: "500",
+                        }}
+                        key={deductedItem.id}
+                      >
+                        <TableCell>{deductedItem.item?.market_name}</TableCell>
+                        <TableCell>
+                          <SaleDiscountSelect
+                            disabled={activeSell?.complete == 1}
+                            disc={deductedItem.discount}
+                            setSelectedSale={setActiveSell}
+                            id={deductedItem.id}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {" "}
+                          {Number(
+                            deductedItem?.item.lastDepositItem?.finalSellPrice
+                          ).toFixed(3)}
+                        </TableCell>
+
+                        {activeSell.complete ? (
+                          <TableCell> {deductedItem.strips}</TableCell>
+                        ) : (
+                          <MyTableCell
+                            stateUpdater={setUpdater}
+                            setData={setActiveSell}
+                            sx={{ width: "70px" }}
+                            type={"number"}
+                            item={deductedItem}
+                            table="deductedItem"
+                            colName={"strips"}
+                            setShift={setShift}
+                          >
+                            {deductedItem.strips}
+                          </MyTableCell>
+                        )}
+                        {activeSell.complete ? (
+                          <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
+                        ) : (
+                          <MyTableCell
+                            stateUpdater={setUpdater}
+                            setData={setActiveSell}
+                            setShift={setShift}
+                            sx={{ width: "70px" }}
+                            type={"number"}
+                            item={deductedItem}
+                            table="deductedItem"
+                            colName={"box"}
+                          >
+                            {toFixed(deductedItem.box, 3)}
+                          </MyTableCell>
+                        )}
+                        <TableCell>
+                          {toFixed(
+                            (deductedItem.price / deductedItem.item?.strips) *
+                              deductedItem.strips,
+                            3
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <LoadingButton
+                            disabled={activeSell.complete}
+                            size="small"
+                            loading={loading}
+                            onClick={() => {
+                              setLoading(true);
+                              axiosClient
+                                .delete(`inventory/deduct/${deductedItem.id}`)
+                                .then(({ data }) => {
+                                  setLoading(false);
+                                  setActiveSell(data.data);
+                                  setShift(data.shift);
+                                });
+                            }}
+                          >
+                            <DeleteOutlineSharp />
+                          </LoadingButton>
+                        </TableCell>
+                        <TableCell>
+                          {dayjs(
+                            new Date(
+                              Date.parse(
+                                deductedItem.item.lastDepositItem.expire
+                              )
+                            )
+                          ).format("YYYY-MM-DD")}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </>
           )}
         </Card>
@@ -392,7 +444,9 @@ useSymbologyScanner(handleSymbol, { target: ref })
                       justifyContent={"space-between"}
                       direction={"column"}
                     >
-                      <Typography textAlign={'right'} variant="h5">Total</Typography>
+                      <Typography textAlign={"right"} variant="h5">
+                        Total
+                      </Typography>
                       <Divider />
                       {activeSell && (
                         <Typography variant="h3">
@@ -425,9 +479,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
                       <Divider />
 
                       <TextField
-
                         value={recieved}
-                       
                         onChange={(e) => {
                           setRecieved(e.target.value);
                           // axiosClient
@@ -467,12 +519,10 @@ useSymbologyScanner(handleSymbol, { target: ref })
                       <Divider />
 
                       <Typography variant="h3">
-         
-                          
-                         {   (Number( recieved ) -  Number(  activeSell?.total_price_unpaid)).toFixed(3)}
-                              
-                            
-                          
+                        {(
+                          Number(recieved) -
+                          Number(activeSell?.total_price_unpaid)
+                        ).toFixed(3)}
                       </Typography>
                     </Stack>
                     <Stack
@@ -615,7 +665,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
             >
               <AddIcon />
             </LoadingButton>
-            <Divider/>
+            <Divider />
             {activeSell?.complete == 1 && (
               <IconButton
                 onClick={() => {
@@ -659,8 +709,7 @@ useSymbologyScanner(handleSymbol, { target: ref })
                 <LockOpen />
               </IconButton>
             )}
-            <Divider/>
-
+            <Divider />
           </Stack>
         </Box>
         <SellsMoneyDialog />

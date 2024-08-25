@@ -21,7 +21,8 @@ function MyTableCell({
   setData=null,
   setSelectedDeposit=null,
   isNum = false,
-  setDialog= null
+  setDialog= null,
+  setDeposit=null
 }) {
   const [edited, setEdited] = useState(show);
   const [intial, setInitialVal] = useState(children);
@@ -72,6 +73,9 @@ function MyTableCell({
             if (stateUpdater) {
             stateUpdater((prev) => prev + 1);
               
+            }
+            if (setDeposit) {
+              setDeposit(data.data.data)
             }
             if (setSelectedDeposit) {
               setSelectedDeposit((prev)=>{

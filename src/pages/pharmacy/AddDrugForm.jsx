@@ -88,13 +88,13 @@ function AddDrugForm({setUpdate}) {
     // }, [isSubmitted, page]);
     console.log(isSubmitting);
     const submitHandler = async (formData) => {
-      const dayJsObj = formData.expire;
+      // const dayJsObj = formData.expire;
   
       console.log(formData, "formdata");
       setLoading(true);
       axiosClient
         .post(`drugs`, {
-          expire: `${dayJsObj.format('YYYY-MM-DD')}}`,
+          expire: `${dayjs().format('YYYY-MM-DD')}}`,
           cost_price:  0,
           require_amount: formData?.require_amount,
           sell_price:  0,
@@ -354,7 +354,7 @@ function AddDrugForm({setUpdate}) {
             label="باتش"
             variant="outlined"
           /> */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Controller
               defaultValue={dayjs(new Date())}
               control={control}
@@ -372,7 +372,7 @@ function AddDrugForm({setUpdate}) {
                 />
               )}
             />
-          </LocalizationProvider>
+          </LocalizationProvider> */}
         </Stack>
         <Stack direction={"column"}>
         {deposits.length > 0 && <Controller

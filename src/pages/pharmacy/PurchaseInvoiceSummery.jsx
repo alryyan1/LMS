@@ -51,7 +51,7 @@ function PurchaseInvoiceSummery({ deposit }) {
                   <TableCell>
                     <Widgets />
                   </TableCell>
-                  <TableCell> Count</TableCell>
+                  <TableCell> Items Number</TableCell>
                   <TableCell>{deposit?.items.length}</TableCell>
                 </TableRow>
                 <TableRow>
@@ -76,28 +76,29 @@ function PurchaseInvoiceSummery({ deposit }) {
                     <Paid />
                   </TableCell>
                   <TableCell> Buy</TableCell>
-                  <TableCell>{deposit?.totalAmountPaid}</TableCell>
+                  <TableCell>{toFixed(deposit?.totalAmountPaid,3)}</TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <MoneyOff />
-                  </TableCell>
-                  <TableCell> Offer Price</TableCell>
-                  <TableCell>{deposit?.free_quantity}</TableCell>
-                </TableRow>
+              
                 <TableRow>
                   <TableCell>
                     <PriceCheck />
                   </TableCell>
                   <TableCell> Profit</TableCell>
-                  <TableCell>{deposit?.free_quantity}</TableCell>
+                  <TableCell>{toFixed(deposit.totalSell -  deposit.totalCost)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
                     <LocalOffer />
                   </TableCell>
                   <TableCell> Discount</TableCell>
-                  <TableCell>{deposit?.free_quantity}</TableCell>
+                  <TableCell>{toFixed(deposit?.totalAmountPaid * deposit.discount / 100,3)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <LocalOffer />
+                  </TableCell>
+                  <TableCell> Paid (discount applied)</TableCell>
+                  <TableCell>{toFixed(deposit.totalAmountPaid-(deposit?.totalAmountPaid * deposit.discount / 100),3)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

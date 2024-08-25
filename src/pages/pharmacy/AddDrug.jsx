@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid,
   Skeleton,
   Stack,
@@ -121,7 +122,8 @@ function AddDrug() {
                   <TableCell>Scientific Name</TableCell>
                   <TableCell>Market Name</TableCell>
                   <TableCell> Strips  </TableCell>
-                  <TableCell> Expire</TableCell>
+                  <TableCell> Inventory  </TableCell>
+                  {/* <TableCell> Expire</TableCell> */}
                 </TableRow>
               </thead>
               <tbody>
@@ -149,9 +151,10 @@ function AddDrug() {
                       <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
                       </MyTableCell>
-                      <TableCell>
+                      <TableCell><Button>Inventory</Button></TableCell>
+                      {/* <TableCell>
                         <MyDateField val={drug.expire} item={drug} />
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })}

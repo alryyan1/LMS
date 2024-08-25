@@ -385,7 +385,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path:'inventory',
+            path:'quantities',
             element: (
               <ProtectedRoute>
                 <ItemsInventory />
