@@ -23,8 +23,8 @@ export default function PayOptions() {
   const {activeSell,setActiveSell,setShift} =useOutletContext()
   const [payment, setPayment] = React.useState(activeSell.payment_type_id);
   const [loading , setLoading] = React.useState(false)
-  console.log(payment,'payment')
-  console.log(activeSell,'activeSell')
+  // console.log(payment,'payment')
+  // console.log(activeSell,'activeSell')
   const handleClick = () => {
   };
 

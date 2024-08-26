@@ -393,7 +393,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path:'deposit',
+            path:'deposit/:id?',
             element: (
               <ProtectedRoute>
                 <ItemDeposit />

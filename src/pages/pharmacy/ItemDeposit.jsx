@@ -1,11 +1,7 @@
 import {
   Autocomplete,
-  Badge,
   Button,
   IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Stack,
   Table,
   TableBody,
@@ -14,13 +10,12 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import { Item, url, webUrl } from "../constants.js";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, Navigate, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import axiosClient from "../../../axios-client.js";
 import DepoistItemsTable from "./DepoistItemsTable.jsx";
@@ -30,16 +25,15 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { t } from "i18next";
 import {
-  ArrowDropDown,
-  DeleteOutline,
-  Download,
   FormatListBulleted,
   Info,
+  ShoppingCart,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import PurchaseInvoiceSummery from "./PurchaseInvoiceSummery.jsx";
 import MyTableCell from "../inventory/MyTableCell.jsx";
 function ItemDeposit() {
+ const navigate =  useNavigate()
   const [layOut, setLayout] = useState({
     newForm: "0fr",
     depositsTable: "2fr",
@@ -52,6 +46,8 @@ function ItemDeposit() {
     addToInventoryStyleObj: {},
     incomeItemsStyleObj: {},
   });
+  const {id} =  useParams()
+ 
   const showNewFormHandler = () => {
     setLayout((prev) => {
       return {
@@ -97,6 +93,7 @@ function ItemDeposit() {
       };
     });
   };
+
   const hideDepositsTable = () => {
     setLayout((prev) => {
       return {
@@ -136,23 +133,38 @@ function ItemDeposit() {
   const [todayDeposits, setTodayDeposits] = useState([]);
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [data, setData] = useState();
-  console.log(income, "is equal to null", income === null);
+  // console.log(income, "is equal to null", income === null);
   const dayJsObj = dayjs(new Date());
-  console.log(`${dayJsObj.date()}/${dayJsObj.month() + 1}/${dayJsObj.year()}`);
-  console.log(show, "show");
+  // console.log(`${dayJsObj.date()}/${dayJsObj.month() + 1}/${dayJsObj.year()}`);
+  // console.log(show, "show");
 
   useEffect(() => {
     axiosClient.get("inventory/deposit/all").then(({ data }) => {
       setTodayDeposits(data);
+      if (id) {
+       
+        axiosClient.post(`defineItemToLastDeposit/${id}`).then(({data})=>{
+          setSelectedDeposit(data.deposit)
+          setTodayDeposits((prev)=>{
+            return prev.map((d)=>{
+              if(d.id===data.deposit.id){
+                return {...data.deposit}
+              }
+              return d
+            })
+          })
+        })
+      }
     });
   }, [update]);
-  console.log(items, "items");
+  // console.log(items, "items");
+
   useEffect(() => {
     axiosClient.get("inventory/deposit/last").then(({ data: data }) => {
       if (data != "") {
-        console.log(data, "is data");
+        // console.log(data, "is data");
         setIncome(data);
-        console.log(data);
+        // console.log(data);
 
         setIncomeItems(data.items);
         if (data.complete) {
@@ -197,15 +209,15 @@ function ItemDeposit() {
         supplier_id: supplier.id,
       })
       .then(({ data: { data } }) => {
-        console.log(data);
+        // console.log(data);
         setTodayDeposits(data);
         // console.log(items, "response");
       });
   };
 
   const searchDeposits = () => {
-    console.log(date.format("YYYY/MM/DD"), "date");
-    console.log(date.$d, "date");
+    // console.log(date.format("YYYY/MM/DD"), "date");
+    // console.log(date.$d, "date");
     axiosClient
       .post("inventory/deposit/getDepositsByDate", {
         date: date.format("YYYY/MM/DD"),
@@ -403,7 +415,7 @@ function ItemDeposit() {
                         <TableCell>
                           <IconButton
                             onClick={() => {
-                              console.log(deposit, "deposit");
+                              // console.log(deposit, "deposit");
                               setShowSummery(true);
                               setSelectedDeposit(deposit);
                             }}
@@ -473,6 +485,12 @@ function ItemDeposit() {
             >
               <CreateOutlinedIcon />
             </IconButton>
+          </Item>
+          <Item>
+            <IconButton  onClick={()=>{
+            
+              navigate('/pharmacy/sell')
+            }} title="POS" ><ShoppingCart/></IconButton>
           </Item>
           {/* <Item>
             <IconButton

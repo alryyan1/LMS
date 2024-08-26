@@ -30,7 +30,7 @@ function toFixed(num, fixed) {
 }
 function PurchaseInvoiceSummery({ deposit }) {
   const { showSummery, setShowSummery } = useOutletContext();
-  console.log(deposit, "deposit");
+  // console.log(deposit, "deposit");
 
   return (
     <div>

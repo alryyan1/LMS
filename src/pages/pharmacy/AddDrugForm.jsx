@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+    InputAdornment,
     Paper,
     Stack,
     TextField,
@@ -18,6 +19,7 @@ import {
   import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
   import generator from 'generate-serial-number'
   import {t} from 'i18next'
+import { BarChart, QrCode } from "@mui/icons-material";
 function AddDrugForm({setUpdate}) {
     const [loading, setLoading] = useState(false);
     const [stripPrice, setStripPrice] = useState(0);
@@ -54,10 +56,10 @@ function AddDrugForm({setUpdate}) {
       setMarket(sc_name)
     },[sc_name])
     useEffect(()=>{
-      console.log(typeof sell_price,'type of sellprice')
-      console.log(typeof strips,'type of strips')
+      // console.log(typeof sell_price,'type of sellprice')
+      // console.log(typeof strips,'type of strips')
       if (sell_price  && strips  ) {
-        console.log('inside one strip prise')
+        // console.log('inside one strip prise')
         setStripPrice((sell_price/strips).toFixed(1))
       }
     },[sell_price,strips])
@@ -86,11 +88,11 @@ function AddDrugForm({setUpdate}) {
     //     })
     //     .finally(() => setItemsIsLoading(false));
     // }, [isSubmitted, page]);
-    console.log(isSubmitting);
+    // console.log(isSubmitting);
     const submitHandler = async (formData) => {
       // const dayJsObj = formData.expire;
-  
-      console.log(formData, "formdata");
+      //  localStorage.removeItem('items')
+      // console.log(formData, "formdata");
       setLoading(true);
       axiosClient
         .post(`drugs`, {
@@ -108,14 +110,14 @@ function AddDrugForm({setUpdate}) {
           deposit:formData.deposit?.id
         })
         .then(({ data }) => {
-          console.log(data, "addded drug");
+          // console.log(data, "addded drug");
           if (data.status) {
             // alert('success')
             try {
-              console.log("success", data);
-              setItems((prev) => {
-                return [...prev, data.data];
-              });
+              // console.log("success", data);
+              // setItems((prev) => {
+              //   return [...prev, data.data];
+              // });
               if (setUpdate) {
                 
                 setUpdate((prev)=>prev + 1)
@@ -134,14 +136,14 @@ function AddDrugForm({setUpdate}) {
                 message: "Added Successfully",
               });
             } catch (error) {
-               console.log(error)
+              //  console.log(error)
             }
           
           }
         })
         .catch(({ response: { data } }) => {
           setLoading(false);
-          console.log(data);
+          // console.log(data);
           setDialog({
             color: "error",
             open: true,
@@ -281,6 +283,42 @@ function AddDrugForm({setUpdate}) {
             helperText={errors.strips && errors.strips.message}
           />
         </Stack>
+        <TextField
+            size="small"
+            fullWidth
+            value={barcode}
+            
+            helperText={errors.barcode && errors.barcode.message}
+            error={errors.barcode}
+            
+            onDoubleClick={()=>{
+             const serial =  generator.generate(10)
+             setBarcode(serial)
+             setValue('barcode',serial)
+            }}
+          
+            {...register("barcode", {
+              required: {
+                value: true,
+                message: "Barcode is required",
+              },
+            })}
+            onChange={(e)=>{
+              setBarcode(e.target.value)
+              setValue('barcode',e.target.value)
+
+            }}
+
+            label="الباركود"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <QrCode />
+                </InputAdornment>
+              ),
+            }}
+          />
         <Stack gap={2} direction={"row"}>
           <PharmacyTypeAutocomplete
             errors={errors}
@@ -314,37 +352,9 @@ function AddDrugForm({setUpdate}) {
             label="الكميه (الفاتوره)"
             variant="outlined"
           /> */}
-          <TextField
-            size="small"
-            fullWidth
-            value={barcode}
-            
-            helperText={errors.barcode && errors.barcode.message}
-            error={errors.barcode}
-            
-            onDoubleClick={()=>{
-             const serial =  generator.generate(10)
-             setBarcode(serial)
-             setValue('barcode',serial)
-            }}
-          
-            {...register("barcode", {
-              required: {
-                value: true,
-                message: "Barcode is required",
-              },
-            })}
-            onChange={(e)=>{
-              setBarcode(e.target.value)
-              setValue('barcode',e.target.value)
-
-            }}
-
-            label="الباركود"
-            variant="outlined"
-          />
+      
         </Stack>
-        <Stack gap={2} direction={"row"}>
+        {/* <Stack gap={2} direction={"row"}> */}
           {/* <TextField
             size="small"
           
@@ -373,8 +383,8 @@ function AddDrugForm({setUpdate}) {
               )}
             />
           </LocalizationProvider> */}
-        </Stack>
-        <Stack direction={"column"}>
+        {/* </Stack> */}
+        {/* <Stack direction={"column"}>
         {deposits.length > 0 && <Controller
             name="deposit"
           
@@ -408,7 +418,7 @@ function AddDrugForm({setUpdate}) {
             }}
           />
 }
-        </Stack>
+        </Stack> */}
 
         <LoadingButton
           fullWidth

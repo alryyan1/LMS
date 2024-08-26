@@ -22,7 +22,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
-import { webUrl } from "../constants.js";
+import { toFixed, webUrl } from "../constants.js";
 
 function DrugItems() {
   const [loading, setLoading] = useState(false);
@@ -200,8 +200,8 @@ function DrugItems() {
                   >
                     {drug.market_name}
                   </MyTableCell>
-                  <TableCell>{drug?.lastDepositItem?.finalCostPrice}</TableCell>
-                  <TableCell>{drug?.lastDepositItem?.finalSellPrice}</TableCell>
+                  <TableCell>{toFixed(drug?.lastDepositItem?.finalCostPrice,3)}</TableCell>
+                  <TableCell>{toFixed(drug?.lastDepositItem?.finalSellPrice,3)}</TableCell>
                   
               
                   <MyTableCell colName={"strips"} item={drug} table="items">

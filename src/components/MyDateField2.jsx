@@ -8,7 +8,7 @@ import { useOutletContext } from "react-router-dom";
 
 function MyDateField2({ val, item }) {
   // console.log(item , val,'date filed ')
-  console.log(dayjs(val), "date filed ", val, "val");
+  // console.log(dayjs(val), "date filed ", val, "val");
   const [date, setDate] = useState(val);
   const {setDialog} = useOutletContext()
   return (

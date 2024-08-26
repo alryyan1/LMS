@@ -61,7 +61,7 @@ export default function UserDropDown({user}) {
   const open = Boolean(anchorEl);
   React.useEffect(()=>{
     axiosClient.get("userSettings").then(({ data }) => {
-      console.log(data,'user settings from axios')
+      // console.log(data,'user settings from axios')
       setSettings(data);
     });
   },[])
@@ -71,7 +71,7 @@ export default function UserDropDown({user}) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log(settings,'user settings')
+  // console.log(settings,'user settings')
 
   return (
     <div key={settings?.id}>
@@ -107,7 +107,7 @@ export default function UserDropDown({user}) {
                       colName: "web_dialog",
                       data: e.target.checked,
                     }).then(({data})=>{
-                        console.log(data,'user settings updated')
+                        // console.log(data,'user settings updated')
                         setSettings(data.userSettings)
 
                     });
@@ -129,7 +129,7 @@ export default function UserDropDown({user}) {
                       colName: "node_dialog",
                       data: e.target.checked,
                     }).then(({data})=>{
-                        console.log(data,'user settings updated')
+                        // console.log(data,'user settings updated')
                         setSettings(data.userSettings)
                     });
                   }}
@@ -150,7 +150,7 @@ export default function UserDropDown({user}) {
                       colName: "node_direct",
                       data: e.target.checked,
                     }).then(({data})=>{
-                        console.log(data,'user settings updated')
+                        // console.log(data,'user settings updated')
                         setSettings(data.userSettings)
                     });
                   }}

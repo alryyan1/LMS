@@ -10,6 +10,7 @@ function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
   const [activeSell, setActiveSell] = useState();
   const [suppliers, setSuppliers] = useState([]);
+  const [itemsTobeAddedToChache, setItemsTobeAddedToChache] = useState([]);
 
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
@@ -46,15 +47,24 @@ function PharmacyLayout() {
   
     }).finally(()=>setShiftIsLoading(false));
     
-    axiosClient.get(`items/all`).then(({ data: data }) => {
-      setItems(data);
-      if (data.status == false) {
-        setDialog((prev)=>{
-          return {...prev,open: true, msg: data.message}
-        })
-      }
-
-  });
+    const localStorageOption =  localStorage.getItem('items')
+    if (localStorageOption == null) {
+      axiosClient.get(`items/all`).then(({ data: data }) => {
+        setItems(data);
+        localStorage.setItem('items', JSON.stringify(data))
+        if (data.status == false) {
+  
+          setDialog((prev)=>{
+            return {...prev,open: true, msg: data.message}
+          })
+        }
+  
+    });
+    }else{
+      setItems(JSON.parse(localStorageOption))
+    }
+    
+  
       axiosClient.get("drugCategory").then(({ data }) => {
         setDrugCategory(data);
       });
@@ -92,7 +102,9 @@ function PharmacyLayout() {
             opendDrugDialog,setOpendDrugDialog,
             suppliers, setSuppliers,
             openClientDialog,setOpenClientDialog,
-            showSummery, setShowSummery
+            showSummery, setShowSummery,
+            itemsTobeAddedToChache, setItemsTobeAddedToChache,
+            
           
           }}
         />

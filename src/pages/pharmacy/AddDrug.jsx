@@ -1,6 +1,8 @@
 import {
   Button,
   Grid,
+  Icon,
+  IconButton,
   Skeleton,
   Stack,
   Table,
@@ -10,38 +12,36 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
 import MyTableCell from "../inventory/MyTableCell.jsx";
-import MyDateField from "../../components/MyDateField.jsx";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddDrugForm from "./AddDrugForm.jsx";
+import { AddBusiness } from "@mui/icons-material";
 
 function AddDrug() {
+  const navigate = useNavigate();
   const [itemsIsLoading, setItemsIsLoading] = useState(false);
   const [page, setPage] = useState(7);
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
-  const { setDialog} = useOutletContext();
-  const [items,setItems] = useState([]);
-  const [update,setUpdate] = useState([]);
- 
+  const { setDialog, setItemsTobeAddedToChache } = useOutletContext();
+  const [items, setItems] = useState([]);
+  const [update, setUpdate] = useState([]);
 
-
- 
   const updateItemsTable = (link, setLoading) => {
-    console.log(search);
+    // console.log(search);
     setLoading(true);
     axiosClient(`${link.url}&word=${search}`)
       .then(({ data }) => {
-        console.log(data, "pagination data");
+        // console.log(data, "pagination data");
         setItems(data.data);
         setLinks(data.links);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       })
       .finally(() => {
         setLoading(false);
@@ -54,13 +54,13 @@ function AddDrug() {
     setSearch(word);
   };
   useEffect(() => {
-    setItemsIsLoading(true)
+    setItemsIsLoading(true);
     const timer = setTimeout(() => {
       axiosClient
         .get(`items/all/pagination/${page}?word=${search}`)
         .then(({ data: { data, links } }) => {
-          console.log(data);
-          console.log(links);
+          // console.log(data);
+          // console.log(links);
           setItems(data);
           // console.log(links)
           setLinks(links);
@@ -74,10 +74,11 @@ function AddDrug() {
               message: data.message,
             };
           });
-        }).finally(()=>setItemsIsLoading(false));
+        })
+        .finally(() => setItemsIsLoading(false));
     }, 300);
     return () => clearTimeout(timer);
-  }, [search,page,update]);
+  }, [search, page, update]);
   return (
     <Grid container spacing={2}>
       <Grid item lg={7} xs={12} md={12}>
@@ -121,17 +122,17 @@ function AddDrug() {
                   <TableCell>No </TableCell>
                   <TableCell>Scientific Name</TableCell>
                   <TableCell>Market Name</TableCell>
-                  <TableCell> Strips  </TableCell>
-                  <TableCell> Inventory  </TableCell>
+                  <TableCell> Strips </TableCell>
+                  <TableCell> Inventory </TableCell>
                   {/* <TableCell> Expire</TableCell> */}
                 </TableRow>
               </thead>
               <tbody>
                 {items.map((drug) => {
-                  console.log(drug, "drug ");
+                  // console.log(drug, "drug ");
                   return (
                     <TableRow key={drug.id}>
-                       <TableCell>{drug.id}</TableCell>
+                      <TableCell>{drug.id}</TableCell>
                       <MyTableCell
                         colName={"sc_name"}
                         item={drug}
@@ -146,12 +147,26 @@ function AddDrug() {
                       >
                         {drug.market_name}
                       </MyTableCell>
-                 
-              
+
                       <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
                       </MyTableCell>
-                      <TableCell><Button>Inventory</Button></TableCell>
+                      <TableCell>
+                        {" "}
+                        <IconButton
+                          disabled={drug.lastDepositItem != null}
+                          size="large"
+                          title="add to inventory"
+                          onClick={() => {
+                            setItemsTobeAddedToChache((prev)=>{
+                              return [...prev, drug.id];
+                            })
+                            navigate(`/pharmacy/deposit/${drug.id}`);
+                          }}
+                        >
+                          <AddBusiness />
+                        </IconButton>
+                      </TableCell>
                       {/* <TableCell>
                         <MyDateField val={drug.expire} item={drug} />
                       </TableCell> */}
@@ -209,7 +224,7 @@ function AddDrug() {
         </Grid>
       </Grid>
       <Grid item xs={12} md={12} lg={5}>
-      <AddDrugForm setUpdate={setUpdate}/>
+        <AddDrugForm setUpdate={setUpdate} />
       </Grid>
     </Grid>
   );

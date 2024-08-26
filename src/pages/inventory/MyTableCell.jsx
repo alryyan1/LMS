@@ -33,13 +33,13 @@ function MyTableCell({
     }
   };
   const changeHandler = (e) => {
-    console.log("val", e.target.value, "init val", iniVal);
+    // console.log("val", e.target.value, "init val", iniVal);
 
     setInitVal(e.target.value);
   };
   useEffect(() => {
 
-    console.log("useeffect", iniVal);
+    // console.log("useeffect", iniVal);
     const timer = setTimeout(() => {
       updateItemName(iniVal);
     }, 300);
@@ -48,9 +48,9 @@ function MyTableCell({
     };
   }, [iniVal]);
   const updateItemName = (val) => {
-    console.log("update function started");
+    // console.log("update function started");
     if (intial != iniVal) {
-      console.log("diffent value");
+      // console.log("diffent value");
       axiosClient
         .patch(`${table}/${item.id}`, {
           colName: colName,
@@ -60,10 +60,10 @@ function MyTableCell({
           child_id,
         })
         .then((data) => {
-          console.log(data, "data");
+          // console.log(data, "data");
           if (data.status) {
             if (setData) {
-              console.log(data.data,'inside updater function')
+              // console.log(data.data,'inside updater function')
               setData(data.data.data)
               
             }
@@ -129,7 +129,7 @@ function MyTableCell({
            
           }
           
-          console.log(data, "err in axios", status);
+          // console.log(data, "err in axios", status);
         });
     }
   };

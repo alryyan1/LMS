@@ -11,7 +11,7 @@ import {
   Box,
   List,
 } from "@mui/material";
-import { ArrowRight, Language, Mail } from "@mui/icons-material";
+import { ArrowRight, ElectricBolt, Language, Mail } from "@mui/icons-material";
 import { NavLink, Link } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
@@ -37,7 +37,7 @@ const Nav = () => {
     setPharmacyDrawer,
   } = useStateContext();
   const { setMode, mode } = useThemeContext();
-  console.log(user, "in nav ");
+  // console.log(user, "in nav ");
   const [loading, setLoading] = useState(false);
   const { i18n } = useTranslation();
   // console.log(setToken);
@@ -57,7 +57,7 @@ const Nav = () => {
     });
   }, []);
  
-  console.log(user);
+  // console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
@@ -106,7 +106,7 @@ const Nav = () => {
       </List>
     </Box>
   );
-  console.log("nav updated");
+  // console.log("nav updated");
   const DrawerPharmacyList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
@@ -298,10 +298,15 @@ const Nav = () => {
           <div style={{ flexGrow: 1 }}></div>
 
           <UserDropDown user={user} />
-          <IconButton onClick={changeLang}>
+          <IconButton title="language" onClick={changeLang}>
             <Language />
           </IconButton>
-          <IconButton onClick={changeMode}>
+          <IconButton title="clear cache" onClick={()=>{
+            localStorage.removeItem('items')
+          }}>
+            <ElectricBolt sx={{color:'yellow'}} />
+          </IconButton>
+          <IconButton title="theme" onClick={changeMode}>
             <Brightness4Icon />
           </IconButton>
           {user && (

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LoadingButton } from '@mui/lab';
+import { useOutletContext } from 'react-router-dom';
 
 function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSelectedDeposit,setData,setLayout}) {
     const[loading,setLoading] =useState()
@@ -22,7 +23,7 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
         handleSubmit,
       } = useForm();
   const [selectedItem,setSelectedItem]=useState(null)
-
+    const {setItemsTobeAddedToChache} =  useOutletContext()
       const submitHandler = async (formData) => {
         setLayout((prev)=>{
           return {
@@ -33,7 +34,9 @@ function AddItemToDepositForm({setUpdate,selectedDeposit,setDialog,items,setSele
 
         })
         const dayJsObj = formData.expire;
-    
+        setItemsTobeAddedToChache((prev)=>{
+          return [...prev, formData.item.id];
+        })
         const payload = {
           item_id: formData.item.id,
           quantity: formData.amount,

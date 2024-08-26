@@ -33,7 +33,7 @@ export default function DrugCategoryAutocomplete({Controller,control,errors,setV
     axiosClient
       .post("drugCategory", { name: dialogValue })
       .then(({ data }) => {
-        console.log(data,'added ship items');
+        // console.log(data,'added ship items');
         setDrugCategory((prev) => {
           return [...prev,data];
         });
@@ -90,7 +90,7 @@ export default function DrugCategoryAutocomplete({Controller,control,errors,setV
             }}
             options={drugCategory}
             getOptionLabel={(option) => {
-              console.log('option',option)
+              // console.log('option',option)
               // for example value selected with enter, right from the input
               if (typeof option === "string") {
                 return option;

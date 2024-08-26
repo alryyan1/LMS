@@ -62,7 +62,7 @@ function toFixed(num, fixed) {
 function SellDrug() {
   const ref = useRef(null);
   const handleSymbol = (symbol, matchedSymbologies) => {
-    console.log(`Scanned ${symbol}`);
+    // console.log(`Scanned ${symbol}`);
   };
 
   useSymbologyScanner(handleSymbol, { target: ref });
@@ -85,9 +85,11 @@ function SellDrug() {
     setShowDialogMoney,
     openClientDialog,
     setOpenClientDialog,
+    setItemsTobeAddedToChache,
+    itemsTobeAddedToChache,setItems,items
   } = useOutletContext();
-  console.log(shift, "shift");
-  console.log(activeSell, "active sell");
+  // console.log(shift, "shift");
+  // console.log(activeSell, "active sell");
   useEffect(() => {
     //fetch all suppliers
     axiosClient(`inventory/deduct/last`).then(({ data }) => {
@@ -96,8 +98,10 @@ function SellDrug() {
     });
   }, []);
   useEffect(() => {
+
+
     axiosClient.get("userSettings").then(({ data }) => {
-      console.log(data, "user settings from axios");
+      // console.log(data, "user settings from axios");
       setUserSettings(data);
     });
   }, []);
@@ -112,9 +116,59 @@ function SellDrug() {
   });
   useEffect(() => {
     //fetch all clients
+    // alert(3)
+    itemsTobeAddedToChache.map((id)=>{
+      // alert(id)
+      // console.log(items,'state items')
+      const localStorageOption =  localStorage.getItem('items')
+      if (localStorageOption != null) {
+        // console.log('local storage is not null')
+        if (!items.map((i)=>i.id).includes(id) ) {
+        // console.log('new item to be added')
+
+          axiosClient(`items/find/${id}`).then(({ data }) => {
+            // console.log(data,'fineded dat');
+          
+              setItems((prev)=>{
+                return [...prev, data];
+              })
+            
+          
+            localStorage.setItem('items', JSON.stringify([...items,data]));
+            //  console.log(items,'items from local storage')
+          
+          })
+        }
+        if (items.find((i)=>i.id == id)?.lastDepositItem == null) {
+          // console.log('new item to be added')
+  
+            axiosClient(`items/find/${id}`).then(({ data }) => {
+              // console.log(data,'fineded dat');
+         
+                //item exist must be replaced
+                setItems((prev)=>{
+                   return prev.map((item)=>{
+                     if(item.id == id){
+                       return {...data };
+                     }else{
+                       return item;
+                     }
+                   })
+                })
+           
+            
+              localStorage.setItem('items', JSON.stringify([...items,data]));
+              //  console.log(items,'items from local storage')
+            
+            })
+          }
+
+      }
+      
+    })
     axiosClient(`client/all`).then(({ data }) => {
       setClients(data);
-      console.log(data);
+      // console.log(data);
     });
   }, []);
   // const hideForm = () => {
@@ -295,13 +349,13 @@ function SellDrug() {
                   <thead>
                     <TableRow>
                       <TableCell>Item</TableCell>
-                      <TableCell>Disc</TableCell>
                       <TableCell>Price</TableCell>
                       <TableCell>Strips</TableCell>
                       <TableCell>Box</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
                       <TableCell>Expire</TableCell>
+                      <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
                   <TableBody>
@@ -320,14 +374,7 @@ function SellDrug() {
                         key={deductedItem.id}
                       >
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
-                        <TableCell>
-                          <SaleDiscountSelect
-                            disabled={activeSell?.complete == 1}
-                            disc={deductedItem.discount}
-                            setSelectedSale={setActiveSell}
-                            id={deductedItem.id}
-                          />
-                        </TableCell>
+                   
                         <TableCell>
                           {" "}
                           {Number(
@@ -401,6 +448,9 @@ function SellDrug() {
                               )
                             )
                           ).format("YYYY-MM-DD")}
+                        </TableCell>
+                        <TableCell>
+                          {deductedItem.item.totalRemaining}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -550,7 +600,7 @@ function SellDrug() {
                           setShift(data.shift);
                         })
                         .catch(({ response: { data } }) => {
-                          console.log({ data });
+                          // console.log({ data });
                           setDialog((prev) => {
                             return {
                               ...prev,
@@ -592,15 +642,15 @@ function SellDrug() {
                               };
                             });
                             setRecieved(0);
-                            console.log(data.data, "new active sell");
+                            // console.log(data.data, "new active sell");
                             setActiveSell(data.data);
                             setShift(data.shift);
                           } catch (e) {
-                            console.log(e);
+                            // console.log(e);
                           }
                         })
                         .catch(({ response: { data } }) => {
-                          console.log({ data });
+                          // console.log({ data });
                           setDialog((prev) => {
                             return {
                               ...prev,
@@ -642,11 +692,11 @@ function SellDrug() {
                       setActiveSell(data.data);
                       setShift(data.shift);
                     } catch (error) {
-                      console.log(error);
+                      // console.log(error);
                     }
                   })
                   .catch(({ response: { data } }) => {
-                    console.log({ data });
+                    // console.log({ data });
                     setDialog((prev) => {
                       return {
                         ...prev,
@@ -675,7 +725,7 @@ function SellDrug() {
                     .then(({ data }) => {
                       form.append("data", data);
                       form.append("node_direct", userSettings.node_direct);
-                      console.log(data, "daa");
+                      // console.log(data, "daa");
                       if (userSettings?.web_dialog) {
                         printJS({
                           printable: data.slice(data.indexOf("JVB")),

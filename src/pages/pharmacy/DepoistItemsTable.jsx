@@ -30,22 +30,22 @@ function DepoistItemsTable({
   setSelectedDeposit,
   data,
   setData,
-  setLayout
+  setLayout,
 }) {
   const { setDialog } = useOutletContext();
-  console.log(setDialog, "setdialog");
-  console.log(data, "data of cloned deposit");
+  // console.log(setDialog, "setdialog");
+  // console.log(data, "data of cloned deposit");
   const [ld, setLd] = useState(false);
   const [search, setSearch] = useState(null);
-
+  const changedItems = [];
   const [page, setPage] = useState(0);
-  console.log("data in deposit items table", data);
-  console.log("selectedDeposit in deposit items table", selectedDeposit);
+  // console.log("data in deposit items table", data);
+  // console.log("selectedDeposit in deposit items table", selectedDeposit);
   useEffect(() => {
     if (search != null) {
       if (search == "") {
         // alert('empty search')
-        console.log(data, "data");
+        // console.log(data, "data");
         setSelectedDeposit(data);
         return;
       }
@@ -60,8 +60,8 @@ function DepoistItemsTable({
         const sliced = filtered.slice(page, page + 10).map((i) => {
           // alert(i)
         });
-        console.log(page, "page");
-        console.log(filtered, "filtered", sliced, "sliced");
+        // console.log(page, "page");
+        // console.log(filtered, "filtered", sliced, "sliced");
         setSelectedDeposit((prev) => {
           return {
             ...prev,
@@ -121,11 +121,13 @@ function DepoistItemsTable({
         </Typography>
 
         <IconButton onClick={()=>{
+
           setLayout((prev)=>{
             return {
              ...prev,
              showAddtoDeposit:true,
              addToDepositForm: "1fr",
+             
             }
   
           })

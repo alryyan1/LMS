@@ -11,7 +11,7 @@ function AddDrugAutocomplete({setUpdater}) {
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
   const [selectedDrugs, setSelectedDrugs] = useState([]);
-  console.log('AddDrugAutocomplete rendered',selectedDrugs)
+  // console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
 
@@ -36,7 +36,7 @@ function AddDrugAutocomplete({setUpdater}) {
    setShiftIsLoading(true);
      setLoading(true)
     axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.lastDepositItem!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
-        console.log(data,'data')
+        // console.log(data,'data')
         
         setActiveSell(data.data)
         setShift(data.shift)
@@ -64,14 +64,14 @@ function AddDrugAutocomplete({setUpdater}) {
           value={selectedDrugs}
           inputValue={field}
             onInputChange={(e,v)=>{
-              console.log(v,'')
+              // console.log(v,'')
               setField(v)
             }}
             multiple
             sx={{ flexGrow: 1 }}
            
             onChange={(event, newValue) => {
-              console.log(newValue);
+              // console.log(newValue);
               setSelectedDrugs(newValue);
               
             }}
@@ -87,7 +87,7 @@ function AddDrugAutocomplete({setUpdater}) {
                  
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      console.log("enter pressed");
+                      // console.log("enter pressed");
                         if (selectedDrugs.length > 0) {
                           addDrugsHandler()
                           return
@@ -98,11 +98,11 @@ function AddDrugAutocomplete({setUpdater}) {
                         
                       //get test from tests using find
                       const barcode = e.target.value.trim();
-                      console.log(items,'items',barcode,'barcode');
+                      // console.log(items,'items',barcode,'barcode');
                       const itemFounded =  items.find((item)=>{
                         return item.barcode?.trim() === barcode
                       })
-                      console.log(itemFounded,'founed')
+                      // console.log(itemFounded,'founed')
                       if (itemFounded ) {
                         if (itemFounded.strips == 0) {
                           alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
@@ -114,14 +114,15 @@ function AddDrugAutocomplete({setUpdater}) {
                           })
                           return
                         }
-                        console.log(itemFounded.expire,'expire')
-                        console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
-                        if (!dayjs(itemFounded.expire).isAfter(dayjs())) {
+                        alert(itemFounded.lastDepositItem.expire)
+                        // console.log(itemFounded.expire,'expire')
+                        // console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
+                        if (!dayjs(itemFounded.lastDepositItem.expire).isAfter(dayjs())) {
                           setDialog((prev)=>{
                             return {...prev, open: true, message:'Item is expire',color:'error'}
                           })
                         }
-                        if (itemFounded.remaining == null || itemFounded.remaining <= 0) {
+                        if ( itemFounded.lastDepositItem.totalRemaining <= 0) {
                           setDialog((prev)=>{
                             return {...prev, open: true, message:'This product is Unavailable In Store',color:'error'}
                           })
@@ -131,7 +132,7 @@ function AddDrugAutocomplete({setUpdater}) {
                         setShiftIsLoading(true)
 
                         axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
-                          console.log(data,'add by barcode')
+                          // console.log(data,'add by barcode')
                           setActiveSell((prev)=>{
                             return {...prev,...data.data}
                           })

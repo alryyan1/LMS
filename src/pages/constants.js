@@ -2,9 +2,9 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-export const url = "http://127.0.0.1/laravel-react-app/public/api/"
+export const url = "https://sahara-pharma.com/laravel-react-app/public/api/"
 // export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
-export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
+export const webUrl = "https://sahara-pharma.com/laravel-react-app/public/"
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
 export const cacheRtl = createCache({
     key: "muirtl",
@@ -35,8 +35,16 @@ export const theme = createTheme({
   }));
 
   export function toFixed(num, fixed) {
+    try {
+        if (typeof num == 'string' && isNaN(num)) {
+      return 0
+    }
     var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
     return num.toString().match(re)[0];
+    } catch (error) {
+      return 0
+    }
+  
   }
 
   export  function formatNumber(number){
