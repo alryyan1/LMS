@@ -19,16 +19,16 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 income:'فاتوره وارد جديد',
                 quantities:'حركه المخزون',
                 
-                sales:'المبيعات',
+                sales:'الطلبات',
+                oms:'نظام اداره الطلبات',
                 items:'قائمه المنتجات',
-                pos:'نافذه البيع',
-                inventory:'المخزن',
+                pos:' طلب جديد',
+                inventory:'اداره المخزن',
                 audit:'التدقيق',
                 signup:'انشاء حساب ',
                 login:'تسجيل الدخول',
                 lab:'المختبر',
                 clinic:'العيادات',
-                pharma:'الصيدليه',
                 services:'الخدمات',
                  Addnewuser:'اضافه مستخدم',
                 insurance:'التعاقدات',
@@ -51,7 +51,6 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 billNumberValidation:'يجب ادخال رقم الفاتوره',
                 save:'حفظ',
                 search:'بحث',
-                pharmacy:'الصيدليه',
                 usernameValidation :'استم المستخدم مطلوب',
                 usernameValidationMessage :' يجب اسم المتسخدم ان يكون اكثر من 6 احرف',
                 password:'كلمه السر',
@@ -91,12 +90,15 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 cash_count:'حساب الفئات',
                 moneyIncome:" الايرادات",
                 MoneyExpenses:"المصروفات ",
+                pharma:'نظام اداره الطلبات',
                 
             }
         },
         en:{
             translation:{
+                pharma:'OMS',
                 quantities:'quantities',
+                oms:'Orders Management System',
 
                 moneyIncome:"Money Income",
                 MoneyExpenses:"Money Expenses",
@@ -154,7 +156,6 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                   passwordValidationMessage: "password is required",
                 usernameValidationMessage: "username must be at least 6 characters long",
                 usernameValidation:"username is required",
-                pharmacy:'pharmacy',
 
                 invoiceDate:"Invoice Purchase Date",
                 billNumberValidation:"Invoice Purchase Number must be provided",
@@ -175,11 +176,10 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 signup:'Sign up',
                 audit:'Finance Audit',
 
-                inventory:'inventory',
+                inventory:'inventory Mangement',
                 login:'login',
                 lab:'lab',
                 clinic:'Clinic',
-                pharma:'pharmacy',
                 services:'services',
                 insurance:'insurance',
                 settings:'settings',

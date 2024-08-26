@@ -177,21 +177,7 @@ function AddDrugForm({setUpdate}) {
     <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
       <Stack direction={"column"} spacing={3}>
         <Stack gap={2} direction={"row"}>
-          <TextField
-      
-            size="small"
-            fullWidth
-            error={errors.sc_name}
-            {...register("sc_name", {
-              required: {
-                value: true,
-                message: " Sc name is required",
-              },
-            })}
-            label="الاسم العلمي"
-            variant="outlined"
-            helperText={errors.sc_name && errors.sc_name.message}
-          />
+          
           <TextField
             size="small"
             fullWidth
@@ -204,7 +190,7 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             defaultValue={market}
-            label="الاسم التجاري"
+            label="اسم المنتج "
             variant="outlined"
             helperText={errors.market_name && errors.market_name.message}
           />
@@ -261,27 +247,7 @@ function AddDrugForm({setUpdate}) {
             label="سعر الشريط"
             variant="standard"
           /> */}
-          <TextField
-            size="small"
-            type="number"
-            
-         
-            error={errors.strips && errors.strips.message}
-            fullWidth
-            {...register("strips", {
-              required: {
-                value: true,
-                message: "Strips count is required",
-              },
-              min: {
-                value: 1,
-                message: "Strips count must be at least 1",
-              },
-            })}
-            label="عدد الشرائط"
-            variant="outlined"
-            helperText={errors.strips && errors.strips.message}
-          />
+          
         </Stack>
         <TextField
             size="small"
@@ -320,12 +286,7 @@ function AddDrugForm({setUpdate}) {
             }}
           />
         <Stack gap={2} direction={"row"}>
-          <PharmacyTypeAutocomplete
-            errors={errors}
-            Controller={Controller}
-            control={control}
-            setValue={setValue}
-          />
+         
           <DrugCategoryAutocomplete
             errors={errors}
             Controller={Controller}

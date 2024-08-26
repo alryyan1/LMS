@@ -32,6 +32,15 @@ function PharmacyLayout() {
   const [pharmacyTypes, setPharmacyTypes] = useState([]);
   const [items, setItems] = useState([]);
   const [deduct, setDeduct] = useState(null);
+  const [clients, setClients] = useState([]);
+  useEffect(() => {
+    //fetch all clients
+    axiosClient(`client/all`)
+      .then(({data}) => {
+        setClients(data);
+        console.log(data);
+      });
+  }, []);
   useEffect(() => {
     //fetch all suppliers
     axiosClient.get(`suppliers/all`).then(({ data }) => {
@@ -105,7 +114,7 @@ function PharmacyLayout() {
             showSummery, setShowSummery,
             itemsTobeAddedToChache, setItemsTobeAddedToChache,
             
-          
+            clients, setClients
           }}
         />
         </CacheProvider>

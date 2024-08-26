@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Item, webUrl } from "../constants";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import { useSymbologyScanner } from "@use-symbology-scanner/react";
 
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -18,31 +17,23 @@ import {
   CardContent,
   TextField,
   Skeleton,
-  Slide,
-  Grow,
-  Zoom,
   Autocomplete,
-  Button,
   FormControlLabel,
-  Checkbox,
   FormGroup,
 } from "@mui/material";
 import {
   Calculate,
-  DeleteOutline,
   DeleteOutlineSharp,
   LockOpen,
   PersonAdd,
   Print,
 } from "@mui/icons-material";
-import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import { useOutletContext } from "react-router-dom";
 import AddDrugAutocomplete from "../../components/AddDrugAutocomplete";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
 import MyTableCell from "../inventory/MyTableCell";
-import PatientLab from "../Laboratory/PatientLab";
 import SellBox from "./SellBox";
 import PayOptions from "../../components/PayOptions";
 import SellsMoneyDialog from "./SellsMoneyDialog";
@@ -50,7 +41,6 @@ import printJS from "print-js";
 import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
-import SaleDiscountSelect from "../../components/SaleDiscountSelect";
 import MyCheckbox from "../../components/MyCheckBox";
 function toFixed(num, fixed) {
   if (num == null) {
@@ -74,18 +64,14 @@ function SellDrug() {
   const [recieved, setRecieved] = useState(0);
   const {
     setDialog,
-    deduct,
     setDeduct,
     shift,
     shiftIsLoading,
     activeSell,
     setActiveSell,
     setShift,
-    showDialogMoney,
     setShowDialogMoney,
-    openClientDialog,
     setOpenClientDialog,
-    setItemsTobeAddedToChache,
     itemsTobeAddedToChache,setItems,items
   } = useOutletContext();
   // console.log(shift, "shift");
@@ -105,15 +91,7 @@ function SellDrug() {
       setUserSettings(data);
     });
   }, []);
-  const [layOut, setLayout] = useState({
-    form: "1fr",
-    tests: "1fr",
-    hideForm: false,
-    testWidth: "400px",
-    requestedDiv: "minmax(0,1.5fr)",
-    showTestPanel: false,
-    patientDetails: "0.7fr",
-  });
+
   useEffect(() => {
     //fetch all clients
     // alert(3)
@@ -350,27 +328,15 @@ function SellDrug() {
                     <TableRow>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
                       <TableCell>Box</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
-                      <TableCell>Expire</TableCell>
-                      <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
                   <TableBody>
                     {activeSell?.deducted_items?.map((deductedItem) => (
                       <TableRow
-                        sx={{
-                          background: (theme) => {
-                            return !dayjs(
-                              deductedItem.item.lastDepositItem.expire
-                            ).isAfter(dayjs())
-                              ? theme.palette.error.light
-                              : theme.palette.background.defaultLight;
-                          },
-                          fontWeight: "500",
-                        }}
+                     
                         key={deductedItem.id}
                       >
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
@@ -382,22 +348,7 @@ function SellDrug() {
                           ).toFixed(3)}
                         </TableCell>
 
-                        {activeSell.complete ? (
-                          <TableCell> {deductedItem.strips}</TableCell>
-                        ) : (
-                          <MyTableCell
-                            stateUpdater={setUpdater}
-                            setData={setActiveSell}
-                            sx={{ width: "70px" }}
-                            type={"number"}
-                            item={deductedItem}
-                            table="deductedItem"
-                            colName={"strips"}
-                            setShift={setShift}
-                          >
-                            {deductedItem.strips}
-                          </MyTableCell>
-                        )}
+                   
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
@@ -440,18 +391,7 @@ function SellDrug() {
                             <DeleteOutlineSharp />
                           </LoadingButton>
                         </TableCell>
-                        <TableCell>
-                          {dayjs(
-                            new Date(
-                              Date.parse(
-                                deductedItem.item.lastDepositItem.expire
-                              )
-                            )
-                          ).format("YYYY-MM-DD")}
-                        </TableCell>
-                        <TableCell>
-                          {deductedItem.item.totalRemaining}
-                        </TableCell>
+               
                       </TableRow>
                     ))}
                   </TableBody>
@@ -525,7 +465,7 @@ function SellDrug() {
                       justifyContent={"space-between"}
                       direction={"column"}
                     >
-                      <Typography>Recieved</Typography>
+                      <Typography>Weight(Kg)</Typography>
                       <Divider />
 
                       <TextField
