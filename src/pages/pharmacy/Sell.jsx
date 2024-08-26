@@ -52,6 +52,7 @@ import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
 import SaleDiscountSelect from "../../components/SaleDiscountSelect";
 import MyCheckbox from "../../components/MyCheckBox";
+import CalculateInventory from "./CalculateInventory";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -115,37 +116,17 @@ function SellDrug() {
     patientDetails: "0.7fr",
   });
   useEffect(() => {
-    //fetch all clients
-    // alert(3)
     itemsTobeAddedToChache.map((id)=>{
-      // alert(id)
-      // console.log(items,'state items')
-      const localStorageOption =  localStorage.getItem('items')
-      if (localStorageOption != null) {
-        // console.log('local storage is not null')
+    
         if (!items.map((i)=>i.id).includes(id) ) {
-        // console.log('new item to be added')
-
           axiosClient(`items/find/${id}`).then(({ data }) => {
-            // console.log(data,'fineded dat');
-          
               setItems((prev)=>{
                 return [...prev, data];
               })
-            
-          
-            localStorage.setItem('items', JSON.stringify([...items,data]));
-            //  console.log(items,'items from local storage')
-          
           })
         }
         if (items.find((i)=>i.id == id)?.lastDepositItem == null) {
-          // console.log('new item to be added')
-  
             axiosClient(`items/find/${id}`).then(({ data }) => {
-              // console.log(data,'fineded dat');
-         
-                //item exist must be replaced
                 setItems((prev)=>{
                    return prev.map((item)=>{
                      if(item.id == id){
@@ -155,15 +136,8 @@ function SellDrug() {
                      }
                    })
                 })
-           
-            
-              localStorage.setItem('items', JSON.stringify([...items,data]));
-              //  console.log(items,'items from local storage')
-            
             })
           }
-
-      }
       
     })
     axiosClient(`client/all`).then(({ data }) => {
@@ -364,7 +338,7 @@ function SellDrug() {
                         sx={{
                           background: (theme) => {
                             return !dayjs(
-                              deductedItem.item.lastDepositItem.expire
+                              deductedItem?.item?.lastDepositItem?.expire
                             ).isAfter(dayjs())
                               ? theme.palette.error.light
                               : theme.palette.background.defaultLight;
@@ -444,13 +418,13 @@ function SellDrug() {
                           {dayjs(
                             new Date(
                               Date.parse(
-                                deductedItem.item.lastDepositItem.expire
+                                deductedItem?.item?.lastDepositItem?.expire
                               )
                             )
                           ).format("YYYY-MM-DD")}
                         </TableCell>
                         <TableCell>
-                          {deductedItem.item.totalRemaining}
+                          <CalculateInventory item_id={deductedItem.item.id}/>
                         </TableCell>
                       </TableRow>
                     ))}

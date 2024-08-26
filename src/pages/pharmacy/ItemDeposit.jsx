@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Button,
   IconButton,
+  Skeleton,
   Stack,
   Table,
   TableBody,
@@ -127,6 +128,7 @@ function ItemDeposit() {
     useOutletContext();
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [depositLoading, setDepositLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [income, setIncome] = useState(null);
   const [update, setUpdate] = useState(0);
@@ -139,7 +141,9 @@ function ItemDeposit() {
   // console.log(show, "show");
 
   useEffect(() => {
+    setDepositLoading(true)
     axiosClient.get("inventory/deposit/all").then(({ data }) => {
+      
       setTodayDeposits(data);
       if (id) {
        
@@ -155,7 +159,7 @@ function ItemDeposit() {
           })
         })
       }
-    });
+    }).finally(()=>setDepositLoading(false));
   }, [update]);
   // console.log(items, "items");
 
@@ -323,7 +327,15 @@ function ItemDeposit() {
           )}
         </div>
         <div>
-          {layOut.showDepositsTable && (
+          <>
+          {depositLoading  ?  <Skeleton
+                animation="wave"
+                variant="rectangular"
+                width={"100%"}
+                height={400}
+              /> : <>
+              
+              {layOut.showDepositsTable && (
             <TableContainer>
               <Table style={{ direction: "rtl" }} size="small">
                 <TableHead>
@@ -441,6 +453,10 @@ function ItemDeposit() {
               </Table>
             </TableContainer>
           )}
+              </>}
+           
+          </>
+       
         </div>
 
         {layOut.showNewForm && (

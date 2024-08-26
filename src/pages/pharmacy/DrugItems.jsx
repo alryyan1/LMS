@@ -33,7 +33,7 @@ function DrugItems() {
   const [items, setItems] = useState([]);
   const [selectedFutureDate, setSelectedFutureDate] = useState(null);
   const [futureDates,setFutureDates] = useState([]);
-  const { setDialog, drugCategory, pharmacyTypes } = useOutletContext();
+  const { setDialog, drugCategory, pharmacyTypes,setItems:setDrugs } = useOutletContext();
 
 
   useEffect(() => {
@@ -257,6 +257,12 @@ function DrugItems() {
                                     (item) => item.id !== drug.id
                                   );
                                 });
+                                setDrugs((prev) => {
+                                  return prev.filter(
+                                    (item) => item.id !== drug.id
+                                  );
+                                });
+                                
                               })
                               .finally(() => setLoading(false));
                           }}
@@ -278,6 +284,11 @@ function DrugItems() {
                               .delete(`items/${drug.id}`)
                               .then(({ data }) => {
                                 setItems((prev) => {
+                                  return prev.filter(
+                                    (item) => item.id !== drug.id
+                                  );
+                                });
+                                setDrugs((prev) => {
                                   return prev.filter(
                                     (item) => item.id !== drug.id
                                   );

@@ -115,9 +115,9 @@ function AddDrugForm({setUpdate}) {
             // alert('success')
             try {
               // console.log("success", data);
-              // setItems((prev) => {
-              //   return [...prev, data.data];
-              // });
+              setItems((prev) => {
+                return [...prev, data.data];
+              });
               if (setUpdate) {
                 
                 setUpdate((prev)=>prev + 1)

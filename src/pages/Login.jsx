@@ -43,7 +43,7 @@ function App() {
   return (
     <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='300px'  src={sahara}/>
+      <img height='300px'  src={logo2}/>
         <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
                   <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
                     {t('login')}
