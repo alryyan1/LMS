@@ -301,11 +301,11 @@ const Nav = () => {
           <IconButton title="language" onClick={changeLang}>
             <Language />
           </IconButton>
-          <IconButton title="clear cache" onClick={()=>{
+          {/* <IconButton title="clear cache" onClick={()=>{
             localStorage.removeItem('items')
           }}>
             <ElectricBolt sx={{color:'yellow'}} />
-          </IconButton>
+          </IconButton> */}
           <IconButton title="theme" onClick={changeMode}>
             <Brightness4Icon />
           </IconButton>

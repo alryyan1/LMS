@@ -47,11 +47,9 @@ function PharmacyLayout() {
   
     }).finally(()=>setShiftIsLoading(false));
     
-    const localStorageOption =  localStorage.getItem('items')
-    if (localStorageOption == null) {
+   
       axiosClient.get(`items/all`).then(({ data: data }) => {
         setItems(data);
-        localStorage.setItem('items', JSON.stringify(data))
         if (data.status == false) {
   
           setDialog((prev)=>{
@@ -60,9 +58,7 @@ function PharmacyLayout() {
         }
   
     });
-    }else{
-      setItems(JSON.parse(localStorageOption))
-    }
+  
     
   
       axiosClient.get("drugCategory").then(({ data }) => {

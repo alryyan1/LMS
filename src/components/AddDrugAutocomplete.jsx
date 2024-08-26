@@ -114,7 +114,7 @@ function AddDrugAutocomplete({setUpdater}) {
                           })
                           return
                         }
-                        alert(itemFounded.lastDepositItem.expire)
+                        // alert(itemFounded.lastDepositItem.expire)
                         // console.log(itemFounded.expire,'expire')
                         // console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
                         if (!dayjs(itemFounded.lastDepositItem.expire).isAfter(dayjs())) {
