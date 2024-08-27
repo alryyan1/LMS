@@ -56,11 +56,20 @@ function PharmacyLayout() {
   
     }).finally(()=>setShiftIsLoading(false));
     
-    const localStorageOption =  localStorage.getItem('items')
-    if (localStorageOption == null) {
-      axiosClient.get(`items/all`).then(({ data: data }) => {
+  
+      axiosClient.get(`items/all`,{
+        onDownloadProgress: progressEvent => {
+          console.log(progressEvent)
+          console.log(progressEvent.event.currentTarget.response.length,'length')
+          console.log(progressEvent.loaded,'loaded')
+          console.log(progressEvent.bytes,'bytes')
+          const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log('percentage',percentage)
+
+        }
+      }).then(({ data: data }) => {
         setItems(data);
-        localStorage.setItem('items', JSON.stringify(data))
+        console.log('items fetched',items)
         if (data.status == false) {
   
           setDialog((prev)=>{
@@ -69,9 +78,6 @@ function PharmacyLayout() {
         }
   
     });
-    }else{
-      setItems(JSON.parse(localStorageOption))
-    }
     
   
       axiosClient.get("drugCategory").then(({ data }) => {

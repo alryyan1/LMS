@@ -65,13 +65,13 @@ export default function ShippingStateAutocomplete({ shipSate,shippingId ,shippin
           } else {
             setValue(newValue);
             if (newValue !=null) {
-                axiosClient.patch(`shipping/${shippingId}`,{val:newValue.id,'colName':'shipping_state_id'}).then(({data}) => {
+                axiosClient.patch(`deduct/${shippingId}`,{val:newValue.id,'colName':'shipping_state_id'}).then(({data}) => {
                     if (data.status) {
                         setDialog((prev)=>{
                             return {
                                ...prev,
                                 open: true,
-                                msg: "تم التعديل بنجاح",
+                                message: "تم التعديل بنجاح",
                             }
                         })
                     }

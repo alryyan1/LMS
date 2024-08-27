@@ -42,6 +42,7 @@ import AddDrugDialog from "./AddDrugDialog";
 import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
 import MyCheckbox from "../../components/MyCheckBox";
+import PostPaidDateField from "./MyDateFieldPostDate";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -93,37 +94,17 @@ function SellDrug() {
   }, []);
 
   useEffect(() => {
-    //fetch all clients
-    // alert(3)
     itemsTobeAddedToChache.map((id)=>{
-      // alert(id)
-      // console.log(items,'state items')
-      const localStorageOption =  localStorage.getItem('items')
-      if (localStorageOption != null) {
-        // console.log('local storage is not null')
+    
         if (!items.map((i)=>i.id).includes(id) ) {
-        // console.log('new item to be added')
-
           axiosClient(`items/find/${id}`).then(({ data }) => {
-            // console.log(data,'fineded dat');
-          
               setItems((prev)=>{
                 return [...prev, data];
               })
-            
-          
-            localStorage.setItem('items', JSON.stringify([...items,data]));
-            //  console.log(items,'items from local storage')
-          
           })
         }
         if (items.find((i)=>i.id == id)?.lastDepositItem == null) {
-          // console.log('new item to be added')
-  
             axiosClient(`items/find/${id}`).then(({ data }) => {
-              // console.log(data,'fineded dat');
-         
-                //item exist must be replaced
                 setItems((prev)=>{
                    return prev.map((item)=>{
                      if(item.id == id){
@@ -133,15 +114,8 @@ function SellDrug() {
                      }
                    })
                 })
-           
-            
-              localStorage.setItem('items', JSON.stringify([...items,data]));
-              //  console.log(items,'items from local storage')
-            
             })
           }
-
-      }
       
     })
     axiosClient(`client/all`).then(({ data }) => {
@@ -172,7 +146,7 @@ function SellDrug() {
     setShowDialogMoney(true);
   };
   useEffect(() => {
-    document.title = "Sales";
+    document.title = "Orders";
   }, []);
 
   return (
@@ -214,7 +188,7 @@ function SellDrug() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
-            <Item>
+            <Item >
               <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
               </IconButton>
@@ -229,7 +203,7 @@ function SellDrug() {
             </Item>
           </Stack>
         </div>
-        <Card sx={{ p: 1, height: "80vh", overflow: "auto" }}>
+        <Card className="transparent" sx={{ p: 1, height: "80vh", overflow: "auto" }}>
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -254,17 +228,17 @@ function SellDrug() {
             )}
           </div>
         </Card>
-        <Card sx={{ p: 1 }} style={{ overflow: "auto" }}>
+        <Card className="transparent" sx={{ p: 1 }} style={{ overflow: "auto" }}>
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
                 {/* <input ref={ref}></input> */}
                 <Autocomplete
                   value={activeSell.client}
-                  sx={{ width: "200px", mb: 1 }}
+                  sx={{ width: "300px", mb: 1 }}
                   options={clients}
                   isOptionEqualToValue={(option, val) => option.id === val.id}
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => `${option.name} ( ${option.address} )`}
                   onChange={(e, data) => {
                     axiosClient
                       .patch(`deduct/${activeSell.id}`, {
@@ -303,6 +277,7 @@ function SellDrug() {
                       label="Postpaid"
                       control={
                         <MyCheckbox
+                          setActiveSell={setActiveSell}
                           setShift={setShift}
                           setDialog={setDialog}
                           path={`deduct/${activeSell?.id}`}
@@ -328,7 +303,7 @@ function SellDrug() {
                     <TableRow>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Box</TableCell>
+                      <TableCell>Unit</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
                     </TableRow>
@@ -340,13 +315,14 @@ function SellDrug() {
                         key={deductedItem.id}
                       >
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
-                   
-                        <TableCell>
-                          {" "}
-                          {Number(
-                            deductedItem?.item.lastDepositItem?.finalSellPrice
-                          ).toFixed(3)}
-                        </TableCell>
+                        {activeSell.complete ? (
+                          <TableCell>{toFixed(deductedItem.price, 3)}</TableCell>
+                        ) : (
+                        <MyTableCell colName={'price'} item={deductedItem} setData={setActiveSell} setDialog={setDialog} table="deductedItem">
+                      
+                            {deductedItem?.price}
+                          
+                        </MyTableCell>)}
 
                    
                         {activeSell.complete ? (
@@ -366,11 +342,7 @@ function SellDrug() {
                           </MyTableCell>
                         )}
                         <TableCell>
-                          {toFixed(
-                            (deductedItem.price / deductedItem.item?.strips) *
-                              deductedItem.strips,
-                            3
-                          )}
+                          {deductedItem.box * deductedItem.price}
                         </TableCell>
                         <TableCell>
                           <LoadingButton
@@ -399,13 +371,23 @@ function SellDrug() {
               )}
             </>
           )}
+          {activeSell?.deducted_items.length > 0 && <>
+          <TextField sx={{mt:1}} fullWidth multiline label='ملاحظات'></TextField>
+          </>}
+          <div key={activeSell?.id}>
+               {
+            activeSell?.is_postpaid && <PostPaidDateField setShift={setShift} item={activeSell} />
+          }
+          </div>
+       
         </Card>
 
-        <Card
+        <Card className="transparent"
           sx={{
+            border:'1px solid lightgrey',
             p: 1,
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-around",
             flexDirection: "column",
             alignContent: "center",
             alignItems: "center",
@@ -421,6 +403,7 @@ function SellDrug() {
               {activeSell && <PayOptions key={activeSell.id} />}
               <Divider />
               <Card
+              className="transparent"
                 sx={{
                   borderRadius: 10,
                   width: "200px",
@@ -451,15 +434,7 @@ function SellDrug() {
                   </Stack>
                 </CardContent>
               </Card>
-              <Card
-                sx={{
-                  borderRadius: 10,
-                  width: "200px",
-                  mt: 2,
-                  height: "120px",
-                }}
-              >
-                <CardContent>
+             
                   <Stack direction={"row"} justifyContent={"center"}>
                     <Stack
                       justifyContent={"space-between"}
@@ -469,17 +444,19 @@ function SellDrug() {
                       <Divider />
 
                       <TextField
-                        value={recieved}
+                        key={activeSell?.id}
+                        defaultValue={activeSell?.weight}
                         onChange={(e) => {
                           setRecieved(e.target.value);
-                          // axiosClient
-                          //   .patch(`deduct/${activeSell.id}`, {
-                          //     colName: "total_amount_received",
-                          //     val: e.target.value,
-                          //   })
-                          //   .then(({ data }) => {
-                          //     setActiveSell(data.data);
-                          //   });
+                          axiosClient
+                            .patch(`deduct/${activeSell.id}`, {
+                              colName: "weight",
+                              val: e.target.value,
+                            })
+                            .then(({ data }) => {
+                              setActiveSell(data.data);
+                              setShift(data.shift)
+                            });
                         }}
                         variant="standard"
                       ></TextField>
@@ -489,39 +466,8 @@ function SellDrug() {
                       justifyContent={"center"}
                     ></Stack>
                   </Stack>
-                </CardContent>
-              </Card>
-              <Card
-                sx={{
-                  borderRadius: 10,
-                  width: "200px",
-                  mt: 2,
-                  height: "120px",
-                }}
-              >
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"center"}>
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography>Balance</Typography>
-                      <Divider />
-
-                      <Typography variant="h3">
-                        {(
-                          Number(recieved) -
-                          Number(activeSell?.total_price_unpaid)
-                        ).toFixed(3)}
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction={"column"}
-                      justifyContent={"center"}
-                    ></Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
+           
+            
               <Divider />
 
               <Stack justifyContent={"center"} sx={{ mt: 2 }}>

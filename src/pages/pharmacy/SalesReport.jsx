@@ -23,6 +23,8 @@ import { DeleteOutline } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import { toFixed, webUrl } from "../constants";
 import MyCheckbox from "../../components/MyCheckBox";
+import PostPaidDateField from "./MyDateFieldPostDate";
+import ShippingStateAutocomplete from "../shipping/ShippingStateAutocomplete";
 
 function SalesReport() {
   const { setDialog } = useOutletContext();
@@ -34,16 +36,15 @@ function SalesReport() {
   const [temp, setTemp] = useState([]);
   const [clients, setClients] = useState([]);
   const [checked, setChecked] = useState(false);
+  const [states, setStates] = useState([]);
 
-    const handleChange = (event) => {
-      setChecked(event.target.checked);
-      setTemp((prev)=>{
-        return deducts.filter((d)=>d.is_postpaid == event.target.checked)
-    })
-     
-     
-      
-    };
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    setTemp((prev) => {
+      return deducts.filter((d) => d.is_postpaid == event.target.checked);
+    });
+  };
   useEffect(() => {
     //fetch all clients
     axiosClient(`client/all`).then(({ data }) => {
@@ -53,6 +54,12 @@ function SalesReport() {
   }, []);
   useEffect(() => {
     document.title = "التقارير";
+  }, []);
+
+  useEffect(() => {
+    axiosClient.get("shippingState/all").then(({ data }) => {
+      setStates(data);
+    });
   }, []);
   const searchHandler = () => {
     setLoading(true);
@@ -106,80 +113,91 @@ function SalesReport() {
           >
             Go
           </LoadingButton>
-
         </Box>
         <Autocomplete
-                  sx={{ width: "200px", mb: 1 }}
-                  options={clients}
-                  isOptionEqualToValue={(option, val) => option.id === val.id}
-                  getOptionLabel={(option) => option.name}
-                  onChange={(e, data) => {
-                    if (data == null) {
-                      setTemp(deducts)
-                      return
-                    }
-                    setClient(data);
-                    setTemp((prev)=>{
-                        return deducts.filter((d)=>d.client_id == data?.id)
-                    })
-                  }}
-                  renderInput={(params) => {
-                    return (
-                      <TextField
-                        variant="standard"
-                        label={"العميل"}
-                        {...params}
-                      />
-                    );
-                  }}
-                ></Autocomplete>
-                 <FormGroup>
-                    <FormControlLabel
-                      label="Postpaid"
-                      control={
-                        <Checkbox  checked={checked} onChange={handleChange}/>
-
-                      }
-                    ></FormControlLabel>
-                  </FormGroup>
-        <a href={`${webUrl}searchDeductByDate?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${client?.id}&is_postpaid=${checked}`}>PDF</a>
+          sx={{ width: "200px", mb: 1 }}
+          options={clients}
+          isOptionEqualToValue={(option, val) => option.id === val.id}
+          getOptionLabel={(option) => option.name}
+          onChange={(e, data) => {
+            if (data == null) {
+              setTemp(deducts);
+              return;
+            }
+            setClient(data);
+            setTemp((prev) => {
+              return deducts.filter((d) => d.client_id == data?.id);
+            });
+          }}
+          renderInput={(params) => {
+            return (
+              <TextField variant="standard" label={"العميل"} {...params} />
+            );
+          }}
+        ></Autocomplete>
+        <FormGroup>
+          <FormControlLabel
+            label="Postpaid"
+            control={<Checkbox checked={checked} onChange={handleChange} />}
+          ></FormControlLabel>
+        </FormGroup>
+        <a
+          href={`${webUrl}searchDeductByDate?first=${firstDate.format(
+            "YYYY/MM/DD"
+          )}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${
+            client?.id
+          }&is_postpaid=${checked ? 1 : 0}`}
+        >
+          PDF
+        </a>
       </Stack>
 
-      <Table size="small">
+      <Table style={{direction:'rtl'}} size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell> No</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Price</TableCell>
-            <TableCell>User</TableCell>
-            <TableCell>Payment</TableCell>
-            <TableCell>Items</TableCell>
-            <TableCell>profit</TableCell>
-            <TableCell>Invoice</TableCell>
-            <TableCell>client</TableCell>
-            <TableCell>Delete</TableCell>
+            <TableCell>الكود</TableCell>
+            <TableCell>العميل</TableCell>
+            <TableCell>المبلغ</TableCell>
+            <TableCell>المنتج</TableCell>
+
+            <TableCell>تاريخ الطلب</TableCell>
+            <TableCell>فاتوره</TableCell>
+            <TableCell>تاريخ سداد الاجل</TableCell>
+            <TableCell width={'20%'}> الحاله </TableCell>
+            <TableCell>حذف</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {temp.reverse().map((item) => (
             <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.number}</TableCell>
-              <TableCell>
-                {dayjs(new Date(Date.parse(item.created_at))).format('YYYY/MM/DD H;m A')}
-              </TableCell>
+              <TableCell>{item.id}</TableCell>
+              <TableCell>{`${item?.client?.name}(${item?.client?.state})`}</TableCell>
               <TableCell>{item.total_price}</TableCell>
-              <TableCell>{item.user.username}</TableCell>
-              <TableCell>{item.payment_type.name}</TableCell>
               <TableCell>
                 {item.deducted_items.map(
                   (deducted) => `${deducted.item.market_name}-`
                 )}
               </TableCell>
-              <TableCell>{toFixed(item.profit,1)}</TableCell>
-              <TableCell>                    <a href={`${webUrl}deduct/invoice?id=${item.id}`}>Invoice PDF</a></TableCell>
-              <TableCell>{item?.client?.name}</TableCell>
+              <TableCell>
+                {dayjs(new Date(Date.parse(item.created_at))).format(
+                  "YYYY/MM/DD H;m A"
+                )}
+              </TableCell>
+           
+              <TableCell>
+                {" "}
+                <a href={`${webUrl}deduct/invoice?id=${item.id}`}>
+                  Invoice PDF
+                </a>
+              </TableCell>
+              <TableCell><PostPaidDateField setDialog={setDialog} item={item} /></TableCell>
+              <TableCell>
+                    <ShippingStateAutocomplete
+                      shippingId={item.id}
+                      shippingStates={states}
+                      shipSate={item.state}
+                    />
+                  </TableCell>
               <TableCell>
                 <LoadingButton
                   loading={loading}

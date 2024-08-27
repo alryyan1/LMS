@@ -91,6 +91,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 moneyIncome:" الايرادات",
                 MoneyExpenses:"المصروفات ",
                 pharma:'نظام اداره الطلبات',
+                clientItemsReports:'تقرير الاصناف/عملاء'
                 
             }
         },

@@ -71,6 +71,7 @@ import FinanceAccount from "./pages/Finance/FinanceAccount";
 import AccountEntries from "./pages/Finance/AccountEntries";
 import Ledger from "./pages/Finance/Ledger";
 import CopyContract from "./pages/insurance/CopyContract";
+import ClientsItemsReport from "./pages/pharmacy/ClientsItemsReport";
 
 export const router = createBrowserRouter([
   {
@@ -367,7 +368,14 @@ export const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-          
+          {
+            path:'clients',
+            element: (
+              <ProtectedRoute>
+                <ClientsItemsReport />
+              </ProtectedRoute>
+            ),
+          },
           {
             path:'items',
             element: (

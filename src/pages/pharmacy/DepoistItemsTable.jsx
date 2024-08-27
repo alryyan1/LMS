@@ -153,7 +153,7 @@ function DepoistItemsTable({
         ></TextField>
       </Stack>
 
-      <Table key={selectedDeposit.items.length} size="small">
+      <Table  style={{direction:'rtl'}} key={selectedDeposit.items.length} size="small">
         <thead>
           <TableRow>
             <TableCell>Item</TableCell>
@@ -168,8 +168,6 @@ function DepoistItemsTable({
             <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>total cost</TableCell>
             <TableCell>Dlt</TableCell>
             <TableCell> return</TableCell>
-            <TableCell> free QYN</TableCell>
-            <TableCell>Expire</TableCell>
           </TableRow>
         </thead>
 
@@ -265,20 +263,7 @@ function DepoistItemsTable({
                       colName={"return"}
                     />
                   </TableCell>
-                  <MyTableCell
-                    setDialog={setDialog}
-                    sx={{ width: "60px", textAlign: "center" }}
-                    
-                    setSelectedDeposit={setSelectedDeposit}
-                    item={depositItem}
-                    table="depositItems/update"
-                    colName={"free_quantity"}
-                  >
-                    {depositItem.free_quantity}
-                  </MyTableCell>
-                  <TableCell>
-                    <MyDateField2 val={depositItem.expire} item={depositItem} />
-                  </TableCell>
+           
                 </TableRow>
               );
             })}

@@ -118,24 +118,7 @@ function DrugItems() {
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
-        <Stack alignItems={'center'} gap={2} direction={'row'}>
-          {futureDates.map((item)=>{
-            return(
-              <Badge
-              badgeContent={item.items.length}
-                key={item.monthname}
-                color="error"
-              >
-                <Button sx={{
-                  backgroundColor :(theme)=>item.monthname == selectedFutureDate?.monthname ? theme.palette.warning.light : ''
-                }} onClick={()=>{
-                  setSelectedFutureDate(item)
-                  setItems(item.items)
-                }} size="small" variant="contained">{item.monthname}</Button>
-              </Badge>
-            )
-          })}
-        </Stack>
+
         <TextField
         type="search"
           value={search}
@@ -156,14 +139,9 @@ function DrugItems() {
             <TableRow>
               <TableCell> الكود</TableCell>
               {/* <TableCell>الاسم العلمي</TableCell> */}
-              <TableCell>الاسم التجاري</TableCell>
-              <TableCell>سعر الشراء</TableCell>
-              <TableCell>سعر البيع </TableCell>
-              <TableCell> عدد الشرائط</TableCell>
+              <TableCell>الاسم </TableCell>
+              <TableCell>سعر </TableCell>
               <TableCell> المجموعه</TableCell>
-              <TableCell> الشكل</TableCell>
-              <TableCell> تاريخ الصلاحيه</TableCell>
-              <TableCell> المخزون </TableCell>
               <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
               <TableCell> -</TableCell>
             </TableRow>
@@ -179,14 +157,7 @@ function DrugItems() {
               console.log(drug, "drug ");
               return (
                 <TableRow
-                  sx={{
-                    color: (theme) => {
-                      return !dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs())
-                        ? theme.palette.error.light
-                        : theme.palette.background.defaultLight;
-                    },
-                    fontWeight: "500",
-                  }}
+                 
                   key={drug.id}
                 >
                   <TableCell>{drug.id}</TableCell>
@@ -200,13 +171,9 @@ function DrugItems() {
                   >
                     {drug.market_name}
                   </MyTableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem?.finalCostPrice,3)}</TableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem?.finalSellPrice,3)}</TableCell>
+                  <TableCell>{toFixed(drug?.sell_price,3)}</TableCell>
                   
               
-                  <MyTableCell colName={"strips"} item={drug} table="items">
-                    {drug.strips}
-                  </MyTableCell>
                  
                   <MyAutoCompeleteTableCell
                     sections={drugCategory}
@@ -217,21 +184,9 @@ function DrugItems() {
                   >
                     {drug.category?.name}
                   </MyAutoCompeleteTableCell>
-                  <MyAutoCompeleteTableCell
-                    sections={pharmacyTypes}
-                    colName={"pharmacy_type_id"}
-                    val={drug.type}
-                    item={drug}
-                    table="items"
-                  >
-                    {drug.type?.name}
-                  </MyAutoCompeleteTableCell>
-                  <TableCell>
-                    {drug?.lastDepositItem?.expire}
-                  </TableCell>
-                  <TableCell>
-                    {amountLeft}
-                  </TableCell>
+           
+                
+              
                   <MyTableCell  show colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
