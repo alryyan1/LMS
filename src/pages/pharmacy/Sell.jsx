@@ -445,7 +445,7 @@ function SellDrug() {
 
                       <TextField
                         key={activeSell?.id}
-                        defaultValue={activeSell?.weight}
+                        defaultValue={activeSell?.weight ?? 1}
                         onChange={(e) => {
                           setRecieved(e.target.value);
                           axiosClient

@@ -35,7 +35,7 @@ function SalesReport() {
   const [deducts, setDeducts] = useState([]);
   const [temp, setTemp] = useState([]);
   const [clients, setClients] = useState([]);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(null);
   const [states, setStates] = useState([]);
 
 
@@ -145,8 +145,8 @@ function SalesReport() {
           href={`${webUrl}searchDeductByDate?first=${firstDate.format(
             "YYYY/MM/DD"
           )}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${
-            client?.id
-          }&is_postpaid=${checked ? 1 : 0}`}
+            client?.id ?? null
+          }&is_postpaid=${checked}`}
         >
           PDF
         </a>
@@ -163,15 +163,18 @@ function SalesReport() {
             <TableCell>تاريخ الطلب</TableCell>
             <TableCell>فاتوره</TableCell>
             <TableCell>تاريخ سداد الاجل</TableCell>
+            <TableCell> (kg) الوزن</TableCell>
             <TableCell width={'20%'}> الحاله </TableCell>
             <TableCell>حذف</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {temp.reverse().map((item) => (
+          {temp.reverse().map((item) => 
+          (
+
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
-              <TableCell>{`${item?.client?.name}(${item?.client?.state})`}</TableCell>
+              <TableCell>{`${item?.client?.name ?? 'No-Client'}(${item?.client?.state?? ''})  `}</TableCell>
               <TableCell>{item.total_price}</TableCell>
               <TableCell>
                 {item.deducted_items.map(
@@ -191,6 +194,8 @@ function SalesReport() {
                 </a>
               </TableCell>
               <TableCell><PostPaidDateField setDialog={setDialog} item={item} /></TableCell>
+              <TableCell>{item.weight}</TableCell>
+
               <TableCell>
                     <ShippingStateAutocomplete
                       shippingId={item.id}
