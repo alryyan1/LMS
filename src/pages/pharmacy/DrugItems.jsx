@@ -163,7 +163,6 @@ function DrugItems() {
               <TableCell> المجموعه</TableCell>
               <TableCell> الشكل</TableCell>
               <TableCell> تاريخ الصلاحيه</TableCell>
-              <TableCell> المخزون </TableCell>
               <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
               <TableCell> -</TableCell>
             </TableRow>
@@ -229,9 +228,7 @@ function DrugItems() {
                   <TableCell>
                     {drug?.lastDepositItem?.expire}
                   </TableCell>
-                  <TableCell>
-                    {amountLeft}
-                  </TableCell>
+            
                   <MyTableCell  show colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
