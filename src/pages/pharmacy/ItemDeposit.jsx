@@ -135,6 +135,21 @@ function ItemDeposit() {
   const [todayDeposits, setTodayDeposits] = useState([]);
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [data, setData] = useState();
+
+
+  const  change = (deposit)=> {
+    setSelectedDeposit(deposit)
+
+    
+    setTodayDeposits((prev)=>{
+      return prev.map((d)=>{
+        if(d.id===deposit.id){
+          return {...deposit}
+        }
+        return d
+      })
+    })
+  }
   // console.log(income, "is equal to null", income === null);
   const dayJsObj = dayjs(new Date());
   // console.log(`${dayJsObj.date()}/${dayJsObj.month() + 1}/${dayJsObj.year()}`);
@@ -148,15 +163,7 @@ function ItemDeposit() {
       if (id) {
        
         axiosClient.post(`defineItemToLastDeposit/${id}`).then(({data})=>{
-          setSelectedDeposit(data.deposit)
-          setTodayDeposits((prev)=>{
-            return prev.map((d)=>{
-              if(d.id===data.deposit.id){
-                return {...data.deposit}
-              }
-              return d
-            })
-          })
+          change(data.deposit)
         })
       }
     }).finally(()=>setDepositLoading(false));
@@ -195,7 +202,7 @@ function ItemDeposit() {
     axiosClient.delete(`depositItem/${id}`).then((data) => {
       if (data.status) {
         setLoading(false);
-        setSelectedDeposit(data.data.deposit);
+        change(data.data.deposit);
         //delete supplier by id
         setDialog({
           open: true,
@@ -303,10 +310,10 @@ function ItemDeposit() {
           {/* create table with all suppliers */}
           {selectedDeposit && layOut.showDopsitItemTable && (
             <DepoistItemsTable
+            change={change}
               setLayout={setLayout}
               setData={setData}
               data={data}
-              setSelectedDeposit={setSelectedDeposit}
               deleteIncomeItemHandler={deleteIncomeItemHandler}
               loading={loading}
               selectedDeposit={selectedDeposit}
@@ -376,21 +383,25 @@ function ItemDeposit() {
                         <TableCell>{deposit?.user?.username}</TableCell>
 
                         <TableCell>
-                          <Button
+                          <LoadingButton loading={loading}
                             onClick={() => {
-                              hideDepositsTable();
-                              showAddToDeposit();
-
+                              setLoading(true);
+                            
+                               axiosClient(`getDepositWithItems/${deposit.id}`).then(({data})=>{
+                                hideDepositsTable();
+                                showAddToDeposit();
+                                showDepositItemsTable();
+                                change(data);
+  
+                                setData(data);
+                               }).finally(()=>setLoading(false))
                               // hideAddToDeposit();
                               // hideNewFormHandler();
-                              showDepositItemsTable();
-                              setSelectedDeposit(deposit);
-
-                              setData(deposit);
+                              
                             }}
                           >
                             التفاصيل
-                          </Button>
+                          </LoadingButton>
                         </TableCell>
                         <TableCell>
                           <LoadingButton
@@ -428,8 +439,13 @@ function ItemDeposit() {
                           <IconButton
                             onClick={() => {
                               // console.log(deposit, "deposit");
-                              setShowSummery(true);
-                              setSelectedDeposit(deposit);
+                              setLoading(true);
+                            
+                              axiosClient(`getDepositWithItemsAndSummery/${deposit.id}`).then(({data})=>{
+                               change(data);
+                               setShowSummery(true);
+ 
+                              }).finally(()=>setLoading(false))
                             }}
                           >
                             <Info />

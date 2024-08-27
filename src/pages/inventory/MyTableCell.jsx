@@ -19,7 +19,7 @@ function MyTableCell({
   setShift=null,
   sx = null,
   setData=null,
-  setSelectedDeposit=null,
+  change=null,
   isNum = false,
   setDialog= null,
   setDeposit=null
@@ -74,19 +74,10 @@ function MyTableCell({
             stateUpdater((prev) => prev + 1);
               
             }
-            if (setDeposit) {
-              setDeposit(data.data.data)
+            if (change) {
+              change(data.data.deposit)
             }
-            if (setSelectedDeposit) {
-              setSelectedDeposit((prev)=>{
-                return {...prev, items:prev.items.map((depositItem)=>{
-                  if(depositItem.id === item.id){
-                    return {...data.data.data}
-                  }
-                  return depositItem
-                })};
-              })
-            }
+         
             if(setDialog){
               // alert('d')
                 setDialog((prev) => {

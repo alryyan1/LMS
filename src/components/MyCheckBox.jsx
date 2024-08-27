@@ -2,7 +2,7 @@ import { Checkbox } from '@mui/material';
 import React from 'react'
 import axiosClient from '../../axios-client';
 
-function MyCheckbox({path,isChecked,colName, payload={},setSelectedDeposit=null,setDialog  = null,setShift=null}) {
+function MyCheckbox({path,isChecked,colName, payload={},change=null,setDialog  = null,setShift=null}) {
     const [checked, setChecked] = React.useState(isChecked);
 
     const handleChange = (event) => {
@@ -23,15 +23,8 @@ function MyCheckbox({path,isChecked,colName, payload={},setSelectedDeposit=null,
           if (setShift) {
             setShift(data.shift)
           }
-          if (setSelectedDeposit) {
-                 setSelectedDeposit((prev)=>{
-                return {...prev,items:prev.items.map((depositItem)=>{
-                    if(depositItem.id === data.id){
-                        return {...data}
-                    }
-                    return depositItem;
-                })}
-            })
+          if (change) {
+               change(data.deposit)
           }
        
         }

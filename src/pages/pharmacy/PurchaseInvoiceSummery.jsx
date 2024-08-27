@@ -24,10 +24,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-function toFixed(num, fixed) {
-  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
-  return num.toString().match(re)[0];
-}
+import { toFixed } from "../constants";
+
 function PurchaseInvoiceSummery({ deposit }) {
   const { showSummery, setShowSummery } = useOutletContext();
   // console.log(deposit, "deposit");
@@ -52,7 +50,7 @@ function PurchaseInvoiceSummery({ deposit }) {
                     <Widgets />
                   </TableCell>
                   <TableCell> Items Number</TableCell>
-                  <TableCell>{deposit?.items.length}</TableCell>
+                  <TableCell>{deposit?.items?.length}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>

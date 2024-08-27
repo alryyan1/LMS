@@ -27,10 +27,10 @@ function DepoistItemsTable({
   selectedDeposit,
   loading,
   deleteIncomeItemHandler,
-  setSelectedDeposit,
   data,
   setData,
   setLayout,
+  change
 }) {
   const { setDialog } = useOutletContext();
   // console.log(setDialog, "setdialog");
@@ -46,7 +46,7 @@ function DepoistItemsTable({
       if (search == "") {
         // alert('empty search')
         // console.log(data, "data");
-        setSelectedDeposit(data);
+        change(data);
         return;
       }
       if (!isNaN(search)) {
@@ -60,30 +60,20 @@ function DepoistItemsTable({
         const sliced = filtered.slice(page, page + 10).map((i) => {
           // alert(i)
         });
-        // console.log(page, "page");
-        // console.log(filtered, "filtered", sliced, "sliced");
-        setSelectedDeposit((prev) => {
-          return {
-            ...prev,
-            items: filtered,
-          };
-        });
+    
+        change({...selectedDeposit,items:filtered})
       } else {
         if (search == "") {
           alert("empty search");
-          setSelectedDeposit(data);
+          change(data);
           return;
         }
-        setSelectedDeposit((prev) => {
-          return {
-            ...prev,
-            items: data.items.filter((item) =>
-              item.item.market_name
-                .toLowerCase()
-                .includes(search?.toLowerCase())
-            ),
-          };
-        });
+        change({...selectedDeposit,items:data.items.filter((item) =>
+          item.item.market_name
+            .toLowerCase()
+            .includes(search?.toLowerCase()))})
+
+        
       }
     }
   }, [search]);
@@ -100,7 +90,7 @@ function DepoistItemsTable({
             axiosClient
               .post(`income-item/bulk/${selectedDeposit.id}`)
               .then(({ data }) => {
-                setSelectedDeposit(data.deposit);
+                change(data.deposit);
                 setData(data);
               })
               .finally(() => setLd(false));
@@ -185,7 +175,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
                     show
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"quantity"}
@@ -196,7 +186,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     show
                     sx={{ width: "60px", textAlign: "center" }}
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"cost"}
@@ -208,7 +198,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     show
                     sx={{ width: "60px", textAlign: "center" }}
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"vat_cost"}
@@ -223,7 +213,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
                     show
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"sell_price"}
@@ -234,7 +224,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
                     
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"vat_sell"}
@@ -259,7 +249,7 @@ function DepoistItemsTable({
                   </TableCell>
                   <TableCell>
                     <MyCheckbox
-                      setSelectedDeposit={setSelectedDeposit}
+                      change={change}
                       path={`depositItems/update/${depositItem.id}`}
                       isChecked={depositItem.return}
                       colName={"return"}
@@ -269,7 +259,7 @@ function DepoistItemsTable({
                     setDialog={setDialog}
                     sx={{ width: "60px", textAlign: "center" }}
                     
-                    setSelectedDeposit={setSelectedDeposit}
+                    change={change}
                     item={depositItem}
                     table="depositItems/update"
                     colName={"free_quantity"}
