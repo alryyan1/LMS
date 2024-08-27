@@ -102,7 +102,7 @@ function AddDrugAutocomplete({setUpdater}) {
                       const itemFounded =  items.find((item)=>{
                         return item.barcode?.trim() === barcode
                       })
-                      // console.log(itemFounded,'founed')
+                      console.log(itemFounded,'founed')
                       if (itemFounded ) {
                         if (itemFounded.strips == 0) {
                           alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')

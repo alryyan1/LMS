@@ -169,18 +169,19 @@ function DrugItems() {
           </thead>
           <tbody>
             {items.map((drug) => {
+                
 
-            const deposits = drug?.totalDeposit ?? 0 ; 
-            const out = drug?.totalOut ?? 0 ; 
-            const amountLeft = deposits - out;
-
-            
+             const expire =  drug?.lastDepositItem?.expire ?? null
+             let is_expired = false
+             if (expire != null &&  !dayjs(expire).isAfter(dayjs())) {
+              is_expired = true;
+             }
               console.log(drug, "drug ");
               return (
                 <TableRow
                   sx={{
                     color: (theme) => {
-                      return !dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs())
+                      return is_expired
                         ? theme.palette.error.light
                         : theme.palette.background.defaultLight;
                     },
@@ -226,49 +227,15 @@ function DrugItems() {
                     {drug.type?.name}
                   </MyAutoCompeleteTableCell>
                   <TableCell>
-                    {drug?.lastDepositItem?.expire}
+                    {drug?.lastDepositItem?.expire ?? drug.expire}
                   </TableCell>
             
                   <MyTableCell  show colName={"barcode"} item={drug} table="items">
                     {drug.barcode}
                   </MyTableCell>
                   <TableCell>
-                    {!dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs()) ? (
-                      <Badge
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        badgeContent={"EX"}
-                        color="error"
-                      >
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                            setLoading(true);
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                                setDrugs((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                                
-                              })
-                              .finally(() => setLoading(false));
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
-                      </Badge>
-                    ) : (
+                    
+                     
                      
                         <LoadingButton
                           loading={loading}
@@ -300,8 +267,8 @@ function DrugItems() {
                           <DeleteOutlineOutlined />
                         </LoadingButton>
                    
-                    )}
-                
+                    
+              
                   </TableCell>
                 </TableRow>
               );
