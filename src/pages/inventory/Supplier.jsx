@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Grid,
   IconButton,
   Paper,
@@ -114,6 +115,7 @@ function Supplier() {
                   <TableCell>الهاتف</TableCell>
                   <TableCell>العنوان</TableCell>
                   <TableCell>الايميل</TableCell>
+                  <TableCell>كشف الحساب </TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
               </thead>
@@ -137,6 +139,8 @@ function Supplier() {
                       {supplier.phone}
                     </MyTableCell>
                     <MyTableCell
+                     setDialog={setDialog}
+                      show
                       item={supplier}
                       colName={"address"}
                       table="suppliers"
@@ -150,6 +154,7 @@ function Supplier() {
                     >
                       {supplier.email}
                     </MyTableCell>
+                    <TableCell><Button variant="contained">كشف الحساب</Button></TableCell>
                     <TableCell>
                       <IconButton
                         onClick={() => {
