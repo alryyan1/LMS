@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const StateContext =  createContext({
     user : null,
@@ -27,6 +28,7 @@ export const UserContextProvider = ({children})=>{
     const [clinicDrawer, setClinicDrawer] = useState(false);
     const [pharmcyDrawer, setPharmacyDrawer] = useState(false);
     const [mode, setMode] = useState('dark');
+    const { i18n } = useTranslation();
 
     const setToken = (token)=>{
         _setToken(token)
@@ -36,6 +38,13 @@ export const UserContextProvider = ({children})=>{
             localStorage.removeItem('ACCESS_TOKEN')
         }
     }
+
+    useEffect(()=>{
+       const lang =   localStorage.getItem('lang')
+       if(lang){
+            i18n.changeLanguage(lang)
+       }
+    },[])
 
     return (
         <StateContext.Provider value={{

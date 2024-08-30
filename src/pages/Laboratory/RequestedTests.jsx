@@ -19,6 +19,7 @@ import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { useStateContext } from "../../appContext";
+import {t} from "i18next"
 import printJS from "print-js";
 function RequestedTests({ setPatients }) {
   console.log("requested tests rendered");
@@ -41,7 +42,7 @@ function RequestedTests({ setPatients }) {
     //   const discount = Number((test.discount_per * test.price) / 100);
     //   return accum + (test.price - discount);
     // }, 0);
-    const result = confirm(`هل توكد استلامك مبلغ قدره  ${actviePatient?.total_lab_value_will_pay}`);
+    const result = confirm(`${t('paycheckMsg')} ${actviePatient?.total_lab_value_will_pay}`);
     if (!result) {
       return;
     }
@@ -179,25 +180,25 @@ function RequestedTests({ setPatients }) {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell> الاسم</TableCell>
-                  <TableCell align="right">Price</TableCell>
+                  <TableCell> {t('name')}</TableCell>
+                  <TableCell align="right">{t('price')}</TableCell>
                   {actviePatient.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">التخفيض</TableCell>
+                    <TableCell align="right">{t('discount')}</TableCell>
                   )}
                   {actviePatient.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">البنك</TableCell>
+                    <TableCell align="right">{t('bank')}</TableCell>
                   )}
                   {actviePatient.company ? (
-                    <TableCell align="right">التحمل</TableCell>
+                    <TableCell align="right">{t('endurance')}</TableCell>
                   ) : (
                     ""
                   )}
                       {actviePatient.company ? (
-                    <TableCell align="right">الموافقه</TableCell>
+                    <TableCell align="right">{t('approval')}</TableCell>
                   ) : (
                     ""
                   )}
@@ -333,7 +334,7 @@ function RequestedTests({ setPatients }) {
                 sx={{ textAlign: "center", mb: 1 }}
                 variant="contained"
               >
-                الغاء السداد
+                 {t('cancel')}
               </LoadingButton>
             ) : (
               <LoadingButton
@@ -344,7 +345,7 @@ function RequestedTests({ setPatients }) {
                 sx={{ textAlign: "center", mb: 1 }}
                 variant="contained"
               >
-                دفع الرسوم
+                {t('pay')} 
               </LoadingButton>
             )}
           </div>

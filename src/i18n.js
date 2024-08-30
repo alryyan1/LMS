@@ -8,6 +8,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     resources :{
         ar:{
             translation:{
+                govId:'الهوية الوطنية',
                 finance:'الحسابات',
                 print_time:'زمن الطباعه',
                 register_lab_patient:'التسجيل  ',
@@ -91,12 +92,36 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 cash_count:'حساب الفئات',
                 moneyIncome:" الايرادات",
                 MoneyExpenses:"المصروفات ",
+                servicesPanel: 'قائمه الخدمات',
+                price:'السعر',
+                paid:'المدفوع',
+                bank:'البنك',
+                pay:'دفع',
+                country:'الدوله',
+                govIdValidation:'يحب ادم ا��خال رقم الهوية الوطنية',
+                paycheckMsg:'هل توكد استلامك مبلغ قدره ',
+                fileId:'رقم الملف',
+
                 
             }
         },
         en:{
             translation:{
+                country:'country',
+                fileId:'File Iddo',
+
+                paycheckMsg:'Are you sure you received the amount of ',
+
+                govIdValidation:'Government ID is required',
+
+                price:'price',
+                paid:'paid',
+                bank:'bank',
+                pay:'pay',
+
                 quantities:'quantities',
+                govId:'Government ID',
+                servicesPanel: 'Services Panel',
 
                 moneyIncome:"Money Income",
                 MoneyExpenses:"Money Expenses",
@@ -185,6 +210,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 settings:'settings',
                 dashboard:'dashboard',
                 billNumber:'bill number',
+                servicesPanel:'services panel',
             }
             
         },

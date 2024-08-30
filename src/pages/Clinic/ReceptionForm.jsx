@@ -17,6 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { Item } from "../constants";
 import {t} from 'i18next'
+import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
 function ReceptionForm({ hideForm,lab }) {
   const [loading, setIsLoading] = useState(false);
@@ -343,7 +344,18 @@ function ReceptionForm({ hideForm,lab }) {
                 />
               </Item>
             </Stack>
-
+            <TextField
+              error={errors?.gov_id}
+              {...register("gov_id", {
+                required: {
+                  value: true,
+                  message: t('govIdValidation'),
+                },
+              })}
+              label={t('govId')}
+              helperText={errors?.gov_id && errors.gov_id.message}
+            />
+            <CountryAutocomplete control={control} errors={errors} setValue={setValue} />
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
                 {t('gender')}

@@ -135,7 +135,7 @@ useEffect(()=>{
     
     <div>
       
-        <CacheProvider value={cacheRtl}> {<Outlet
+         {<Outlet
           context={{
             childGroups,
             setChildGroups,
@@ -178,7 +178,7 @@ useEffect(()=>{
             openEdit, setOpenEdit,
             userSettings, setUserSettings,patientsLoading,setPatientsLoading
           }}
-        />}</CacheProvider>
+        />}
 
     
       <Snackbar

@@ -5,6 +5,7 @@ import axiosClient from "../../../axios-client";
 function ServiceNav() {
   const [updateServiceGroup, setUpdateServiceGroup] = useState(0);
   const [serviceGroups, setServiceGroups] = useState([]);
+
     const [dialog, setDialog] = useState({
         showMoneyDialog:false,
         title:'',
@@ -14,6 +15,7 @@ function ServiceNav() {
         openLabReport: false,
         msg: "تمت الاضافه بنجاح",
       });
+     
 
       useEffect(()=>{
         axiosClient.get('serviceGroup/all').then(({data})=>{

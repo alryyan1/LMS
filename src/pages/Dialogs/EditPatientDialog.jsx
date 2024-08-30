@@ -18,6 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { t } from "i18next";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -112,7 +113,7 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
               defaultValue={patient.name}
               error={errors.name != null}
               variant="outlined"
-              label={"اسم المريض"}
+              label={t('name')}
             ></TextField>
             <Stack direction={"row"} gap={5} justifyContent={"space-around"}>
               <TextField
@@ -134,7 +135,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                 defaultValue={patient.phone}
                 error={errors.phone != null}
                 variant="outlined"
-                label={"رقم الهاتف"}
+              label={t('phone')}
+                
               ></TextField>
               <Controller
                 name="gender"
@@ -148,7 +150,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
                       }}
-                      label="النوع"
+              label={t('gender')}
+                      
                     >
                       <MenuItem value={"ذكر"}>ذكر</MenuItem>
                       <MenuItem value={"اثني"}>اثني</MenuItem>
@@ -188,7 +191,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                         inputRef={field.ref}
                         error={errors?.doctor}
                         {...params}
-                        label="الطبيب"
+              label={t('doctor')}
+                        
                       />
                     );
                   }}
@@ -212,7 +216,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                       message: "يجب ادخال العمر بالسنه",
                     },
                   })}
-                  label="السنه"
+              label={t('ageInYear')}
+                  
                 type="number"
 
                   variant="standard"
@@ -223,7 +228,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                 type="number"
                   defaultValue={patient.age_month}
                   {...register("age_month")}
-                  label="الشهر"
+              label={t('ageInMonth')}
+                  
                   variant="standard"
                 />
               </Item>
@@ -233,7 +239,8 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
 
                   defaultValue={patient.age_day}
                   {...register("age_day")}
-                  label="اليوم"
+              label={t('ageInDays')}
+                  
                   variant="standard"
                 />
               </Item>

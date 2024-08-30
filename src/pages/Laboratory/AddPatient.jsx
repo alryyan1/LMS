@@ -247,12 +247,12 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card  style={{height:'68vh',overflow:'auto'}} sx={{ p: 1 }}>
+        <Card  style={{height:'83vh',overflow:'auto'}} sx={{ p: 1 }}>
         {!actviePatient && foundedPatients.length > 0 && (
             <Slide       style={{position: "absolute"}} direction="up" in mountOnEnter unmountOnExit>
-              <div >
+              <Card >
                 <SearchDialog lab={true} />
-              </div>
+              </Card>
             </Slide>
           )}
           {actviePatient && actviePatient.labrequests.length > 0 && (

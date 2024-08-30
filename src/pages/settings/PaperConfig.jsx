@@ -123,7 +123,23 @@ function PaperConfig() {
             />
           </FormGroup>
           <Divider />
-
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.disable_doctor_service_check}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "disable_doctor_service_check",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"disable doctor service check"}
+            />
+          </FormGroup>
+          <Divider />
           <FormGroup>
             <FormControlLabel
               control={
@@ -145,6 +161,13 @@ function PaperConfig() {
           <TextField defaultValue={settings?.hospital_name} sx={{mb:1}} label='اسم المستشفي' fullWidth onChange={(e)=>{
              axiosClient.post("settings", {
               colName: "hospital_name",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+            <TextField defaultValue={settings?.currency} sx={{mb:1}} label='العمله ' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "currency",
               data: e.target.value,
             });
           }}/>

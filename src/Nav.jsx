@@ -61,9 +61,11 @@ const Nav = () => {
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
+      localStorage.setItem("lang", "en");
     
     } else if (i18n.language === "en") {
       i18n.changeLanguage("ar");
+      localStorage.setItem("lang", "ar");
 
     }
   };
@@ -71,12 +73,9 @@ const Nav = () => {
     if (mode === "light") {
       setMode("dark");
       localStorage.setItem("theme", "dark");
-      axiosClient.post("settings", { colName: "theme", data: "dark" });
     } else {
       setMode("light");
       localStorage.setItem("theme", "light");
-
-      axiosClient.post("settings", { colName: "theme", data: "light" });
     }
   };
   const DrawerClinicList = (

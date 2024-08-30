@@ -31,8 +31,15 @@ function ReceptionLayout() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [showPatientServices, setShowPatientServices] = useState(false);
   const [showServicePanel, setShowServicePanel] = useState(true);
-  const [companies, setCompanies] = useState([]);
+  const [settings, setSettings] = useState(null);
 
+  const [companies, setCompanies] = useState([]);
+  useEffect(()=>{
+    axiosClient.get("settings").then(({ data }) => {
+      console.log(data,'data see')
+      setSettings(data);
+    });
+  },[])
   useEffect(() => {
     axiosClient.get("company/all").then(({ data }) => {
       console.log(data, "comapnies");
@@ -104,6 +111,7 @@ function ReceptionLayout() {
             setSearchByPhone,
             foundedPatients,
             setFoundedPatients,
+            settings,
           }}
         />
       }

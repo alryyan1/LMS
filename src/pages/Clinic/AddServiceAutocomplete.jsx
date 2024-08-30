@@ -8,7 +8,7 @@ import axiosClient from "../../../axios-client";
 function AddServiceAutocomplete({ patients, setPatients }) {
   const [autoCompleteServices, setAutoComleteServices] = useState([]);
 
-  const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate} = useOutletContext();
+  const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate,settings} = useOutletContext();
   const [loading, setLoading] = useState(false);
   console.log(activeShift,'active shift doctor')
   console.log(actviePatient,'active visit')
@@ -16,18 +16,21 @@ function AddServiceAutocomplete({ patients, setPatients }) {
     try {
       let payload = selectedServices.map((test) => test.id);
       console.log(payload,'payload')
-      if (activeShift.doctor.services.length == 0) {
-        setDialog((prev)=>{
-          return {
-           ...prev,
-            open:true,
-            color:'error',
-            message:'لا توجد خدمات معرفه لهذا الطبيب'
-          }
-        })
-        return
-      }
-      activeShift.doctor.services.map((s)=>{
+    
+
+      if (!settings.disable_doctor_service_check) {
+        if (activeShift.doctor.services.length == 0) {
+          setDialog((prev)=>{
+            return {
+             ...prev,
+              open:true,
+              color:'error',
+              message:'لا توجد خدمات معرفه لهذا الطبيب'
+            }
+          })
+          return
+        }
+          activeShift.doctor.services.map((s)=>{
         if (!payload.includes(s.service.id)) {
           alert('هذه الخدمه غير معرفه من ضمن خدمات الطبيب')
           setDialog((prev)=>{
@@ -48,6 +51,9 @@ function AddServiceAutocomplete({ patients, setPatients }) {
         return
         
       }
+      }
+    
+      
       setLoading(true);
       const { data: data } = await axiosClient.post(
         `patient/service/add/${actviePatient.id}`,

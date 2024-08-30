@@ -57,7 +57,7 @@ function SearchDialog({lab=false}) {
   return (
     <Box  >
       <TableContainer sx={{height:'70vh',overflow:'auto'}}>
-        <Table sx={{ width: "100%" }} size="small" style={{ direction: "rtl" }}>
+        <Table sx={{ width: "90%" ,mr:1}} size="small" style={{ direction: "rtl" }}>
           <thead>
             <TableRow>
               <TableCell style={{ width: '40%'}}>الاسم</TableCell>
