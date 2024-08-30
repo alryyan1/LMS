@@ -2,8 +2,6 @@ import {  Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { Alert, Snackbar } from "@mui/material";
-import { CacheProvider, ThemeProvider } from "@emotion/react";
-import { cacheRtl, theme } from "./pages/constants";
 
 function LabLayout() {
   const [dialog, setDialog] = useState({
@@ -51,69 +49,62 @@ function LabLayout() {
     Promise.all([
         axiosClient.get("userSettings").then(({ data }) => {
           console.log(data, "user settings from axios");
-          setUserSettings(data);
+          // setUserSettings(data);
         }),
       
       axiosClient.get("company/all").then(({ data }) => {
         console.log(data, "comapnies");
-        setCompanies(data);
+        // setCompanies(data);
       }),
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
           console.log(data, "specialists ");
-          setSpecialists(data);
+          // setSpecialists(data);
         })
         .catch((err) => console.log(err)),
       axiosClient.get("doctors").then(({ data: data }) => {
-        setDoctors(data);
+        // setDoctors(data);
       }),
       axiosClient.get("containers/all").then((data) => {
         console.log(data, "containers data");
-        setContainersData(data.data);
+        // setContainersData(data.data);
       }),
 
       axiosClient.get("packages/all").then((data) => {
         console.log(data,'packages');
-        setPackageData(data.data);
+        // setPackageData(data.data);
       }),
       axiosClient.get("childGroup").then((data) => {
-        setChildGroups(data.data);
+        // setChildGroups(data.data);
+      }),
+      axiosClient.get("units/all")
+      .then((data) => {
+        console.log(data, "unists array");
+        // setUnits(data.data);
       }),
      
-     
+      axiosClient.get("tests").then((data) => {
+        console.log(data,'test data');
+        // setTests(data.data);
+        setLoading(false)
+    
+      })
     ]).finally(() => {
       setPatientsLoading(false);
     });
   }, []);
-  useEffect(() => {
-    console.log("start fetching units");
-    axiosClient.get("units/all")
-      .then((data) => {
-        console.log(data, "unists array");
-        setUnits(data.data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   console.log("start fetching units");
+   
+  // }, []);
 
 
-useEffect(()=>{
-  setLoading(true)
-  axiosClient.get("tests").then((data) => {
-    console.log(data,'test data');
-    setTests(data.data);
-    setLoading(false)
-
-  })
-},[updateTests])
-  const searchHandler = (e) => {
-    if (e.target.value != "") {
-      setShowSearchBox(true);
-      setShowAddTest(false);
-    } else {
-      setShowSearchBox(false);
-    }
-    setSearchedTest(e.target.value);
-  };
+// useEffect(()=>{
+//   setLoading(true)
+  
+// },[updateTests])
+ 
   
   function addChildTestHandler(id) {
     setLoading(true)

@@ -22,7 +22,7 @@ import { useStateContext } from "../../appContext";
 import {t} from "i18next"
 import printJS from "print-js";
 function RequestedTests({ setPatients }) {
-  console.log("requested tests rendered");
+  // console.log("requested tests rendered");
   const {
     setDialog,
     setActivePatient,
@@ -32,10 +32,10 @@ function RequestedTests({ setPatients }) {
     userSettings,
   } = useOutletContext();
   const { user } = useStateContext();
-  console.log(actviePatient, "active patient in requested tests");
+  // console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
-  console.log(actviePatient, "active patient", setActivePatient);
-  console.log("patient tests rendered with tests", tests);
+  // console.log(actviePatient, "active patient", setActivePatient);
+  // console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
     // const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
     //   console.log(Number((test.discount_per * test.price) / 100));
@@ -154,9 +154,9 @@ function RequestedTests({ setPatients }) {
   // }, [actviePatient]);
 
   const deleteTest = (id) => {
-    console.log(id);
+    // console.log(id);
     axiosClient.delete(`labRequest/${id}`).then(({ data }) => {
-      console.log(data, "data");
+      // console.log(data, "data");
       if (data.status) {
         setActivePatient(data.data);
         setPatients((prev) => {
@@ -202,12 +202,14 @@ function RequestedTests({ setPatients }) {
                   ) : (
                     ""
                   )}
+                  <TableCell align="right">{t('requestedBy')}</TableCell>
+
                   <TableCell align="right">-</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {actviePatient.labrequests.map((test) => {
-                  console.log(test, "test");
+                  // console.log(test, "test");
                   let price;
                   let company;
                   let endurance;
@@ -216,12 +218,12 @@ function RequestedTests({ setPatients }) {
                     company = companies.find(
                       (c) => c.id == actviePatient.company_id
                     );
-                    console.log("founded company", company);
+                    // console.log("founded company", company);
                      founedTest = company.tests.find(
                       (t) => t.id == test.main_test_id
                     );
-                    console.log(test, "patient test");
-                    console.log(founedTest, "founed test");
+                    // console.log(test, "patient test");
+                    // console.log(founedTest, "founed test");
                     price = test.price;
                     if (founedTest.pivot.endurance_static > 0) {
                       // alert('s')
@@ -238,12 +240,12 @@ function RequestedTests({ setPatients }) {
                     }
                    
                     total_endurance += endurance;
-                    console.log(company, "patient company");
+                    // console.log(company, "patient company");
                   } else {
                     price = test.main_test.price;
                   }
-                  console.log("test.pivot.is_bankak", typeof test.is_bankak);
-                  console.log("test.pivot.is_bankak = ", test.is_bankak);
+                  // console.log("test.pivot.is_bankak", typeof test.is_bankak);
+                  // console.log("test.pivot.is_bankak = ", test.is_bankak);
 
                   return (
                     <TableRow
@@ -294,6 +296,7 @@ function RequestedTests({ setPatients }) {
                   ) : (
                     ""
                   )}
+                  <TableCell sx={{ border: "none" }} align="right">{test.user_requested.username}</TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
                           disabled={actviePatient?.is_lab_paid == 1}

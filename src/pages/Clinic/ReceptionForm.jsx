@@ -287,6 +287,7 @@ function ReceptionForm({ hideForm,lab }) {
               );
             }}
           />
+          
 }
             <Stack
               direction={"row"}
@@ -356,6 +357,11 @@ function ReceptionForm({ hideForm,lab }) {
               helperText={errors?.gov_id && errors.gov_id.message}
             />
             <CountryAutocomplete control={control} errors={errors} setValue={setValue} />
+            <TextField
+              
+              {...register("address")}
+              label={t('address')}
+            />
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
                 {t('gender')}

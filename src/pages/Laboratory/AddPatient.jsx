@@ -54,11 +54,11 @@ function AddPatient() {
     setUpdate,
     openEdit,
     setOpenEdit,
-    dialog,patientsLoading, setPatientsLoading
+    dialog,patientsLoading, setPatientsLoading,selectedTests,setSelectedTests
   } = useOutletContext();
-  console.log(searchByName, "searchByname");
+  // console.log(searchByName, "searchByname");
   // const [patientsLoading, setPatientsLoading] = useState(false);
-  console.log(actviePatient);
+  // console.log(actviePatient);
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
     form: "1fr",
@@ -69,11 +69,11 @@ function AddPatient() {
     showTestPanel: false,
     patientDetails: "0.7fr",
   });
-
+//  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
     // setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
-      console.log(data.data, "today patients");
+      // console.log(data.data, "today patients");
       //add activeProperty to patient object
       data.data.patients.forEach((patient) => {
         patient.active = false;
@@ -85,9 +85,9 @@ function AddPatient() {
   }, [update]);
 
   const setActivePatientHandler = (id) => {
-    console.log(id, "in active patient handler");
+    // console.log(id, "in active patient handler");
     hideForm();
-    console.log("start active patient clicked");
+    // console.log("start active patient clicked");
     // const data = patients.find((p) => p.id === id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
     // console.log(data, "patient from db");
@@ -95,7 +95,7 @@ function AddPatient() {
     setPatients((prePatients) => {
       return prePatients.map((patient) => {
         if (patient.id === id.id) {
-          console.log("patient founded");
+          // console.log("patient founded");
           return { ...patient, active: true };
         } else {
           return { ...patient, active: false };
@@ -224,8 +224,8 @@ function AddPatient() {
           )}
         </div>
         <Card sx={{p:1}} style={{ height:'70vh', overflow: "auto" }}>
-          
-          <AddTestAutoComplete setPatients={setPatients} />
+       {actviePatient && <AddTestAutoComplete  patients={patients} actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests} setPatients={setPatients} />}
+
           <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
               <Skeleton
@@ -293,7 +293,7 @@ function AddPatient() {
                         .get(`printLab?pid=${actviePatient.id}&base64=1`)
                         .then(({ data }) => {
                           form.append("data", data);
-                          console.log(data, "daa");
+                          // console.log(data, "daa");
                           printJS({
                             printable: data.slice(data.indexOf("JVB")),
                             base64: true,

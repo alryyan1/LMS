@@ -157,7 +157,7 @@ function Reception() {
             >
               <Item
                 className={
-                  activeShift && activeShift.id === shift.id ? "active" : ""
+                  activeShift && activeShift.id === shift.id ? "active" : "doctor"
                 }
                 sx={
                   activeShift && activeShift.id === shift.id

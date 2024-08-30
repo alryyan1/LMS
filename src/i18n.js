@@ -8,7 +8,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
     resources :{
         ar:{
             translation:{
-                govId:'الهوية الوطنية',
+                govId:' رقم بطاقه مدنيه ',
                 finance:'الحسابات',
                 print_time:'زمن الطباعه',
                 register_lab_patient:'التسجيل  ',
@@ -97,22 +97,23 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 paid:'المدفوع',
                 bank:'البنك',
                 pay:'دفع',
-                country:'الدوله',
+                country:'الجنسيه',
                 govIdValidation:'يحب ادم ا��خال رقم الهوية الوطنية',
                 paycheckMsg:'هل توكد استلامك مبلغ قدره ',
                 fileId:'رقم الملف',
-
+                requestedBy:'اضيفه بواسطه',
+                address:'العنوان',
                 
             }
         },
         en:{
             translation:{
-                country:'country',
-                fileId:'File Iddo',
-
+                country:'Nationality',
+                fileId:'File No',
+                requestedBy:'Requested By',
                 paycheckMsg:'Are you sure you received the amount of ',
-
-                govIdValidation:'Government ID is required',
+                phone:'Phone',
+                govIdValidation:'Cevil ID is required',
 
                 price:'price',
                 paid:'paid',
@@ -120,7 +121,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 pay:'pay',
 
                 quantities:'quantities',
-                govId:'Government ID',
+                govId:'Cevil ID',
                 servicesPanel: 'Services Panel',
 
                 moneyIncome:"Money Income",
@@ -135,7 +136,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 price_list:' Price List ',
 
                 sample_collection:'sample collection',
-                gender:'gender',
+                gender:'Gender',
                 register_lab_patient:'Lab Register',
                 result_entry:'Result Entry',
 
@@ -172,8 +173,8 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 doctors:'doctors',
                 users:'users',
                 specialists:'Specialists',
-                password: 'password',
-                username:'username',
+                password: 'Password',
+                username:'Username',
                 time:'time',
                 passwordValidationMessageLength: "password must be 8 chrachters long",
                   passwordValidationMessage: "password is required",
@@ -199,9 +200,9 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 Addnewuser:'Add new user',
                 signup:'Sign up',
                 audit:'Finance Audit',
-
+                address:'Address',
                 inventory:'inventory',
-                login:'login',
+                login:'Login',
                 lab:'lab',
                 clinic:'Clinic',
                 pharma:'pharmacy',

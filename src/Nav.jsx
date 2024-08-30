@@ -7,11 +7,10 @@ import {
   ListItemIcon,
   ListItemText,
   Drawer,
-  Typography,
   Box,
   List,
 } from "@mui/material";
-import { ArrowRight, ElectricBolt, Language, Mail } from "@mui/icons-material";
+import { ArrowRight, ElectricBolt, Language } from "@mui/icons-material";
 import { NavLink, Link } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
@@ -105,7 +104,7 @@ const Nav = () => {
       </List>
     </Box>
   );
-  // console.log("nav updated");
+
   const DrawerPharmacyList = (
     <Box sx={{ width: 250 }} role="presentation">
       <List>

@@ -11,6 +11,13 @@ body {
   /* other formats include: 'woff2', 'truetype, 'opentype',
                             'embedded-opentype', and 'svg' */
 }
+.doctor{
+  min-width: 200px!important;
+}
+.bolder{
+  font-weight: bold!important;
+  color: black!important;
+}
 .inventroy-nav{
   display: flex;
   justify-content: space-around;

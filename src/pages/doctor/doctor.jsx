@@ -15,6 +15,7 @@ import PatientMedicalHistory from "./PatientMedicalHistory";
 import PatientPrescribedMedsTab from "./PatientPrescribedMedsTab";
 import dayjs from "dayjs";
 import ProvisionalDiagnosis from "./provisionalDiagnosis";
+import AddLabTests from "./AddLabTest";
 
 function Doctor() {
   const [value, setValue] = useState(0);
@@ -211,6 +212,7 @@ function Doctor() {
               <PatientMedicalHistory setShift={setShift}  setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={4} value={value} />
               <PatientPrescribedMedsTab setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={3} value={value} />
               <ProvisionalDiagnosis setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={5} value={value} />
+              <AddLabTests setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={6} value={value} />
             </>
           )}
         </Card>

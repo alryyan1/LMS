@@ -26,7 +26,7 @@ function PatientPanel({value,setValue}) {
        <Tab  label='History' />;
        <Tab  label='Provisional Diagnosis' />;
        <Tab  label='Laboratory' />;
-       <Tab  label='Appointments' />;
+       {/* <Tab  label='Appointments' />; */}
        <Tab  label='Nursing ' />;
        
       </Tabs>

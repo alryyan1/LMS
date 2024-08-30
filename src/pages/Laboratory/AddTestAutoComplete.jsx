@@ -5,11 +5,11 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
-function AddTestAutoComplete({ patients, setPatients }) {
+function AddTestAutoComplete({ patients, setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,setClinicPatient,setShift}) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
-  const { actviePatient, setActivePatient, setDialog,selectedTests, setSelectedTests } = useOutletContext();
+  console.log(setActivePatient,'setActviePatient component rendered successfully');
   const [loading, setLoading] = useState(false);
-  console.log(autoCompleteTests, "auto complete tests");
+  // console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
 
     if (actviePatient.is_lab_paid) {
@@ -27,17 +27,39 @@ function AddTestAutoComplete({ patients, setPatients }) {
         setLoading(false);
         const newActivePatient = data.patient;
         newActivePatient.active = true;
-        setActivePatient(data.patient);
+        console.log(setActivePatient,'setActivePatient',data.patient,'data')
+        if (setActivePatient) {
+          // alert('dddddd')
+          console.log(data.patient,'new patient ');
+
+          setActivePatient(data.patient);
+        }
+        if (setClinicPatient) {
+          setClinicPatient((prev)=>{
+            return {...prev,patient:data.patient}
+          })
+         
+          setShift((prev)=>{
+            return {...prev, visits:prev.visits.map((v)=>{
+              if(v.patient_id === data.patient.id){
+                return {...v,patient:data.patient}
+              }
+              return v;
+            })}
+          })
+        }
         //then update patients
-        setPatients((patients) => {
-          return patients.map((patient) => {
-            if (patient.id === actviePatient.id) {
-              return newActivePatient;
-            } else {
-              return patient;
-            }
+        if (setPatients) {
+          setPatients((patients) => {
+            return patients.map((patient) => {
+              if (patient.id === actviePatient.id) {
+                return newActivePatient;
+              } else {
+                return patient;
+              }
+            });
           });
-        });
+        }
         console.log(data.patient, "from db");
         console.info(actviePatient, "active p");
       }else{

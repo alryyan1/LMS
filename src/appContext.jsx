@@ -67,5 +67,3 @@ export const UserContextProvider = ({children})=>{
 }
 
 export const useStateContext = () => useContext(StateContext)
-
-

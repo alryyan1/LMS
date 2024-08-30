@@ -20,15 +20,16 @@ function PatientDetail({
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
         sx={{ backgroundColor: "#ffffffbb!important", p: 2 }}
         elevation={3}
+        className="bolder"
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <div className="patientId">{patient.id}</div>
+        <div  className="patientId">{patient.name}</div>
         <div className="form-control">
-          <div>{t("name")} </div>
-          <div>{patient.name}</div>
+          <div>Patient Id</div>
+          <div >{patient.id}</div>
         </div>
         <Divider />
         <div className="form-control">
@@ -93,7 +94,7 @@ function PatientDetail({
         </div>
         <Divider />
         <div className="form-control">
-          <div>رقم الملف</div>
+          <div>{t('fileId')} </div>
 
           <div>
             {
