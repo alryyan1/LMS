@@ -138,7 +138,7 @@ function Result() {
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
-                shiftDate.toLocaleTimeString("ar-Eg", {
+                shiftDate.toLocaleTimeString("en-Eg", {
                   hour12: true,
                   hour: "numeric",
                   minute: "numeric",
@@ -146,7 +146,7 @@ function Result() {
             </div>
             <div>
               {shift &&
-                shiftDate.toLocaleDateString("ar-Eg", {
+                shiftDate.toLocaleDateString("en-Eg", {
                   weekday: "long",
                   day: "numeric",
                   month: "numeric",
