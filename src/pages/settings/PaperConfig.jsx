@@ -178,6 +178,12 @@ function PaperConfig() {
               data: e.target.value,
             });
           }}/>
+           <TextField defaultValue={settings?.phone} sx={{mb:1}} label='الهاتف ' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "phone",
+              data: e.target.value,
+            });
+          }}/>
            <Divider/>
            <TextField defaultValue={settings?.inventory_notification_number} label='رقم هاتف المخزن لارسال الاشعارات' fullWidth onChange={(e)=>{
              axiosClient.post("settings", {
