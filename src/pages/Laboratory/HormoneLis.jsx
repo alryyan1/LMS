@@ -15,34 +15,39 @@ import {
   
   function HormoneLis() {
     const [test, setTest] = useState();
-    const [chemistryMatchingTable, setChemistryMatchingRows] = useState([]);
-    const [sysmexColumns, setSysmexColumns] = useState([]);
+    const [immune, setImmune] = useState();
+    const [hormoneMatchingTable, setHormoneMatchingRows] = useState([]);
+    const [hormoneColumns, setHormoneColumns] = useState([]);
     useEffect(() => {
-      axiosClient.get("chemistry").then(({ data }) => {
+      axiosClient.get("getHormoneTests").then(({ data }) => {
         console.log(data);
         setTest(data);
       });
-    }, []);
-    useEffect(() => {
-      axiosClient.get("getChemistryColumnNames").then(({ data }) => {
+      axiosClient.get("getImmuneTests").then(({ data }) => {
         console.log(data);
-        setSysmexColumns(data);
+        setImmune(data);
       });
     }, []);
     useEffect(() => {
-      axiosClient.get("getChemistryBindings").then(({ data }) => {
+      axiosClient.get("getHormoneColumnNames").then(({ data }) => {
         console.log(data);
-        setChemistryMatchingRows(data);
+        setHormoneColumns(data);
       });
     }, []);
-    const populateChemistryMatchingTable = () => {
-      axiosClient.post("populateMindrayMatchingTable");
+    useEffect(() => {
+      axiosClient.get("getHormoneBindings").then(({ data }) => {
+        console.log(data);
+        setHormoneMatchingRows(data);
+      });
+    }, []);
+    const populatehormoneMatchingTable = () => {
+      axiosClient.post("populateHormoneMatchingTable");
     };
     return (
       <Grid container spacing={2}>
         <Grid item xs={4}>
         <Typography variant="h3">
-             Chemistry Data
+             Hormone Data
   
           </Typography>
           <Table size="small">
@@ -60,12 +65,19 @@ import {
                     <TableCell>{item.firstChildId}</TableCell>
                   </TableRow>
                 ))}
+                {immune &&
+                immune.tests.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.main_test_name}</TableCell>
+                    <TableCell>{item.firstChildId}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h4">
-              chemistry Table Columns
+              hormone Table Columns
   
           </Typography>
           <Table size="small">
@@ -77,7 +89,7 @@ import {
             </TableHead>
             <TableBody>
               {
-                sysmexColumns.map((item,i) => (
+                hormoneColumns.map((item,i) => (
                   <TableRow key={i}>
                     <TableCell>{i}</TableCell>
                     <TableCell>{item}</TableCell>
@@ -88,25 +100,25 @@ import {
         </Grid>
         <Grid item xs={4}>
           <Typography>Matching Table</Typography>
-          <Button onClick={populateChemistryMatchingTable}>populate</Button>
+          <Button onClick={populatehormoneMatchingTable}>populate</Button>
   
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>chemistry table</TableCell>
+                <TableCell>hormone table</TableCell>
                 <TableCell>child id array</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {chemistryMatchingTable.map((item) => (
+              {hormoneMatchingTable.map((item) => (
                 <TableRow key={item.id}>
-                  <MyTableCell   colName={"name_in_mindray_table"}
+                  <MyTableCell   colName={"name_in_hormone_table"}
                     item={item}
-                    table="updateCbcBindings">{item.name_in_mindray_table}</MyTableCell>
+                    table="updateHormoneBindings">{item.name_in_hormone_table}</MyTableCell>
                   <MyTableCell
                     colName={"child_id_array"}
                     item={item}
-                    table="updateChemistryBindings"
+                    table="updateHormoneBindings"
                   >
                     {item.child_id_array}
                   </MyTableCell>

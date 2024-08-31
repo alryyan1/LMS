@@ -14,9 +14,9 @@ import MyTableCell from "../inventory/MyTableCell";
 import { webUrl } from "../constants";
 
 function PriceList() {
-  const { tests } = useOutletContext();
+  const { tests ,setDialog} = useOutletContext();
   const cut = Math.floor( tests.length/4);
-  
+   console.log(tests,'from tests')
 
   return (
     <>
@@ -38,7 +38,7 @@ function PriceList() {
               {tests.slice(0,cut).map((test) => (
                 <TableRow key={test.id}>
                   <MyTableCell table="mainTest" colName='main_test_name' item={test} >{test.main_test_name}</MyTableCell>
-                  <MyTableCell table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
+                  <MyTableCell setDialog={setDialog} table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -58,7 +58,7 @@ function PriceList() {
               {tests.slice(cut,cut*2).map((test) => (
                 <TableRow key={test.id}>
                   <MyTableCell table="mainTest" colName='main_test_name' item={test} >{test.main_test_name}</MyTableCell>
-                  <MyTableCell table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
+                  <MyTableCell setDialog={setDialog}  table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -78,7 +78,7 @@ function PriceList() {
               {tests.slice(cut*2,cut*3).map((test) => (
                 <TableRow key={test.id}>
                   <MyTableCell table="mainTest" colName='main_test_name' item={test} >{test.main_test_name}</MyTableCell>
-                  <MyTableCell table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
+                  <MyTableCell setDialog={setDialog}  table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -98,7 +98,7 @@ function PriceList() {
               {tests.slice(cut*3).map((test) => (
                 <TableRow key={test.id}>
                   <MyTableCell table="mainTest" colName='main_test_name' item={test} >{test.main_test_name}</MyTableCell>
-                  <MyTableCell table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
+                  <MyTableCell setDialog={setDialog}   table="mainTest" colName={'price'} item={test} show >{test.price}</MyTableCell>
                 </TableRow>
               ))}
             </TableBody>

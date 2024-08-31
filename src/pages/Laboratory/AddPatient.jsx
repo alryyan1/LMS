@@ -83,7 +83,7 @@ function AddPatient() {
       setPatients(data.data.patients);
     });
   }, [update]);
-
+  console.log(actviePatient, "active patient");
   const setActivePatientHandler = (id) => {
     // console.log(id, "in active patient handler");
     hideForm();

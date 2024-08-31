@@ -93,6 +93,7 @@ function ReceptionForm({ hideForm,lab }) {
         company_id:selectedCompany?.id,
         subcompany_id:selectedSubCompany?.id,
         company_relation_id : selectedRelation?.id,
+        country_id: formData.country?.id,
       })
       .then((data) => {
         console.log(data, "reception added");
@@ -346,6 +347,7 @@ function ReceptionForm({ hideForm,lab }) {
               </Item>
             </Stack>
             <TextField
+            size="small"
               error={errors?.gov_id}
               {...register("gov_id", {
                 required: {
@@ -358,7 +360,7 @@ function ReceptionForm({ hideForm,lab }) {
             />
             <CountryAutocomplete control={control} errors={errors} setValue={setValue} />
             <TextField
-              
+              size="small"
               {...register("address")}
               label={t('address')}
             />
@@ -395,6 +397,7 @@ function ReceptionForm({ hideForm,lab }) {
             render={({ field }) => {
               return (
                 <Autocomplete
+                size="small"
                   onChange={(e, newVal) => {
                     setSelectedCompany(newVal);
                     field.onChange(newVal);

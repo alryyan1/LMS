@@ -26,34 +26,51 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
-  const { doctors, setActivePatient, setUpdate, openedDoctors,setOpenEdit,openEdit } =
-    useOutletContext();
+function EditPatientDialog({
+  patient,
+  doctorVisitId,
+  isLab = false,
+  setDialog,
+}) {
+  const {
+    doctors,
+    setActivePatient,
+    setUpdate,
+    openedDoctors,
+    setOpenEdit,
+    openEdit,
+  } = useOutletContext();
   // console.log(patient);
   // console.log(appData.doctors, "doctors");
   console.log(openedDoctors, "open doctors");
   const [loading, setLoading] = useState();
   function editDoctorHandler(formData) {
     setLoading(true);
-    const url = isLab ?`patients/${patient.id}`  : `patients/edit/${doctorVisitId}`
+    const url = isLab
+      ? `patients/${patient.id}`
+      : `patients/edit/${doctorVisitId}`;
     console.log(formData, "formData");
     axiosClient
-      .patch(url, {...formData,company_relation_id:formData?.company_relation_id?.id,subcompany_id:formData?.subcompany_id?.id,doctor_id:formData.doctor?.id})
-      .then(({data}) => {
-        console.log(data,'edited data');
+      .patch(url, {
+        ...formData,
+        company_relation_id: formData?.company_relation_id?.id,
+        subcompany_id: formData?.subcompany_id?.id,
+        doctor_id: formData.doctor?.id,
+      })
+      .then(({ data }) => {
+        console.log(data, "edited data");
         if (data.status) {
-          console.log(data)
+          console.log(data);
           if (!isLab) {
             setUpdate((prev) => {
               return prev + 1;
             });
           }
-       
+
           console.log(data.patient, "new patient");
 
           setOpenEdit(false);
-          if(isLab){
-
+          if (isLab) {
             setActivePatient(data.patient);
           }
           // setPatients((prev)=>{
@@ -66,10 +83,11 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
           //   })
           // })
         }
-      }).catch(({response:{data}})=>{
-        setDialog((prev)=>{
-          return {...prev, open:true, message:data.message,color:'error'}
-        })
+      })
+      .catch(({ response: { data } }) => {
+        setDialog((prev) => {
+          return { ...prev, open: true, message: data.message, color: "error" };
+        });
       })
       .finally(() => setLoading(false));
   }
@@ -89,22 +107,23 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
       insurance_no: patient.insurance_no,
       doctor: patient.doctor,
       // company: patient.company,
-      guarantor : patient.guarantor,
-      company_relation_id : patient.relation,
-      subcompany_id:patient.subcompany
-
+      guarantor: patient.guarantor,
+      company_relation_id: patient.relation,
+      subcompany_id: patient.subcompany,
+      address: patient.address,
+      gov_id: patient.gov_id,
     },
   });
   return (
     <Dialog key={patient.id} open={openEdit}>
       <DialogTitle>تعديل البيانات</DialogTitle>
-      <DialogContent >
-        <form onSubmit={handleSubmit(editDoctorHandler)} >
+      <DialogContent>
+        <form onSubmit={handleSubmit(editDoctorHandler)}>
           <Stack
             // divider={<Divider orientation="horizontal" flexItem />}
             direction={"column"}
             gap={2}
-            sx={{p:1}}
+            sx={{ p: 1 }}
           >
             <TextField
               {...register("name", {
@@ -113,7 +132,7 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
               defaultValue={patient.name}
               error={errors.name != null}
               variant="outlined"
-              label={t('name')}
+              label={t("name")}
             ></TextField>
             <Stack direction={"row"} gap={5} justifyContent={"space-around"}>
               <TextField
@@ -135,8 +154,7 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                 defaultValue={patient.phone}
                 error={errors.phone != null}
                 variant="outlined"
-              label={t('phone')}
-                
+                label={t("phone")}
               ></TextField>
               <Controller
                 name="gender"
@@ -150,8 +168,7 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
                       }}
-              label={t('gender')}
-                      
+                      label={t("gender")}
                     >
                       <MenuItem value={"ذكر"}>ذكر</MenuItem>
                       <MenuItem value={"اثني"}>اثني</MenuItem>
@@ -161,46 +178,44 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                 }}
               />
             </Stack>
-            {isLab && <Controller
-            name="doctor"
-            // rules={{
-            //   required: {
-            //     value: true,
-            //     message: "يجب اختيار اسم الطبيب",
-            //   },
-            // }}
-            control={control}
-            render={({ field }) => {
-              return (
-                <Autocomplete
-                  isOptionEqualToValue={(option,val)=>
-                    option.id === val.id
-                  }
-                     
-                  onChange={(e, newVal) => field.onChange(newVal)}
-                  getOptionKey={(op) => op.id}
-                  getOptionLabel={(option) => option.name}
-                  options={doctors}
-                  value={field.value}
-                  
-                  renderInput={(params) => {
-                    // console.log(params)
+            {isLab && (
+              <Controller
+                name="doctor"
+                // rules={{
+                //   required: {
+                //     value: true,
+                //     message: "يجب اختيار اسم الطبيب",
+                //   },
+                // }}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Autocomplete
+                      isOptionEqualToValue={(option, val) =>
+                        option.id === val.id
+                      }
+                      onChange={(e, newVal) => field.onChange(newVal)}
+                      getOptionKey={(op) => op.id}
+                      getOptionLabel={(option) => option.name}
+                      options={doctors}
+                      value={field.value}
+                      renderInput={(params) => {
+                        // console.log(params)
 
-                    return (
-                      <TextField
-                        inputRef={field.ref}
-                        error={errors?.doctor}
-                        {...params}
-              label={t('doctor')}
-                        
-                      />
-                    );
-                  }}
-                ></Autocomplete>
-              );
-            }}
-          />
-}
+                        return (
+                          <TextField
+                            inputRef={field.ref}
+                            error={errors?.doctor}
+                            {...params}
+                            label={t("doctor")}
+                          />
+                        );
+                      }}
+                    ></Autocomplete>
+                  );
+                }}
+              />
+            )}
             <Stack
               direction={"row"}
               gap={4}
@@ -216,34 +231,45 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                       message: "يجب ادخال العمر بالسنه",
                     },
                   })}
-              label={t('ageInYear')}
-                  
-                type="number"
-
+                  label={t("ageInYear")}
+                  type="number"
                   variant="standard"
                 />
               </Item>
               <Item>
                 <TextField
-                type="number"
+                  type="number"
                   defaultValue={patient.age_month}
                   {...register("age_month")}
-              label={t('ageInMonth')}
-                  
+                  label={t("ageInMonth")}
                   variant="standard"
                 />
               </Item>
               <Item>
                 <TextField
-                type="number"
-
+                  type="number"
                   defaultValue={patient.age_day}
                   {...register("age_day")}
-              label={t('ageInDays')}
-                  
+                  label={t("ageInDays")}
                   variant="standard"
                 />
               </Item>
+            </Stack>
+            <Stack direction={"row"} gap={2}>
+              <TextField
+              defaultValue={patient.address}
+                fullWidth
+                {...register("address")}
+                label={t("address")}
+                variant="outlined"
+              />
+                <TextField
+              defaultValue={patient.gov_id}
+                fullWidth
+                {...register("gov_id")}
+                label={t("govId")}
+                variant="outlined"
+              />
             </Stack>
             {patient.company_id && <Divider>التامين</Divider>}
             {patient.company_id && (
@@ -278,76 +304,45 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                   }}
                 /> */}
                 <Stack direction={"row"} gap={2}>
-                  <TextField fullWidth
+                  <TextField
+                    fullWidth
                     {...register("insurance_no")}
                     label="رقم البطاقه"
                     variant="outlined"
                   />
-               <TextField
-               fullWidth
+                  <TextField
+                    fullWidth
                     {...register("guarantor")}
                     label="اسم الضامن"
                     variant="outlined"
                   />
-                         
-                 
                 </Stack>
 
                 <Stack direction={"row"} gap={2}>
-                  
-              
-                          <Controller
-                        name="subcompany_id"
-                        control={control}
-                        render={({ field }) => {
-                          return (
-                            <Autocomplete
-                            fullWidth
-                            
-                              value={patient.subcompany}
-                              isOptionEqualToValue={(opt, val) => opt.id === val.id}
-                              getOptionKey={(op) => op.id}
-                              {...field}
-                              getOptionLabel={(op) => op.name}
-                              options={patient.company.sub_companies}
-                              onChange={(_, val) => {
-                                field.onChange(val);
-                              }}
-                              renderInput={(params) => {
-                                return (
-                                  <TextField
-                                    label="الجهه"
-                                    error={errors.subcompany_id && errors.subcompany_id.message}
-                                    {...params}
-                                  />
-                                );
-                              }}
-                            />
-                          );
-                        }}
-                      />
-                        
-               
-                      <Controller
-                    name="company_relation_id"
+                  <Controller
+                    name="subcompany_id"
                     control={control}
                     render={({ field }) => {
                       return (
                         <Autocomplete
-                        {...field}
-                        value={field.value}
-                        fullWidth
+                          fullWidth
+                          value={patient.subcompany}
                           isOptionEqualToValue={(opt, val) => opt.id === val.id}
                           getOptionKey={(op) => op.id}
+                          {...field}
                           getOptionLabel={(op) => op.name}
-                          options={patient.company.relations}
+                          options={patient.company.sub_companies}
                           onChange={(_, val) => {
                             field.onChange(val);
                           }}
                           renderInput={(params) => {
                             return (
                               <TextField
-                                label="العلاقه"
+                                label="الجهه"
+                                error={
+                                  errors.subcompany_id &&
+                                  errors.subcompany_id.message
+                                }
                                 {...params}
                               />
                             );
@@ -356,9 +351,31 @@ function EditPatientDialog({ patient,doctorVisitId,isLab=false ,setDialog}) {
                       );
                     }}
                   />
-                 
-                </Stack>
 
+                  <Controller
+                    name="company_relation_id"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Autocomplete
+                          {...field}
+                          value={field.value}
+                          fullWidth
+                          isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                          getOptionKey={(op) => op.id}
+                          getOptionLabel={(op) => op.name}
+                          options={patient.company.relations}
+                          onChange={(_, val) => {
+                            field.onChange(val);
+                          }}
+                          renderInput={(params) => {
+                            return <TextField label="العلاقه" {...params} />;
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </Stack>
               </Stack>
             )}
           </Stack>

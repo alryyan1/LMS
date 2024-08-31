@@ -131,6 +131,28 @@ function PatientDetail({
             }
           </div>
         </div>
+        <Divider />
+        <div className="form-control">
+          <div>{t('address')}</div>
+
+          <div>
+            {
+              //print iso date
+              patient?.address
+            }
+          </div>
+        </div>
+        <Divider />
+        <div className="form-control">
+          <div>{t('country')}</div>
+
+          <div>
+            {
+              //print iso date
+              patient?.country?.name
+            }
+          </div>
+        </div>
         {patient.company_id && (
           <div>
             <div className="form-control">

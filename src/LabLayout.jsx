@@ -49,44 +49,44 @@ function LabLayout() {
     Promise.all([
         axiosClient.get("userSettings").then(({ data }) => {
           console.log(data, "user settings from axios");
-          // setUserSettings(data);
+          setUserSettings(data);
         }),
       
       axiosClient.get("company/all").then(({ data }) => {
         console.log(data, "comapnies");
-        // setCompanies(data);
+        setCompanies(data);
       }),
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
           console.log(data, "specialists ");
-          // setSpecialists(data);
+          setSpecialists(data);
         })
         .catch((err) => console.log(err)),
       axiosClient.get("doctors").then(({ data: data }) => {
-        // setDoctors(data);
+        setDoctors(data);
       }),
       axiosClient.get("containers/all").then((data) => {
         console.log(data, "containers data");
-        // setContainersData(data.data);
+        setContainersData(data.data);
       }),
 
       axiosClient.get("packages/all").then((data) => {
         console.log(data,'packages');
-        // setPackageData(data.data);
+        setPackageData(data.data);
       }),
       axiosClient.get("childGroup").then((data) => {
-        // setChildGroups(data.data);
+        setChildGroups(data.data);
       }),
       axiosClient.get("units/all")
       .then((data) => {
         console.log(data, "unists array");
-        // setUnits(data.data);
+        setUnits(data.data);
       }),
      
       axiosClient.get("tests").then((data) => {
         console.log(data,'test data');
-        // setTests(data.data);
+        setTests(data.data);
         setLoading(false)
     
       })
