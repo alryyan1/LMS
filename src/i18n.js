@@ -16,7 +16,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 cardNoValidation:"يجب ادخال رقم البطاقه",
                 register:'التسجيل',
                 define:'تعريف منتج',
-                income:'فاتوره وارد جديد',
+                income:' المشتروات',
                 quantities:'حركه المخزون',
                 
                 sales:'الطلبات',

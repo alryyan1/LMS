@@ -1,8 +1,6 @@
 import {
   Autocomplete,
   Box,
-    InputAdornment,
-    Paper,
     Stack,
     TextField,
     Typography,
@@ -12,14 +10,7 @@ import {
   import { LoadingButton } from "@mui/lab";
   import { useOutletContext } from "react-router-dom";
   import axiosClient from "../../../axios-client.js";
-  import PharmacyTypeAutocomplete from "../../components/PharmacyType.jsx";
-  import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete.jsx";
-  import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
   import dayjs from "dayjs";
-  import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-  import generator from 'generate-serial-number'
-  import {t} from 'i18next'
-import { BarChart, QrCode } from "@mui/icons-material";
 function AddDrugForm({setUpdate}) {
     const [loading, setLoading] = useState(false);
     const [stripPrice, setStripPrice] = useState(0);
@@ -32,7 +23,7 @@ function AddDrugForm({setUpdate}) {
     const {
       register,
       setValue,
-      formState: { errors, isSubmitting, isSubmitted },
+      formState: { errors,},
       control,
       reset,
       handleSubmit,
@@ -64,13 +55,13 @@ function AddDrugForm({setUpdate}) {
       }
     },[sell_price,strips])
 
-    // useEffect(()=>{
-    //   axiosClient.get("inventory/deposit/all").then(({data})=>{
-    //     setDeposits(data)
-    //     console.log(data,'all deposits')
-    //   })
+    useEffect(()=>{
+      axiosClient.get("inventory/deposit/all").then(({data})=>{
+        setDeposits(data)
+        console.log(data,'all deposits')
+      })
  
-    // },[])
+    },[])
     // useEffect(() => {
     //   setItemsIsLoading(true);
     //   //fetch all Items
@@ -97,9 +88,10 @@ function AddDrugForm({setUpdate}) {
       axiosClient
         .post(`drugs`, {
           expire: `${dayjs().format('YYYY-MM-DD')}}`,
-          cost_price:  0,
+          cost_price:   formData?.cost_price,
           require_amount: formData?.require_amount,
-          sell_price:  0,
+          sell_price:   formData?.sell_price,
+          offer_price:   formData?.offer_price,
           pharmacy_type_id: formData.pharmacyType?.id,
           drug_category_id: formData.drugCategory?.id,
           barcode: formData.barcode,
@@ -107,7 +99,8 @@ function AddDrugForm({setUpdate}) {
           sc_name: formData.sc_name,
           market_name: formData.market_name,
           batch: formData?.batch ?? '0',
-          deposit:formData.deposit?.id
+          deposit:formData.deposit?.id,
+          quantity:formData.quantity
         })
         .then(({ data }) => {
           // console.log(data, "addded drug");
@@ -156,7 +149,7 @@ function AddDrugForm({setUpdate}) {
     };
   
     useEffect(() => {
-      document.title = "Add new item";
+      document.title = "اضافه منتج";
     }, []);
   
    
@@ -172,11 +165,10 @@ function AddDrugForm({setUpdate}) {
       textAlign={"center"}
       variant="h3"
     >
-      Item Definition
+      اضافه منتج 
     </Typography>
     <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
-      <Stack direction={"column"} spacing={3}>
-        <Stack gap={2} direction={"row"}>
+        <Stack gap={2} direction={"column"}>
           
           <TextField
             size="small"
@@ -191,11 +183,22 @@ function AddDrugForm({setUpdate}) {
             })}
             defaultValue={market}
             label="اسم المنتج "
-            variant="outlined"
+            variant="standard"
             helperText={errors.market_name && errors.market_name.message}
           />
-        </Stack>
-        {/* <Stack gap={2} direction={"row"}>
+              <TextField
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      error={errors.amount}
+                      {...register("amount", {
+                        required: { value: true, message: "Amount must be provided" },
+                      })}
+                      id="outlined-basic"
+                      label="الكميه"
+                      variant="standard"
+                   
+                      helperText= {errors.amount && errors.amount.message}
+                    />
           <TextField
             size="small"
             type="number"
@@ -216,14 +219,7 @@ function AddDrugForm({setUpdate}) {
             size="small"
             fullWidth
             type="number"
-            InputLabelProps={{
-              sx: {
-                color: "#518eb9",
-                fontSize: "20px",
-                fontWeight: 500,
-                "&.MuiOutlinedInput-notchedOutline": { fontSize: "28px" }
-              }
-            }}
+            
             error={errors.cost_price}
             {...register("cost_price", {
               required: {
@@ -235,118 +231,19 @@ function AddDrugForm({setUpdate}) {
             variant="standard"
             helperText={errors.cost_price && errors.cost_price.message}
           />
-        </Stack> */}
-        <Stack gap={2} direction={"row"}>
-          {/* <TextField
-          
-          value={stripPrice}
+       
+       <TextField
             size="small"
             fullWidth
-            disabled={true}
-    
-            label="سعر الشريط"
-            variant="standard"
-          /> */}
-          
-        </Stack>
-        <TextField
-            size="small"
-            fullWidth
-            value={barcode}
-            
-            helperText={errors.barcode && errors.barcode.message}
-            error={errors.barcode}
-            
-            onDoubleClick={()=>{
-             const serial =  generator.generate(10)
-             setBarcode(serial)
-             setValue('barcode',serial)
-            }}
-          
-            {...register("barcode", {
-              required: {
-                value: true,
-                message: "Barcode is required",
-              },
-            })}
-            onChange={(e)=>{
-              setBarcode(e.target.value)
-              setValue('barcode',e.target.value)
-
-            }}
-
-            label="الباركود"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <QrCode />
-                </InputAdornment>
-              ),
-            }}
-          />
-        <Stack gap={2} direction={"row"}>
-         
-          <DrugCategoryAutocomplete
-            errors={errors}
-            Controller={Controller}
-            control={control}
-            setValue={setValue}
-          />
-        </Stack>
-        <Stack gap={2} direction={"row"}>
-          {/* <TextField
-            size="small"
             type="number"
-            error={errors.require_amount !=null }
-            helperText={
-              errors.require_amount && errors.require_amount.message
-            }
-            
-            fullWidth
-            {...register("require_amount",{
-              required: {
-                value: true,
-                message: "Require amount is required",
-              },
-            })}
-            label="الكميه (الفاتوره)"
-            variant="outlined"
-          /> */}
       
-        </Stack>
-        {/* <Stack gap={2} direction={"row"}> */}
-          {/* <TextField
-            size="small"
-          
-         
-            fullWidth
-            {...register("batch")}
-            label="باتش"
-            variant="outlined"
-          /> */}
-          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Controller
-              defaultValue={dayjs(new Date())}
-              control={control}
-              name="expire"
-              render={({ field }) => (
-                <DateField
-                format="YYYY-MM-DD"
-                size="small"
-                fullWidth
-                  {...field}
-                  value={field.value}
-                  onChange={(val) => field.onChange(val)}
-                  sx={{ mb: 1 }}
-                  label="تاريخ الانتهاء"
-                />
-              )}
-            />
-          </LocalizationProvider> */}
-        {/* </Stack> */}
-        {/* <Stack direction={"column"}>
-        {deposits.length > 0 && <Controller
+            error={errors.offer_price}
+            {...register("offer_price")}
+            label="سعر العرض"
+            variant="standard"
+          />
+       
+       {deposits.length > 0 && <Controller
             name="deposit"
           
             control={control}
@@ -360,7 +257,7 @@ function AddDrugForm({setUpdate}) {
                   {...field}
                   // value={deposits[0]}
                   options={deposits}
-                  getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number}`}
+                  getOptionLabel={(option) => `${option.supplier.name} - بند رقم  ${option.bill_number}`}
                   onChange={(e, data) => field.onChange(data)}
                   renderInput={(params) => {
                     return (
@@ -377,9 +274,7 @@ function AddDrugForm({setUpdate}) {
                 ></Autocomplete>
               );
             }}
-          />
-}
-        </Stack> */}
+          />}
 
         <LoadingButton
           fullWidth

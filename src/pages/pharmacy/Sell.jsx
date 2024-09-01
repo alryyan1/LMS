@@ -43,6 +43,7 @@ import dayjs from "dayjs";
 import AddClientDialog from "./AddClientDialog";
 import MyCheckbox from "../../components/MyCheckBox";
 import PostPaidDateField from "./MyDateFieldPostDate";
+import RoundBtn from "./RoundBtn";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -400,7 +401,7 @@ function SellDrug() {
                 Transaction No {activeSell?.id}
               </Typography>
               <Divider />
-              {activeSell && <PayOptions key={activeSell.id} />}
+           <RoundBtn activeSell={activeSell} setActiveSell={setActiveSell} setShift={setShift} val={activeSell.payment_method}  key={activeSell?.id} />
               <Divider />
               <Card
               className="transparent"

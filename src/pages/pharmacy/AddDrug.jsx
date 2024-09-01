@@ -81,7 +81,7 @@ function AddDrug() {
   }, [search, page, update]);
   return (
     <Grid container spacing={2}>
-      <Grid item lg={7} xs={12} md={12}>
+      <Grid item lg={9} xs={12} md={12}>
         <Stack
           sx={{ mb: 1 }}
           direction={"row"}
@@ -119,9 +119,8 @@ function AddDrug() {
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>No </TableCell>
-                  <TableCell> Name</TableCell>
-                  <TableCell> Inventory </TableCell>
+                  <TableCell>رقم </TableCell>
+                  <TableCell> الاسم</TableCell>
                   {/* <TableCell> Expire</TableCell> */}
                 </TableRow>
               </thead>
@@ -140,22 +139,7 @@ function AddDrug() {
                         {drug.market_name}
                       </MyTableCell>
 
-                      <TableCell>
-                        {" "}
-                        <IconButton
-                          disabled={drug.lastDepositItem != null}
-                          size="large"
-                          title="add to inventory"
-                          onClick={() => {
-                            setItemsTobeAddedToChache((prev)=>{
-                              return [...prev, drug.id];
-                            })
-                            navigate(`/pharmacy/deposit/${drug.id}`);
-                          }}
-                        >
-                          <AddBusiness />
-                        </IconButton>
-                      </TableCell>
+                     
                       {/* <TableCell>
                         <MyDateField val={drug.expire} item={drug} />
                       </TableCell> */}
@@ -212,7 +196,7 @@ function AddDrug() {
           })}
         </Grid>
       </Grid>
-      <Grid item xs={12} md={12} lg={5}>
+      <Grid item xs={12} md={12} lg={3}>
         <AddDrugForm setUpdate={setUpdate} />
       </Grid>
     </Grid>
