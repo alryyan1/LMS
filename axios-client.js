@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const axiosClient =  axios.create({
-    baseURL : `http://192.168.1.5/laravel-react-app/public/api`
+    baseURL : `http://127.0.0.1/laravel-react-app/public/api`
+    // ALWAFEI baseURL : `http://192.168.1.5/laravel-react-app/public/api`
     // baseURL : `https://om-pharmacy.com/laravel-react-app/public/api`
 })
 

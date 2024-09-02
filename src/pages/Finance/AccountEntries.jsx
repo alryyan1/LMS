@@ -66,14 +66,14 @@ import AddEntryForm from "./AddEntryForm.jsx";
                   <TableRow key={entry.id}>
                     <TableCell rowSpan={2}>{dayjs(new Date(Date.parse(entry.created_at))).format('YYYY-MM-DD')}</TableCell>
                     <TableCell rowSpan={2}>{entry.id}</TableCell>
-                    <TableCell  >{` من ح / ${entry.from_account.name}
+                    <TableCell  >{` من ح / ${entry?.debit[0]?.account?.name}
                  
                     
                    
                     
                     
                     `}</TableCell>
-                    <TableCell>{entry.amount}</TableCell>
+                    <TableCell>{entry.debit[0].amount}</TableCell>
                     <TableCell></TableCell>
             
                   </TableRow>
@@ -81,13 +81,13 @@ import AddEntryForm from "./AddEntryForm.jsx";
                     <TableCell >{`
                  
                     
-                     الي ح / ${entry.to_account.name}
+                     الي ح / ${entry?.credit[0]?.account?.name}
                   (    ${entry.description})
                     
                     `}</TableCell>
                     <TableCell></TableCell>
 
-                    <TableCell>{entry.amount}</TableCell>
+                    <TableCell>{entry?.credit[0]?.amount}</TableCell>
             
                   </TableRow>
                   </>

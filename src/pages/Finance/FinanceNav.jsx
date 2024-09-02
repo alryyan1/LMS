@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { useStateContext } from "../../appContext";
 import Login from "../Login";
 import axiosClient from "../../../axios-client";
+import {t} from "i18next"
 function FinanceNav() {
   const [items,setItems] = useState()
  const [dialog, setDialog] = useState({
-  showMoneyDialog:false,
+  showDialog:false,
   title:'',
   color:'success',
   open: false,
@@ -31,11 +32,12 @@ useEffect(()=>{
   return (
     <>
       <ul className="inventroy-nav">
-        <NavLink to={"account"}><Item> حساب جديد </Item></NavLink>
+        <NavLink to={"account"}><Item> {t('newAccount')}</Item></NavLink>
 
-        <NavLink to={"entries"}> <Item> قيود اليوميه</Item> </NavLink>
-        <NavLink to={"ledger"}><Item>  الدفتر الاستاذ</Item></NavLink>
-        <NavLink to={"section"}> <Item>قسم جديد</Item></NavLink>
+        <NavLink to={"entries"}> <Item> {t('journalEntry')}</Item> </NavLink>
+        <NavLink to={"ledger"}><Item>   {t('ledger')}</Item></NavLink>
+        <NavLink to={"trialBalance"}><Item>  {t('trialBalance')}</Item></NavLink>
+        <NavLink to={"section"}> <Item> {t('departments')}</Item></NavLink>
       </ul>
 
       {/* <ThemeProvider theme={theme}> */}

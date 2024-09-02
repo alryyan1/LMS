@@ -72,6 +72,7 @@ import AccountEntries from "./pages/Finance/AccountEntries";
 import Ledger from "./pages/Finance/Ledger";
 import CopyContract from "./pages/insurance/CopyContract";
 import HormoneLis from "./pages/Laboratory/HormoneLis";
+import TrialBalance from "./pages/Finance/TrialBalance";
 
 export const router = createBrowserRouter([
   {
@@ -199,8 +200,12 @@ export const router = createBrowserRouter([
           {
             path: "ledger",
             element: <Ledger />,
+          }
+          ,
+          {
+            path: "trialBalance",
+            element: <TrialBalance />,
           },
-          
           {
             path: "section",
             element: <FinanceSection />,

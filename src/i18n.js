@@ -93,6 +93,7 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 moneyIncome:" الايرادات",
                 MoneyExpenses:"المصروفات ",
                 servicesPanel: 'قائمه الخدمات',
+                newAccount:'حساب جديد',
                 price:'السعر',
                 paid:'المدفوع',
                 bank:'البنك',
@@ -103,13 +104,22 @@ i18next.use(i18nextBrowserLanguagedetector).use(initReactI18next).init({
                 fileId:'رقم الملف',
                 requestedBy:'اضيفه بواسطه',
                 address:'العنوان',
-                
+                journalEntry:'قيود اليوميه',
+                ledger:'الدفتر الاستاذ',
+                trialBalance:'ميزان المراجعه',
+                departments:'الاقسام',
             }
         },
         en:{
             translation:{
                 country:'Nationality',
                 fileId:'File No',
+                journalEntry:'Journal Entry',
+                ledger:'Ledger',
+                trialBalance:'Trial Balance',
+                departments:'Departments',
+
+                newAccount:'New Account',
                 requestedBy:'Requested By',
                 paycheckMsg:'Are you sure you received the amount of ',
                 phone:'Phone',

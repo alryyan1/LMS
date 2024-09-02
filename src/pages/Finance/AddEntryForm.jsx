@@ -16,7 +16,7 @@ function AddEntryForm({ setLoading, setDialog, loading ,setEntries}) {
   const submitHandler = async (formData) => {
     setLoading(true);
     try {
-      const { data } = await axiosClient.post("createFinanceEntries", {...formData,from_account:formData.from_account.id,to_account:formData.to_account.id});
+      const { data } = await axiosClient.post("createFinanceEntries", {...formData,debit:formData.debit.id,credit:formData.credit.id});
       console.log(data, "created");
       if (data.status) {
         reset();
@@ -80,7 +80,7 @@ function AddEntryForm({ setLoading, setDialog, loading ,setEntries}) {
             helperText={errors.description && errors.description.message}
           />
           <Controller
-            name="from_account"
+            name="debit"
             rules={{
               required: {
                 value: true,
@@ -112,7 +112,7 @@ function AddEntryForm({ setLoading, setDialog, loading ,setEntries}) {
             }}
           />
               <Controller
-            name="to_account"
+            name="credit"
             rules={{
               required: {
                 value: true,
