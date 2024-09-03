@@ -70,7 +70,7 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
     return (
       <Grid container spacing={2}>
       
-        <Grid item xs={8}>
+        <Grid item xs={7}>
           <Paper sx={{p:1}}>
   
           {/* create table with all clients */}
@@ -119,7 +119,7 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
           </Paper>
   
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
                <Table size="small">
                 <TableHead>
                     <TableRow>

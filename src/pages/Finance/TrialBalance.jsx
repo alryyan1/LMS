@@ -66,7 +66,8 @@ import { LoadingButton } from "@mui/lab";
             setLoading(false);
           });
       };
-    
+    let totalCreditSum = 0
+    let totalDebitSum = 0
   
     return (
       <Grid container spacing={2}>
@@ -116,6 +117,13 @@ import { LoadingButton } from "@mui/lab";
       
                <Table style={{direction:'rtl'}} size="small">
                 <TableHead>
+                <TableRow>
+                        <TableCell> </TableCell>
+                        <TableCell> </TableCell>
+                        <TableCell>  </TableCell>
+                        <TableCell colSpan={2}> بالمجاميع  </TableCell>
+                        <TableCell colSpan={2}> بالارصده </TableCell>
+                    </TableRow>
                     <TableRow>
                         <TableCell>رقم الحساب</TableCell>
                         <TableCell>اسم الحساب</TableCell>
@@ -127,18 +135,57 @@ import { LoadingButton } from "@mui/lab";
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {accounts.map((account) => (
-                        <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id ? theme.palette.warning.light:''}} key={account.id}>
-                            <TableCell>{account.id}</TableCell>
-                            <TableCell>{account.name}</TableCell>
-                            <TableCell>{account.description}</TableCell>
-                            <TableCell>0</TableCell>
-                            <TableCell>0</TableCell>
-                            <TableCell>0</TableCell>
-                            <TableCell>0</TableCell>
-                            
-                        </TableRow>
-                    ))}
+                    {accounts.map((account) =>{
+                          let totalCredits = account.credits.reduce(
+                            (accum, current) => accum + current.amount,
+                            0
+                          );
+                          let totalDebits = account.debits.reduce(
+                            (accum, current) => accum + current.amount,
+                            0
+                          );
+                          totalCreditSum += totalCredits;
+                          totalDebitSum += totalDebits;
+                          console.log(totalCredits, "total credits", totalDebits, "total dedits");
+                          let largerNumber = Math.max(totalCredits, totalDebits);
+                          let creditBalance = 0
+                          let debitBalance = 0
+                          if (totalCredits > totalDebits) {
+                            creditBalance = totalCredits - totalDebits;
+                          } else {
+                            debitBalance = totalDebits - totalCredits;
+                          }
+                       return  (
+                            <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id ? theme.palette.warning.light:''}} key={account.id}>
+                                <TableCell>{account.id}</TableCell>
+                                <TableCell>{account.name}</TableCell>
+                                <TableCell>{account.description}</TableCell>
+                                <TableCell>{totalDebits}</TableCell>
+                                <TableCell>{totalCredits}</TableCell>
+                                <TableCell>{debitBalance}</TableCell>
+                                <TableCell>{creditBalance}</TableCell>
+                                
+                            </TableRow>
+                        )
+                    })}
+                            <TableRow>
+                        <TableCell> </TableCell>
+                        <TableCell> </TableCell>
+                        <TableCell>  </TableCell>
+                        <TableCell >  </TableCell>
+                        <TableCell>  </TableCell>
+                        <TableCell> </TableCell>
+                        <TableCell>  </TableCell>
+                    </TableRow>
+                     <TableRow>
+                        <TableCell> </TableCell>
+                        <TableCell> </TableCell>
+                        <TableCell>  </TableCell>
+                        <TableCell sx={{borderTop:'1px solid',color:'green'}}> {totalDebitSum} </TableCell>
+                        <TableCell> {totalCreditSum} </TableCell>
+                        <TableCell>  </TableCell>
+                        <TableCell>  </TableCell>
+                    </TableRow>
                 </TableBody>
                </Table>
       
