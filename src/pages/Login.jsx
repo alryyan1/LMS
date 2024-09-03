@@ -11,6 +11,17 @@ import logo from "../assets/images/pharmaStar.png";
 import logo2 from "../assets/images/hitech.png";
 import sahara from "../assets/images/sahara.png";
 import {t} from 'i18next'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "/src/components/ui/card"
+import { Input } from "/src/components/ui/input"
+import { Label } from "/src/components/ui/label"
+
 function App() {
   console.log("login page");
   const [error, setError] = useState({ val: false, msg: "" });
@@ -44,64 +55,88 @@ function App() {
     <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
       <img height='300px'  src={logo2}/>
-        <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
-                  <Typography sx={{ p: 1, textAlign: "center" }} variant="h4">
-                    {t('login')}
-                  </Typography>
-                  <div className="form">
-                    <TextField
-                      error={errors.username != null}
-                      {...register("username", {
-                        required: {
-                          value: true,
-                          message: t('usernameValidation'),
-                        },
-                        minLength: {
-                          value: 6,
-                          message:
-                           t('usernameValidationMessage'),
-                        },
-                      })}
-                      sx={{ mb: 1 }}
-                      variant="standard"
-                      label={t('username')}
-                      helperText={errors?.username?.message}
-                      value={username}
-                      onChange={(value) => setUsername(value.target.value)}
-                    ></TextField>
-                    <TextField
-                      error={errors.password != null}
-                      sx={{ mb: 1 }}
-                      {...register("password", {
-                        required: {
-                          value: true,
-                          message: t('passwordValidationMessage'),
-                        },
-                        minLength: {
-                          value: 8,
-                          message: t('passwordValidationMessageLength'),
-                        },
-                      })}
-                      variant="standard"
-                      label={t("password")}
-                      type="password"
-                      helperText={errors?.password?.message}
-                      value={password}
-                      onChange={(value) => setPassword(value.target.value)}
-                    ></TextField>
-                    <LoadingButton
-                      loading={loading}
-                      type="submit"
-                      sx={{ m: 1 }}
-                      variant="contained"
-                    >
-                      {t('login')}
-                    </LoadingButton>
-                    {/* <Link to={'/signup'}  sx={{m:1}} variant="contained">انشاء حساب</Link> */}
-                  </div>
-                </form>
-                {error.val && <Alert severity="error">{error.msg}</Alert>}
       
+                <Card className="w-[450px]  rtl text-right col-span-3 mt-4 ">
+                  <CardHeader>
+                    <CardTitle>  تسجيل بيانات الدخول</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form noValidate dir="rtl" onSubmit={handleSubmit(sumbitHamdler)} >
+                    
+                      <div className="grid w-full items-center gap-4">
+                        {/** User Name  */}
+                        <div className="flex flex-col space-y-1.5 text-right">
+                          <Label htmlFor="name"> اسم المستخدم</Label>
+                          <Input
+                            
+                            className="text-right"
+                            error={errors.username != null}
+                              {...register("username", {
+                                required: {
+                                  value: true,
+                                  message: t('usernameValidation'),
+                                },
+                                minLength: {
+                                  value: 6,
+                                  message:
+                                  t('usernameValidationMessage'),
+                                },
+                              })}
+                              sx={{ mb: 1 }}
+                              variant="standard"
+                              label={t('username')}
+                              helperText={errors?.username?.message}
+                              value={username}
+                              onChange={(value) => setUsername(value.target.value)}
+                          />
+                          
+                        </div>
+                        {/** password */}
+                        {errors.username && errors.username.message}
+
+                        <div className="flex flex-col space-y-1.5 text-right">
+                          <Label htmlFor="cash_percentage"> كلمة المرور</Label>
+                          <Input
+                            
+                            className="text-right"
+                            error={errors.password != null}
+                              sx={{ mb: 1 }}
+                              {...register("password", {
+                                required: {
+                                  value: true,
+                                  message: t('passwordValidationMessage'),
+                                },
+                                minLength: {
+                                  value: 8,
+                                  message: t('passwordValidationMessageLength'),
+                                },
+                              })}
+                              variant="standard"
+                              label={t("password")}
+                              type="password"
+                              helperText={errors?.password?.message}
+                              value={password}
+                              onChange={(value) => setPassword(value.target.value)}
+                          />
+                        </div>
+                        
+                      </div>
+                      
+                      <LoadingButton
+                        loading={loading}
+                        type="submit"
+                        sx={{ m: 1 }}
+                        variant="contained"
+                      >
+                        {t('login')}
+                      </LoadingButton>
+                    </form>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                  {error.val && <Alert severity="error">{error.msg}</Alert>}
+
+                  </CardFooter>
+                </Card>
       </Stack>
     
     </Box>

@@ -18,6 +18,15 @@ import CustomCheckBoxUser from "../../components/CustomCheckBoxUser";
 import SignUp from "../Singeup";
 import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
 import { t } from "i18next";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "/src/components/ui/card"
+
 function Users() {
   const { setDialog,doctors } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(null);
@@ -67,24 +76,17 @@ function Users() {
           </Typography>
           {users.map((user) => {
             return (
-              <ListItemButton
-                style={{
-                  border: "1px dashed ",
-                  marginBottom: "2px",
-                }}
-                sx={{
-                  backgroundColor: (theme) =>
-                    selectedUser?.id == user.id
-                      ? theme.palette.primary.main
-                      : "",
-                }}
+              <Card
+
+                className={selectedUser?.id == user.id ? "p-4 mb-2 bg-slate-700 text-white": "p-4 mb-2 bg-slate-100 hover:bg-slate-700 hover:text-gray-100 hover:cursor-pointer"}
+                
                 onClick={() => {
                   setSelectedUser(user);
                 }}
                 key={user.id}
               >
                 <ListItemText>{user.username}</ListItemText>
-              </ListItemButton>
+              </Card>
             );
           })}
         </Box>
