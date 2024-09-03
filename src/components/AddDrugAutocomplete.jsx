@@ -14,7 +14,12 @@ function AddDrugAutocomplete({setUpdater}) {
   // console.log('AddDrugAutocomplete rendered',selectedDrugs)
 
   const addDrugsHandler = ()=>{
-
+    console.log(activeSell,'active sell')
+    console.log(activeSell?.client == null,'activeSell?.clinet == null')
+    if (activeSell?.client == null) {
+      alert('يجب تحديد العميل اولا')
+      return;
+    }
     if (activeSell.complete) {
       alert('يجب الغاء السداد اولا')
       return;

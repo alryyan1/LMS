@@ -109,8 +109,6 @@ import {
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Market Name</TableCell>
-                <TableCell>Scientific Name</TableCell>
-                <TableCell>Expire</TableCell>
                 <TableCell>Out<Icon sx={{color:(theme)=>theme.palette.error.light}}> <FileUpload/></Icon> </TableCell>
                 <TableCell>in  <Icon sx={{color:(theme)=>theme.palette.success.light}}><FileDownload/></Icon></TableCell>
                 <TableCell>Balance </TableCell>
@@ -124,8 +122,6 @@ import {
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <TableCell  >{item.market_name}</TableCell>
-                    <TableCell>{item.sc_name}</TableCell>
-                    <TableCell>{item.expire.trim()}</TableCell>
                     <TableCell>{item.totaldeduct}</TableCell>
                     <TableCell>{item.totaldeposit}</TableCell>
                     <TableCell>{item.remaining }</TableCell>

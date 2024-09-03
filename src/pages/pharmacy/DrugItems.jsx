@@ -170,8 +170,8 @@ function DrugItems() {
                   >
                     {drug.market_name}
                   </MyTableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem.finalSellPrice,3)}</TableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem.finalCostPrice,3)}</TableCell>
+                  <TableCell>{toFixed(drug?.lastDepositItem?.finalSellPrice,3)}</TableCell>
+                  <TableCell>{toFixed(drug?.lastDepositItem?.finalCostPrice,3)}</TableCell>
                   <MyTableCell
                     colName={"offer_price"}
                     setDialog={setDialog}

@@ -17,11 +17,11 @@ const options = [{ id:1 ,name:'Cash'}
   
   , {id:3,name:'Bank'}];
 
-export default function PayOptions() {
+export default function PayOptions({item,setDeducts,setTemp}) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const {activeSell,setActiveSell,setShift} =useOutletContext()
-  const [payment, setPayment] = React.useState(activeSell.payment_type_id);
+  const {setShift} =useOutletContext()
+  const [payment, setPayment] = React.useState(item.payment_type_id);
   const [loading , setLoading] = React.useState(false)
   // console.log(payment,'payment')
   // console.log(activeSell,'activeSell')
@@ -32,10 +32,26 @@ export default function PayOptions() {
     setPayment(paymentId);
     setLoading(true)
     setOpen(false);
-    axiosClient.patch(`deduct/payment/${activeSell.id}`,{payment:paymentId}).then(({data})=>{
+    axiosClient.patch(`deduct/payment/${item.id}`,{payment:paymentId}).then(({data})=>{
         console.log(data,'data')
-        setActiveSell(data.data)
-        setShift(data.shift)
+        setDeducts((prev) => {
+          return prev.map((d) => {
+            if (d.id === item.id) {
+              return { ...data.data };
+            } else {
+              return d;
+            }
+          });
+        });
+        setTemp((prev) => {
+          return prev.map((d) => {
+            if (d.id === item.id) {
+              return { ...data.data };
+            } else {
+              return d;
+            }
+          });
+        })
     }).finally(()=>setLoading(false))
   };
 
@@ -53,13 +69,13 @@ export default function PayOptions() {
 
   return (
     <React.Fragment>
-      <ButtonGroup  sx={{m:1}}
+      <ButtonGroup disabled={!item.complete}  sx={{m:1}}
       
         variant="contained"
         ref={anchorRef}
         aria-label="Button group with a nested menu"
       >
-        <LoadingButton loading={loading} fullWidth onClick={handleClick}>{activeSell.payment_type.name}</LoadingButton>
+        <LoadingButton disabled={!item.complete} loading={loading} fullWidth onClick={handleClick}>{item.payment_type.name}</LoadingButton>
         <Button
          
           size="small"

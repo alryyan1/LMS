@@ -26,6 +26,7 @@ import { toFixed, webUrl } from "../constants";
 import MyCheckbox from "../../components/MyCheckBox";
 import PostPaidDateField from "./MyDateFieldPostDate";
 import ShippingStateAutocomplete from "../shipping/ShippingStateAutocomplete";
+import PayOptions from "../../components/PayOptions";
 
 function SalesReport() {
   const { setDialog } = useOutletContext();
@@ -38,7 +39,6 @@ function SalesReport() {
   const [clients, setClients] = useState([]);
   const [checked, setChecked] = useState(null);
   const [states, setStates] = useState([]);
-
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -136,7 +136,7 @@ function SalesReport() {
             );
           }}
         ></Autocomplete>
-     
+
         <a
           href={`${webUrl}searchDeductByDate?first=${firstDate.format(
             "YYYY/MM/DD"
@@ -146,9 +146,19 @@ function SalesReport() {
         >
           PDF
         </a>
+        <a
+          href={`${webUrl}allSalesByItems?first=${firstDate.format(
+            "YYYY/MM/DD"
+          )}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${
+            client?.id ?? null
+          }&is_postpaid=${checked}`}
+        >
+        all Sales By Items
+        </a>
+       
       </Stack>
 
-      <Table style={{direction:'rtl'}} size="small">
+      <Table style={{ direction: "rtl" }} size="small">
         <TableHead>
           <TableRow>
             <TableCell>الكود</TableCell>
@@ -160,49 +170,178 @@ function SalesReport() {
             <TableCell>فاتوره</TableCell>
             <TableCell>تاريخ سداد الاجل</TableCell>
             <TableCell> (kg) الوزن</TableCell>
-            <TableCell width={'20%'}> الحاله </TableCell>
+            <TableCell> الحاله </TableCell>
+            <TableCell>دفع</TableCell>
+            <TableCell>طريقه الدفع</TableCell>
             <TableCell>حذف</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {temp.reverse().map((item) => 
-          (
-
+          {temp.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
-              <TableCell>{`${item?.client?.name ?? 'No-Client'}(${item?.client?.state?? ''})  `}</TableCell>
-              <TableCell>{item.total_price}</TableCell>
+              <TableCell>{`${item?.client?.name ?? "No-Client"}(${
+                item?.client?.state ?? ""
+              })  `}</TableCell>
+              <TableCell>{item.total_price_unpaid}</TableCell>
               <TableCell>
-              <Stack alignContent={'start'} direction={'column'}>
-                {item.deducted_items.map(
-                  (deducted) => 
-                    <Badge style={{justifyContent:'end'}} key={deducted.id}  badgeContent={deducted.offer_applied ? 'offer' : ''}  color={deducted.offer_applied ? 'secondary' : ''}>{deducted.item?.market_name}</Badge>
-                )}
-                  </Stack>
-
+                <Stack alignContent={"start"} direction={"column"}>
+                  {item.deducted_items.map((deducted) => (
+                    <Badge
+                      style={{ justifyContent: "end" }}
+                      key={deducted.id}
+                      badgeContent={deducted.offer_applied ? "offer" : ""}
+                      color={deducted.offer_applied ? "secondary" : ""}
+                    >
+                      {deducted.item?.market_name}
+                    </Badge>
+                  ))}
+                </Stack>
               </TableCell>
               <TableCell>
                 {dayjs(new Date(Date.parse(item.created_at))).format(
                   "YYYY/MM/DD H;m A"
                 )}
               </TableCell>
-           
+
               <TableCell>
                 {" "}
                 <a href={`${webUrl}deduct/invoice?id=${item.id}`}>
                   Invoice PDF
                 </a>
               </TableCell>
-              <TableCell><PostPaidDateField setDialog={setDialog} item={item} /></TableCell>
+              <TableCell>
+                {item?.payment_method == "postpaid" && (
+                  <PostPaidDateField setDialog={setDialog} item={item} />
+                )}
+              </TableCell>
               <TableCell>{item.weight}</TableCell>
 
               <TableCell>
-                    <ShippingStateAutocomplete
-                      shippingId={item.id}
-                      shippingStates={states}
-                      shipSate={item.state}
-                    />
-                  </TableCell>
+                <ShippingStateAutocomplete
+                  shippingId={item.id}
+                  shippingStates={states}
+                  shipSate={item.state}
+                />
+              </TableCell>
+              <TableCell>
+                {item?.complete ? (
+                  <LoadingButton
+                    color="error"
+                    fullWidth
+                    loading={loading}
+                    onClick={() => {
+                      setLoading(true);
+                      axiosClient
+                        .get(`inventory/deduct/cancel/${item.id}`)
+                        .then(({ data }) => {
+                          setDeducts((prev) => {
+                            return prev.map((d) => {
+                              if (d.id === item.id) {
+                                return { ...data.data };
+                              } else {
+                                return d;
+                              }
+                            });
+                          });
+                          setTemp((prev) => {
+                            return prev.map((d) => {
+                              if (d.id === item.id) {
+                                return { ...data.data };
+                              } else {
+                                return d;
+                              }
+                            });
+                          })
+                        })
+                        .catch(({ response: { data } }) => {
+                          // console.log({ data });
+                          setDialog((prev) => {
+                            return {
+                              ...prev,
+                              color: "error",
+
+                              open: true,
+                              message: data?.message || "An error occured",
+                            };
+                          });
+                        })
+                        .finally(() => {
+                          setLoading(false);
+                        });
+                    }}
+                    variant="contained"
+                  >
+                    Cancel
+                  </LoadingButton>
+                ) : (
+                  <LoadingButton
+                    className="effect"
+                    disabled={item.deducted_items.length == 0}
+                    fullWidth
+                    loading={loading}
+                    onClick={() => {
+                      setLoading(true);
+                      axiosClient
+                        .get(`inventory/deduct/complete/${item.id}?is_sell=1`)
+                        .then(({ data }) => {
+                          console.log(data, "data");
+                          setDeducts((prev) => {
+                            return prev.map((d) => {
+                              if (d.id === item.id) {
+                                return { ...data.data };
+                              } else {
+                                return d;
+                              }
+                            });
+                          });
+                          setTemp((prev) => {
+                            return prev.map((d) => {
+                              if (d.id === item.id) {
+                                return { ...data.data };
+                              } else {
+                                return d;
+                              }
+                            });
+                          })
+                          try {
+                            setDialog((prev) => {
+                              return {
+                                ...prev,
+                                color: "success",
+                                open: true,
+                                message: "Sell completed successfully",
+                              };
+                            });
+                          } catch (e) {
+                            // console.log(e);
+                          }
+                        })
+                        .catch(({ response: { data } }) => {
+                          // console.log({ data });
+                          setDialog((prev) => {
+                            return {
+                              ...prev,
+                              color: "error",
+
+                              open: true,
+                              message: data?.message || "An error occured",
+                            };
+                          });
+                        })
+                        .finally(() => {
+                          setLoading(false);
+                        });
+                    }}
+                    variant="contained"
+                  >
+                    Pay
+                  </LoadingButton>
+                )}
+              </TableCell>
+              <TableCell>
+                <PayOptions setTemp={setTemp} setDeducts={setDeducts} item={item} />
+              </TableCell>
               <TableCell>
                 <LoadingButton
                   loading={loading}
