@@ -20,6 +20,10 @@ import {
   Autocomplete,
   FormControlLabel,
   FormGroup,
+  Badge,
+  Paper,
+  TableContainer,
+  TableHead,
 } from "@mui/material";
 import {
   Calculate,
@@ -272,23 +276,7 @@ function SellDrug() {
                     Invoice PDF
                   </a>
                 )}
-                {activeSell.client && (
-                  <FormGroup>
-                    <FormControlLabel
-                      label="Postpaid"
-                      control={
-                        <MyCheckbox
-                          setActiveSell={setActiveSell}
-                          setShift={setShift}
-                          setDialog={setDialog}
-                          path={`deduct/${activeSell?.id}`}
-                          colName={"is_postpaid"}
-                          isChecked={activeSell?.is_postpaid}
-                        />
-                      }
-                    ></FormControlLabel>
-                  </FormGroup>
-                )}
+          
               </Stack>
 
               {shiftIsLoading ? (
@@ -299,8 +287,9 @@ function SellDrug() {
                   height={400}
                 />
               ) : (
-                <Table className="white" key={updater} size="small">
-                  <thead>
+                <TableContainer component={Paper}>
+ <Table  aria-label="simple table"  key={updater} size="small">
+                  <TableHead>
                     <TableRow>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
@@ -308,22 +297,16 @@ function SellDrug() {
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
                     </TableRow>
-                  </thead>
+                  </TableHead>
                   <TableBody>
                     {activeSell?.deducted_items?.map((deductedItem) => (
                       <TableRow
-                     
                         key={deductedItem.id}
                       >
-                        <TableCell>{deductedItem.item?.market_name}</TableCell>
-                        {activeSell.complete ? (
+                        <TableCell> <Badge  badgeContent={deductedItem.offer_applied ? 'offer' : ''}  color={deductedItem.offer_applied ? 'secondary' : ''}>{deductedItem.item?.market_name}</Badge></TableCell>
+                    
                           <TableCell>{toFixed(deductedItem.price, 3)}</TableCell>
-                        ) : (
-                        <MyTableCell colName={'price'} item={deductedItem} setData={setActiveSell} setDialog={setDialog} table="deductedItem">
-                      
-                            {deductedItem?.price}
-                          
-                        </MyTableCell>)}
+                        
 
                    
                         {activeSell.complete ? (
@@ -369,15 +352,22 @@ function SellDrug() {
                     ))}
                   </TableBody>
                 </Table>
+                </TableContainer>
+               
               )}
             </>
           )}
           {activeSell?.deducted_items.length > 0 && <>
-          <TextField sx={{mt:1}} fullWidth multiline label='ملاحظات'></TextField>
+          <TextField defaultValue={activeSell?.notes} onChange={(e)=>{
+            axiosClient.patch(`deduct/${activeSell?.id}`,{
+              colName: "notes",
+              val: e.target.value,
+            })
+          }} sx={{mt:1}} fullWidth multiline label='ملاحظات'></TextField>
           </>}
           <div key={activeSell?.id}>
                {
-            activeSell?.is_postpaid && <PostPaidDateField setShift={setShift} item={activeSell} />
+            activeSell?.payment_method == 'postpaid' && <PostPaidDateField setShift={setShift} item={activeSell} />
           }
           </div>
        

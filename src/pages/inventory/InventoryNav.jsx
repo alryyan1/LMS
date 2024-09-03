@@ -34,9 +34,7 @@ useEffect(()=>{
         <NavLink to={"client/create"}><Item>عميل جديد </Item></NavLink>
 
         <NavLink to={"supplier/create"}> <Item>مورد جديد</Item> </NavLink>
-        <NavLink to={"item/create"}><Item> صنف جديد</Item></NavLink>
         <NavLink to={"item/state"}> <Item>حركه الاصناف</Item></NavLink>
-        <NavLink to={"section/create"}> <Item>قسم جديد</Item></NavLink>
         <NavLink to={"income/request"}><Item>اذن  طلب</Item></NavLink>
         <NavLink to={"/pharmacy/deposit"}><Item>اذن وارد</Item></NavLink>
         {/* <NavLink to={"income/deduct"}><Item>اذن منصرف</Item></NavLink> */}

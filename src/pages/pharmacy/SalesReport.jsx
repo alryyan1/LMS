@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -135,12 +136,7 @@ function SalesReport() {
             );
           }}
         ></Autocomplete>
-        <FormGroup>
-          <FormControlLabel
-            label="Postpaid"
-            control={<Checkbox checked={checked} onChange={handleChange} />}
-          ></FormControlLabel>
-        </FormGroup>
+     
         <a
           href={`${webUrl}searchDeductByDate?first=${firstDate.format(
             "YYYY/MM/DD"
@@ -177,9 +173,13 @@ function SalesReport() {
               <TableCell>{`${item?.client?.name ?? 'No-Client'}(${item?.client?.state?? ''})  `}</TableCell>
               <TableCell>{item.total_price}</TableCell>
               <TableCell>
+              <Stack alignContent={'start'} direction={'column'}>
                 {item.deducted_items.map(
-                  (deducted) => `${deducted.item.market_name}-`
+                  (deducted) => 
+                    <Badge style={{justifyContent:'end'}} key={deducted.id}  badgeContent={deducted.offer_applied ? 'offer' : ''}  color={deducted.offer_applied ? 'secondary' : ''}>{deducted.item?.market_name}</Badge>
                 )}
+                  </Stack>
+
               </TableCell>
               <TableCell>
                 {dayjs(new Date(Date.parse(item.created_at))).format(

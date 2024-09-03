@@ -87,7 +87,7 @@ function AddDrugForm({setUpdate}) {
       setLoading(true);
       axiosClient
         .post(`drugs`, {
-          expire: `${dayjs().format('YYYY-MM-DD')}}`,
+          expire: `${dayjs().format('YYYY-MM-DD')}`,
           cost_price:   formData?.cost_price,
           require_amount: formData?.require_amount,
           sell_price:   formData?.sell_price,
@@ -189,15 +189,15 @@ function AddDrugForm({setUpdate}) {
               <TextField
                       fullWidth
                       sx={{ mb: 1 }}
-                      error={errors.amount}
-                      {...register("amount", {
-                        required: { value: true, message: "Amount must be provided" },
+                      error={errors.quantity}
+                      {...register("quantity", {
+                        required: { value: true, message: "quantity must be provided" },
                       })}
                       id="outlined-basic"
                       label="الكميه"
                       variant="standard"
                    
-                      helperText= {errors.amount && errors.amount.message}
+                      helperText= {errors.quantity && errors.quantity.message}
                     />
           <TextField
             size="small"
@@ -238,7 +238,14 @@ function AddDrugForm({setUpdate}) {
             type="number"
       
             error={errors.offer_price}
-            {...register("offer_price")}
+            {...register("offer_price",{
+              required: {
+                value: true,
+                message: "offer_price is required",
+              },
+            })}
+            helperText={errors.offer_price && errors.offer_price.message}
+
             label="سعر العرض"
             variant="standard"
           />

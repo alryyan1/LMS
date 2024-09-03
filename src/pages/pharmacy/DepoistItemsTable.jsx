@@ -165,7 +165,7 @@ function DepoistItemsTable({
             <TableCell> R.P </TableCell>
             <TableCell> Vat(Sell) % </TableCell>
             <TableCell> R.P + Vat </TableCell>
-            <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>total cost</TableCell>
+            <TableCell >total cost</TableCell>
             <TableCell>Dlt</TableCell>
             <TableCell> return</TableCell>
           </TableRow>
@@ -241,7 +241,7 @@ function DepoistItemsTable({
                   </MyTableCell>
                   <TableCell>{toFixed(depositItem.finalSellPrice,3)}</TableCell>
 
-                  <TableCell sx={{backgroundColor:(theme)=>theme.palette.error.light}}>
+                  <TableCell >
                     {toFixed(depositItem.quantity * depositItem.finalCostPrice, 3)}
                   </TableCell>
 

@@ -23,6 +23,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { toFixed, webUrl } from "../constants.js";
+import MyCheckbox from "../../components/MyCheckBox.jsx";
 
 function DrugItems() {
   const [loading, setLoading] = useState(false);
@@ -140,18 +141,15 @@ function DrugItems() {
               <TableCell> الكود</TableCell>
               {/* <TableCell>الاسم العلمي</TableCell> */}
               <TableCell>الاسم </TableCell>
-              <TableCell>سعر </TableCell>
-              <TableCell> المجموعه</TableCell>
-              <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
-              <TableCell> -</TableCell>
+              <TableCell>سعر البيع </TableCell>
+              <TableCell>سعر التكلفه </TableCell>
+              <TableCell>سعر العرض </TableCell>
+              <TableCell>تفعيل العرض </TableCell>
             </TableRow>
           </thead>
           <tbody>
             {items.map((drug) => {
 
-            const deposits = drug?.totalDeposit ?? 0 ; 
-            const out = drug?.totalOut ?? 0 ; 
-            const amountLeft = deposits - out;
 
             
               console.log(drug, "drug ");
@@ -168,88 +166,27 @@ function DrugItems() {
                     colName={"market_name"}
                     item={drug}
                     table="items"
+                    setDialog={setDialog}
                   >
                     {drug.market_name}
                   </MyTableCell>
-                  <TableCell>{toFixed(drug?.sell_price,3)}</TableCell>
-                  
-              
-                 
-                  <MyAutoCompeleteTableCell
-                    sections={drugCategory}
-                    val={drug.category}
-                    colName="drug_category_id"
+                  <TableCell>{toFixed(drug?.lastDepositItem.finalSellPrice,3)}</TableCell>
+                  <TableCell>{toFixed(drug?.lastDepositItem.finalCostPrice,3)}</TableCell>
+                  <MyTableCell
+                    colName={"offer_price"}
+                    setDialog={setDialog}
                     item={drug}
                     table="items"
                   >
-                    {drug.category?.name}
-                  </MyAutoCompeleteTableCell>
-           
-                
-              
-                  <MyTableCell  show colName={"barcode"} item={drug} table="items">
-                    {drug.barcode}
+                    {drug.offer_price}
                   </MyTableCell>
-                  <TableCell>
-                    {!dayjs(drug?.lastDepositItem?.expire).isAfter(dayjs()) ? (
-                      <Badge
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        badgeContent={"EX"}
-                        color="error"
-                      >
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                            setLoading(true);
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                              })
-                              .finally(() => setLoading(false));
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
-                      </Badge>
-                    ) : (
-                     
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                           let result =   confirm("Are you sure you want to delete")
-                           if (result) {
-                            setLoading(true);
-
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                              })
-                              .finally(() => setLoading(false));
-                           }
-                          
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
-                   
-                    )}
+                  <TableCell><MyCheckbox colName={'apply_offer'} isChecked={drug.apply_offer} path={`items/${drug.id}`}  setDialog={setDialog}  /></TableCell>
+                  
+              
+             
                 
-                  </TableCell>
+           
+               
                 </TableRow>
               );
             })}

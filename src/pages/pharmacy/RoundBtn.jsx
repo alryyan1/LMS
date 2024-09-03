@@ -27,8 +27,8 @@ export default function RoundBtn({val,activeSell,setActiveSell,setShift}) {
         name="radio-buttons-group"
       >
         <FormControlLabel value="on_receive" control={<Radio />} label="الدفع عند الاستلام" />
-        <FormControlLabel value="paid" control={<Radio />} label="مدفوع" />
         <FormControlLabel value="postpaid" control={<Radio />} label="آجل" />
+        <FormControlLabel value="postpaid" control={<Radio />} label="" />
       </RadioGroup>
     </FormControl>
   );

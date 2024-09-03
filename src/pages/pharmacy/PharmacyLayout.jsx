@@ -95,7 +95,7 @@ function PharmacyLayout() {
   return (
     <div>
       {
-      <CacheProvider value={cacheRtl}> 
+      
         <Outlet
           context={{
             deduct,
@@ -123,7 +123,7 @@ function PharmacyLayout() {
             clients, setClients
           }}
         />
-        </CacheProvider>
+  
       }
       <Snackbar
         open={dialog.open}

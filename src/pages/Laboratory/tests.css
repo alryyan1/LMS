@@ -40,18 +40,18 @@ ul {
   padding: 0;
   margin: 0;
 }
-td,
+/* td,
 th {
   padding: 5px;
   border: 1px solid rgba(0, 0, 0, 0.351);
-}
+} */
 thead {
   background-color: lightblue;
 }
-table {
+/* table {
   width: 100%;
   border-collapse: collapse;
-}
+} */
 .form-control {
   /* text-align: right; */
   max-width: 400px;
