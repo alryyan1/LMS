@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { toFixed } from "../constants";
+import PaymentSuppliers from "./PaymentSuppliers";
 
 function PurchaseInvoiceSummery({ deposit }) {
   const { showSummery, setShowSummery } = useOutletContext();

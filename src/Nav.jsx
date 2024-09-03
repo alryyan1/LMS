@@ -55,17 +55,15 @@ const Nav = () => {
       setUser(data);
     });
   }, []);
- 
+
   // console.log(user);
   const changeLang = () => {
     if (i18n.language === "ar") {
       i18n.changeLanguage("en");
       localStorage.setItem("lang", "en");
-    
     } else if (i18n.language === "en") {
       i18n.changeLanguage("ar");
       localStorage.setItem("lang", "ar");
-
     }
   };
   const changeMode = () => {
@@ -192,7 +190,7 @@ const Nav = () => {
       </Drawer>
       <AppBar
         sx={{
-          backgroundColor: "#485765",
+          backgroundColor: "#273c75",
 
           marginBottom: "10px",
           p: 2,
@@ -208,12 +206,14 @@ const Nav = () => {
           direction={"row-reverse"}
           gap={3}
         >
-          {user  == null &&  <NavLink
-            style={{ textDecoration: "none", color: "white" }}
-            to={"login"}
-          >
-            {t("login")}
-          </NavLink>}
+          {user == null && (
+            <NavLink
+              style={{ textDecoration: "none", color: "white" }}
+              to={"login"}
+            >
+              {t("login")}
+            </NavLink>
+          )}
           {user?.routes?.map((r) => {
             if (r.route.id == 4) {
               return (

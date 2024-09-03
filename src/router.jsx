@@ -73,27 +73,22 @@ import Ledger from "./pages/Finance/Ledger";
 import CopyContract from "./pages/insurance/CopyContract";
 import HormoneLis from "./pages/Laboratory/HormoneLis";
 import TrialBalance from "./pages/Finance/TrialBalance";
+import PaymentSuppliers from "./pages/pharmacy/PaymentSuppliers";
+import AddNewEmployee from "./pages/hr/AddNewEmployee";
 
 export const router = createBrowserRouter([
   {
-    path: 'shipping/:id',
-    element: (
-        <FindShipping/>
-       
-    ),
+    path: "shipping/:id",
+    element: <FindShipping />,
   },
   {
-
-    
     element: <App />,
     path: "/",
     errorElement: <Error404 />,
     children: [
-  
-  
       {
         element: <GuestLayout />,
-       
+
         children: [
           {
             path: "login",
@@ -103,14 +98,12 @@ export const router = createBrowserRouter([
             path: "/signup",
             element: <SignUp />,
           },
-         
         ],
       },
       {
         path: "/settings",
         element: (
           <ProtectedRoute>
-            
             <SettingsNav />
           </ProtectedRoute>
         ),
@@ -142,57 +135,67 @@ export const router = createBrowserRouter([
         ],
       },
       {
-
-        element : <ProtectedRoute><Dashboard/></ProtectedRoute> ,
-        path:"/dashboard",
-
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+        path: "/dashboard",
       },
       {
-
-        element : <ProtectedRoute><Doctor/></ProtectedRoute> ,
-        path:"doctor/:id",
-
+        element: (
+          <ProtectedRoute>
+            <Doctor />
+          </ProtectedRoute>
+        ),
+        path: "doctor/:id",
       },
       {
-
-        element : <ProtectedRoute><Contracts/></ProtectedRoute> ,
-        path:"/contracts",
-
+        element: (
+          <ProtectedRoute>
+            <Contracts />
+          </ProtectedRoute>
+        ),
+        path: "/contracts",
       },
-      
+
       {
-
-        element : <ProtectedRoute><MoneyIncome/></ProtectedRoute> ,
-        path:"/moneyIncome",
-
-      },
-      {
-
-        element : <ProtectedRoute><MoneyExpenses/></ProtectedRoute> ,
-        path:"/MoneyExpenses",
-
+        element: (
+          <ProtectedRoute>
+            <MoneyIncome />
+          </ProtectedRoute>
+        ),
+        path: "/moneyIncome",
       },
       {
-
-        element :<ProtectedRoute>
-          <Audit/>
-        </ProtectedRoute>,
-        path:"/audit",
-
+        element: (
+          <ProtectedRoute>
+            <MoneyExpenses />
+          </ProtectedRoute>
+        ),
+        path: "/MoneyExpenses",
+      },
+      {
+        element: (
+          <ProtectedRoute>
+            <Audit />
+          </ProtectedRoute>
+        ),
+        path: "/audit",
       },
       {
         path: "/finance",
         element: (
           <ProtectedRoute>
             <FinanceNav />
-           </ProtectedRoute>
+          </ProtectedRoute>
         ),
         children: [
           {
             path: "account",
             element: <FinanceAccount />,
           },
-         
+
           {
             path: "entries",
             element: <AccountEntries />,
@@ -210,12 +213,6 @@ export const router = createBrowserRouter([
             path: "section",
             element: <FinanceSection />,
           },
-
-       
-        
-      
-        
-        
         ],
       },
       {
@@ -223,7 +220,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <InventoryNav />
-           </ProtectedRoute>
+          </ProtectedRoute>
         ),
         children: [
           {
@@ -233,14 +230,10 @@ export const router = createBrowserRouter([
           {
             path: "item/state",
             element: <ItemState />,
-       
-            
           },
           {
             path: "item/login",
             element: <LoginCardInventory />,
-           
-            
           },
           {
             path: "supplier/create",
@@ -248,7 +241,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "item/create",
-       
+
             element: <Item />,
           },
           {
@@ -283,7 +276,6 @@ export const router = createBrowserRouter([
                   //fetch all items
                   return fetch(`${url}items/all`, { signal });
                 },
-                
               },
               {
                 path: "pie",
@@ -292,8 +284,6 @@ export const router = createBrowserRouter([
                   //fetch all sections
                   return fetch(`${url}sections/all`, { signal });
                 },
-              
-                
               },
             ],
           },
@@ -351,7 +341,6 @@ export const router = createBrowserRouter([
         ],
       },
 
-
       {
         path: "/pharmacy",
         element: <PharmacyLayout />,
@@ -359,23 +348,23 @@ export const router = createBrowserRouter([
           {
             path: "add",
 
-              element: (
+            element: (
               <ProtectedRoute>
                 <AddDrug />
               </ProtectedRoute>
             ),
           },
           {
-            path:'sell',
+            path: "sell",
             element: (
               <ProtectedRoute>
                 <SellDrug />
               </ProtectedRoute>
             ),
           },
-          
+
           {
-            path:'items',
+            path: "items",
             element: (
               <ProtectedRoute>
                 <DrugItems />
@@ -383,7 +372,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path:'reports',
+            path: "reports",
             element: (
               <ProtectedRoute>
                 <SalesReport />
@@ -391,7 +380,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path:'quantities',
+            path: "quantities",
             element: (
               <ProtectedRoute>
                 <ItemsInventory />
@@ -399,7 +388,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path:'deposit/:id?',
+            path: "deposit/:id?",
             element: (
               <ProtectedRoute>
                 <ItemDeposit />
@@ -424,16 +413,13 @@ export const router = createBrowserRouter([
             index: true,
             element: (
               <ProtectedRoute>
-                <AddShip/>
-               
+                <AddShip />
               </ProtectedRoute>
             ),
           },
-         
         ],
-      
       },
-      
+
       {
         path: "/insurance",
         element: <InsuranceNav />,
@@ -444,11 +430,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "subcomapny",
-            element: <AddSubcompany/>,
+            element: <AddSubcompany />,
           },
           {
             path: "relation",
-            element: <AddRelation/>,
+            element: <AddRelation />,
           },
           {
             path: "lab",
@@ -495,16 +481,12 @@ export const router = createBrowserRouter([
           {
             path: "add",
 
-            element: 
-            
-            <AddPatient />,
+            element: <AddPatient />,
           },
           {
             path: "result",
 
-            element: 
-            
-            <Result />,
+            element: <Result />,
           },
           {
             path: "sample",
@@ -514,25 +496,46 @@ export const router = createBrowserRouter([
           {
             path: "price",
 
-            element: < PriceList/>,
+            element: <PriceList />,
           },
-          
+
           {
             path: "cbc-lis",
 
-            element: <CBCLIS/>,
+            element: <CBCLIS />,
           },
-              
+
           {
             path: "chemistry-lis",
 
-            element: <ChemistryLIS/>,
+            element: <ChemistryLIS />,
           },
          
           {
             path: "hormone-lis",
 
             element: <HormoneLis/>,
+          },
+        ],
+      },
+      //this for test PaymentSuppliers component
+      {
+        element: <PaymentSuppliers />,
+        path: "/payment-suppliers",
+      },
+      {
+        path: "/hr",
+        element: (
+          <ProtectedRoute>
+            <LabLayout />
+          </ProtectedRoute>
+        ),
+
+        children: [
+          {
+            path: "add-new-employee",
+
+            element: <AddNewEmployee />,
           },
         ],
       },
