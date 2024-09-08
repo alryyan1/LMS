@@ -20,10 +20,7 @@ function AddDrugAutocomplete({setUpdater}) {
       alert('يجب تحديد العميل اولا')
       return;
     }
-    if (activeSell.complete) {
-      alert('يجب الغاء السداد اولا')
-      return;
-    }
+
     selectedDrugs.map((d)=>{
       if (d.lastDepositItem == null) {
         setDialog((prev)=>{

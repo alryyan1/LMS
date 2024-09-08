@@ -200,7 +200,7 @@ function SalesReport() {
               </TableCell>
               <TableCell>
                 {dayjs(new Date(Date.parse(item.created_at))).format(
-                  "YYYY/MM/DD H;m A"
+                  "YYYY/MM/DD H:m A"
                 )}
               </TableCell>
 
@@ -211,9 +211,9 @@ function SalesReport() {
                 </a>
               </TableCell>
               <TableCell>
-                {item?.payment_method == "postpaid" && (
+                {item?.payment_method == "postpaid" ? (
                   <PostPaidDateField setDialog={setDialog} item={item} />
-                )}
+                ) : 'لا يوجد'}
               </TableCell>
               <TableCell>{item.weight}</TableCell>
 

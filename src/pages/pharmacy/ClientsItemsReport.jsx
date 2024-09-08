@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -163,7 +164,58 @@ function ClientsItemsReport() {
                     <>
                       <div
                         key={d.id}
-                      >{`${d?.client?.name}(${d?.client?.address})`}</div>
+                      >{`${d?.client?.name}(${d?.client?.address})(${d?.client?.phone})`}</div>
+                      <Divider />
+                    </>
+                  );
+                }
+              })}
+            </Stack>
+          );
+        })}
+      </div>
+      <Typography variant="h3">Items with offer only</Typography>
+
+      <Divider />
+      <div
+        style={{
+          userSelect: "none",
+          gap: "15px",
+          transition: "0.3s all ease-in-out",
+          display: "grid",
+          textAlign: "center",
+
+          gridTemplateColumns: items.map((i) => "minmax(250px,1fr)").join(" "),
+        }}
+      >
+        {items.map((i) => {
+          return (
+            <TableCell sx={{ textWrap: "nowrap" }} key={i.id}>
+              {i.market_name}
+            </TableCell>
+          );
+        })}
+      </div>
+      <div
+        style={{
+          userSelect: "none",
+          gap: "15px",
+          transition: "0.3s all ease-in-out",
+          display: "grid",
+          textAlign: "center",
+          gridTemplateColumns: items.map((i) => "minmax(250px,1fr)").join(" "),
+        }}
+      >
+        {items.map((i) => {
+          return (
+            <Stack direction={"column"} key={i.id}>
+              {deducts.map((d) => {
+                if (d.deducted_items.filter((d)=>d.offer_applied).map((di) => di.item.id).includes(i.id)) {
+                  return (
+                    <>
+                      <div
+                        key={d.id}
+                      >{`${d?.client?.name}(${d?.client?.address})(${d?.client?.phone})`}</div>
                       <Divider />
                     </>
                   );
