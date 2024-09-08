@@ -52,9 +52,9 @@ function App() {
       .finally(() => setLoading(false));
   };
   return (
-    <Box sx={{display:'flex',justifyContent:'center',alignContent:'center'}}>
+    <Box sx={{display:'flex',height:'90vh',justifyContent:'center',alignContent:'center'}}>
       <Stack   justifyContent={'center'} alignItems={'center'} direction={'column'}>
-      <img height='300px'  src={logo2}/>
+      {/* <img height='300px'  src={logo2}/> */}
       
                 <Card className="w-[450px]  rtl text-right col-span-3 mt-4 ">
                   <CardHeader>

@@ -33,6 +33,7 @@ import PatientLab from "./PatientLab";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
+import { useStateContext } from "../../appContext";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -42,6 +43,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function AddPatient() {
+  const { user } = useStateContext();
+
   const {
     actviePatient,
     setActivePatient,
@@ -61,7 +64,7 @@ function AddPatient() {
   // console.log(actviePatient);
   const [patients, setPatients] = useState([]);
   const [layOut, setLayout] = useState({
-    form: "1fr",
+    form: "minmax(350px,1fr)",
     tests: "1fr",
     hideForm: false,
     testWidth: "400px",
@@ -185,6 +188,7 @@ function AddPatient() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
+
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
                 <CreateOutlinedIcon />
@@ -247,14 +251,8 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card  style={{height:'83vh',overflow:'auto'}} sx={{ p: 1 }}>
-        {!actviePatient && foundedPatients.length > 0 && (
-            <Slide       style={{position: "absolute"}} direction="up" in mountOnEnter unmountOnExit>
-              <Card >
-                <SearchDialog lab={true} />
-              </Card>
-            </Slide>
-          )}
+        <Card   sx={{ p: 1 }}>
+       
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />
           )}
@@ -262,7 +260,9 @@ function AddPatient() {
       
         </Card>
         <div>
-      
+        {!actviePatient && foundedPatients.length > 0 && (
+                <SearchDialog lab={true} />
+          )}
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
@@ -274,6 +274,8 @@ function AddPatient() {
             />
           )}
            {actviePatient && <Stack sx={{mt:1}} direction={"row"} gap={2}>
+           <a href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}>Receipt</a>
+
                   <Button size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
@@ -323,6 +325,7 @@ function AddPatient() {
         {dialog.showMoneyDialog &&<MoneyDialog />}
         <ErrorDialog />
         {actviePatient &&<EditPatientDialog
+        key={actviePatient?.id}
         setDialog={setDialog}
           open={openEdit}
           isLab = {true}

@@ -2,13 +2,13 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
-export const url = "https://intaj-starstechnology.com/lms/laravel-react-app/public/api/"
-// export const url = "http://127.0.0.1/laravel-react-app/public/api/"
+// export const url = "https://intaj-starstechnology.com/lms/laravel-react-app/public/api/"
+export const url = "http://127.0.0.1/laravel-react-app/public/api/"
 // ALWAFEI export const url = "http://192.168.1.5/laravel-react-app/public/api/"
 // export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
-export const webUrl = "https://intaj-starstechnology.com/lms/laravel-react-app/public/"
+// export const webUrl = "https://intaj-starstechnology.com/lms/laravel-react-app/public/"
 // ALAWAFEI export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
-//  export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
+ export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
 export const cacheRtl = createCache({
     key: "muirtl",

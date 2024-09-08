@@ -25,9 +25,7 @@
 .hide {
   display: none;
 }
-td {
-  cursor: pointer;
-}
+
 
 .searchContainer {
   display: flex;
@@ -40,18 +38,9 @@ ul {
   padding: 0;
   margin: 0;
 }
-td,
-th {
-  padding: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.351);
-}
-thead {
-  background-color: lightblue;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+
+
+
 .form-control {
   /* text-align: right; */
   max-width: 400px;
@@ -91,10 +80,7 @@ li:hover {
 .table-children {
   position: relative;
 }
-.table {
-  height: 60vh;
-  overflow: auto;
-}
+
 
 .test-options {
   height: 60vh;

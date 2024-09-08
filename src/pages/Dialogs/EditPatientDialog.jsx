@@ -19,13 +19,8 @@ import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import { t } from "i18next";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import { Item } from "../constants";
+
 function EditPatientDialog({
   patient,
   doctorVisitId,
@@ -40,7 +35,7 @@ function EditPatientDialog({
     setOpenEdit,
     openEdit,
   } = useOutletContext();
-  // console.log(patient);
+  console.log(patient,'patient to be edited');
   // console.log(appData.doctors, "doctors");
   console.log(openedDoctors, "open doctors");
   const [loading, setLoading] = useState();

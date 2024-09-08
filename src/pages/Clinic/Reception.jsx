@@ -25,6 +25,7 @@ import PatientReception from "./PatientReception";
 import CustumSideBar from "../../components/CustumSideBar";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
+import { webUrl } from "../constants";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -58,7 +59,7 @@ function Reception() {
   } = useOutletContext();
   const { user } = useStateContext();
   const [layOut, setLayout] = useState({
-    form: "1fr",
+    form: "minmax(350px, 1fr)",
     hideForm: false,
     requestedDiv: "minmax(0,2fr)",
     showTestPanel: false,
@@ -217,7 +218,6 @@ function Reception() {
         <div>
           {!actviePatient && foundedPatients.length > 0 && (
             <Slide
-              style={{position: "absolute"}}
               direction="up"
               in
               mountOnEnter
@@ -239,6 +239,7 @@ function Reception() {
                   copyPatient={true}
                 />
                 <Stack sx={{mt:1}} direction={"row"} gap={2}>
+                  <a href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}>Receipt</a>
                   <Button size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {

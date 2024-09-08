@@ -7,7 +7,7 @@ function MyAutocomepleteHistoryLab({ options,val,setDoctor }) {
   return (
     <Autocomplete
       sx={{width:'300px'}}
-      value={selected}
+  
       onChange={(e, data) => {
         setSelected(data);
         setDoctor(data);

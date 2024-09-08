@@ -2,12 +2,12 @@ import { Autocomplete, TextField } from "@mui/material";
 import React, { useState } from "react";
 
 function MyAutocomepleteHistory({ options,val,setDoctor }) {
-  const [selected, setSelected] = useState(val);
+  const [selected, setSelected] = useState();
 
   return (
     <Autocomplete
       sx={{ minWidth: "300px" }}
-      value={selected}
+    
       onChange={(e, data) => {
         setSelected(data);
         setDoctor(data);
@@ -26,7 +26,7 @@ function MyAutocomepleteHistory({ options,val,setDoctor }) {
       renderInput={(params) => {
         // console.log(params)
 
-        return <TextField {...params} label="الطبيب" />;
+        return <TextField variant="standard" {...params} label="الطبيب" />;
       }}
     />
   );

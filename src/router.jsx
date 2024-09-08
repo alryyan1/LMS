@@ -75,6 +75,8 @@ import HormoneLis from "./pages/Laboratory/HormoneLis";
 import TrialBalance from "./pages/Finance/TrialBalance";
 import PaymentSuppliers from "./pages/pharmacy/PaymentSuppliers";
 import AddNewEmployee from "./pages/hr/AddNewEmployee";
+import Chemwell from "./pages/Chemwell";
+import MyTree from "./pages/Finance/Tree";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +147,14 @@ export const router = createBrowserRouter([
       {
         element: (
           <ProtectedRoute>
+            <Chemwell />
+          </ProtectedRoute>
+        ),
+        path: "/chemwell",
+      },
+      {
+        element: (
+          <ProtectedRoute>
             <Doctor />
           </ProtectedRoute>
         ),
@@ -208,6 +218,10 @@ export const router = createBrowserRouter([
           {
             path: "trialBalance",
             element: <TrialBalance />,
+          },
+          {
+            path: "tree",
+            element: <MyTree />,
           },
           {
             path: "section",

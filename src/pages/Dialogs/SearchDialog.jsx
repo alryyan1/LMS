@@ -1,5 +1,6 @@
 import {
   Box,
+  Card,
   Paper,
   Table,
   TableBody,
@@ -32,7 +33,7 @@ function SearchDialog({lab=false}) {
     }
     setLoading(true);
   
-    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor.id}`  :`patients/add-patient-by-history/${id}/${doctor?.id}`
+    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor.id}`  :`patients/add-patient-by-history/${doctor.id}/${id}`
 
     axiosClient
       .post(
@@ -55,13 +56,14 @@ function SearchDialog({lab=false}) {
       });
   };
   return (
-    <Box  >
+    <Card  >
       <TableContainer sx={{height:'70vh',overflow:'auto'}}>
-        <Table sx={{ width: "90%" ,mr:1}} size="small" style={{ direction: "rtl" }}>
+        <Table sx={{ width: "90%" ,mr:1}} size="small" >
           <thead>
             <TableRow>
-              <TableCell style={{ width: '40%'}}>الاسم</TableCell>
+              <TableCell width={'20%'}>الاسم</TableCell>
               <TableCell>التاريخ</TableCell>
+              <TableCell>  الطبيب السابق</TableCell>
               <TableCell> الطبيب</TableCell>
               <TableCell> اضافه</TableCell>
             </TableRow>
@@ -69,15 +71,16 @@ function SearchDialog({lab=false}) {
           <TableBody>
             {foundedPatients.map((item) => (
               <TableRow key={item.id}>
-                <TableCell  width={'40%'}>{item.name}</TableCell>
+                <TableCell  width={'20%'}>{item.name}</TableCell>
                 <TableCell>
                   {new Date(Date.parse(item.created_at)).toLocaleDateString()}
                 </TableCell>
+                <TableCell>{item?.doctor?.name}</TableCell>
                 <TableCell>
-                  {lab  ? <MyAutocomepleteHistoryLab val={item.doctor} setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
+                  {lab  ? <MyAutocomepleteHistoryLab  setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
                     setDoctor={setDoctor}
                     options={openedDoctors}
-                    val={item.doctor}
+                   
                   />}
                 </TableCell>
                 <TableCell>
@@ -96,7 +99,7 @@ function SearchDialog({lab=false}) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </Card>
   );
 }
 
