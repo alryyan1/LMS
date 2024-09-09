@@ -165,8 +165,8 @@ const SignUp = ({ setUsers, doctors }) => {
     // </form>
     <Card className="w-[450px]  rtl text-right col-span-3 ">
       <CardHeader>
-        <CardTitle> تسجيل بيانات الطبيب</CardTitle>
-        <CardDescription>الرجاء ادخال بيانات الطبيب</CardDescription>
+        <CardTitle> تسجيل بيانات المستخدم</CardTitle>
+        <CardDescription>الرجاء ادخال بيانات المستخدم</CardDescription>
       </CardHeader>
       <CardContent>
         <form noValidate dir="rtl" onSubmit={handleSubmit(sumbitHamdler)}>
