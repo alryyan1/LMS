@@ -2,7 +2,7 @@ import { Checkbox } from '@mui/material';
 import React from 'react'
 import axiosClient from '../../axios-client';
 
-function CustomCheckboxUserRoute({setUpdater,setDialog,selectedUser,setSelectedUser,isChecked,route_id,sub_route_id=null,path='routes'}) {
+function GeneralCheckboxUser({setUpdater,setDialog,selectedUser,setSelectedUser,isChecked,route_id,sub_route_id=null,path='routes'}) {
     const [checked, setChecked] = React.useState(isChecked);
 
     const handleChange = (event) => {
@@ -25,4 +25,4 @@ function CustomCheckboxUserRoute({setUpdater,setDialog,selectedUser,setSelectedU
   )
 }
 
-export default CustomCheckboxUserRoute
+export default GeneralCheckboxUser

@@ -18,7 +18,7 @@ import { DeleteOutline } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 function PatientPrescribedMedsTab(props) {
-  const { value, index, patient, setDialog, setActivePatient,complains,setShift, ...other } =
+  const { value, index, patient, setDialog, change,complains,setShift, ...other } =
     props;
   const [loading, setLoading] = useState();
   const [showSuggestions, setShowSeggestions] = useState(false);
@@ -33,17 +33,8 @@ function PatientPrescribedMedsTab(props) {
     .then(({ data }) => {
       // console.log(data);
       if (data.status) {
-        setActivePatient((prev)=>{
-          return {...prev,patient:data.patient}
-        })
-        setShift((prev)=>{
-          return {...prev, visits:prev.visits.map((v)=>{
-            if(v.patient_id === patient.id){
-              return {...v,patient:data.patient}
-            }
-            return v;
-          })}
-        })
+      
+        change(data.patient)
         setDialog((prev) => {
           return {
             ...prev,
@@ -81,7 +72,7 @@ function PatientPrescribedMedsTab(props) {
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddPrescribedDrugAutocomplete
           setShift={setShift}
-            setActivePatient={setActivePatient}
+          change={change}
             patient={patient}
             setDialog={setDialog}
           />

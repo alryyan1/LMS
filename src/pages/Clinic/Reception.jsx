@@ -88,7 +88,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "0.5fr",
+        patients: "0.7fr",
       };
     });
   };
@@ -166,7 +166,7 @@ function Reception() {
                     
                         cursor: "pointer",
                         flexGrow: 1,
-                        minWidth: "200px",
+                        minWidth: "215px",
                         borderBottom: "4px solid blue",
                         fontWeight: "bolder",
                       }

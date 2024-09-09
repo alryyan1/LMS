@@ -120,7 +120,8 @@ i18next
       },
       en: {
         translation: {
-        
+         address:'Address',
+         country:'Country',
           journalEntry:'Journal Entry',
           ledger:'Ledger',
           trialBalance:'Trial Balance',
@@ -144,7 +145,7 @@ i18next
           price_list: " Price List ",
 
           sample_collection: "sample collection",
-          gender: "gender",
+          gender: "Gender",
           register_lab_patient: "Lab Register",
           result_entry: "Result Entry",
 

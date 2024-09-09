@@ -9,8 +9,8 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay}) {
-
+function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit}) {
+  // console.log(activePatient,'active patient')
   return (
     <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
     <Badge
@@ -18,12 +18,13 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay}) {
       badgeContent={
         visit.patient.visit_count
       }
-      key={visit.id}
+      key={visit.patient.id}
     >
       <Stack
         sx={{ cursor: "pointer" }}
         onClick={() => {
             setActivePatient(visit.patient)
+            setActiveDoctorVisit(visit)
             console.log(visit,'selected visit')
 
    
@@ -31,26 +32,26 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay}) {
         direction={"row"}
       >
         <Item
-          style={ activePatient && activePatient.id === visit.id ? {
+          style={ activePatient && activePatient.id === visit.patient.id ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
           }:null}
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            minWidth: "200px",
+            minWidth: "220px",
             cursor: "pointer",
             
        
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {visit.company_id &&    <Icon>
+            {visit.patient.company_id &&    <Icon>
               <FavoriteBorder />
             </Icon>}
          
 
-            {visit.totalservicebank > 0 && (
+            {visit.patient.totalservicebank > 0 && (
             <Chip
               label="bank"
               sx={{

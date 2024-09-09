@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import AddServiceAutocomplete from "./AddServiceAutocomplete";
 function ServiceGroup() {
-const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServices,setShowServicePanel} =  useOutletContext()
+const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServices,setShowServicePanel,activeShift,actviePatient,setActivePatient,setDialog,settings} =  useOutletContext()
 
   const serviceAddHandler = (service) => {
     setSelectedServices((prev)=>{
@@ -32,7 +32,7 @@ const {serviceCategories,selectedServices,setSelectedServices,setShowPatientServ
         <Button onClick={()=>{
             setShowPatientServices(true)
             setShowServicePanel(false)}}>عرض الخدمات المضافه</Button>
-        <AddServiceAutocomplete/>
+        <AddServiceAutocomplete setSelectedServices={setSelectedServices} setShowPatientServices={setShowPatientServices} setShowServicePanel={setShowServicePanel} settings={settings} activeShift={activeShift} actviePatient={actviePatient} selectedServices={selectedServices} setActivePatient={setActivePatient} setDialog={setDialog}/>
       <Tabs
         textColor="secondary"
         indicatorColor="secondary"

@@ -76,7 +76,7 @@ function PatientReception({ visit, hideForm, index }) {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            minWidth: "200px",
+            minWidth: "215px",
             cursor: "pointer",
           }}
         >

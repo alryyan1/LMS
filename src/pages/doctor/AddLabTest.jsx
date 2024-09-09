@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { t } from "i18next";
 function AddLabTests(props) {
-  const { value, index, patient, setDialog, setActivePatient,complains,setShift, ...other } =
+  const { value, index, patient, setDialog, change,complains,setShift, ...other } =
     props;
   const [selectedTests, setSelectedTests] = useState([]);
   
@@ -24,18 +24,8 @@ function AddLabTests(props) {
     axiosClient.delete(`labRequest/${id}`).then(({ data }) => {
       console.log(data, "data");
       if (data.status) {
-        setActivePatient((prev)=>{
-          return {...prev,patient:data.data}
-        })
-       
-        setShift((prev)=>{
-          return {...prev, visits:prev.visits.map((v)=>{
-            if(v.patient_id === data.data.id){
-              return {...v,patient:data.data}
-            }
-            return v;
-          })}
-        })
+        console.log(data,'data')
+        change(data.data)
       }
     });
   };
@@ -52,7 +42,7 @@ function AddLabTests(props) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <AddTestAutoComplete setClinicPatient={setActivePatient} setShift={setShift}  actviePatient={patient}  setDialog={setDialog}  setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
+          <AddTestAutoComplete change={change} setShift={setShift}  actviePatient={patient}  setDialog={setDialog}  setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
   
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
             <Table size="small">

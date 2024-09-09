@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "/src/components/ui/card"
+import MyCheckbox from "../../components/MyCheckBox";
 
 function Users() {
   const { setDialog,doctors } = useOutletContext();
@@ -85,7 +86,9 @@ function Users() {
                 }}
                 key={user.id}
               >
-                <ListItemText>{user.username}</ListItemText>
+                <ListItem   secondaryAction={
+                    <MyCheckbox setDialog={setDialog}  colName={'is_nurse'} isChecked={user.is_nurse} path={`update/${user.id}`}/>
+                  } ><ListItemText>{user.username}</ListItemText></ListItem>
               </Card>
             );
           })}

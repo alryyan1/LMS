@@ -15,16 +15,16 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
     direction={"column"}
   >
     <Item>
-      <IconButton variant="contained" onClick={showFormHandler}>
+      <IconButton title='فورمه التسجيل' variant="contained" onClick={showFormHandler}>
         <CreateOutlinedIcon />
       </IconButton>
     </Item>
     <Item>
-      <IconButton variant="contained" onClick={showDoctorsDialog}>
+      <IconButton title='قائمه الاطباء' variant="contained" onClick={showDoctorsDialog}>
         <Group />
       </IconButton>
     </Item>
-    <Item>
+    <Item title='اضافه طبيب'>
       <IconButton
         variant="contained"
         onClick={() => {
@@ -34,7 +34,7 @@ function CustumSideBar({showFormHandler,showDoctorsDialog,setOpen,showShiftMoney
         <PersonAdd />
       </IconButton>
     </Item>
-    <Item>
+    <Item title='ملخص اليوميه المالي'>
       <IconButton variant="contained" onClick={showShiftMoney}>
         <Calculate />
       </IconButton>

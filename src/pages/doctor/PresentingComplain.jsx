@@ -21,7 +21,7 @@ function PresentingComplain(props) {
     index,
     patient,
     setDialog,
-    setActivePatient,
+    change,
     complains,
     setShift,
     ...other
@@ -38,20 +38,8 @@ function PresentingComplain(props) {
       .then(({ data }) => {
         // console.log(data);
         if (data.status) {
-          setActivePatient((prev) => {
-            return { ...prev, patient: data.patient };
-          });
-          setShift((prev) => {
-            return {
-              ...prev,
-              visits: prev.visits.map((v) => {
-                if (v.patient_id === patient.id) {
-                  return { ...v, patient: data.patient };
-                }
-                return v;
-              }),
-            };
-          });
+    
+          change(data.patient);
           setDialog((prev) => {
             return {
               ...prev,

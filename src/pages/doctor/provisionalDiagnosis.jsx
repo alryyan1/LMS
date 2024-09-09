@@ -7,7 +7,7 @@ import {
 import axiosClient from "../../../axios-client";
 
 function ProvisionalDiagnosis(props) {
-  const { value, index, patient, setDialog,setShift,setActivePatient,  ...other } = props;
+  const { value, index, patient, setDialog,setShift,change,  ...other } = props;
     
   return (
     <div
@@ -29,18 +29,8 @@ function ProvisionalDiagnosis(props) {
                         .then(({ data }) => {
                           console.log(data);
                           if (data.status) {
-                            setActivePatient((prev)=>{
-                              return {...prev,patient:data.patient}
-                            })
-                           
-                            setShift((prev)=>{
-                              return {...prev, visits:prev.visits.map((v)=>{
-                                if(v.patient_id === patient.id){
-                                  return {...v,patient:data.patient}
-                                }
-                                return v;
-                              })}
-                            })
+                       
+                            change(data.patient)
                             setDialog((prev) => {
                               return {
                                 ...prev,

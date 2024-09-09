@@ -5,7 +5,7 @@ import {  useEffect, useState } from "react";
 import dayjs from "dayjs";
 import axiosClient from "../../../axios-client";
 
-function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePatient,setShift}) {
+function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,change,setShift}) {
 
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
@@ -36,18 +36,8 @@ function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,setActivePa
    
     axiosClient.post(`addPrescribedDrug/${patient.id}`,{'doctor_id': patient.doctor_id,'selectedDrugs': selectedDrugs.filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         console.log(data,'data')
-        setActivePatient((prev)=>{
-          return {...prev,patient:data.patient}
-        })
-       
-        setShift((prev)=>{
-          return {...prev, visits:prev.visits.map((v)=>{
-            if(v.patient_id === patient.id){
-              return {...v,patient:data.patient}
-            }
-            return v;
-          })}
-        })
+      
+        change(data.patient)
         setSelectedDrugs([])
     }).finally(()=>{
       setLoading(false)

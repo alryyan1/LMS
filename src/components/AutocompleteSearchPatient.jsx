@@ -9,7 +9,7 @@ function isNumeric(str) {
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
-export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null}) {
+export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null,setActivePatient}) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
@@ -39,8 +39,13 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
         }
         if (newVal) {
           console.log(newVal, "new Val");
-
-          setActivePatientHandler(newVal);
+          if (setActivePatientHandler) {
+            
+            setActivePatientHandler(newVal);
+          }
+          if(setActivePatient){
+            setActivePatient(newVal);
+          }
         }
       }}
       sx={{ width: 300, display: "inline-block" }}

@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import "../Laboratory/addPatient.css";
 
-import { Divider, Stack, Skeleton, Card, Snackbar, Alert, List, ListItem, Box } from "@mui/material";
+import {
+  Divider,
+  Stack,
+  Skeleton,
+  Card,
+  Snackbar,
+  Alert,
+  List,
+  ListItem,
+  Box,
+} from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -17,22 +27,27 @@ import dayjs from "dayjs";
 import ProvisionalDiagnosis from "./provisionalDiagnosis";
 import AddLabTests from "./AddLabTest";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
+import AddMedicalService from "./AddService";
+import { useStateContext } from "../../appContext";
+import Sample from "../Laboratory/Sample";
+import Collection from "./Collection";
 
 function Doctor() {
   const [value, setValue] = useState(0);
   const [file, setFile] = useState(null);
   const [complains, setComplains] = useState([]);
+  const { user } = useStateContext();
 
-  useEffect(()=>{
+  useEffect(() => {
     // alert('start of use effect')
-    axiosClient.get('complains').then(({data})=>{
-      console.log(data)
-      setComplains(data.map((c)=>c.name))
-    })
-  },[])
- 
+    axiosClient.get("complains").then(({ data }) => {
+      console.log(data);
+      setComplains(data.map((c) => c.name));
+    });
+  }, []);
+
   const { id } = useParams();
-  
+
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
     title: "",
@@ -47,13 +62,15 @@ function Doctor() {
   const [shifts, setShifts] = useState([]);
   const [doctor, setDoctor] = useState();
   const [activePatient, setActivePatient] = useState(null);
-  let visitCount = activePatient?.patient.visit_count;
-  console.log(visitCount,'visitCount')
-   console.log(shift,'doc shift')
+  const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
+  console.log(activePatient, "active patient from doctor page");
+  let visitCount = activePatient?.visit_count;
+  console.log(visitCount, "visitCount");
+  console.log(shift, "doc shift");
   useEffect(() => {
     document.title = "صفحه الطبيب";
   }, []);
-  
+
   useEffect(() => {
     axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
       console.log(data, "finded doctor");
@@ -64,13 +81,13 @@ function Doctor() {
       console.log(data.shifts[0]);
     });
   }, [activePatient?.id]);
-  useEffect(()=>{
+  useEffect(() => {
     // alert('start of use effect')
-    axiosClient.get(`file/${activePatient?.patient?.id}`).then(({data})=>{
-      setFile(data.data)
-      console.log(data,'file')
-    })
-  },[activePatient?.patient?.id])
+    axiosClient.get(`file/${activePatient?.id}`).then(({ data }) => {
+      setFile(data.data);
+      console.log(data, "file");
+    });
+  }, [activePatient?.id]);
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };
@@ -86,18 +103,50 @@ function Doctor() {
   //       setPatientsLoading(false);
   //     });
   //   }, []);
+
+  const change = (patient) => {
+    setActivePatient((prev) => {
+      return { ...patient };
+    });
+    setShift((prev) => {
+      return {
+        ...prev,
+        visits: prev.visits.map((v) => {
+          if (v.patient_id === patient.id) {
+            return { ...v, patient: patient };
+          }
+          return v;
+        }),
+      };
+    });
+  };
+  const changeDoctorVisit = (doctorVisit) => {
+    setActiveDoctorVisit((prev) => {
+      return { ...doctorVisit };
+    });
+    setShift((prev) => {
+      return {
+        ...prev,
+        visits: prev.visits.map((v) => {
+          if (v.id === doctorVisit.id) {
+            return { ...doctorVisit };
+          }
+          return v;
+        }),
+      };
+    });
+  };
   let count = (shift?.visits.length ?? 0) + 1;
-  console.log(file,'is file')
+  console.log(file, "is file");
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
-     <Stack direction={'row'}   justifyContent={'space-between'} >
-        <Box flexGrow={'1'}>
-
-        </Box>
-        <Box >
+      <Stack direction={"row"} justifyContent={"space-between"}>
+        <Box flexGrow={"1"}></Box>
+        <Box>
           <AutocompleteSearchPatient
             setActivePatientHandler={null}
+            setActivePatient={setActivePatient}
           />
         </Box>
       </Stack>
@@ -181,10 +230,12 @@ function Doctor() {
             alignItems={"center"}
             style={{ padding: "15px" }}
           >
-            {shift?.visits.map((visit,i) => {
+            {shift?.visits.map((visit, i) => {
+              console.log(visit, "visit in doctor page");
               return (
                 <DoctorPatient
-                delay={i * 100}
+                setActiveDoctorVisit={setActiveDoctorVisit}
+                  delay={i * 100}
                   activePatient={activePatient}
                   setActivePatient={setActivePatient}
                   index={count--}
@@ -197,34 +248,128 @@ function Doctor() {
           </Stack>
         </Card>
         <Card>
-            <List >
-              {
-             
-               file && file.patients.map((patient,i ) => {
-                  return <ListItem sx={{
-                    cursor:'pointer',
-                    backgroundColor:(theme)=>patient.id == activePatient?.patient.id ? theme.palette.warning.light : ''
-                  }} key={patient.id}>sheet ({visitCount--}) {dayjs(new Date(Date.parse(patient.created_at))).format('YYYY/MM/DD')}</ListItem>
-                })
-              }
-            </List>
+          <List>
+            {file &&
+              file.patients.map((patient, i) => {
+                return (
+                  <ListItem
+                    sx={{
+                      cursor: "pointer",
+                      backgroundColor: (theme) =>
+                        patient.id == activePatient?.id
+                          ? theme.palette.warning.light
+                          : "",
+                    }}
+                    key={patient.id}
+                  >
+                    sheet ({visitCount--}){" "}
+                    {dayjs(new Date(Date.parse(patient.created_at))).format(
+                      "YYYY/MM/DD"
+                    )}
+                  </ListItem>
+                );
+              })}
+          </List>
         </Card>
 
-        <Card key={activePatient?.patient?.id} sx={{ height: "80vh", overflow: "auto", p: 1 }}>
+        <Card
+          key={activePatient?.id}
+          sx={{ height: "80vh", overflow: "auto", p: 1 }}
+        >
           {activePatient && (
             <>
               <PatientInformationPanel
                 index={0}
                 value={value}
-                patient={activePatient.patient}
+                patient={activePatient}
               />
               {/* <GeneralTab index={1} value={value}></GeneralTab> */}
-              <GeneralExaminationPanel setShift={setShift}  setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={1} value={value} />
-              <PresentingComplain setShift={setShift} complains={complains} setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={2} value={value} />
-              <PatientMedicalHistory setShift={setShift}  setActivePatient={setActivePatient}  setDialog={setDialog} patient={activePatient.patient}  index={4} value={value} />
-              <PatientPrescribedMedsTab setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={3} value={value} />
-              <ProvisionalDiagnosis setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={5} value={value} />
-              <AddLabTests setShift={setShift} complains={complains} setActivePatient={setActivePatient} setDialog={setDialog} patient={activePatient.patient}  index={6} value={value} />
+              <GeneralExaminationPanel
+                setShift={setShift}
+                change={change}
+                setDialog={setDialog}
+                patient={activePatient}
+                index={1}
+                value={value}
+              />
+              {!user?.is_nurse && (
+                <PresentingComplain
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={2}
+                  value={value}
+                />
+              )}
+              {!user?.is_nurse && (
+                <PatientMedicalHistory
+                  setShift={setShift}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={4}
+                  value={value}
+                />
+              )}
+              {!user?.is_nurse && (
+                <PatientPrescribedMedsTab
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={3}
+                  value={value}
+                />
+              )}
+              {!user?.is_nurse && (
+                <ProvisionalDiagnosis
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={5}
+                  value={value}
+                />
+              )}
+              
+                <AddLabTests
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={6}
+                  value={value}
+                />
+              
+              <AddMedicalService
+              changeDoctorVisit={changeDoctorVisit}
+              activeDoctorVisit={activeDoctorVisit}
+                setActivePatient={setActivePatient}
+                setShift={setShift}
+                complains={complains}
+                change={change}
+                setDialog={setDialog}
+                patient={activePatient}
+                index={7}
+                value={value}
+              />
+              {user?.is_nurse && (
+                <Collection
+                  setActivePatient={setActivePatient}
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={8}
+                  value={value}
+                />
+              )}
             </>
           )}
         </Card>
@@ -233,20 +378,19 @@ function Doctor() {
           <PatientPanel value={value} setValue={setValue} />
         </div>
         <Snackbar
-        open={dialog.open}
-        autoHideDuration={4000}
-        onClose={handleClose}
-      >
-        <Alert
+          open={dialog.open}
+          autoHideDuration={4000}
           onClose={handleClose}
-          severity={dialog.color}
-          variant="filled"
-          
-          sx={{ width: "100%" ,color: "black" }}
         >
-          {dialog.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleClose}
+            severity={dialog.color}
+            variant="filled"
+            sx={{ width: "100%", color: "black" }}
+          >
+            {dialog.message}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
