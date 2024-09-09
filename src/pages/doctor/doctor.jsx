@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../Laboratory/addPatient.css";
 
-import { Divider, Stack, Skeleton, Card, Snackbar, Alert, List, ListItem } from "@mui/material";
+import { Divider, Stack, Skeleton, Card, Snackbar, Alert, List, ListItem, Box } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -16,6 +16,7 @@ import PatientPrescribedMedsTab from "./PatientPrescribedMedsTab";
 import dayjs from "dayjs";
 import ProvisionalDiagnosis from "./provisionalDiagnosis";
 import AddLabTests from "./AddLabTest";
+import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 
 function Doctor() {
   const [value, setValue] = useState(0);
@@ -52,6 +53,7 @@ function Doctor() {
   useEffect(() => {
     document.title = "صفحه الطبيب";
   }, []);
+  
   useEffect(() => {
     axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
       console.log(data, "finded doctor");
@@ -89,6 +91,16 @@ function Doctor() {
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
+     <Stack direction={'row'}   justifyContent={'space-between'} >
+        <Box flexGrow={'1'}>
+
+        </Box>
+        <Box >
+          <AutocompleteSearchPatient
+            setActivePatientHandler={null}
+          />
+        </Box>
+      </Stack>
       <div
         style={{
           gap: "15px",

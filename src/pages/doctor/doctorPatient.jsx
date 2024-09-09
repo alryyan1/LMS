@@ -23,7 +23,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay}) {
       <Stack
         sx={{ cursor: "pointer" }}
         onClick={() => {
-            setActivePatient(visit)
+            setActivePatient(visit.patient)
             console.log(visit,'selected visit')
 
    

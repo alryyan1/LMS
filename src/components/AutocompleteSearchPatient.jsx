@@ -9,12 +9,11 @@ function isNumeric(str) {
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
-export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false}) {
+export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null}) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [search, setSearch] = React.useState([]);
-  const {setDialog} =  useOutletContext()
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,14 +67,16 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
                 setActivePatientHandler(data.data);
                     
                 }else{
+                   if (setDialog) {
                     setDialog((prev)=>{
-                        return {
-                           ...prev,
-                            open: true,
-                            message: 'no data found',
-                            color: "error"
-                        }
-                    })
+                      return {
+                         ...prev,
+                          open: true,
+                          message: 'no data found',
+                          color: "error"
+                      }
+                  })
+                   }
                 }
                 console.log(data, "patients");
               });
