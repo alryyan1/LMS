@@ -71,7 +71,7 @@ function Item() {
           setDialog({
             color: "success",
             open: true,
-            message: "تمت الاضافه بنجاح",
+            message: "Addition was successfull",
           });
         }
       })
@@ -129,7 +129,7 @@ function Item() {
           //show dialog
           setDialog({
             open: true,
-            message: "تم الحذف بنجاح",
+            message: "Delete was successfull",
           });
         }
       })

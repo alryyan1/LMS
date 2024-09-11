@@ -1,6 +1,7 @@
 import {Box} from "@mui/material"
 import PatientDetailLong from "./PatientDetailsLong";
 import PatientDetailLab from "./PatientDetailLab";
+import PatientDetail from "../Laboratory/PatientDetail";
 function PatientInformationPanel(props) {
     const { value, index,patient, ...other } = props;
   
@@ -14,8 +15,8 @@ function PatientInformationPanel(props) {
       >
         {value === index && (
           <Box sx={{justifyContent:'space-around'}}  className='group' >
-            <PatientDetailLong patient={patient}/>
-            <PatientDetailLab patient={patient}/>
+            <PatientDetail   patient={patient}/>
+            {/* <PatientDetailLab patient={patient}/> */}
           </Box>
         )}
       </div>

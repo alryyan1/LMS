@@ -20,7 +20,7 @@ function PharmacyLayout() {
     openError: false,
     openLabReport: false,
     showDoctorsDialog: false,
-    msg: "تمت الاضافه بنجاح",
+    msg: "Addition was successfull",
   });
   const [showDialogMoney, setShowDialogMoney] = useState(false);
   const [showSummery, setShowSummery] = useState(false);

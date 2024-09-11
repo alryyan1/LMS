@@ -48,7 +48,7 @@ function MyAutoCompeleteTableCell({
     setEdited(false);
     setEdited(false);
     setDialog((prev) => {
-      return { ...prev, open: true, msg: "تم التعديل بنجاح", color: "success" };
+      return { ...prev, open: true, msg: "Edit was successfull", color: "success" };
     });
     updateItemSectionId(selectedSection.id);
   };

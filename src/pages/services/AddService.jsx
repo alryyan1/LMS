@@ -82,7 +82,7 @@ function AddService() {
             ...prev,
             open: true,
             color: "success",
-            msg: "تمت الاضافه بنجاح",
+            msg: "Addition was successfull",
           };
         });
         reset();
@@ -102,7 +102,7 @@ function AddService() {
             ...prev,
             open: true,
             color: "success",
-            msg: "تمت الاضافه بنجاح",
+            msg: "Addition was successfull",
           };
         });
         reset();
@@ -126,7 +126,7 @@ function AddService() {
               ...prev,
               open: true,
               color: "success",
-              msg: "تمت الاضافه بنجاح",
+              msg: "Addition was successfull",
             };
           });
           reset();
@@ -192,19 +192,19 @@ function AddService() {
                 onChange={(e) => {
                   searchHandler(e.target.value);
                 }}
-                label="بحث"
+                label="Search"
               ></TextField>
             </Stack>
 
             <Table dir="rtl" size="small">
               <thead>
                 <TableRow>
-                  <TableCell>رقم</TableCell>
-                  <TableCell>الاسم</TableCell>
-                  <TableCell>السعر</TableCell>
-                  <TableCell>القسم</TableCell>
-                  <TableCell>مصروفات </TableCell>
-                  <TableCell>حذف</TableCell>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell>Cost </TableCell>
+                  <TableCell>Dlt</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
@@ -235,7 +235,7 @@ function AddService() {
                     <TableCell>
                       <Button onClick={()=>{
                         setSelectedService(item)
-                      }}>اختيار</Button>
+                      }}>Select</Button>
                     </TableCell>
 
                     <TableCell>
@@ -252,7 +252,7 @@ function AddService() {
                                       ...prev,
                                       open: true,
                                       color: "success",
-                                      msg: "تمت الحذف بنجاح",
+                                      msg: "Delete was successfull",
                                     };
                                   });
                                   setservices((prev) =>
@@ -322,7 +322,7 @@ function AddService() {
       <Grid item xs={3} >
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
           <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
-            اضافه خدمه جديده
+            Add medical Service
           </Typography>
         </Stack>
         <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
@@ -331,10 +331,10 @@ function AddService() {
               fullWidth
               error={errors.name != null}
               {...register("name", {
-                required: { value: true, message: "يجب ادخال اسم الخدمه" },
+                required: { value: true, message: "field is required" },
               })}
               id="outlined-basic"
-              label="اسم الخدمه"
+              label="Name "
               variant="filled"
               helperText={errors.name?.message}
             />
@@ -343,10 +343,10 @@ function AddService() {
               type="number"
               error={errors.price != null}
               {...register("price", {
-                required: { value: true, message: "يجب ادخال السعر" },
+                required: { value: true, message: "the field is required" },
               })}
               id="outlined-basic"
-              label="السعر"
+              label="Price"
               variant="filled"
               helperText={errors.price?.message}
             />
@@ -357,7 +357,7 @@ function AddService() {
               rules={{
                 required: {
                   value: true,
-                  message: "يجب ادخال القسم",
+                  message: "field is required",
                 },
               }}
               render={({ field }) => {
@@ -376,7 +376,7 @@ function AddService() {
                             errors.service_group_id.message
                           }
                           {...params}
-                          label="القسم"
+                          label="Section"
                           variant="filled"
                         />
                       );
@@ -392,13 +392,13 @@ function AddService() {
               variant="contained"
               type="submit"
             >
-              حفظ
+              Save
             </LoadingButton>
           </Stack>
         </form>
       </Grid>
     {selectedService &&   <Card sx={{p:1}}>
-        <h5>مصروفات الخدمه</h5>
+        <h5>Service Cost </h5>
         <form onSubmit={handleSubmit2(addServiceCostHandler)}>
           <Stack direction={"column"} gap={2}>
             <TextField variant="standard"   label='وصف المصروف' {...register2('name')}/>

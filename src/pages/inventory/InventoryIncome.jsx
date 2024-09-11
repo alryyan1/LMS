@@ -176,7 +176,7 @@ function InventoryIncome() {
           //show success dialog
           setDialog({
             open: true,
-            msg: "تم الحذف بنجاح",
+            msg: "Delete was successfull",
           });
         }
       });

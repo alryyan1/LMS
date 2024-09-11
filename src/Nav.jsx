@@ -11,7 +11,7 @@ import {
   List,
 } from "@mui/material";
 import { ArrowRight, ElectricBolt, Language } from "@mui/icons-material";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -23,6 +23,8 @@ import { useThemeContext } from "./ThemeContext";
 import { t } from "i18next";
 import UserDropDown from "./components/UserDropDown";
 const Nav = () => {
+  const navigate = useNavigate();
+
   const [activeLink, setActiveLink] = useState(null);
   const {
     user,
@@ -42,11 +44,13 @@ const Nav = () => {
   // console.log(setToken);
   const logoutHandler = () => {
     setLoading(true);
+    console.log('navigate to to login');
     axiosClient
       .post("logout")
       .then(() => {
         setToken(null);
         setUser(null);
+        navigate("/dashboard");
       })
       .finally(() => setLoading(false));
   };

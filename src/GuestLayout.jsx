@@ -10,6 +10,10 @@ function GuestLayout() {
     if (user?.doctor_id != null) {
       return <Navigate to={`/doctor/${user.doctor_id}`} />;
     }
+    if(user?.is_nurse){
+      return <Navigate to='/nurse' />;
+
+    }
     // alert(token);
     // user.routes[0].route.name
     // alert(user?.sub_routes[0].route.name)

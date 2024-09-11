@@ -39,7 +39,7 @@ function AddMedicalService(props) {
             return {
               ...prev,
               open: true,
-              message: "تم الحذف بنجاح",
+              message: "Delete was successfull",
               color: "success",
             };
           });
@@ -73,7 +73,7 @@ function AddMedicalService(props) {
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddServiceAutocomplete changeDoctorVisit={changeDoctorVisit} activeDoctorVisit={activeDoctorVisit} selectedServices={selectedServices} setSelectedServices={setSelectedServices} actviePatient={patient} setDialog={setDialog}   />
       {activeDoctorVisit?.services?.length > 0 &&     <TableContainer sx={{ border: "none", textAlign: "left" }}>
-            <Table size="small" style={{ direction: "rtl" }}>
+            <Table size="small" >
               <TableHead>
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
@@ -106,7 +106,7 @@ function AddMedicalService(props) {
                           aria-label="delete"
                           onClick={() => deleteService(service.id)}
                         >
-                          حذف
+                          {t("delete") }
                         </LoadingButton>
                       </TableCell>
                     </TableRow>

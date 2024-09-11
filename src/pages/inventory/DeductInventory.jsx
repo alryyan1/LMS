@@ -48,7 +48,7 @@ function DeductInventory() {
           //show success dialog
           setDialog({
             open: true,
-            message: "تم الحذف بنجاح",
+            message: "Delete was successfull",
           });
         }
       }).catch(({ response: { data } }) => {

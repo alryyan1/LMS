@@ -46,7 +46,7 @@ import axiosClient from "../../../axios-client.js";
             setLoading(false);
             setDialog({
               open: true,
-            message: "تمت الاضافه بنجاح",
+            message: "Addition was successfull",
             });
           }
           console.log(data);

@@ -77,6 +77,7 @@ import PaymentSuppliers from "./pages/pharmacy/PaymentSuppliers";
 import AddNewEmployee from "./pages/hr/AddNewEmployee";
 import Chemwell from "./pages/Chemwell";
 import MyTree from "./pages/Finance/Tree";
+import Nurse from "./pages/doctor/Nurse";
 
 export const router = createBrowserRouter([
   {
@@ -159,6 +160,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         path: "doctor/:id",
+      },
+      {
+        element: (
+          <ProtectedRoute>
+            <Nurse />
+          </ProtectedRoute>
+        ),
+        path: "nurse",
       },
       {
         element: (

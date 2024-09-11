@@ -131,6 +131,7 @@ function Reception() {
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
       setOpenedDoctors(data);
+      console.log(data,'opened doctors');
       if (activeShift) {
         const findedActiveDoctorShift = data.find(
           (shift) => shift.id == activeShift.id

@@ -120,6 +120,7 @@ i18next
       },
       en: {
         translation: {
+          
          address:'Address',
          country:'Country',
           journalEntry:'Journal Entry',

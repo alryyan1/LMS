@@ -26,7 +26,7 @@ function ServiceNav() {
     open: false,
     openError: false,
     openLabReport: false,
-    msg: "تمت الاضافه بنجاح",
+    msg: "Addition was successfull",
   });
 
   useEffect(() => {
@@ -41,7 +41,7 @@ function ServiceNav() {
         <NavLink to={"create"}>
           <Card>
             <CardHeader>
-              <CardTitle>تعريف خدمة </CardTitle>
+              <CardTitle> Define Medical Service </CardTitle>
             </CardHeader>
             <CardContent
               className="flex justify-center items-center text-center"
@@ -55,7 +55,7 @@ function ServiceNav() {
         <NavLink to={"serviceGroup/create"}>
           <Card>
             <CardHeader>
-              <CardTitle>تعريف قسم </CardTitle>
+              <CardTitle> Define Section </CardTitle>
             </CardHeader>
             <CardContent
               className="flex justify-center items-center text-center"

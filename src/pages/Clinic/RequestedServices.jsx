@@ -132,7 +132,7 @@ function RequestedServices({
             return {
               ...prev,
               open: true,
-              message: "تم الحذف بنجاح",
+              message: "Delete was successfull",
               color: "success",
             };
           });

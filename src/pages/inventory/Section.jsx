@@ -53,7 +53,7 @@ function Section() {
           setLoading(false);
           setDialog({
             open: true,
-          message: "تمت الاضافه بنجاح",
+          message: "Addition was successfull",
           });
         }
         console.log(data);
@@ -72,7 +72,7 @@ function Section() {
   //         //show success dialog
   //         setDialog({
   //           open: true,
-  //         message: "تم الحذف بنجاح",
+  //         message: "Delete was successfull",
   //         });
   //       }
   //     });

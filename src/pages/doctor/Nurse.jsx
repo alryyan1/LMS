@@ -33,10 +33,11 @@ import { useStateContext } from "../../appContext";
 import Sample from "../Laboratory/Sample";
 import Collection from "./Collection";
 
-function Doctor() {
+function Nurse() {
   const [value, setValue] = useState(0);
   const [file, setFile] = useState(null);
   const [complains, setComplains] = useState([]);
+  const [patients, setPatients] = useState([]);
   const { user } = useStateContext();
 
   useEffect(() => {
@@ -64,24 +65,22 @@ function Doctor() {
   const [doctor, setDoctor] = useState();
   const [activePatient, setActivePatient] = useState(null);
   const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
+  const [openedDoctors, setOpenedDoctors] = useState([]);
   console.log(activePatient, "active patient from doctor page");
   let visitCount = activePatient?.visit_count;
   console.log(visitCount, "visitCount");
   console.log(shift, "doc shift");
   useEffect(() => {
-    document.title = "صفحه الطبيب";
+    document.title = "Nurse page ";
   }, []);
 
   useEffect(() => {
-    axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
-      console.log(data, "finded doctor");
-      setDoctor(data);
-      setShift(data.shifts[0]);
-      setShifts(data.shifts);
-      console.log(data.shifts, "data shifts");
-      console.log(data.shifts[0]);
+    axiosClient.get("doctor/openedDoctorsShifts").then(({ data }) => {
+      setOpenedDoctors(data);
+      console.log(data, "opened doctors");
     });
-  }, [activePatient?.id]);
+  }, []);
+  console.log(openedDoctors, "opened doctors rendered");
   useEffect(() => {
     // alert('start of use effect')
     axiosClient.get(`file/${activePatient?.id}`).then(({ data }) => {
@@ -92,49 +91,41 @@ function Doctor() {
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };
-  //   useEffect(() => {
-  //     setPatientsLoading(true);
-  //     axiosClient.get(`shift/last`).then(({ data: data }) => {
-  //       console.log(data.data, "today patients");
-  //       //add activeProperty to patient object
-  //       data.data.patients.forEach((patient) => {
-  //         patient.active = false;
-  //       });
-  //       setShift(data.data);
-  //       setPatientsLoading(false);
-  //     });
-  //   }, []);
 
   const change = (patient) => {
+    console.log(patient, "patient from change method");
     setActivePatient((prev) => {
       return { ...patient };
     });
-    setShift((prev) => {
-      return {
-        ...prev,
-        visits: prev.visits.map((v) => {
-          if (v.patient_id === patient.id) {
-            return { ...v, patient: patient };
-          }
-          return v;
-        }),
-      };
+    setOpenedDoctors((prev) => {
+      return prev.map((doctorShift) => {
+        return {
+          ...doctorShift,
+          visits: doctorShift.visits.map((visit) => {
+            if (visit.patient_id === patient.id) {
+              return { ...visit, patient: patient };
+            } else {
+              return visit;
+            }
+          }),
+        };
+      });
     });
   };
   const changeDoctorVisit = (doctorVisit) => {
     setActiveDoctorVisit((prev) => {
       return { ...doctorVisit };
     });
-    setShift((prev) => {
-      return {
-        ...prev,
-        visits: prev.visits.map((v) => {
-          if (v.id === doctorVisit.id) {
+    setOpenedDoctors((prev) => {
+      return prev.map((doctorShift) => {
+        return doctorShift.visits.map((visit) => {
+          if (visit.id === doctorVisit.id) {
             return { ...doctorVisit };
+          } else {
+            return visit;
           }
-          return v;
-        }),
-      };
+        });
+      });
     });
   };
   let count = (shift?.visits.length ?? 0) + 1;
@@ -143,7 +134,9 @@ function Doctor() {
   return (
     <>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Box flexGrow={"1"}><Typography variant="h3">{activePatient?.name}</Typography></Box>
+        <Box flexGrow={"1"}>
+          <Typography variant="h3">{activePatient?.name}</Typography>
+        </Box>
         <Box>
           <AutocompleteSearchPatient
             setActivePatientHandler={null}
@@ -231,20 +224,23 @@ function Doctor() {
             alignItems={"center"}
             style={{ padding: "15px" }}
           >
-            {shift?.visits.map((visit, i) => {
-              console.log(visit, "visit in doctor page");
-              return (
-                <DoctorPatient
-                setActiveDoctorVisit={setActiveDoctorVisit}
-                  delay={i * 100}
-                  activePatient={activePatient}
-                  setActivePatient={setActivePatient}
-                  index={count--}
-                  key={visit.id}
-                  hideForm={null}
-                  visit={visit}
-                />
-              );
+            {openedDoctors.map((doctorShift) => {
+              return doctorShift.visits.map((visit, i) => {
+                return (
+                  <DoctorPatient
+                    setActiveDoctorVisit={setActiveDoctorVisit}
+                    delay={i * 100}
+                    activePatient={activePatient}
+                    setActivePatient={setActivePatient}
+                    index={count--}
+                    key={visit.id}
+                    hideForm={null}
+                    visit={visit}
+                 
+                    
+                  />
+                );
+              });
             })}
           </Stack>
         </Card>
@@ -254,7 +250,6 @@ function Doctor() {
               file.patients.map((patient, i) => {
                 return (
                   <ListItem
-                   
                     sx={{
                       cursor: "pointer",
                       backgroundColor: (theme) =>
@@ -265,10 +260,12 @@ function Doctor() {
                     key={patient.id}
                   >
                     sheet ({visitCount--}){" "}
-                    <span className="text-neutral-500 dark:text-neutral-400 text-xs ml-1"> {dayjs(new Date(Date.parse(patient.created_at))).format(
-                      "YYYY/MM/DD"
-                    )}</span>
-                   
+                    <span className="text-neutral-500 dark:text-neutral-400 text-xs ml-1">
+                      {" "}
+                      {dayjs(new Date(Date.parse(patient.created_at))).format(
+                        "YYYY/MM/DD"
+                      )}
+                    </span>
                   </ListItem>
                 );
               })}
@@ -338,20 +335,20 @@ function Doctor() {
                   value={value}
                 />
               )}
-              
-                <AddLabTests
-                  setShift={setShift}
-                  complains={complains}
-                  change={change}
-                  setDialog={setDialog}
-                  patient={activePatient}
-                  index={6}
-                  value={value}
-                />
-              
+
+              <AddLabTests
+                setShift={setShift}
+                complains={complains}
+                change={change}
+                setDialog={setDialog}
+                patient={activePatient}
+                index={6}
+                value={value}
+              />
+
               <AddMedicalService
-              changeDoctorVisit={changeDoctorVisit}
-              activeDoctorVisit={activeDoctorVisit}
+                changeDoctorVisit={changeDoctorVisit}
+                activeDoctorVisit={activeDoctorVisit}
                 setActivePatient={setActivePatient}
                 setShift={setShift}
                 complains={complains}
@@ -377,7 +374,7 @@ function Doctor() {
           )}
         </Card>
 
-          <PatientPanel value={value} setValue={setValue} />
+        <PatientPanel value={value} setValue={setValue} />
         <Snackbar
           open={dialog.open}
           autoHideDuration={4000}
@@ -397,4 +394,4 @@ function Doctor() {
   );
 }
 
-export default Doctor;
+export default Nurse;

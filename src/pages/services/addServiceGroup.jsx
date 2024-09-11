@@ -38,7 +38,7 @@ function AddServiceGroup() {
               ...prev,
               open: true,
               color: "success",
-              msg: "تمت الاضافه بنجاح",
+              msg: "Addition was successfull",
             };
           });
           reset();

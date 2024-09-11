@@ -44,7 +44,7 @@ function Audit() {
     open: false,
     openError: false,
     openLabReport: false,
-    message: "تمت الاضافه بنجاح",
+    message: "Addition was successfull",
   });
   const [shifts, setShifts] = useState([]);
   const [companies, setCompanies] = useState([]);

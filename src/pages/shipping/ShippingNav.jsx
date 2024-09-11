@@ -11,7 +11,7 @@ function ShippingNav() {
         open: false,
         openError: false,
         openLabReport: false,
-        msg: "تمت الاضافه بنجاح",
+        msg: "Addition was successfull",
       });
 
       useEffect(()=>{

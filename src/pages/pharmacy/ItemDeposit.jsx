@@ -206,7 +206,7 @@ function ItemDeposit() {
         //delete supplier by id
         setDialog({
           open: true,
-          message: "تم الحذف بنجاح",
+          message: "Delete was successfull",
         });
       }
     });

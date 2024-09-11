@@ -18,9 +18,9 @@ function PatientDetail({
     <>
       <Paper
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
-        sx={{ backgroundColor: "#ffffffbb!important", p: 2 }}
         elevation={3}
         className="bolder"
+        sx={{p:1,minWidth:'300px'}}
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
@@ -88,7 +88,8 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient.gender
+             
+              t( patient.gender)
             }
           </div>
         </div>

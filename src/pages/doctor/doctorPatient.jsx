@@ -66,7 +66,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
 
           {visit.patient.name}
         </Item>
-        <Item className="patient-no">{index - 1}</Item>
+        <Item className="patient-no2">{visit.patient.id}</Item>
       </Stack>
     </Badge>
     </Grow>

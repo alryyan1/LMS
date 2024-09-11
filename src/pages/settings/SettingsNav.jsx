@@ -36,7 +36,7 @@ function SettingsNav() {
     open: false,
     openError: false,
     openLabReport: false,
-    message: "تمت الاضافه بنجاح",
+    message: "Addition was successfull",
   });
   useEffect(() => {
     Promise.all([

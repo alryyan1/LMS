@@ -41,7 +41,7 @@ function MySelectTableCell({
       .then((data) => {
         if (data.status) {
           setDialog((prev) => {
-            return { ...prev, open: true, msg: "تم التعديل بنجاح" };
+            return { ...prev, open: true, msg: "Edit was successfull" };
           });
         }
       });

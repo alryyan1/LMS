@@ -25,7 +25,7 @@ function AddAcountForm({ setAccounts, setLoading, setDialog, loading }) {
           ...prev,
           color: "success",
           open: true,
-          message: "تمت الاضافه بنجاح",
+          message: "Addition was successfull",
         }));
         setLoading(false);
       }

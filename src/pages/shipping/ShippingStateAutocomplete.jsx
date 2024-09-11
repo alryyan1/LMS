@@ -71,7 +71,7 @@ export default function ShippingStateAutocomplete({ shipSate,shippingId ,shippin
                             return {
                                ...prev,
                                 open: true,
-                                msg: "تم التعديل بنجاح",
+                                msg: "Edit was successfull",
                             }
                         })
                     }

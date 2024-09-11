@@ -84,7 +84,7 @@ function MyTableCell({
               return {
                 ...prev,
                 open: true,
-                message: "تم التعديل بنجاح",
+                message: "Edit was successfull",
                 color: "success",
               };
             });

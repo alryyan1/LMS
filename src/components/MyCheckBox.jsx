@@ -2,12 +2,16 @@ import { Checkbox } from '@mui/material';
 import React from 'react'
 import axiosClient from '../../axios-client';
 
-function MyCheckbox({path,isChecked,colName, payload={},change=null,setDialog  = null,setShift=null}) {
+function MyCheckbox({path,isChecked,colName, payload={},change=null,setDialog  = null,setShift=null,evalToZeroOrOne = false}) {
     const [checked, setChecked] = React.useState(isChecked);
 
     const handleChange = (event) => {
+       let result = event.target.checked
+       if (evalToZeroOrOne) {
+         result = result? 1 : 0
+       }
       setChecked(event.target.checked);
-      axiosClient.patch(path,{colName, val :   event.target.checked,...payload}).then(({data})=>{
+      axiosClient.patch(path,{colName, val : result  ,...payload}).then(({data})=>{
         if (data.status) {
           if (setDialog) {
             setDialog((prev) => {

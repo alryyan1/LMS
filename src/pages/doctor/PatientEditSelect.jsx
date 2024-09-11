@@ -38,7 +38,7 @@ function PatientEditSelect({
           }
      
           setDialog((prev) => {
-            return { ...prev, open: true, message: "تم التعديل بنجاح" };
+            return { ...prev, open: true, message: "Edit was successfull" };
           });
         }
       }).catch(({ response: { data } }) => {

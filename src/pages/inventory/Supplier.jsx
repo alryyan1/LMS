@@ -79,7 +79,7 @@ function Supplier() {
           //show success dialog
           setDialog({
             open: true,
-            message: "تم الحذف بنجاح",
+            message: "Delete was successfull",
           });
         }
       })

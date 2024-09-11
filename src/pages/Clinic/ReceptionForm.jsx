@@ -102,7 +102,7 @@ function ReceptionForm({ hideForm,lab }) {
           setIsLoading(false);
           setDialog((prev) => ({
             ...prev,
-            message: "تمت الاضافه بنجاح",
+            message: "Addition was successfull",
             color: "success",
             open: true,
           }));

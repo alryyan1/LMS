@@ -195,6 +195,86 @@ function GeneralExaminationPanel(props) {
                     /></TableCell>
                 </TableRow>
                 <TableRow>
+                  <TableCell>Pulse</TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={(e) => {
+                        axiosClient
+                          .patch(`patients/${patient.id}`, {
+                            heart_rate: e.target.value,
+                          })
+                          .then(({ data }) => {
+                            console.log(data);
+                            if (data.status) {
+                          
+                              change(data.patient)
+                              setDialog((prev) => {
+                                return {
+                                  ...prev,
+                                  message: "Saved",
+                                  open: true,
+                                  color: "success",
+                                };
+                              });
+                            }
+                          })
+                          .catch(({ response: { data } }) => {
+                            console.log(data);
+                            setDialog((prev) => {
+                              return {
+                                ...prev,
+                                message: data.message,
+                                open: true,
+                                color: "error",
+                              };
+                            });
+                          });
+                      }}
+                      defaultValue={patient.heart_rate}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Spo2</TableCell>
+                  <TableCell>
+                    <TextField
+                      onChange={(e) => {
+                        axiosClient
+                          .patch(`patients/${patient.id}`, {
+                            spo2: e.target.value,
+                          })
+                          .then(({ data }) => {
+                            console.log(data);
+                            if (data.status) {
+                          
+                              change(data.patient)
+                              setDialog((prev) => {
+                                return {
+                                  ...prev,
+                                  message: "Saved",
+                                  open: true,
+                                  color: "success",
+                                };
+                              });
+                            }
+                          })
+                          .catch(({ response: { data } }) => {
+                            console.log(data);
+                            setDialog((prev) => {
+                              return {
+                                ...prev,
+                                message: data.message,
+                                open: true,
+                                color: "error",
+                              };
+                            });
+                          });
+                      }}
+                      defaultValue={patient.spo2}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
                   <TableCell>Juandice</TableCell>
                   <PatientEditSelect change={change} setShift ={setShift} colName={'juandice'} myVal={patient.juandice} patient={patient} setDialog={setDialog}/>
                 </TableRow>
