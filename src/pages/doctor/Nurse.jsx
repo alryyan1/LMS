@@ -13,7 +13,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, FormatListBulleted } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
 import { useParams } from "react-router-dom";
@@ -32,6 +32,7 @@ import AddMedicalService from "./AddService";
 import { useStateContext } from "../../appContext";
 import Sample from "../Laboratory/Sample";
 import Collection from "./Collection";
+import LabResults from "./LabResult";
 
 function Nurse() {
   const [value, setValue] = useState(0);
@@ -39,7 +40,13 @@ function Nurse() {
   const [complains, setComplains] = useState([]);
   const [patients, setPatients] = useState([]);
   const { user } = useStateContext();
-
+  const [showPreviousVisits, setShowPreviousVisits] = useState(false);
+  const [layOut, setLayout] = useState({
+    patients: "1fr",
+    visits: "0.5fr",
+     panel: false,
+     panelList: "minmax(0,2fr)",
+  });
   useEffect(() => {
     // alert('start of use effect')
     axiosClient.get("complains").then(({ data }) => {
@@ -47,7 +54,18 @@ function Nurse() {
       setComplains(data.map((c) => c.name));
     });
   }, []);
-
+  const hideVisits = () => {
+    setShowPreviousVisits(false);
+    setLayout((prev) => {
+      return {...prev, visits: "0fr" };
+    })
+  }
+  const showVisits = () => {
+    setShowPreviousVisits(true);
+    setLayout((prev) => {
+      return {...prev, visits: "0.5fr" };
+    })
+  }
   const { id } = useParams();
 
   const [dialog, setDialog] = useState({
@@ -118,13 +136,16 @@ function Nurse() {
     });
     setOpenedDoctors((prev) => {
       return prev.map((doctorShift) => {
-        return doctorShift.visits.map((visit) => {
-          if (visit.id === doctorVisit.id) {
-            return { ...doctorVisit };
-          } else {
-            return visit;
-          }
-        });
+        return {
+          ...doctorShift,
+          visits: doctorShift.visits.map((visit) => {
+            if (visit.id === doctorVisit.id) {
+              return { ...doctorVisit  };
+            } else {
+              return visit;
+            }
+          }),
+        };
       });
     });
   };
@@ -135,7 +156,7 @@ function Nurse() {
     <>
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Box flexGrow={"1"}>
-          <Typography variant="h3">{activePatient?.name}</Typography>
+          <Typography sx={{ml:10}} variant="h3">{activePatient?.name}</Typography>
         </Box>
         <Box>
           <AutocompleteSearchPatient
@@ -149,7 +170,7 @@ function Nurse() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `0.2fr     1fr 0.5fr 2fr 0.5fr   0.2fr   `,
+          gridTemplateColumns: `0.2fr     1fr ${layOut.visits} 2fr 0.5fr   0.2fr   `,
         }}
       >
         <div></div>
@@ -165,11 +186,28 @@ function Nurse() {
           transition: "0.3s all ease-in-out",
           height: "80vh",
           display: "grid",
-          gridTemplateColumns: `0.2fr     1fr  0.5fr 2fr 0.5fr   0.2fr  `,
+          gridTemplateColumns: `0.2fr     1fr  ${layOut.visits} 2fr 0.7fr   0.2fr  `,
         }}
       >
-        <div></div>
-        <Card sx={{ overflow: "auto", p: 1 }}>
+         <Stack  direction={'column'}>
+        {activePatient && (
+        <LoadingButton
+          color="inherit"
+          title="show patient previous visits"
+          size="small"
+        
+          onClick={() => {
+            showPreviousVisits ? hideVisits() : showVisits();
+          }}
+          variant="contained"
+        >
+          <FormatListBulleted
+            
+          />
+        </LoadingButton>
+      )}
+        </Stack >
+        <Card style={{backgroundColor:'#ffffff73'}} sx={{ overflow: "auto", p: 1 }}>
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
@@ -244,12 +282,14 @@ function Nurse() {
             })}
           </Stack>
         </Card>
-        <Card>
+        <Card style={{backgroundColor:'#ffffff73'}}>
           <List>
             {file &&
               file.patients.map((patient, i) => {
                 return (
-                  <ListItem
+                  <ListItem onClick={()=>{
+                    setActivePatient(patient);
+                  }}
                     sx={{
                       cursor: "pointer",
                       backgroundColor: (theme) =>
@@ -271,8 +311,8 @@ function Nurse() {
               })}
           </List>
         </Card>
-
         <Card
+          style={{ backgroundColor: "#ffffff73" }}
           key={activePatient?.id}
           sx={{ height: "80vh", overflow: "auto", p: 1 }}
         >
@@ -292,7 +332,7 @@ function Nurse() {
                 index={1}
                 value={value}
               />
-              {!user?.is_nurse && (
+              {!user?.is_nurse == 1 && (
                 <PresentingComplain
                   setShift={setShift}
                   complains={complains}
@@ -303,7 +343,7 @@ function Nurse() {
                   value={value}
                 />
               )}
-              {!user?.is_nurse && (
+              {!user?.is_nurse == 1 && (
                 <PatientMedicalHistory
                   setShift={setShift}
                   change={change}
@@ -313,7 +353,7 @@ function Nurse() {
                   value={value}
                 />
               )}
-              {!user?.is_nurse && (
+              {!user?.is_nurse == 1 && (
                 <PatientPrescribedMedsTab
                   setShift={setShift}
                   complains={complains}
@@ -324,7 +364,7 @@ function Nurse() {
                   value={value}
                 />
               )}
-              {!user?.is_nurse && (
+              {!user?.is_nurse == 1 && (
                 <ProvisionalDiagnosis
                   setShift={setShift}
                   complains={complains}
@@ -358,7 +398,7 @@ function Nurse() {
                 index={7}
                 value={value}
               />
-              {user?.is_nurse && (
+              {user?.is_nurse == 1 && (
                 <Collection
                   setActivePatient={setActivePatient}
                   setShift={setShift}
@@ -370,6 +410,17 @@ function Nurse() {
                   value={value}
                 />
               )}
+
+              <LabResults
+                setActivePatient={setActivePatient}
+                setShift={setShift}
+                complains={complains}
+                change={change}
+                setDialog={setDialog}
+                patient={activePatient}
+                index={9}
+                value={value}
+              />
             </>
           )}
         </Card>

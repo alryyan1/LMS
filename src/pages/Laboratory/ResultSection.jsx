@@ -22,6 +22,7 @@ function ResultSection({
   setActivePatient,
   setSelectedResult,
   selectedReslult,
+  disabled = false,
 }) {
   const [value, setValue] = React.useState(0);
 
@@ -84,7 +85,8 @@ function ResultSection({
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
-                          <AutocompleteResultOptions
+                          <AutocompleteResultOptions 
+                          disabled={disabled}
                           type={type}
                             index={i}
                             setShift={setShift}

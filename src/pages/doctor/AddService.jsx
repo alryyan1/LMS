@@ -33,8 +33,12 @@ function AddMedicalService(props) {
     axiosClient
       .delete(`requestedService/${id}`)
       .then(({ data }) => {
+        console.log(data, "deleted data");
         if (data.status) {
-          change(data.patient);
+          // change(data.patient);
+          if (changeDoctorVisit) {
+            changeDoctorVisit(data.patient)
+          }
           setDialog((prev) => {
             return {
               ...prev,

@@ -1,7 +1,6 @@
 import { Tab, Tabs } from "@mui/material";
 import React from "react";
 import OrganismChildPanel from "./OrganismChildPanel";
-import { useOutletContext } from "react-router-dom";
 
 function OrganismPanel({ selectedTest,setShift }) {
   const [value, setValue] = React.useState(0);

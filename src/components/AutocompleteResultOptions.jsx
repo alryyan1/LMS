@@ -19,8 +19,7 @@ function isNumeric(str) {
 }
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setShift,index}) {
-   const {setDialog} =  useOutletContext()
+export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setShift,index,setDialog,disabled=false}) {
     // console.log('inside table option result rebuilt with result',result)
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
@@ -71,7 +70,7 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
   return (
     <React.Fragment>
       <Autocomplete  
-      
+       disabled={disabled}
      sx={{
       
         "& .MuiOutlinedInput-root": {

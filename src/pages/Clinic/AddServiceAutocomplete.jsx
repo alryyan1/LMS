@@ -130,18 +130,14 @@ function AddServiceAutocomplete({ actviePatient, setActivePatient, setDialog,sel
       }
    
       
-    } catch ({
-      response: {
-        data: { message },
-        status,
-      },
-    }) {
+    } catch (error) {
+
       // console.log(response,'error in adding  test data')
-      console.log(message, "error in adding  test data");
-      if (status > 400) {
+      console.log(error, "error in adding  test data");
+      if (error.status > 400) {
         setLoading(false);
         setDialog((prev) => {
-          return { ...prev, msg: message, openError: true, title: "خطا" };
+          return { ...prev, msg: error.message, openError: true, title: "خطا" };
         });
         setLoading(false);
       }

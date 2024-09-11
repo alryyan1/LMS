@@ -45,6 +45,8 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
        
           }}
         >
+            {`${visit.patient.name.toUpperCase()[0]}${visit.patient.name.slice(1)}`}
+
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {visit.patient.company_id &&    <Icon>
               <FavoriteBorder />
@@ -59,14 +61,13 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
                 fontSize: "smaller",
               }}
               size="small"
-            />
+              />
             )}
           </div>
             
 
-          {visit.patient.name}
         </Item>
-        <Item className="patient-no2">{visit.patient.id}</Item>
+        {/* <Item className="patient-no2">{visit.patient.id}</Item> */}
       </Stack>
     </Badge>
     </Grow>

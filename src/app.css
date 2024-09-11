@@ -44,11 +44,16 @@ body {
 
 .app-container{
   /* overflow: hidden; */
+  /* max-width: 95%; */
+  margin: auto;
+  /* height: 100vh; */
+}
+.app-container2{
+  /* overflow: hidden; */
   max-width: 95%;
   margin: auto;
   /* height: 100vh; */
 }
-
 .refresh{
   position: absolute !important;
 }
@@ -116,8 +121,8 @@ a.active{
 }
 
 body {
-  background: var(--clr-2);
-  color: var(--clr-1);
+  /* background: var(--clr-2); */
+  /* color: var(--clr-1); */
 }
 
 .effect {

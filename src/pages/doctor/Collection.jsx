@@ -70,7 +70,7 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
               })}
             </List>
           )}
-         <Paper sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+         <Paper style={{ backgroundColor: "#ffffff73" }} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
           {filteredContainers?.map((c) => {
             return (
               <img key={c.id} height={300} src={images[c.id - 1]} alt="" />
