@@ -50,8 +50,8 @@ import AddEntryForm from "./AddEntryForm.jsx";
                   <TableCell>التاريخ</TableCell>
                   <TableCell>رقم القيد</TableCell>
                   <TableCell>البيان</TableCell>
-                  <TableCell>مدين </TableCell>
-                  <TableCell> دائن  </TableCell>
+                  <TableCell>Debit </TableCell>
+                  <TableCell> Credit </TableCell>
                 </TableRow>
               </thead>
   

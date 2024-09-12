@@ -87,7 +87,7 @@ import dayjs from "dayjs";
                     <TableCell>{account.id}</TableCell>
                     <TableCell>{account.name}</TableCell>
                     <TableCell>{account.account_category.name}</TableCell>
-                    <TableCell>{account.debit  ==  0 ? 'مدين' : 'دائن'}</TableCell>
+                    <TableCell>{account.debit  ==  0 ? 'debit' : 'credit'}</TableCell>
                     <TableCell>{dayjs(new Date(Date.parse(account.created_at))).format('YYYY-MM-DD')}</TableCell>
                     <TableCell>
                       <IconButton

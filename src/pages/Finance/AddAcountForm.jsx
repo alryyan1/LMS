@@ -114,8 +114,8 @@ function AddAcountForm({ setAccounts, setLoading, setDialog, loading }) {
                       }}
                       label='طبيعه الحساب'
                     >
-                      <MenuItem value={0}>مدين</MenuItem>
-                      <MenuItem value={1}>دائن</MenuItem>
+                      <MenuItem value={0}>Debit</MenuItem>
+                      <MenuItem value={1}>Credit</MenuItem>
                     </Select>
                   );
                 }}

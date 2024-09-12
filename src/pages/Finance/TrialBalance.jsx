@@ -128,10 +128,10 @@ import { LoadingButton } from "@mui/lab";
                         <TableCell>رقم الحساب</TableCell>
                         <TableCell>اسم الحساب</TableCell>
                         <TableCell>وصف الحساب </TableCell>
-                        <TableCell> مدين </TableCell>
-                        <TableCell> دائن </TableCell>
-                        <TableCell> مدين </TableCell>
-                        <TableCell>دائن  </TableCell>
+                        <TableCell> Debit </TableCell>
+                        <TableCell> Credit </TableCell>
+                        <TableCell> Debit </TableCell>
+                        <TableCell>Credit  </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
