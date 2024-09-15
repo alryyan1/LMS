@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  Card,
   Grid,
   Stack,
   Table,
@@ -23,26 +24,31 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DeleteOutlineOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { toFixed, webUrl } from "../constants.js";
+import MyDateField2 from "../../components/MyDateField2.jsx";
 
 function DrugItems() {
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(7);
+  const [page, setPage] = useState(10);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
   const [items, setItems] = useState([]);
   const [selectedFutureDate, setSelectedFutureDate] = useState(null);
-  const [futureDates,setFutureDates] = useState([]);
-  const { setDialog, drugCategory, pharmacyTypes,setItems:setDrugs } = useOutletContext();
-
+  const [futureDates, setFutureDates] = useState([]);
+  const {
+    setDialog,
+    drugCategory,
+    pharmacyTypes,
+    setItems: setDrugs,
+  } = useOutletContext();
 
   useEffect(() => {
     //fetch all Items
 
-    axiosClient.get('expireMonthPanel').then(({data})=>{
-      console.log(data)
-      setFutureDates(data.data)
-    })
+    axiosClient.get("expireMonthPanel").then(({ data }) => {
+      console.log(data);
+      setFutureDates(data.data);
+    });
     axiosClient
       .get(`items/all/pagination/${page}`)
       .then(({ data: { data, links } }) => {
@@ -55,7 +61,7 @@ function DrugItems() {
       .catch(({ response: { data } }) => {
         setError(data.message);
       });
-  }, [ page]);
+  }, [page]);
 
   const updateItemsTable = (link, setLoading) => {
     console.log(search);
@@ -105,39 +111,53 @@ function DrugItems() {
   }, [search]);
   return (
     <Box>
-      <Stack sx={{ mb: 1 }} direction={"row"} justifyContent={"space-between"}>
+      Notes:Any Change on (Cost , Price , Expire) will Change Latest Invoice Accordingly ///
+      Vat will be added to Cost & Retail only if it were included in invoice details
+            <Stack sx={{ mb: 1 }} direction={"row"} justifyContent={"space-between"}>
         <select
           onChange={(val) => {
             setPage(val.target.value);
           }}
         >
           <option value="5">5</option>
-          <option value="10">10</option>
+          <option selected value="10">
+            10
+          </option>
           <option value="20">20</option>
           <option value="30">30</option>
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
-        <Stack alignItems={'center'} gap={2} direction={'row'}>
-          {futureDates.map((item)=>{
-            return(
+        <Stack alignItems={"center"} gap={2} direction={"row"}>
+          {futureDates.map((item) => {
+            return (
               <Badge
-              badgeContent={item.items.length}
+                badgeContent={item.items.length}
                 key={item.monthname}
                 color="error"
               >
-                <Button sx={{
-                  backgroundColor :(theme)=>item.monthname == selectedFutureDate?.monthname ? theme.palette.warning.light : ''
-                }} onClick={()=>{
-                  setSelectedFutureDate(item)
-                  setItems(item.items)
-                }} size="small" variant="contained">{item.monthname}</Button>
+                <Button
+                  sx={{
+                    backgroundColor: (theme) =>
+                      item.monthname == selectedFutureDate?.monthname
+                        ? theme.palette.warning.light
+                        : "",
+                  }}
+                  onClick={() => {
+                    setSelectedFutureDate(item);
+                    setItems(item.items);
+                  }}
+                  size="small"
+                  variant="contained"
+                >
+                  {item.monthname}
+                </Button>
               </Badge>
-            )
+            );
           })}
         </Stack>
         <TextField
-        type="search"
+          type="search"
           value={search}
           onChange={(e) => {
             searchHandler(e.target.value);
@@ -145,70 +165,89 @@ function DrugItems() {
           label="بحث"
         ></TextField>
       </Stack>
-      <TableContainer>
-        <Stack direction={'row'} justifyContent={'space-around'}>
-        <a href={`${webUrl}excel/items`}>EXCEL</a>
-        {selectedFutureDate &&  <a href={`${webUrl}expired/items?firstOfMonth=${selectedFutureDate?.firstofMonth}&lastOfMonth=${selectedFutureDate?.lastofmonth}&monthname=${selectedFutureDate.monthname}&year=${selectedFutureDate.year}`}>Expired</a> }
+      <TableContainer sx={{ backgroundColor: "#ffffff73" }} component={Card}>
+        <Stack direction={"row"} justifyContent={"space-around"}>
+          <a href={`${webUrl}excel/items`}>EXCEL</a>
+          {selectedFutureDate && (
+            <a
+              href={`${webUrl}expired/items?firstOfMonth=${selectedFutureDate?.firstofMonth}&lastOfMonth=${selectedFutureDate?.lastofmonth}&monthname=${selectedFutureDate.monthname}&year=${selectedFutureDate.year}`}
+            >
+              Expired
+            </a>
+          )}
         </Stack>
-      
-        <Table dir="rtl" size="small">
+
+        <Table size="small">
           <thead>
             <TableRow>
-              <TableCell> الكود</TableCell>
+              <TableCell> code</TableCell>
               {/* <TableCell>الاسم العلمي</TableCell> */}
-              <TableCell>الاسم التجاري</TableCell>
-              <TableCell>سعر الشراء</TableCell>
-              <TableCell>سعر البيع </TableCell>
-              <TableCell> عدد الشرائط</TableCell>
-              <TableCell> المجموعه</TableCell>
-              <TableCell> الشكل</TableCell>
-              <TableCell> تاريخ الصلاحيه</TableCell>
-              <TableCell style={{width:'10%',textOverflow:'ellipsis'}} width={'10%'}> الباركود</TableCell>
+              <TableCell>M.Name </TableCell>
+              <TableCell> Cost</TableCell>
+              <TableCell> Retail </TableCell>
+              <TableCell> Strips </TableCell>
+              <TableCell style={{ width: "10%" }}> Expire </TableCell>
+              <TableCell> Barcode </TableCell>
+              <TableCell
+                style={{ width: "10%", textOverflow: "ellipsis" }}
+                width={"10%"}
+              >
+                {" "}
+                Supplier
+              </TableCell>
               <TableCell> -</TableCell>
             </TableRow>
           </thead>
           <tbody>
             {items.map((drug) => {
-                
-
-             const expire =  drug?.lastDepositItem?.expire ?? null
-             let is_expired = false
-             if (expire != null &&  !dayjs(expire).isAfter(dayjs())) {
-              is_expired = true;
-             }
+              const expire = drug?.lastDepositItem?.expire ?? null;
+              let is_expired = false;
+              if (expire != null && !dayjs(expire).isAfter(dayjs())) {
+                is_expired = true;
+              }
               console.log(drug, "drug ");
               return (
-                <TableRow
-                  sx={{
-                    color: (theme) => {
-                      return is_expired
-                        ? theme.palette.error.light
-                        : theme.palette.background.defaultLight;
-                    },
-                    fontWeight: "500",
-                  }}
-                  key={drug.id}
-                >
+                <TableRow key={drug.id}>
                   <TableCell>{drug.id}</TableCell>
-                  {/* <MyTableCell colName={"sc_name"} item={drug} table="items">
-                    {drug.sc_name}
-                  </MyTableCell> */}
+                
                   <MyTableCell
                     colName={"market_name"}
                     item={drug}
                     table="items"
                   >
-                    {drug.market_name}
+                    {`${drug?.market_name.toUpperCase()[0]}${drug?.market_name
+                      .slice(1)
+                      .toLowerCase()}`}
                   </MyTableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem?.finalCostPrice,3)}</TableCell>
-                  <TableCell>{toFixed(drug?.lastDepositItem?.finalSellPrice,3)}</TableCell>
-                  
-              
+                 <MyTableCell
+                      setDialog={setDialog}
+                      sx={{ width: "60px", textAlign: "center" }}
+                      // change={change}
+                      item={drug?.lastDepositItem}
+                      table="depositItems/update"
+                      colName={"cost"}
+                      isNum
+
+                    >
+                    {drug.lastDepositItem?.finalCostPrice}
+                    </MyTableCell>
+
+                  <MyTableCell
+                    setDialog={setDialog}
+                    sx={{ width: "60px", textAlign: "center" }}
+                    // change={change}
+                    item={drug?.lastDepositItem}
+                    table="depositItems/update"
+                    colName={"sell_price"}
+                    isNum
+                  >
+                    {drug.lastDepositItem?.finalSellPrice}
+                  </MyTableCell>
                   <MyTableCell colName={"strips"} item={drug} table="items">
                     {drug.strips}
                   </MyTableCell>
-                 
-                  <MyAutoCompeleteTableCell
+
+                  {/* <MyAutoCompeleteTableCell
                     sections={drugCategory}
                     val={drug.category}
                     colName="drug_category_id"
@@ -216,8 +255,8 @@ function DrugItems() {
                     table="items"
                   >
                     {drug.category?.name}
-                  </MyAutoCompeleteTableCell>
-                  <MyAutoCompeleteTableCell
+                  </MyAutoCompeleteTableCell> */}
+                  {/* <MyAutoCompeleteTableCell
                     sections={pharmacyTypes}
                     colName={"pharmacy_type_id"}
                     val={drug.type}
@@ -225,50 +264,56 @@ function DrugItems() {
                     table="items"
                   >
                     {drug.type?.name}
-                  </MyAutoCompeleteTableCell>
-                  <TableCell>
+                  </MyAutoCompeleteTableCell> */}
+                  {/* <TableCell>
                     {drug?.lastDepositItem?.expire ?? drug.expire}
+                  </TableCell> */}
+                  <TableCell>
+                    <MyDateField2
+                      val={drug.lastDepositItem.expire}
+                      item={drug.lastDepositItem}
+                    />
                   </TableCell>
-            
-                  <MyTableCell  show colName={"barcode"} item={drug} table="items">
+                  <MyTableCell
+                    show
+                    colName={"barcode"}
+                    item={drug}
+                    table="items"
+                  >
                     {drug.barcode}
                   </MyTableCell>
                   <TableCell>
-                    
-                     
-                     
-                        <LoadingButton
-                          loading={loading}
-                          onClick={() => {
-                           let result =   confirm("Are you sure you want to delete")
-                           if (result) {
-                            setLoading(true);
+                    {drug.deposit_item.deposit.supplier.name}
+                  </TableCell>
+                  <TableCell>
+                    <LoadingButton
+                      loading={loading}
+                      onClick={() => {
+                        let result = confirm("Are you sure you want to delete");
+                        if (result) {
+                          setLoading(true);
 
-                            axiosClient
-                              .delete(`items/${drug.id}`)
-                              .then(({ data }) => {
-                                setItems((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                                setDrugs((prev) => {
-                                  return prev.filter(
-                                    (item) => item.id !== drug.id
-                                  );
-                                });
-                              })
-                              .finally(() => setLoading(false));
-                           }
-                          
-                          }}
-                          color="error"
-                        >
-                          <DeleteOutlineOutlined />
-                        </LoadingButton>
-                   
-                    
-              
+                          axiosClient
+                            .delete(`items/${drug.id}`)
+                            .then(({ data }) => {
+                              setItems((prev) => {
+                                return prev.filter(
+                                  (item) => item.id !== drug.id
+                                );
+                              });
+                              setDrugs((prev) => {
+                                return prev.filter(
+                                  (item) => item.id !== drug.id
+                                );
+                              });
+                            })
+                            .finally(() => setLoading(false));
+                        }
+                      }}
+                      color="error"
+                    >
+                      <DeleteOutlineOutlined />
+                    </LoadingButton>
                   </TableCell>
                 </TableRow>
               );
@@ -276,51 +321,53 @@ function DrugItems() {
           </tbody>
         </Table>
       </TableContainer>
-    {!selectedFutureDate &&  <Grid sx={{ gap: "4px",mt:1 }} container>
-        {links.map((link, i) => {
-          if (i == 0) {
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  onClick={(setLoading) => {
-                    updateItemsTable(link, setLoading);
-                  }}
-                  variant="contained"
-                  key={i}
-                >
-                  <ArrowBackIosIcon />
-                </MyLoadingButton>
-              </Grid>
-            );
-          } else if (links.length - 1 == i) {
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  onClick={(setLoading) => {
-                    updateItemsTable(link, setLoading);
-                  }}
-                  variant="contained"
-                  key={i}
-                >
-                  <ArrowForwardIosIcon />
-                </MyLoadingButton>
-              </Grid>
-            );
-          } else
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  active={link.active}
-                  onClick={(setLoading) => {
-                    updateItemsTable(link, setLoading);
-                  }}
-                >
-                  {link.label}
-                </MyLoadingButton>
-              </Grid>
-            );
-        })}
-      </Grid>}
+      {!selectedFutureDate && (
+        <Grid sx={{ gap: "4px", mt: 1 }} container>
+          {links.map((link, i) => {
+            if (i == 0) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowBackIosIcon />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else if (links.length - 1 == i) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowForwardIosIcon />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    active={link.active}
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                  >
+                    {link.label}
+                  </MyLoadingButton>
+                </Grid>
+              );
+          })}
+        </Grid>
+      )}
     </Box>
   );
 }

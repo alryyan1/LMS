@@ -255,7 +255,7 @@ function ItemDeposit() {
   }, [billNumber]);
   return (
     <>
-      <Stack
+  {!selectedDeposit &&    <Stack
         direction={"row"}
         alignItems={"center"}
         gap={3}
@@ -296,7 +296,7 @@ function ItemDeposit() {
             return <TextField label={"Search by Supplier"} {...params} />;
           }}
         ></Autocomplete>
-      </Stack>
+      </Stack>}
 
       <div
         style={{
@@ -389,7 +389,7 @@ function ItemDeposit() {
                             
                                axiosClient(`getDepositWithItems/${deposit.id}`).then(({data})=>{
                                 hideDepositsTable();
-                                showAddToDeposit();
+                                // showAddToDeposit();
                                 showDepositItemsTable();
                                 change(data);
   
@@ -488,6 +488,7 @@ function ItemDeposit() {
             <IconButton
               title="اظهار الفواتير"
               onClick={() => {
+                setSelectedDeposit(null)
                 hideDepositItemsTable();
                 hideAddToDeposit();
                 hideNewFormHandler();

@@ -19,7 +19,7 @@ i18next
           cardNoValidation: "يجب ادخال رقم البطاقه",
           register: "التسجيل",
           define: "تعريف منتج",
-          income: "فاتوره وارد جديد",
+          income: "  المشتروات",
           quantities: "حركه المخزون",
 
           sales: "المبيعات",

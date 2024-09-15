@@ -24,7 +24,7 @@ import { AddBusiness } from "@mui/icons-material";
 function AddDrug() {
   const navigate = useNavigate();
   const [itemsIsLoading, setItemsIsLoading] = useState(false);
-  const [page, setPage] = useState(7);
+  const [page, setPage] = useState(10);
   const [search, setSearch] = useState("");
   const [links, setLinks] = useState([]);
   const { setDialog, setItemsTobeAddedToChache } = useOutletContext();
@@ -93,7 +93,7 @@ function AddDrug() {
             }}
           >
             <option value="5">5</option>
-            <option value="10">10</option>
+            <option selected value="10">10</option>
             <option value="20">20</option>
             <option value="30">30</option>
             <option value="50">50</option>

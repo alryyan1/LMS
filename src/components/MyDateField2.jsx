@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 function MyDateField2({ val, item }) {
+  // console.log(item,'item in date field')
   // console.log(item , val,'date filed ')
   // console.log(dayjs(val), "date filed ", val, "val");
   const [date, setDate] = useState(val);
@@ -23,13 +24,7 @@ function MyDateField2({ val, item }) {
           const dayJsObj = dayjs(val);
 
           setDate(val);
-          axiosClient
-          .patch(`items/${item.item.id}`, {
-            colName: "expire",
-            val: `${dayJsObj.year()}/${
-              dayJsObj.month() + 1
-            }/${dayJsObj.date()}`,
-          })
+       
           axiosClient
             .patch(`depositItems/update/${item.id}`, {
               colName: "expire",

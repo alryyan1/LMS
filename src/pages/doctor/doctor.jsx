@@ -351,6 +351,8 @@ function Doctor() {
               )}
               {!user?.is_nurse == 1 && (
                 <PatientPrescribedMedsTab
+                user={user}
+                activeDoctorVisit={activeDoctorVisit}
                   setShift={setShift}
                   complains={complains}
                   change={change}

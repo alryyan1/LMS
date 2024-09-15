@@ -225,7 +225,9 @@ function SellDrug() {
             </Item>
           </Stack>
         </div>
-        <Card sx={{ p: 1, height: "80vh", overflow: "auto" }}>
+        
+
+        <Card sx={{ p: 1, height: "80vh", overflow: "auto" ,backgroundColor: "#ffffff73" ,}}>
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -250,7 +252,7 @@ function SellDrug() {
             )}
           </div>
         </Card>
-        <Card sx={{ p: 1 }} style={{ overflow: "auto" }}>
+        <Card  sx={{ p: 1 , backgroundColor: "#ffffff73" }} style={{ overflow: "auto" }}>
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
@@ -437,6 +439,7 @@ function SellDrug() {
 
         <Card
           sx={{
+             backgroundColor: "#ffffff73" ,
             p: 1,
             display: "flex",
             justifyContent: "center",
@@ -457,7 +460,7 @@ function SellDrug() {
               <Card
                 sx={{
                   borderRadius: 10,
-                  width: "200px",
+                  width: "150px",
                   textAlign: "center",
                   height: "120px",
                 }}
@@ -473,7 +476,7 @@ function SellDrug() {
                       </Typography>
                       <Divider />
                       {activeSell && (
-                        <Typography variant="h3">
+                        <Typography variant="h6">
                           {Number(activeSell?.total_price_unpaid).toFixed(3)}
                         </Typography>
                       )}
@@ -488,9 +491,11 @@ function SellDrug() {
               <Card
                 sx={{
                   borderRadius: 10,
-                  width: "200px",
+                  width: "150px",
                   mt: 2,
                   height: "120px",
+             backgroundColor: "#ffffff73" ,
+
                 }}
               >
                 <CardContent>
@@ -499,21 +504,24 @@ function SellDrug() {
                       justifyContent={"space-between"}
                       direction={"column"}
                     >
-                      <Typography>Recieved</Typography>
+                      <Typography>Discount</Typography>
                       <Divider />
 
-                      <TextField
-                        value={recieved}
+                      <TextField key={activeSell?.id}
+                        defaultValue={activeSell?.discount}
                         onChange={(e) => {
                           setRecieved(e.target.value);
-                          // axiosClient
-                          //   .patch(`deduct/${activeSell.id}`, {
-                          //     colName: "total_amount_received",
-                          //     val: e.target.value,
-                          //   })
-                          //   .then(({ data }) => {
-                          //     setActiveSell(data.data);
-                          //   });
+                          axiosClient
+                            .patch(`deduct/${activeSell.id}`, {
+                              colName: "discount",
+                              val: e.target.value,
+                            })
+                            .then(({ data }) => {
+                              setActiveSell(data.data);
+                          setShift(data.shift);
+
+
+                            });
                         }}
                         variant="standard"
                       ></TextField>
@@ -527,8 +535,10 @@ function SellDrug() {
               </Card>
               <Card
                 sx={{
+             backgroundColor: "#ffffff73" ,
+
                   borderRadius: 10,
-                  width: "200px",
+                  width: "150px",
                   mt: 2,
                   height: "120px",
                 }}
@@ -542,10 +552,10 @@ function SellDrug() {
                       <Typography>Balance</Typography>
                       <Divider />
 
-                      <Typography variant="h3">
+                      <Typography variant="h6">
                         {(
-                          Number(recieved) -
-                          Number(activeSell?.total_price_unpaid)
+                          Number(activeSell?.total_price_unpaid) -
+                          Number(activeSell?.discount)
                         ).toFixed(3)}
                       </Typography>
                     </Stack>

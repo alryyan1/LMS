@@ -17,8 +17,11 @@ import MyTableCell from "../inventory/MyTableCell";
 import { DeleteOutline } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
+import { webUrl } from "../constants";
+import { useStateContext } from "../../appContext";
 function PatientPrescribedMedsTab(props) {
-  const { value, index, patient, setDialog, change,complains,setShift, ...other } =
+
+  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user, ...other } =
     props;
   const [loading, setLoading] = useState();
   const [showSuggestions, setShowSeggestions] = useState(false);
@@ -68,6 +71,8 @@ function PatientPrescribedMedsTab(props) {
       <Divider sx={{ mb: 1 }} variant="middle">
         Prescribed Medicines
       </Divider>
+      <a href={`${webUrl}printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user?.id}`}>PDF</a>
+
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddPrescribedDrugAutocomplete

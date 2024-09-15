@@ -174,9 +174,8 @@ function AddDrugForm({setUpdate}) {
     >
       Item Definition
     </Typography>
-    <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
+    <form noValidate  onSubmit={handleSubmit(submitHandler)}>
       <Stack direction={"column"} spacing={3}>
-        <Stack gap={2} direction={"row"}>
           <TextField
       
             size="small"
@@ -188,7 +187,7 @@ function AddDrugForm({setUpdate}) {
                 message: " Sc name is required",
               },
             })}
-            label="الاسم العلمي"
+            label="S.Name"
             variant="outlined"
             helperText={errors.sc_name && errors.sc_name.message}
           />
@@ -204,11 +203,10 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             defaultValue={market}
-            label="الاسم التجاري"
+            label="M.Name"
             variant="outlined"
             helperText={errors.market_name && errors.market_name.message}
           />
-        </Stack>
         {/* <Stack gap={2} direction={"row"}>
           <TextField
             size="small"
@@ -278,7 +276,7 @@ function AddDrugForm({setUpdate}) {
                 message: "Strips count must be at least 1",
               },
             })}
-            label="عدد الشرائط"
+            label="Strips"
             variant="outlined"
             helperText={errors.strips && errors.strips.message}
           />
@@ -309,7 +307,7 @@ function AddDrugForm({setUpdate}) {
 
             }}
 
-            label="الباركود"
+            label="Barcode"
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -319,7 +317,6 @@ function AddDrugForm({setUpdate}) {
               ),
             }}
           />
-        <Stack gap={2} direction={"row"}>
           <PharmacyTypeAutocomplete
             errors={errors}
             Controller={Controller}
@@ -332,7 +329,6 @@ function AddDrugForm({setUpdate}) {
             control={control}
             setValue={setValue}
           />
-        </Stack>
         <Stack gap={2} direction={"row"}>
           {/* <TextField
             size="small"

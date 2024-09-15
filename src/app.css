@@ -1,18 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
 
-@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900");
-
+/* @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900"); */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 body {
+  font-family: "Playpen Sans",'Almarai' ;
 
-  font-family: "Almarai", sans-serif;
+  /* font-family: "Almarai", sans-serif; */
+  /* font-family: "Playwrite CU", sans-serif,'Almarai'; */
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+    unicode-range: U+00-FF, U+980-9FF;
 
 }
-@font-face {
+/* @font-face {
   font-family: 'Public Sans';
   src: local('Public Sans'), url(./fonts/PublicSans-Regular.woff) format('woff');
   /* other formats include: 'woff2', 'truetype, 'opentype',
                             'embedded-opentype', and 'svg' */
-}
+  /* } */
+ /* */ 
 .doctor{
   min-width: 200px!important;
 }
@@ -121,9 +132,15 @@ a.active{
 }
 
 body {
+
   /* background: var(--clr-2); */
-  /* color: var(--clr-1); */
+  color: var(--clr-1);
+
+
 }
+
+
+
 
 .effect {
   /* aspect-ratio: 1 / 1.5; */

@@ -78,6 +78,7 @@ import AddNewEmployee from "./pages/hr/AddNewEmployee";
 import Chemwell from "./pages/Chemwell";
 import MyTree from "./pages/Finance/Tree";
 import Nurse from "./pages/doctor/Nurse";
+import Patients from "./pages/Patients";
 
 export const router = createBrowserRouter([
   {
@@ -144,6 +145,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         path: "/dashboard",
+      },
+      {
+        element: (
+          <ProtectedRoute>
+            <Patients />
+          </ProtectedRoute>
+        ),
+        path: "/patients",
       },
       {
         element: (

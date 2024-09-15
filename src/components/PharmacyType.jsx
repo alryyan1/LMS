@@ -107,7 +107,7 @@ export default function PharmacyTypeAutocomplete({Controller,control,errors,setV
           
             freeSolo
             renderInput={(params) => (
-              <TextField {...params} label={'الشكل الصيدلاني'} />
+              <TextField {...params} label={' Type'} />
             )}
           />
         }}
@@ -115,7 +115,7 @@ export default function PharmacyTypeAutocomplete({Controller,control,errors,setV
       />
       
       <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>اضافه شكل صيدلاني</DialogTitle>
+          <DialogTitle>Add Pharamcy Type</DialogTitle>
           <DialogContent>
             <TextField
             size="small"

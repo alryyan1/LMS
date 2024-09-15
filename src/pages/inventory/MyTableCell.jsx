@@ -158,7 +158,15 @@ function MyTableCell({
           type={type}
         ></TextField>
       ) : (
-        isNum ? Number(iniVal).toFixed(3) : iniVal
+        isNum ? <span style={{    
+          color: "black",
+          fontSize: "large",
+          fontWeight: "bolder",
+        }}>{Number(iniVal).toFixed(3)} </span> : <span  style={{    
+          color: "black",
+          fontSize: "large",
+          fontWeight: "bolder",
+        }}>{iniVal}</span>
       )}
     </TableCell>
   );

@@ -35,15 +35,12 @@ function SalesReport() {
   const [clients, setClients] = useState([]);
   const [checked, setChecked] = useState(false);
 
-    const handleChange = (event) => {
-      setChecked(event.target.checked);
-      setTemp((prev)=>{
-        return deducts.filter((d)=>d.is_postpaid == event.target.checked)
-    })
-     
-     
-      
-    };
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    setTemp((prev) => {
+      return deducts.filter((d) => d.is_postpaid == event.target.checked);
+    });
+  };
   useEffect(() => {
     //fetch all clients
     axiosClient(`client/all`).then(({ data }) => {
@@ -106,43 +103,43 @@ function SalesReport() {
           >
             Go
           </LoadingButton>
-
         </Box>
         <Autocomplete
-                  sx={{ width: "200px", mb: 1 }}
-                  options={clients}
-                  isOptionEqualToValue={(option, val) => option.id === val.id}
-                  getOptionLabel={(option) => option.name}
-                  onChange={(e, data) => {
-                    if (data == null) {
-                      setTemp(deducts)
-                      return
-                    }
-                    setClient(data);
-                    setTemp((prev)=>{
-                        return deducts.filter((d)=>d.client_id == data?.id)
-                    })
-                  }}
-                  renderInput={(params) => {
-                    return (
-                      <TextField
-                        variant="standard"
-                        label={"العميل"}
-                        {...params}
-                      />
-                    );
-                  }}
-                ></Autocomplete>
-                 <FormGroup>
-                    <FormControlLabel
-                      label="Postpaid"
-                      control={
-                        <Checkbox  checked={checked} onChange={handleChange}/>
-
-                      }
-                    ></FormControlLabel>
-                  </FormGroup>
-        <a href={`${webUrl}searchDeductByDate?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${client?.id}&is_postpaid=${checked}`}>PDF</a>
+          sx={{ width: "200px", mb: 1 }}
+          options={clients}
+          isOptionEqualToValue={(option, val) => option.id === val.id}
+          getOptionLabel={(option) => option.name}
+          onChange={(e, data) => {
+            if (data == null) {
+              setTemp(deducts);
+              return;
+            }
+            setClient(data);
+            setTemp((prev) => {
+              return deducts.filter((d) => d.client_id == data?.id);
+            });
+          }}
+          renderInput={(params) => {
+            return (
+              <TextField variant="standard" label={"العميل"} {...params} />
+            );
+          }}
+        ></Autocomplete>
+        <FormGroup>
+          <FormControlLabel
+            label="Postpaid"
+            control={<Checkbox checked={checked} onChange={handleChange} />}
+          ></FormControlLabel>
+        </FormGroup>
+        <a
+          href={`${webUrl}searchDeductByDate?first=${firstDate.format(
+            "YYYY/MM/DD"
+          )}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${
+            client?.id
+          }&is_postpaid=${checked}`}
+        >
+          PDF
+        </a>
       </Stack>
 
       <Table size="small">
@@ -164,10 +161,12 @@ function SalesReport() {
         <TableBody>
           {temp.reverse().map((item) => (
             <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.number}</TableCell>
+              <TableCell>{item.id}</TableCell>
+              <TableCell>{item.number}</TableCell>
               <TableCell>
-                {dayjs(new Date(Date.parse(item.created_at))).format('YYYY/MM/DD H;m A')}
+                {dayjs(new Date(Date.parse(item.created_at))).format(
+                  "YYYY/MM/DD H;m A"
+                )}
               </TableCell>
               <TableCell>{item.total_price}</TableCell>
               <TableCell>{item.user.username}</TableCell>
@@ -177,8 +176,13 @@ function SalesReport() {
                   (deducted) => `${deducted.item.market_name}-`
                 )}
               </TableCell>
-              <TableCell>{toFixed(item.profit,1)}</TableCell>
-              <TableCell>                    <a href={`${webUrl}deduct/invoice?id=${item.id}`}>Invoice PDF</a></TableCell>
+              <TableCell>{toFixed(item.profit, 1)}</TableCell>
+              <TableCell>
+                {" "}
+                <a href={`${webUrl}deduct/invoice?id=${item.id}`}>
+                  Invoice PDF
+                </a>
+              </TableCell>
               <TableCell>{item?.client?.name}</TableCell>
               <TableCell>
                 <LoadingButton

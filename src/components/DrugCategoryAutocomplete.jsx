@@ -107,7 +107,7 @@ export default function DrugCategoryAutocomplete({Controller,control,errors,setV
           
             freeSolo
             renderInput={(params) => (
-              <TextField  {...params} label={'المجموعه'} />
+              <TextField  {...params} label={'Category'} />
             )}
           />
         }}
@@ -115,7 +115,7 @@ export default function DrugCategoryAutocomplete({Controller,control,errors,setV
       />
       
       <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>اضافه  مجموعه</DialogTitle>
+          <DialogTitle> Add Category</DialogTitle>
           <DialogContent>
             <TextField
             size="small"
