@@ -106,7 +106,9 @@ a.active{
     font-weight: bold!important;
     color: black!important;
 }
-
+thead {
+  background-color: #add8e6;
+}
 .patient-no2{
   margin-left: 4px!important;
   background-color: burlywood!important;

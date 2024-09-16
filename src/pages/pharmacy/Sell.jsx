@@ -53,6 +53,7 @@ import AddClientDialog from "./AddClientDialog";
 import SaleDiscountSelect from "../../components/SaleDiscountSelect";
 import MyCheckbox from "../../components/MyCheckBox";
 import CalculateInventory from "./CalculateInventory";
+// import Calculator from "../../components/calculator/Calculator";
 function toFixed(num, fixed) {
   if (num == null) {
     return 0;
@@ -182,6 +183,8 @@ function SellDrug() {
           gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
         }}
       >
+                
+
         <div style={{ marginRight: "65px" }}></div>
         {activeSell && (
           <AddDrugAutocomplete

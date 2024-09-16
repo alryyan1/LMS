@@ -156,6 +156,14 @@ function DrugItems() {
             );
           })}
         </Stack>
+        <a href={`${webUrl}excel/items`}>EXCEL</a>
+          {selectedFutureDate && (
+            <a
+              href={`${webUrl}expired/items?firstOfMonth=${selectedFutureDate?.firstofMonth}&lastOfMonth=${selectedFutureDate?.lastofmonth}&monthname=${selectedFutureDate.monthname}&year=${selectedFutureDate.year}`}
+            >
+              Expired
+            </a>
+          )}
         <TextField
           type="search"
           value={search}
@@ -167,14 +175,7 @@ function DrugItems() {
       </Stack>
       <TableContainer sx={{ backgroundColor: "#ffffff73" }} component={Card}>
         <Stack direction={"row"} justifyContent={"space-around"}>
-          <a href={`${webUrl}excel/items`}>EXCEL</a>
-          {selectedFutureDate && (
-            <a
-              href={`${webUrl}expired/items?firstOfMonth=${selectedFutureDate?.firstofMonth}&lastOfMonth=${selectedFutureDate?.lastofmonth}&monthname=${selectedFutureDate.monthname}&year=${selectedFutureDate.year}`}
-            >
-              Expired
-            </a>
-          )}
+        
         </Stack>
 
         <Table size="small">
@@ -270,8 +271,8 @@ function DrugItems() {
                   </TableCell> */}
                   <TableCell>
                     <MyDateField2
-                      val={drug.lastDepositItem.expire}
-                      item={drug.lastDepositItem}
+                      val={drug?.lastDepositItem?.expire}
+                      item={drug?.lastDepositItem}
                     />
                   </TableCell>
                   <MyTableCell
@@ -283,7 +284,7 @@ function DrugItems() {
                     {drug.barcode}
                   </MyTableCell>
                   <TableCell>
-                    {drug.deposit_item.deposit.supplier.name}
+                    {drug?.deposit_item?.deposit?.supplier?.name}
                   </TableCell>
                   <TableCell>
                     <LoadingButton

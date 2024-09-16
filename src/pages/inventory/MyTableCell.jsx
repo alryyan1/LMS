@@ -164,7 +164,7 @@ function MyTableCell({
           fontWeight: "bolder",
         }}>{Number(iniVal).toFixed(3)} </span> : <span  style={{    
           color: "black",
-          fontSize: "large",
+          fontSize: "16px",
           fontWeight: "bolder",
         }}>{iniVal}</span>
       )}
