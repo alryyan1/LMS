@@ -25,20 +25,20 @@ function MoneyDialog() {
   return (
     <div>
       <Dialog open={dialog.showMoneyDialog}>
-        <DialogTitle>دخل المعمل</DialogTitle>
+        <DialogTitle> Laboratory Income Details</DialogTitle>
         <DialogContent>
           <Stack direction={'column'} sx={{m:1 ,backgroundColor:(theme)=>theme.palette.success.light,p:1,borderRadius:'5px',color:'white',fontSize:"2rem"}} gap={1}>
-            <Typography variant="h4" textAlign={'center'}>اجمالي الدخل</Typography>
+            <Typography variant="h4" textAlign={'center'}>Total</Typography>
             <Typography variant="h4" textAlign={'center'}>{labUserMoney?.total}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
-            <Typography variant="h4" textAlign={'center'}>بنكك</Typography>
+            <Typography variant="h4" textAlign={'center'}>Bank</Typography>
             <Typography variant="h4" textAlign={'center'}>{labUserMoney?.bank}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
-            <Typography variant="h4" textAlign={'center'}>النقدي</Typography>
+            <Typography variant="h4" textAlign={'center'}>Cash</Typography>
             <Typography variant="h4" textAlign={'center'}>{  labUserMoney?.total - labUserMoney?.bank}</Typography>
           </Stack>
         </DialogContent>

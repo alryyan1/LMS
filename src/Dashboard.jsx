@@ -340,12 +340,13 @@ function Dashboard() {
                       disabled={shift?.maxShiftId != shift?.id}
                         loading={loading}
                         onClick={() => {
-                          setLoading(true);
                           const msg = shift?.is_closed
                             ? "  Open shift ? "
                             : " Close Shift ?  ";
                           const result = confirm(msg);
                           if (result) {
+                          setLoading(true);
+
                             axiosClient
                               .post(`shift/status/${shift?.id}`, {
                                 status: shift?.is_closed,

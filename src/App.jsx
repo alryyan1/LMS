@@ -26,7 +26,7 @@ function App() {
 
   return (
     <>
-      <div style={{background:'var(--clr-2)', height:'99vh' ,backgroundImage:`${image} `} } className="app-container">
+      <div style={{background:'var(--clr-2)' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat',minHeight:'99vh'} } className="app-container">
         <div className="app-container2">
           
         <Nav />

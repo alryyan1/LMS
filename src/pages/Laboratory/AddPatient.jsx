@@ -173,7 +173,7 @@ function AddPatient() {
           marginTop:'5px',
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "75vh",
+         
           display: "grid",
           // direction:'rtl',
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
@@ -227,7 +227,7 @@ function AddPatient() {
             />
           )}
         </div>
-        <Card sx={{p:1}} style={{ height:'70vh', overflow: "auto" }}>
+        <Card sx={{p:1}} style={{ height:'80vh', overflow: "auto",backgroundColor: "#ffffff73" }}>
        {actviePatient && <AddTestAutoComplete  patients={patients} actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests} setPatients={setPatients} />}
 
           <div className="patients" style={{ padding: "15px" }}>
@@ -251,7 +251,7 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card   sx={{ p: 1 }}>
+        <Card  style={{backgroundColor: "#ffffff73"}}  sx={{ p: 1 }}>
        
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTests key={actviePatient.id} setPatients={setPatients} />

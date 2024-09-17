@@ -16,7 +16,8 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
   const [search, setSearch] = React.useState([]);
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
+    if (search != '') {
+       const timer = setTimeout(() => {
       axiosClient
         .get(`patients?name=${search}&withTests=${withTests}`)
         .then(({ data }) => {
@@ -26,6 +27,8 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
         .finally(() => setLoading(false));
     }, 300);
     return () => clearTimeout(timer);
+    }
+   
   }, [search]);
 
   return (

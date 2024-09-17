@@ -227,9 +227,11 @@ function PatientDetail({
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
-                .post(`patient/copy/${patient.id}/${data.id}`)
+                .post(`patient/copy/${data.id}/${patient.id}/${true}`)
                 .then(({ data }) => {
+                  console.log(data,'data from copy')
                   if (data.status) {
+                    // alert('status')
                     setUpdate((prev) => prev + 1);
                   }
                 });

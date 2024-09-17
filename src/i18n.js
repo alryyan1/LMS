@@ -127,7 +127,7 @@ i18next
           ledger:'Ledger',
           trialBalance:'Trial Balance',
           departments:'Departments',
-
+          paycheckMsg:'are you sure you recieved this amount?',
           newAccount:'New Account',
           govIdValidation:'required field',
             clients: "clients ",

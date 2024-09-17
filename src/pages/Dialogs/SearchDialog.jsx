@@ -58,7 +58,7 @@ function SearchDialog({lab=false}) {
   return (
     <Card  >
       <TableContainer sx={{height:'70vh',overflow:'auto'}}>
-        <Table sx={{ width: "90%" ,mr:1}} size="small" >
+        <Table  size="small" >
           <thead>
             <TableRow>
               <TableCell width={'20%'}>الاسم</TableCell>

@@ -100,10 +100,9 @@ function Reception() {
     setLayout((prev) => {
       return {
         ...prev,
-        form: "1fr",
+        form: "minmax(350px, 1fr)",
         hideForm: false,
-        requestedDiv: "minmax(0,1.3fr)",
-        patients: "1fr",
+       
       };
     });
   };
@@ -218,16 +217,11 @@ function Reception() {
       >
         <div>
           {!actviePatient && foundedPatients.length > 0 && (
-            <Slide
-              direction="up"
-              in
-              mountOnEnter
-              unmountOnExit
-            >
-              <div>
+          
+              
                 <SearchDialog />
-              </div>
-            </Slide>
+              
+         
           )}
           {actviePatient && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
@@ -238,6 +232,7 @@ function Reception() {
                   key={actviePatient.id}
                   patient={actviePatient.patient}
                   copyPatient={true}
+                  setUpdate={setUpdate}
                 />
                 <Stack sx={{mt:1}} direction={"row"} gap={2}>
                   <a href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}>Receipt</a>
