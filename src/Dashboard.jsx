@@ -337,7 +337,7 @@ function Dashboard() {
                     </Stack>
                     <Stack direction={"column"} justifyContent={"center"}>
                       <LoadingButton
-                      disabled={shift?.maxShiftId != shift?.id}
+                      // disabled={shift?.maxShiftId != shift?.id}
                         loading={loading}
                         onClick={() => {
                           const msg = shift?.is_closed

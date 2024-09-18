@@ -97,12 +97,12 @@ export default function ChildGroupAutoComplete({ childGroup,child_id }) {
       
         freeSolo
         renderInput={(params) => (
-          <TextField {...params} label="عنوان فرعي" />
+          <TextField {...params} label="Sub header " />
         )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
-          <DialogTitle> اضافه عنوان فرعي </DialogTitle>
+          <DialogTitle> Add Sub title   </DialogTitle>
           <DialogContent>
             <TextField
             size="small"
@@ -111,7 +111,7 @@ export default function ChildGroupAutoComplete({ childGroup,child_id }) {
               id="name"
               value={dialogValue}
               onChange={(event) => setDialogValue(event.target.value)}
-              label="العنوان"
+              label="sub title"
               type="text"
               variant="standard"
             />

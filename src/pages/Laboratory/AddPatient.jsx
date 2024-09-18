@@ -254,7 +254,7 @@ function AddPatient() {
         <Card  style={{backgroundColor: "#ffffff73"}}  sx={{ p: 1 }}>
        
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <RequestedTests key={actviePatient.id} setPatients={setPatients} />
+            <RequestedTests activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
       

@@ -165,8 +165,17 @@ function RequestedServices({
           >
           {t("servicesPanel")}
           </Button>
+          <Button
+            sx={{ m: 1 }}
+            onClick={() => {
+              setShowPatientServices(false);
+              setShowServicePanel(true);
+            }}
+          >
+           عرض قائمه التحاليل
+          </Button>
           <TableContainer sx={{ border: "none", textAlign: "left" }}>
-            <Table size="small" style={{ direction: "rtl" }}>
+            <Table size="small" >
               <TableHead>
                 <TableRow>
                   <TableCell> {t('name')}</TableCell>

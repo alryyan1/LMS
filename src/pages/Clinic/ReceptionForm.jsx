@@ -346,7 +346,7 @@ function ReceptionForm({ hideForm,lab }) {
                 />
               </Item>
             </Stack>
-            {/* <TextField
+            <TextField
             size="small"
               error={errors?.gov_id}
               {...register("gov_id", {
@@ -357,8 +357,8 @@ function ReceptionForm({ hideForm,lab }) {
               })}
               label={t('govId')}
               helperText={errors?.gov_id && errors.gov_id.message}
-            /> */}
-            {/* <CountryAutocomplete control={control} errors={errors} setValue={setValue} /> */}
+            />
+            <CountryAutocomplete control={control} errors={errors} setValue={setValue} />
             <TextField
               size="small"
               {...register("address")}

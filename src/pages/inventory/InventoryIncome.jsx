@@ -106,7 +106,7 @@ function InventoryIncome() {
           setUpdate((pev) => pev + 1);
           setDialog({
             open: true,
-            msg: "تمت العمليه  بنجاح",
+            msg: "Operation completed successfully   ",
           });
         }
       })
@@ -140,7 +140,7 @@ function InventoryIncome() {
           setValue("expire", dayjs(new Date()));
           setDialog({
             open: true,
-            msg: "تمت الاضافه  بنجاح",
+            msg: "Operation completed successfully",
           });
         }
       })
@@ -216,7 +216,7 @@ function InventoryIncome() {
           //show success dialog
           setDialog({
             open: true,
-            msg: "تمت العمليه  بنجاح",
+            msg: "Operation completed successfully",
           });
         }
         console.log(data, "deposit complete");

@@ -21,12 +21,13 @@ import axiosClient from "../../../axios-client";
 import { useStateContext } from "../../appContext";
 import {t} from "i18next"
 import printJS from "print-js";
-function RequestedTests({ setPatients }) {
+function RequestedTests({ setPatients,activePatient:actviePatient ,setActivePatient,}) {
+  console.log(actviePatient,'actviePatient');
   // console.log("requested tests rendered");
   const {
     setDialog,
-    setActivePatient,
-    actviePatient,
+    
+  
     tests,
     companies,
     userSettings,
@@ -92,7 +93,7 @@ function RequestedTests({ setPatients }) {
           });
           //show success dialog
           setDialog(() => ({
-            message: "تمت عمليه السداد بنجاح",
+            message: "Operation completed successfully",
             open: true,
           }));
         }
@@ -128,7 +129,7 @@ function RequestedTests({ setPatients }) {
           });
           //show success dialog
           setDialog(() => ({
-            message: "تمت الغاء السداد بنجاح",
+            message: "Operation completed successfully",
             open: true,
           }));
           setActivePatient((p) => {

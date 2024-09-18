@@ -83,7 +83,7 @@ function MainTestChildren() {
       <LoadingButton
       color="error"
           variant={"contained"}
-          sx={{ position: "absolute", top: "-40px", left: "0px" }}
+          // sx={{ position: "absolute", top: "-40px", left: "0px" }}
           loading={loading}
           onClick={() => {
             const result =   confirm("هل انت متاكد من حذف هذا الفحص نهائيا سيتم حذفه من سجلات المرضي")

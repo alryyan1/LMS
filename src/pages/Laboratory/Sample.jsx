@@ -200,7 +200,7 @@ function Sample() {
           <Divider></Divider>
           <Grid container>
             <Grid item xs={6}>
-              <Typography textAlign={"center"}>Collected</Typography>
+              <Typography textAlign={"center"}>Not Collect</Typography>
               <div className="patients" style={{ padding: "15px" }}>
                 {patientsLoading ? (
                   <Skeleton
@@ -226,7 +226,7 @@ function Sample() {
               </div>
             </Grid>
             <Grid item xs={6}>
-              <Typography textAlign={"center"}>Not Collected</Typography>
+              <Typography textAlign={"center"}> Collected</Typography>
               <div className="patients" style={{ padding: "15px" }}>
                 {patientsLoading ? (
                   <Skeleton

@@ -96,12 +96,12 @@ export default function UnitAutocomplete({ unitObj,child_id }) {
       
         freeSolo
         renderInput={(params) => (
-          <TextField {...params} label="الوحده" />
+          <TextField {...params} label="unit" />
         )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
-          <DialogTitle> اضافه عنوان فرعي </DialogTitle>
+          <DialogTitle>  add unit  </DialogTitle>
           <DialogContent>
             <TextField
             size="small"
@@ -110,7 +110,7 @@ export default function UnitAutocomplete({ unitObj,child_id }) {
               id="name"
               value={dialogValue}
               onChange={(event) => setDialogValue(event.target.value)}
-              label="العنوان"
+              label="unit"
               type="text"
               variant="standard"
             />

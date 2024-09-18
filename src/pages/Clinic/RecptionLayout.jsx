@@ -31,7 +31,10 @@ function ReceptionLayout() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [showPatientServices, setShowPatientServices] = useState(false);
   const [showServicePanel, setShowServicePanel] = useState(true);
+  const [showTestPanel, setShowTestPanel] = useState(false);
   const [settings, setSettings] = useState(null);
+  const [selectedTests, setSelectedTests] = useState([]);
+  const [packageData, setPackageData] = useState([]);
 
   const [companies, setCompanies] = useState([]);
   useEffect(()=>{
@@ -59,6 +62,10 @@ function ReceptionLayout() {
         setDoctors(data);
       })
       ,
+      axiosClient.get("packages/all").then((data) => {
+        console.log(data,'packages');
+        setPackageData(data.data);
+      }),
       axiosClient
       .get(`serviceGroup/all`)
       .then(({ data: data }) => {
@@ -112,6 +119,9 @@ function ReceptionLayout() {
             foundedPatients,
             setFoundedPatients,
             settings,
+            showTestPanel, setShowTestPanel,
+            selectedTests, setSelectedTests,
+            packageData, setPackageData
           }}
         />
       }

@@ -15,7 +15,6 @@ import MyTableCell from "../inventory/MyTableCell";
 
 function CBCLIS() {
   const [test, setTest] = useState();
-  const [cbc5MatchingRows, setCbc5MatchingRows] = useState([]);
   const [cbcMatchingRows, setCbcMatchingRows] = useState([]);
   const [sysmexColumns, setSysmexColumns] = useState([]);
   useEffect(() => {
@@ -45,9 +44,7 @@ function CBCLIS() {
   const populateCbcTable = () => {
     axiosClient.post("populateCBCMatchingTable");
   };
-  const populateCbc5Table = () => {
-    axiosClient.post("populateCBC5MatchingTable");
-  };
+ 
   return (
     <Grid container spacing={2}>
       <Grid item xs={4}>
@@ -149,8 +146,8 @@ function CBCLIS() {
         </Table>
       </Grid>
       <Grid item xs={2}>
-        <Typography>Matching cbc 5 Table</Typography>
-        <Button onClick={populateCbc5Table}>populate</Button>
+        <Typography>Matching cbc  Table</Typography>
+        <Button onClick={populateCbcTable}>populate</Button>
 
         <Table size="small">
           <TableHead>
@@ -160,7 +157,7 @@ function CBCLIS() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {cbc5MatchingRows.map((item) => (
+            {cbcMatchingRows.map((item) => (
               <TableRow key={item.id}>
                 <MyTableCell   colName={"name_in_sysmex_table"}
                   item={item}

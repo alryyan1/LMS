@@ -26,6 +26,9 @@ import CustumSideBar from "../../components/CustumSideBar";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
 import { webUrl } from "../constants";
+import TestGroups from "../../../TestGroups";
+import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
+import RequestedTests from "../Laboratory/RequestedTests";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -56,6 +59,8 @@ function Reception() {
     showServicePanel,
     setShowServicePanel,
    companies,
+   showTestPanel, setShowTestPanel,
+   selectedTests, setSelectedTests,
   } = useOutletContext();
   const { user } = useStateContext();
   const [layOut, setLayout] = useState({
@@ -287,6 +292,11 @@ function Reception() {
 
         <div>
           {actviePatient && showServicePanel && <ServiceGroup />}
+          {actviePatient &&   showTestPanel && <AddTestAutoComplete   actviePatient={actviePatient.patient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests}  />}
+          {actviePatient && actviePatient.patient.labrequests.length > 0 && (
+            <RequestedTests setActivePatient={setActivePatient} activePatient={actviePatient.patient} key={actviePatient.id}  />
+          )}
+          {actviePatient && showTestPanel && <TestGroups />}
           {showPatientServices && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <Paper sx={{ p: 1 }}>
@@ -327,6 +337,7 @@ function Reception() {
           )}
         </div>
         <CustumSideBar
+        activePatient={actviePatient}
           setOpen={setOpen}
           showShiftMoney={showShiftMoney}
           showFormHandler={showFormHandler}

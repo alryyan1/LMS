@@ -79,7 +79,7 @@ function DeductRequest() {
           setDeduct(data.data.deduct);
           setDialog({
             open: true,
-            message: "تمت الاضافه  بنجاح",
+            message: "Operation completed successfully   ",
           });
         }
       })

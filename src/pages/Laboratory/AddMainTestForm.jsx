@@ -53,16 +53,16 @@ function AddMainTestForm() {
         <Paper sx={{ p: 2, mt: 2 }}>
           <form onSubmit={handleSubmit(addTest)}>
             <Stack direction={"column"} gap={5} className="Test-Details">
-              <Typography variant="h4" textAlign={"center"}>
-                اضافه تحليل جديد
+              <Typography variant="h6" textAlign={"center"}>
+                add new test  
               </Typography>
               <TextField
                 error={errors.main_test_name != null}
-                label="اسم الفحص"
+                label="name "
                 {...register("main_test_name", {
                   required: {
                     value: true,
-                    message: "يجب  ادخال اسم الفحص",
+                    message: "field name is required",
                   },
 
                  
@@ -72,11 +72,11 @@ function AddMainTestForm() {
                 }
               />
               <TextField
-                label="السعر"
+                label="price"
                 {...register("price", {
                   required: {
                     value: true,
-                    message: "يجب ادخال السعر",
+                    message: "price field is required",
                   },
                   pattern: /^[0-9]+$/,
                 })}
@@ -89,7 +89,7 @@ function AddMainTestForm() {
                 rules={{
                   required: {
                     value: true,
-                    message: "يجب اختيار مجموعه التحليل",
+                    message: "please select from a department",
                   },
                 }}
                 render={({ field }) => {
@@ -112,7 +112,7 @@ function AddMainTestForm() {
                             helperText={
                               errors?.department && errors.department.message
                             }
-                            label="المجموعه"
+                            label="Department"
                           />
                         );
                       }}
@@ -126,7 +126,7 @@ function AddMainTestForm() {
                 rules={{
                   required: {
                     value: true,
-                    message: "يجب اختيار الحاويه",
+                    message: "Container",
                   },
                 }}
                 render={({ field }) => {
@@ -146,7 +146,7 @@ function AddMainTestForm() {
                             inputRef={field.ref}
                             error={errors.container != null}
                             {...params}
-                            label="الحاويه"
+                            label="Container"
                             helperText={
                               errors?.container && errors.container.message
                             }
@@ -162,7 +162,7 @@ function AddMainTestForm() {
                 loading={loading}
                 type="submit"
               >
-                حفظ
+                Save
               </LoadingButton>
             </Stack>
           </form>

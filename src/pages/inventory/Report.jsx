@@ -230,7 +230,7 @@ function Report() {
                             })
                             setDialog({
                               open: true,
-                              msg: "تمت العمليه  بنجاح",
+                              msg: "Operation completed successfully",
                             })
                           }
                          }).catch(({response:{data}}) =>{

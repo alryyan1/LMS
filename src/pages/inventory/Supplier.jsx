@@ -45,7 +45,7 @@ function Supplier() {
           reset();
           setDialog({
             open: true,
-            message: "تمت الاضافه  بنجاح",
+            message: "Operation completed successfully",
           });
         }
       })

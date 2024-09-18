@@ -93,7 +93,7 @@ function DeductInventory() {
           //show success dialog
           setDialog({
             open: true,
-            msg: "تمت العمليه  بنجاح",
+            msg: "Operation completed successfully",
           });
         }
         console.log(data, "deposit complete");
