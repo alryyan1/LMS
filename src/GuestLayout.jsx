@@ -1,9 +1,22 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "./appContext";
+import { useEffect } from "react";
+import axiosClient from "../axios-client";
 
 function GuestLayout() {
-  const { user,token } = useStateContext();
-  console.log(token);
+  const { user,token,setUser,setToken } = useStateContext();
+  useEffect(() => {
+    axiosClient.get("/user").then(({ data }) => {
+      setUser(data);
+      console.log(data,'user checked in theme context');
+    }).catch((err)=>{
+      console.log('error')
+      setUser(null);
+      setToken(null)
+    });
+  }, []);
+  console.log(token,'token');
+
   // alert(token);
   if (token) {
 

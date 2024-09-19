@@ -23,6 +23,7 @@ axiosClient.interceptors.response.use((res)=>{
     if (response.status == 401) {
         console.log('removing access token')
         localStorage.removeItem('ACCESS_TOKEN')
+        // alert('Access token removed successfully')
         
     }
     if (response.status == 404) {

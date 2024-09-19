@@ -35,7 +35,7 @@ function ReceptionLayout() {
   const [settings, setSettings] = useState(null);
   const [selectedTests, setSelectedTests] = useState([]);
   const [packageData, setPackageData] = useState([]);
-
+  const [showLabTests,setShowLabTests] = useState(false);
   const [companies, setCompanies] = useState([]);
   useEffect(()=>{
     axiosClient.get("settings").then(({ data }) => {
@@ -121,7 +121,8 @@ function ReceptionLayout() {
             settings,
             showTestPanel, setShowTestPanel,
             selectedTests, setSelectedTests,
-            packageData, setPackageData
+            packageData, setPackageData,
+            showLabTests,setShowLabTests
           }}
         />
       }

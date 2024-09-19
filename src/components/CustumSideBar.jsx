@@ -17,7 +17,7 @@ function CustumSideBar({
   user,
   activePatient,
 }) {
-  const { setShowPatientServices, setShowServicePanel ,setShowTestPanel} =
+  const { setShowPatientServices, setShowServicePanel ,setShowTestPanel,setShowLabTests} =
     useOutletContext();
   return (
     <Stack
@@ -100,6 +100,7 @@ function CustumSideBar({
         <Item>
           <IconButton
             onClick={() => {
+              setShowLabTests(false)
               setShowPatientServices(false);
               // showServicePanel(false);
               setShowServicePanel(false);

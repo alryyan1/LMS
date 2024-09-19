@@ -36,6 +36,7 @@ export const UserContextProvider = ({children})=>{
             localStorage.setItem('ACCESS_TOKEN',token)
         }else{
             localStorage.removeItem('ACCESS_TOKEN')
+            _setToken(null)
         }
     }
 

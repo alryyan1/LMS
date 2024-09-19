@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   IconButton,
   Table,
   TableBody,
@@ -15,7 +16,7 @@ import { Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import RequestedServiceOptions from "./RequestedServiceOptions";
-import { formatNumber } from "../constants";
+import { formatNumber, webUrl } from "../constants";
 import { t } from "i18next";
 function RequestedServices({
   actviePatient,
@@ -26,6 +27,7 @@ function RequestedServices({
   setUpdate,
   activeShift,
   companies,
+  user
 }) {
   const [loading, setLoading] = useState(false);
   console.log(companies, "companies");
@@ -155,8 +157,7 @@ function RequestedServices({
   return (
     <>
       <div className="requested-tests">
-        <div style={{ position: "relative" }} className="requested-table">
-          <Button
+      <Button
             sx={{ m: 1 }}
             onClick={() => {
               setShowPatientServices(false);
@@ -165,16 +166,13 @@ function RequestedServices({
           >
           {t("servicesPanel")}
           </Button>
-          <Button
-            sx={{ m: 1 }}
-            onClick={() => {
-              setShowPatientServices(false);
-              setShowServicePanel(true);
-            }}
-          >
-           عرض قائمه التحاليل
-          </Button>
-          <TableContainer sx={{ border: "none", textAlign: "left" }}>
+          <a href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}>Receipt</a>
+
+        <div style={{ position: "relative" }} className="requested-table">
+        
+          
+          <TableContainer component={Card}   sx={{ backgroundColor: "#ffffffbb!important" ,    width: "75%",minHeight:' 150px',m:1,
+              display: "inline-block", }}>
             <Table size="small" >
               <TableHead>
                 <TableRow>
@@ -322,6 +320,39 @@ function RequestedServices({
               </TableBody>
             </Table>
           </TableContainer>
+          <TableContainer style={{ width: "20%", display: "inline-block" }}>
+              <Table  size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{textAlign:'center'}} colSpan={2}> Services</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell> Total </TableCell>
+                <TableCell className="title">
+                  {" "}
+                  {actviePatient.total_services}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Discount </TableCell>
+                <TableCell>
+                  {actviePatient.total_discounted}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Amount Paid</TableCell>
+                <TableCell className="title">
+                  {actviePatient.total_paid_services
+                    
+                  }
+                </TableCell>
+              </TableRow>
+            
+            </TableBody>
+          </Table>
+          </TableContainer>
         </div>
         <div className="requested-total">
           <div className="money-info">
@@ -333,7 +364,7 @@ function RequestedServices({
                 <div className="title">Total</div>
 
                 <Typography variant="h3">
-                  {actviePatient.company_id == null
+                  {(actviePatient.company_id == null
                     ? actviePatient?.services
                         .filter((service) => {
                           return service.doctor_id == activeShift.doctor.id;
@@ -346,13 +377,13 @@ function RequestedServices({
                           );
                           return accum + (total - discount);
                         }, 0)
-                    : total_endurance}
+                    : total_endurance) + actviePatient.patient.total_lab_value_unpaid}
                 </Typography>
               </div>
               <div className="sub-price">
                 <div className="title">Paid</div>
                 <Typography variant="h3">
-                  {formatNumber(actviePatient?.total_paid_services)}
+                  {formatNumber(actviePatient?.total_paid_services +  actviePatient.patient.paid)}
                 </Typography>
               </div>
             </div>

@@ -1,27 +1,16 @@
 import { Select, MenuItem } from "@mui/material";
 import { useState } from "react";
-import { url } from "../constants";
 import axiosClient from "../../../axios-client";
-import { useOutletContext } from "react-router-dom";
-const DiscountSelect = ({ id, disc, actviePatient,setPatients,setDialog }) => {
+const DiscountSelect = ({ id, disc, actviePatient,setDialog,change,isLabPage }) => {
   const [discount, setDiscount] = useState(disc);
-  const {setActivePatient} =  useOutletContext()
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
     try {
-      const {data} = await axiosClient.patch(`labRequest/${id}`,{ test_id: id, discount: dis });
-    console.log(data,'changed')
-    setActivePatient(data.data)
-    setPatients((prev)=>{
-      return prev.map((p)=>{
-        if (p.id === actviePatient.id) {
-          return {...data.data,active:true}
-        } else {
-          return p;
-        }
-      })
-    })
+      const {data} = await axiosClient.patch(`labRequest/${id}/${actviePatient.id}`,{ test_id: id, discount: dis });
+    console.log(data,'data from edit')
+
+     change(data.data)
     } catch ({response:{data}}) {
       setDialog((prev)=>{
         return {...prev, open:true, message:data.message ,color:'error'}
@@ -33,6 +22,7 @@ const DiscountSelect = ({ id, disc, actviePatient,setPatients,setDialog }) => {
     
 
   };
+  const disabled = isLabPage  ? actviePatient.is_lab_paid === 0 :actviePatient.patient.is_lab_paid === 0
 
   return (
     <Select fullWidth sx={{
@@ -43,7 +33,7 @@ const DiscountSelect = ({ id, disc, actviePatient,setPatients,setDialog }) => {
       paddingBottom: 0.5,
    }
  }}
-      disabled={actviePatient.is_lab_paid == 1}
+      disabled={disabled}
       onChange={(e) => {
         changeDiscountHandler(id, e.target.value);
       }}

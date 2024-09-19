@@ -57,8 +57,12 @@ const Nav = () => {
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);
-    });
-  }, []);
+    }).catch((err)=>{
+    console.log('error')
+    setUser(null);
+    setToken(null)
+  });
+  }, [])
 
   // console.log(user);
   const changeLang = () => {

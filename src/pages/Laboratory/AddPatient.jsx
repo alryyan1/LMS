@@ -34,6 +34,7 @@ import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatien
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
 import { useStateContext } from "../../appContext";
+import RequestedRequestsPatient from "./RequestedRequestsPatient";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -254,7 +255,7 @@ function AddPatient() {
         <Card  style={{backgroundColor: "#ffffff73"}}  sx={{ p: 1 }}>
        
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <RequestedTests activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
+            <RequestedRequestsPatient  activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
       

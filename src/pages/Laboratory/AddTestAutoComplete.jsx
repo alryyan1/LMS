@@ -5,14 +5,14 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
-function AddTestAutoComplete({ patients, setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,change,setShift}) {
+function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,change,setShowLabTests,setShowTestPanel,isLabPage}) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
   console.log(setActivePatient,'setActviePatient component rendered successfully');
   const [loading, setLoading] = useState(false);
   // console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
 
-    if (actviePatient.is_lab_paid) {
+    if (actviePatient.patient.is_lab_paid) {
       alert('يجب الغاء السداد')
       return;
     }
@@ -24,8 +24,11 @@ function AddTestAutoComplete({ patients, setPatients ,actviePatient, setActivePa
         { main_test_id: payload }
       );
       if (data.status) {
-        setLoading(false);
+        setShowLabTests(true)
+        setShowTestPanel(false)
         const newActivePatient = data.patient;
+        console.log(data,'data')
+        setLoading(false);
         newActivePatient.active = true;
         console.log(setActivePatient,'setActivePatient',data.patient,'data')
         if (setActivePatient) {
@@ -39,17 +42,7 @@ function AddTestAutoComplete({ patients, setPatients ,actviePatient, setActivePa
           change(data.patient);
         }
         //then update patients
-        if (setPatients) {
-          setPatients((patients) => {
-            return patients.map((patient) => {
-              if (patient.id === actviePatient.id) {
-                return newActivePatient;
-              } else {
-                return patient;
-              }
-            });
-          });
-        }
+      
         console.log(data.patient, "from db");
         console.info(actviePatient, "active p");
       }else{

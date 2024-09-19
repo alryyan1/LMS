@@ -9,7 +9,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function PatientReception({ visit, hideForm, index }) {
+function PatientReception({ visit, hideForm, index,change }) {
   const {
     actviePatient,
     setActivePatient,
@@ -17,6 +17,8 @@ function PatientReception({ visit, hideForm, index }) {
     showServicePanel,
     setShowServicePanel,
     activeShift,
+    setShowTestPanel,
+    setShowLabTests
   } = useOutletContext();
   return (
     <Badge
@@ -32,14 +34,16 @@ function PatientReception({ visit, hideForm, index }) {
         sx={{ cursor: "pointer" }}
         onClick={() => {
           if (actviePatient) {
+            setShowTestPanel(false)
+            setShowLabTests(true)
             /** this because if was same patient */
             if (actviePatient.id == visit.id) {
               console.log("same patient");
             } else {
-              setActivePatient(visit);
+              change(visit);
             }
           } else {
-            setActivePatient(visit);
+            change(visit);
           }
           if (
             visit.services.filter((service) => {

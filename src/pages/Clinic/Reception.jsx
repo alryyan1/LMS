@@ -61,6 +61,7 @@ function Reception() {
    companies,
    showTestPanel, setShowTestPanel,
    selectedTests, setSelectedTests,
+   showLabTests,setShowLabTests
   } = useOutletContext();
   const { user } = useStateContext();
   const [layOut, setLayout] = useState({
@@ -83,7 +84,41 @@ function Reception() {
   //     });
   //   }
   // }, [foundedPatients.length]);
+  const change = (doctorVisit) =>{
+    setActivePatient(doctorVisit)
+    setActiveShift((prevShift)=>{
+      return {
+       ...prevShift,
+        visits: prevShift.visits.map((v) => {
+          if (v.id === doctorVisit.id) {
+            console.log(doctorVisit,'doctor visit in side change')
+            // alert('founded')
+            return { ...doctorVisit };
+          }
+          return v;
+        }),
+      };
+     })
+    setOpenedDoctors((prev)=>{
+      return prev.map((shift)=>{
+        
+        return {
+          ...shift,
+          visits: shift.visits.map((v) => {
+            if (v.id === doctorVisit.id) {
+              console.log(doctorVisit,'doctor visit in side change')
+              // alert('founded')
+              return { ...doctorVisit };
+            }
+            return v;
+          }),
+        };
+       })
 
+     
+
+    })
+  }
   const hideForm = () => {
     setLayout((prev) => {
       return {
@@ -240,7 +275,6 @@ function Reception() {
                   setUpdate={setUpdate}
                 />
                 <Stack sx={{mt:1}} direction={"row"} gap={2}>
-                  <a href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}>Receipt</a>
                   <Button size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
@@ -290,23 +324,24 @@ function Reception() {
           )}
         </div>
 
-        <div>
+        <Paper  sx={{ p: 1 , backgroundColor: "#ffffffbb!important" }}>
           {actviePatient && showServicePanel && <ServiceGroup />}
-          {actviePatient &&   showTestPanel && <AddTestAutoComplete   actviePatient={actviePatient.patient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests}  />}
-          {actviePatient && actviePatient.patient.labrequests.length > 0 && (
-            <RequestedTests setActivePatient={setActivePatient} activePatient={actviePatient.patient} key={actviePatient.id}  />
+          {actviePatient &&   showTestPanel && <AddTestAutoComplete setShowTestPanel={setShowTestPanel} setShowLabTests={setShowLabTests} change={change}   actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests}  />}
+          {actviePatient && showLabTests &&  actviePatient.patient.labrequests.length > 0   && (
+            <RequestedTests change={change}  doctorVisit={actviePatient} setActivePatient={setActivePatient} activePatient={actviePatient} key={actviePatient.id}  />
           )}
-          {actviePatient && showTestPanel && <TestGroups />}
-          {showPatientServices && (
+          {actviePatient && showTestPanel  && <TestGroups />}
+          {showPatientServices && actviePatient.services.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
-              <Paper sx={{ p: 1 }}>
+              
                 <div>
-                  <RequestedServices activeShift={activeShift} setShowServicePanel={setShowServicePanel} setUpdate={setUpdate} companies={companies} setActivePatient={setActivePatient} setDialog={setDialog} setShowPatientServices={setShowPatientServices} actviePatient={actviePatient} />
+                  
+                  <RequestedServices user={user} activeShift={activeShift} setShowServicePanel={setShowServicePanel} setUpdate={setUpdate} companies={companies} setActivePatient={setActivePatient} setDialog={setDialog} setShowPatientServices={setShowPatientServices} actviePatient={actviePatient} />
                 </div>
-              </Paper>
+             
             </Slide>
           )}
-        </div>
+         </Paper>
         <Paper sx={{ backgroundColor: "#ffffffbb!important" }}>
           <div style={{ overflow: "auto" }}>
             <Stack
@@ -319,6 +354,7 @@ function Reception() {
                 activeShift.visits.map((visit) => {
                   return (
                     <PatientReception
+                    change={change}
                       index={count--}
                       key={visit.id}
                       hideForm={hideForm}
