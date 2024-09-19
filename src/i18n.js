@@ -115,12 +115,13 @@ i18next
           trialBalance:'ميزان المراجعه',
           departments:'الاقسام',
           govId:' رقم بطاقه مدنيه ',
+          patients:'المرضي'
         },
 
       },
       en: {
         translation: {
-          
+          patients:'patients',
          address:'Address',
          country:'Country',
           journalEntry:'Journal Entry',

@@ -53,6 +53,7 @@ import AddClientDialog from "./AddClientDialog";
 import SaleDiscountSelect from "../../components/SaleDiscountSelect";
 import MyCheckbox from "../../components/MyCheckBox";
 import CalculateInventory from "./CalculateInventory";
+import MyDateField2 from "../../components/MyDateField2";
 // import Calculator from "../../components/calculator/Calculator";
 function toFixed(num, fixed) {
   if (num == null) {
@@ -352,7 +353,11 @@ function SellDrug() {
                         }}
                         key={deductedItem.id}
                       >
-                        <TableCell>{deductedItem.item?.market_name}</TableCell>
+                        <TableCell><span style={{    
+          color: "black",
+          fontSize: "large",
+          fontWeight: "bolder",
+        }}>{deductedItem.item?.market_name}</span></TableCell>
                    
                         <TableCell>
                           {" "}
@@ -419,14 +424,12 @@ function SellDrug() {
                             <DeleteOutlineSharp />
                           </LoadingButton>
                         </TableCell>
+                        
                         <TableCell>
-                          {dayjs(
-                            new Date(
-                              Date.parse(
-                                deductedItem?.item?.lastDepositItem?.expire
-                              )
-                            )
-                          ).format("YYYY-MM-DD")}
+                        <MyDateField2
+                      val={deductedItem?.item.lastDepositItem?.expire}
+                      item={deductedItem?.item.lastDepositItem}
+                    />
                         </TableCell>
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id}/>

@@ -171,7 +171,7 @@ function RequestedServices({
         <div style={{ position: "relative" }} className="requested-table">
         
           
-          <TableContainer component={Card}   sx={{ backgroundColor: "#ffffffbb!important" ,    width: "75%",minHeight:' 150px',m:1,
+          <TableContainer component={Card}   sx={{ backgroundColor: "#ffffffbb!important" ,    width: "75%",minHeight:' 100px',m:1,
               display: "inline-block", }}>
             <Table size="small" >
               <TableHead>

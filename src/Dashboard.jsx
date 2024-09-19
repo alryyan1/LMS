@@ -44,10 +44,10 @@ function Dashboard() {
     });
     axiosClient
       .get("shift/last")
-      .then(({ data: { data } }) => {
-        setShift(data);
-        console.log(data);
-        console.log(new Date(Date.parse(data.created_at)).toLocaleDateString());
+      .then(({ data}) => {
+        setShift(data.data);
+        console.log(data,'last shift');
+        console.log(new Date(Date.parse(data.data.created_at)).toLocaleDateString());
       })
       .finally(() => setLoading(false));
   }, []);
