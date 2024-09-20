@@ -457,8 +457,10 @@ function SellDrug() {
           {activeSell && (
             <>
               <Typography textAlign={"center"}>
-                {" "}
                 Transaction No {activeSell?.id}
+              </Typography>
+              <Typography className="text-gray-500" textAlign={"center"}>
+                 Date {dayjs(new Date(activeSell?.created_at)).format('YYYY/MM/DD H:m A')}
               </Typography>
               <Divider />
               {activeSell && <PayOptions key={activeSell.id} />}

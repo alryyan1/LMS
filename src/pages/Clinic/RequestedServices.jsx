@@ -18,6 +18,7 @@ import MyCheckboxReception from "./MycheckboxReception";
 import RequestedServiceOptions from "./RequestedServiceOptions";
 import { formatNumber, webUrl } from "../constants";
 import { t } from "i18next";
+import BottomMoney from "./BottomMoney";
 function RequestedServices({
   actviePatient,
   setDialog,
@@ -27,7 +28,7 @@ function RequestedServices({
   setUpdate,
   activeShift,
   companies,
-  user
+  user,
 }) {
   const [loading, setLoading] = useState(false);
   console.log(companies, "companies");
@@ -157,44 +158,54 @@ function RequestedServices({
   return (
     <>
       <div className="requested-tests">
-      <Button
-            sx={{ m: 1 }}
-            onClick={() => {
-              setShowPatientServices(false);
-              setShowServicePanel(true);
-            }}
-          >
+        <Button
+          sx={{ m: 1 }}
+          onClick={() => {
+            setShowPatientServices(false);
+            setShowServicePanel(true);
+          }}
+        >
           {t("servicesPanel")}
-          </Button>
-          <a href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}>Receipt</a>
+        </Button>
+        <a
+          href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
+        >
+          Receipt
+        </a>
 
         <div style={{ position: "relative" }} className="requested-table">
-        
-          
-          <TableContainer component={Card}   sx={{ backgroundColor: "#ffffffbb!important" ,    width: "75%",minHeight:' 100px',m:1,
-              display: "inline-block", }}>
-            <Table size="small" >
+          <TableContainer
+            component={Card}
+            sx={{
+              backgroundColor: "#ffffffbb!important",
+              width: "75%",
+              minHeight: " 100px",
+              m: 1,
+              display: "inline-block",
+            }}
+          >
+            <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell> {t('name')}</TableCell>
-                  <TableCell align="right">{t('price')}</TableCell>
+                  <TableCell> {t("name")}</TableCell>
+                  <TableCell align="right">{t("price")}</TableCell>
                   {actviePatient.patient.company ? (
                     <TableCell align="right">التحمل</TableCell>
                   ) : (
                     ""
                   )}
-                  <TableCell align="right">{t('paid')}</TableCell>
+                  <TableCell align="right">{t("paid")}</TableCell>
 
                   {actviePatient.patient.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">{t('bank')}</TableCell>
+                    <TableCell align="right">{t("bank")}</TableCell>
                   )}
                   <TableCell width={"5%"} align="right">
-                    {t('pay')}
+                    {t("pay")}
                   </TableCell>
                   <TableCell width={"5%"} align="right">
-                    {t('other')}
+                    {t("other")}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -321,74 +332,42 @@ function RequestedServices({
             </Table>
           </TableContainer>
           <TableContainer style={{ width: "20%", display: "inline-block" }}>
-              <Table  size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{textAlign:'center'}} colSpan={2}> Services</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell> Total </TableCell>
-                <TableCell className="title">
-                  {" "}
-                  {actviePatient.total_services}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Discount </TableCell>
-                <TableCell>
-                  {actviePatient.total_discounted}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Amount Paid</TableCell>
-                <TableCell className="title">
-                  {actviePatient.total_paid_services
-                    
-                  }
-                </TableCell>
-              </TableRow>
-            
-            </TableBody>
-          </Table>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ textAlign: "center" }} colSpan={2}>
+                    {" "}
+                    Services
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell> Total </TableCell>
+                  <TableCell className="title">
+                    {" "}
+                    {actviePatient.total_services}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Discount </TableCell>
+                  <TableCell>{actviePatient.total_discounted}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Amount Paid</TableCell>
+                  <TableCell className="title">
+                    {actviePatient.total_paid_services}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </TableContainer>
         </div>
-        <div className="requested-total">
-          <div className="money-info">
-            <div
-              className="total-price"
-              style={{ width: "100%", justifyContent: "space-around" }}
-            >
-              <div className="sub-price">
-                <div className="title">Total</div>
-
-                <Typography variant="h3">
-                  {(actviePatient.company_id == null
-                    ? actviePatient?.services
-                        .filter((service) => {
-                          return service.doctor_id == activeShift.doctor.id;
-                        })
-                        .reduce((accum, service) => {
-                          // console.log(service.count,'service.count)')
-                          const total = service.price * service.count;
-                          const discount = Number(
-                            (service.discount * total) / 100
-                          );
-                          return accum + (total - discount);
-                        }, 0)
-                    : total_endurance) + actviePatient.patient.total_lab_value_unpaid}
-                </Typography>
-              </div>
-              <div className="sub-price">
-                <div className="title">Paid</div>
-                <Typography variant="h3">
-                  {formatNumber(actviePatient?.total_paid_services +  actviePatient.patient.paid)}
-                </Typography>
-              </div>
-            </div>
-          </div>
-        </div>
+        {actviePatient?.patient.is_lab_paid && <BottomMoney
+          activeShift={activeShift}
+          actviePatient={actviePatient}
+          total_endurance={total_endurance}
+        />}
       </div>
     </>
   );

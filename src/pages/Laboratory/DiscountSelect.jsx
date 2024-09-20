@@ -22,7 +22,7 @@ const DiscountSelect = ({ id, disc, actviePatient,setDialog,change,isLabPage }) 
     
 
   };
-  const disabled = isLabPage  ? actviePatient.is_lab_paid === 0 :actviePatient.patient.is_lab_paid === 0
+  const disabled = isLabPage  ? actviePatient.is_lab_paid === 1 :actviePatient.patient.is_lab_paid === 1
 
   return (
     <Select fullWidth sx={{

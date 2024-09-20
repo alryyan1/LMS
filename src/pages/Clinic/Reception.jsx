@@ -275,6 +275,11 @@ function Reception() {
                   setUpdate={setUpdate}
                 />
                 <Stack sx={{mt:1}} direction={"row"} gap={2}>
+                <a
+                      href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
+                    >
+                      Receipt
+                    </a>
                   <Button size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {

@@ -29,7 +29,7 @@ import {
           <DialogContent>
             <Stack direction={'column'} sx={{m:1 ,backgroundColor:(theme)=>theme.palette.success.light,p:1,borderRadius:'5px',color:'white',fontSize:"2rem"}} gap={1}>
               <Typography variant="h4" textAlign={'center'}>Total Income</Typography>
-              <Typography variant="h4" textAlign={'center'}>{shift &&  toFixed(shift.totalDeductsPrice,3)}</Typography>
+              <Typography variant="h4" textAlign={'center'}>{shift &&  toFixed(shift.totalDeductsPaid,3)}</Typography>
             </Stack>
             <Divider></Divider>
             <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
