@@ -107,7 +107,7 @@ import {
     const cancelPayHandler = () => {
       setLoading(true);
       axiosClient
-        .patch(`${url}labRequest/cancelPayment/${actviePatient.id}`)
+        .patch(`cancelPaymentLab/${actviePatient.id}`)
         .then(({ data }) => {
           console.log(data, "data from cancel");
           if (data.status) {
@@ -155,7 +155,7 @@ import {
   
     const deleteTest = (id) => {
       // console.log(id);
-      axiosClient.delete(`labRequest/${id}`).then(({ data }) => {
+      axiosClient.delete(`deleteLab/labRequest/${id}`).then(({ data }) => {
         // console.log(data, "data");
         if (data.status) {
           setActivePatient(data.data);

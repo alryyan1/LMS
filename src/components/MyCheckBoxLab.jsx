@@ -10,7 +10,7 @@ function MyCheckBoxLab({ id, hideTest }) {
     console.log(val.target.checked, "checked handler");
     setIsChecked(val.target.checked);
     axiosClient
-      .patch(`labRequest/hidetest/${id}`, {
+      .patch(`hidetest/${id}`, {
         val: val.target.checked,
       }).then(({data})=>{
         setActivePatient(data.data)

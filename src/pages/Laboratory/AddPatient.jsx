@@ -77,9 +77,11 @@ function AddPatient() {
   useEffect(() => {
     // setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
-      // console.log(data.data, "today patients");
+      // console.log(first)
+      console.log(data.data, "today patients");
       //add activeProperty to patient object
       data.data.patients.forEach((patient) => {
+        // console.log('patients',patient)
         patient.active = false;
       });
       // setPatientsLoading(false);

@@ -27,6 +27,7 @@ function RequestedTests({
   setActivePatient,
   doctorVisit,
   change,
+  
 }) {
   console.log(doctorVisit, "doctorVisit");
   // console.log("requested tests rendered");

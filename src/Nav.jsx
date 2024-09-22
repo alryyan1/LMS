@@ -43,6 +43,7 @@ const Nav = () => {
   const { i18n } = useTranslation();
   // console.log(setToken);
   const logoutHandler = () => {
+
     setLoading(true);
     console.log('navigate to to login');
     axiosClient
@@ -50,6 +51,7 @@ const Nav = () => {
       .then(() => {
         setToken(null);
         setUser(null);
+        localStorage.clear()
         navigate("/dashboard");
       })
       .finally(() => setLoading(false));

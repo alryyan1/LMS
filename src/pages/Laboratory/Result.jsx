@@ -203,7 +203,7 @@ function Result() {
               />
             ) : (
               shift?.patients
-                ?.filter((patient) => patient.labrequests.length > 0).reverse()
+                ?.filter((patient) => patient.labrequests.length > 0)
                 .map((p, i) => {
                   let unfinshed_count = 0;
                   let allResultsFinished = true;

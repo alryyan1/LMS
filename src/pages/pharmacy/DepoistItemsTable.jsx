@@ -151,7 +151,7 @@ function DepoistItemsTable({
             gap={1}
           >
             <img width={50} src={reduction} />
-            <span style={{ color: "black", fontSize: "20px" }}>{depsitWithSummery?.costWithOutVat ?? 0}</span>
+            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.costWithOutVat ?? 0,3)}</span>
             <span style={{ color: "black", fontSize: "20px" }}>
               {" "}
               التكلفه قبل
