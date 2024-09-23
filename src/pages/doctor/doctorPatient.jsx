@@ -9,7 +9,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit}) {
+function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit,setLayout,showPatients, setShowPatients}) {
   // console.log(activePatient,'active patient')
   return (
     <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
@@ -26,7 +26,10 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
             setActivePatient(visit.patient)
             setActiveDoctorVisit(visit)
             console.log(visit,'selected visit')
-
+            setLayout((prev)=>{
+              return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
+            })
+            setShowPatients(false)
    
         }}
         direction={"row"}

@@ -6,15 +6,15 @@ import axiosClient from "../../axios-client";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-function MyDateField2({ val, item }) {
+function MyDateField2({ val, item ,setDialog, label='تاريخ الانتهاء',path='depositItems/update',colName="expire"}) {
   // console.log(item,'item in date field')
   // console.log(item , val,'date filed ')
   // console.log(dayjs(val), "date filed ", val, "val");
   const [date, setDate] = useState(val);
-  const {setDialog} = useOutletContext()
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateField
+      label={label}
       format='YYYY-MM-DD'
       fullWidth
         size="small"
@@ -26,8 +26,8 @@ function MyDateField2({ val, item }) {
           setDate(val);
        
           axiosClient
-            .patch(`depositItems/update/${item.id}`, {
-              colName: "expire",
+            .patch(`${path}/${item.id}`, {
+              colName: colName,
               val: `${dayJsObj.year()}/${
                 dayJsObj.month() + 1
               }/${dayJsObj.date()}`,
@@ -46,7 +46,6 @@ function MyDateField2({ val, item }) {
             });
         }}
         sx={{ mb: 1 }}
-        label="تاريخ الانتهاء"
       />
     </LocalizationProvider>
   );

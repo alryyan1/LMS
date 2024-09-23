@@ -19,12 +19,21 @@ import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import { webUrl } from "../constants";
 import { useStateContext } from "../../appContext";
+import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete";
+import MyCustomAutocompleteWithAdditionCababilty from "./MyCustomAutocompleteWithAdditionCababilty";
+import { ItemTypes } from "@minoru/react-dnd-treeview";
 function PatientPrescribedMedsTab(props) {
 
-  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user, ...other } =
+  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user,items, ...other } =
     props;
   const [loading, setLoading] = useState();
   const [showSuggestions, setShowSeggestions] = useState(false);
+  const [drugMedicalRoutes, setDrugMedicalRoutes] = useState([]);
+  useEffect(()=>{
+    axiosClient.get('drugMedicalRoutes').then(({data})=>{
+      setDrugMedicalRoutes(data)
+    })
+  },[])
   
   const [sentense, setSentense] = useState(patient.prescription_notes ?? "");
   const arr = ["alryyan", "sara", "tsabeh", "mama"];
@@ -69,13 +78,14 @@ function PatientPrescribedMedsTab(props) {
       {...other}
     >
       <Divider sx={{ mb: 1 }} variant="middle">
-        Prescribed Medicines
+        Prescribed Medicines({items.length})
       </Divider>
-      <a href={`${webUrl}printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user?.id}`}>PDF</a>
+      <Button variant="contained" href={`${webUrl}printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user?.id}`}>PDF</Button>
 
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddPrescribedDrugAutocomplete
+           items={items}
           setShift={setShift}
           change={change}
             patient={patient}
@@ -86,7 +96,9 @@ function PatientPrescribedMedsTab(props) {
               <TableRow>
                 <TableCell>Drug Name</TableCell>
                 <TableCell>Course</TableCell>
+                <TableCell>Route</TableCell>
                 <TableCell>Days</TableCell>
+                <TableCell>Note</TableCell>
                 <TableCell>dlt</TableCell>
               </TableRow>
             </TableHead>
@@ -95,20 +107,31 @@ function PatientPrescribedMedsTab(props) {
                 <TableRow key={i}>
                   <TableCell>{medicine.item.market_name}</TableCell>
                   <MyTableCell
-                    show
+                    
                     colName={"course"}
                     item={medicine}
                     table="prescribedDrugs"
                   >
                     {medicine.course}
                   </MyTableCell>
+                  <TableCell>
+                    <MyCustomAutocompleteWithAdditionCababilty  label="method"  updater={change} id={medicine.id}  path={`drugMedicalRoutes/${medicine.id}`} title="add route" object={medicine.medical_drug_route} setRows={setDrugMedicalRoutes} rows={drugMedicalRoutes}/>
+                  </TableCell>
                   <MyTableCell
-                    show
+                    
                     colName={"days"}
                     item={medicine}
                     table="prescribedDrugs"
                   >
                     {medicine.days}
+                  </MyTableCell>
+                  <MyTableCell
+                    multiline
+                    colName={"note"}
+                    item={medicine}
+                    table="prescribedDrugs"
+                  >
+                    {medicine.note}
                   </MyTableCell>
                   <TableCell>
                     <LoadingButton
@@ -120,9 +143,7 @@ function PatientPrescribedMedsTab(props) {
                           .then(({ data }) => {
                             console.log(data, "delete prescribed drugs data");
                             if (data.status) {
-                              setActivePatient((prev) => {
-                                return { ...prev, patient: data.patient };
-                              });
+                              change(data.patient)
                               setDialog((prev) => {
                                 return {
                                   ...prev,
@@ -145,6 +166,7 @@ function PatientPrescribedMedsTab(props) {
           </Table>
           <Divider />
           <TextField
+            
           // onBlur={()=>setShowSeggestions(false)}
             onClick={()=>setShowSeggestions(true)}
             onChange={(e) => {
@@ -176,7 +198,7 @@ function PatientPrescribedMedsTab(props) {
             }}
             color="info"
             value={sentense}
-            sx={{ mt: 1 }}
+            sx={{ mt: 3 }}
             label="Notes"
             fullWidth
             multiline

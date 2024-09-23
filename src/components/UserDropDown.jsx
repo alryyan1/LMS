@@ -101,7 +101,8 @@ export default function UserDropDown({user}) {
             <FormControlLabel
               control={
                 <Checkbox
-                defaultChecked={settings?.web_dialog}
+                
+                defaultChecked={settings?.web_dialog == 1}
                   onChange={(e) => {
                     axiosClient.post("updateUserSettings", {
                       colName: "web_dialog",
@@ -123,7 +124,7 @@ export default function UserDropDown({user}) {
             <FormControlLabel
               control={
                 <Checkbox
-                defaultChecked={settings?.node_dialog}
+                defaultChecked={settings?.node_dialog == 1}
                   onChange={(e) => {
                     axiosClient.post("updateUserSettings", {
                       colName: "node_dialog",
@@ -144,7 +145,7 @@ export default function UserDropDown({user}) {
             <FormControlLabel
               control={
                 <Checkbox
-                defaultChecked={settings?.node_direct}
+                defaultChecked={settings?.node_direct == 1}
                   onChange={(e) => {
                     axiosClient.post("updateUserSettings", {
                       colName: "node_direct",

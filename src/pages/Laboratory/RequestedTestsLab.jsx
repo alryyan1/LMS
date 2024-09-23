@@ -21,7 +21,9 @@ import {
   import { useStateContext } from "../../appContext";
   import {t} from "i18next"
   import printJS from "print-js";
-  function RequestedRequestsPatient({ setPatients }) {
+import DiscountSelectLab from "./DiscountSelectLab";
+import MyCheckBoxLab from "./MyCheckboxLab";
+  function RequestedTestsLab({ setPatients }) {
     // console.log("requested tests rendered");
     const {
       setDialog,
@@ -48,7 +50,7 @@ import {
       }
       setLoading(true);
       axiosClient
-        .patch(`labRequest/payment/${actviePatient.id}`, { paid: actviePatient?.total_lab_value_will_pay })
+        .patch(`lab/payment/${actviePatient.id}`, { paid: actviePatient?.total_lab_value_will_pay })
         .then(({ data: data }) => {
           console.log(data, "patient paid data");
           if (data.status) {
@@ -265,10 +267,11 @@ import {
                           ""
                         ) : (
                           <TableCell sx={{ border: "none" }} align="right">
-                            <DiscountSelect
-                             isLabPage={true}
+                            <DiscountSelectLab
+                             setActivePatient={setActivePatient}
+                             setPatients={setPatients}
                               setDialog={setDialog}
-                              setPatients={setPatients}
+                            
                               id={test.id}
                               disc={test.discount_per}
                               actviePatient={actviePatient}
@@ -279,13 +282,15 @@ import {
                           ""
                         ) : (
                           <TableCell sx={{ border: "none" }} align="right">
-                            <MyCheckBox
-                             isLabPage={true}
+                            <MyCheckBoxLab
+                            setActivePatient={setActivePatient}
+                        
+                            
                               setPatients={setPatients}
                               key={actviePatient.id}
                               isbankak={test.is_bankak == 1}
                               id={test.id}
-                            ></MyCheckBox>
+                            ></MyCheckBoxLab>
                           </TableCell>
                         )}
                         {actviePatient.company ? (
@@ -360,4 +365,4 @@ import {
     );
   }
   
-  export default RequestedRequestsPatient;
+  export default RequestedTestsLab;

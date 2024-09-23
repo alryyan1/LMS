@@ -93,7 +93,7 @@ const Nav = () => {
             return s.sub_route.route_id == 5;
           })
           .map((item, index) => (
-            <ListItem key={item.title} disablePadding>
+            <ListItem key={item.id} disablePadding>
               <ListItemButton
                 onClick={() => {
                   setClinicDrawer(false);
@@ -121,7 +121,7 @@ const Nav = () => {
             return s.sub_route.route_id == 2;
           })
           .map((item, index) => (
-            <ListItem key={item.title} disablePadding>
+            <ListItem key={item.id} disablePadding>
               <ListItemButton
                 onClick={() => {
                   // setActiveLink(2);
@@ -159,7 +159,7 @@ const Nav = () => {
           .map((item) => {
             // alert('s')
             return (
-              <ListItem key={item.title} disablePadding>
+              <ListItem key={item.id} disablePadding>
                 <ListItemButton
                   onClick={() => {
                     // setActiveLink(4);

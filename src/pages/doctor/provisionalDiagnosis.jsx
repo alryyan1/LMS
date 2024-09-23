@@ -1,14 +1,44 @@
-import {
-  Box,
-  Divider,
- 
-  TextField,
-} from "@mui/material";
+import { Box, Divider, List, ListItem, TextField } from "@mui/material";
 import axiosClient from "../../../axios-client";
+import { useState } from "react";
 
 function ProvisionalDiagnosis(props) {
-  const { value, index, patient, setDialog,setShift,change,  ...other } = props;
+  const { value, index, patient, setDialog, setShift, change,diagnosis, ...other } =
+    props;
+  const [showSuggestions, setShowSeggestions] = useState(false);
+  const [sentense, setSentense] = useState(patient.provisional_diagnosis ?? "");
+  const updateHandler = (val) => {
+    axiosClient
+      .patch(`patients/${patient.id}`, {
+        provisional_diagnosis: val,
+      })
+      .then(({ data }) => {
+        // console.log(data);
+        if (data.status) {
     
+          change(data.patient);
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+  };
   return (
     <div
       role="tabpanel"
@@ -17,42 +47,78 @@ function ProvisionalDiagnosis(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-        <Divider sx={{mb:1}} variant="middle">Provisional Diagnosis</Divider>
+      <Divider sx={{ mb: 1 }} variant="middle">
+        Provisional Diagnosis
+      </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around" }} className="group">
-           <TextField  onChange={(e) => {
+       <TextField sx={{mb:1}}
+            onClick={()=>setShowSeggestions(true)}
 
-                      axiosClient
-                        .patch(`patients/${patient.id}`, {
-                          provisional_diagnosis	: e.target.value,
-                        })
-                        .then(({ data }) => {
-                          console.log(data);
-                          if (data.status) {
-                       
-                            change(data.patient)
-                            setDialog((prev) => {
-                              return {
-                                ...prev,
-                                message: "Saved",
-                                open: true,
-                                color: "success",
-                              };
-                            });
-                          }
-                        })
-                        .catch(({ response: { data } }) => {
-                          console.log(data);
-                          setDialog((prev) => {
-                            return {
-                              ...prev,
-                              message: data.message,
-                              open: true,
-                              color: "error",
-                            };
-                          });
+            onChange={(e) => {
+              setSentense(() => e.target.value);
+
+              updateHandler(e.target.value);
+            }}
+            value={sentense}
+            multiline
+            fullWidth
+            rows={13}
+          ></TextField>
+             <List>
+            {showSuggestions &&
+              sentense.length > 0 &&
+              diagnosis
+                .filter((w) => {
+                  console.log(w,'word ')
+
+                  if (String(sentense).lastIndexOf(" ") == -1) {
+                    return w.includes(sentense);
+                  }
+                  if (
+                    String(sentense.trim()).slice(
+                      String(sentense).lastIndexOf(" ")
+                    ).length == 0
+                  ) {
+                    return false;
+                  }
+                  // console.log(
+                  //   String(sentense.trim())
+                  //     .slice(String(sentense).lastIndexOf(" "))
+                  //     .trim(),'includes ??',String(sentense).lastIndexOf(" ")
+                  // );
+                  console.log('fiter includes here')
+                  return w.includes(
+                    String(sentense.trim())
+                      .slice(String(sentense).lastIndexOf(" "))
+                      .trim()
+                  );
+                })
+                .map((w) => {
+                  return (
+                    <ListItem
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setSentense((prev) => {
+                          updateHandler(
+                            `${String(prev).slice(
+                              0,
+                              prev.lastIndexOf(" ")
+                            )} ${w}`
+                          );
+                          return `${String(prev).slice(
+                            0,
+                            prev.lastIndexOf(" ")
+                          )} ${w}`;
                         });
-                    }} defaultValue={patient.provisional_diagnosis	} multiline fullWidth rows={17}></TextField>
+                      }}
+                      key={w}
+                    >
+                      {w}
+                    </ListItem>
+                  );
+                })}
+          </List>
         </Box>
       )}
     </div>

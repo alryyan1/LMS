@@ -116,6 +116,7 @@ export const router = createBrowserRouter([
             path: "doctors",
             element: <Doctors />,
           },
+          
           {
             path: "specialists",
             element: <Specialists />,
@@ -153,6 +154,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
         path: "/patients",
+      },
+      {
+        element: (
+          <ProtectedRoute>
+            <Doctor />
+          </ProtectedRoute>
+        ),
+        path: "/doctor",
       },
       {
         element: (

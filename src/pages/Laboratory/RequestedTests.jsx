@@ -27,7 +27,7 @@ function RequestedTests({
   setActivePatient,
   doctorVisit,
   change,
-  
+  pid 
 }) {
   console.log(doctorVisit, "doctorVisit");
   // console.log("requested tests rendered");
@@ -57,7 +57,7 @@ function RequestedTests({
     }
     setLoading(true);
     axiosClient
-      .patch(`payment/${doctorVisit.id}`)
+      .patch(`payment/${doctorVisit.id}/${pid}`)
       .then(({ data: data }) => {
         if (data.status) {
           console.log(data, "data");

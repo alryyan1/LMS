@@ -34,7 +34,8 @@ import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatien
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
 import { useStateContext } from "../../appContext";
-import RequestedRequestsPatient from "./RequestedRequestsPatient";
+import RequestedTestsLab from "./RequestedTestsLab";
+import AddTestAutocompleteLab from "./AddTestAutocompleteLab";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -231,7 +232,7 @@ function AddPatient() {
           )}
         </div>
         <Card sx={{p:1}} style={{ height:'80vh', overflow: "auto",backgroundColor: "#ffffff73" }}>
-       {actviePatient && <AddTestAutoComplete  patients={patients} actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests} setPatients={setPatients} />}
+       {actviePatient && <AddTestAutocompleteLab  patients={patients} actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests} setPatients={setPatients} />}
 
           <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
@@ -257,7 +258,7 @@ function AddPatient() {
         <Card  style={{backgroundColor: "#ffffff73"}}  sx={{ p: 1 }}>
        
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <RequestedRequestsPatient  activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
+            <RequestedTestsLab  pid={actviePatient} activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
       
