@@ -5,8 +5,9 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
-function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,change,setShowLabTests,setShowTestPanel,isLabPage}) {
+function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,changeDoctorVisit,change,setShowLabTests,setShowTestPanel,isLabPage}) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
+  console.log(actviePatient,'activePatient')
   console.log(setActivePatient,'setActviePatient component rendered successfully');
   const [loading, setLoading] = useState(false);
   // console.log(autoCompleteTests, "auto complete tests");
@@ -24,8 +25,14 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setD
         { main_test_id: payload }
       );
       if (data.status) {
-        setShowLabTests(true)
-        setShowTestPanel(false)
+        if (setShowLabTests ) {
+          
+          setShowLabTests(true)
+        }
+        if (setShowTestPanel ) {
+          
+          setShowTestPanel(false)
+        }
         const newActivePatient = data.patient;
         console.log(data,'data')
         setLoading(false);
@@ -36,6 +43,9 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setD
           console.log(data.patient,'new patient ');
 
           setActivePatient(data.patient);
+        }
+        if (changeDoctorVisit) {
+          changeDoctorVisit(data.patient);
         }
         if (change) {
      
@@ -53,20 +63,15 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setD
         setLoading(false);
       }
 
-    } catch ({
-      response: {
-        data: { message },
-        status,
-      },
-    }) {
-      console.log(message,'message')
+    } catch (error) {
+      console.log(error,'message')
       // console.log(response,'error in adding  test data')
-      console.log(message, "error in adding  test data");
+      console.log(error, "error in adding  test data");
    
         setLoading(false);
-        setDialog((prev) => {
-          return { ...prev,open:true, message: message};
-        });
+        // setDialog((prev) => {
+        //   return { ...prev,open:true, message: error};
+        // });
         setLoading(false);
       
     }

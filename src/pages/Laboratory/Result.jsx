@@ -39,7 +39,46 @@ function Result() {
     setUpdate,
     setDialog,
   } = useOutletContext();
-
+  const updateHandler = (val, colName) => {
+    setLoading(true)
+    axiosClient
+      .patch(`patients/${actviePatient.id}`, {
+        [colName]: val,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          setActivePatient(data.patient);
+          setShift((prev)=>{
+            return {...prev, patients:prev.patients.map((p)=>{
+              if(p.id === data.patient.id){
+                return {...data.patient, active:true}
+              }
+              return p;
+            }) };
+          })
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      }).finally(()=>setLoading(false));
+  };
   console.log(searchByName, "searchByname");
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
@@ -59,7 +98,7 @@ function Result() {
     patientDetails: "0.8fr",
   });
   useEffect(() => {
-    document.title = 'تنزيل النتائج';
+    document.title = "تنزيل النتائج";
   }, []);
 
   useEffect(() => {
@@ -86,21 +125,19 @@ function Result() {
     console.log(data, "patient from db");
     // alert(shift.id)
     if (pat.shift_id == shift.maxShiftId) {
-        axiosClient.get(`shift/last`).then(({ data: data }) => {
-      console.log(data.data, "today patients");
-      //add activeProperty to patient object
-      data.data.patients.forEach((patient) => {
-        patient.active = false;
+      axiosClient.get(`shift/last`).then(({ data: data }) => {
+        console.log(data.data, "today patients");
+        //add activeProperty to patient object
+        data.data.patients.forEach((patient) => {
+          patient.active = false;
+        });
+        setShift(data.data);
+        setPatientsLoading(false);
       });
-      setShift(data.data);
-      setPatientsLoading(false);
-    });
     }
-  
+
     setActivePatient({ ...pat, active: true });
     setSelectedTest(pat.labrequests[0]);
-    
-  
   };
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
@@ -115,7 +152,7 @@ function Result() {
       >
         <div></div>
         <AutocompleteSearchPatient
-        withTests={1}
+          withTests={1}
           setActivePatientHandler={setActivePatientHandler}
         />
       </div>
@@ -131,10 +168,8 @@ function Result() {
       >
         <div>
           <AddDoctorDialog />
-
-      
         </div>
-        <Card sx={{ overflow: "auto",p:1 }}  >
+        <Card sx={{ overflow: "auto", p: 1 }}>
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
               {shift &&
@@ -156,37 +191,39 @@ function Result() {
           </Stack>
           <Stack justifyContent={"space-around"} direction={"row"}>
             <LoadingButton
-            loading={loading}
-            disabled={shift?.id == 1}
+              loading={loading}
+              disabled={shift?.id == 1}
               onClick={() => {
                 if (shift.id == 1) {
                   return;
                 }
-                setLoading(true)
+                setLoading(true);
                 axiosClient
                   .get(`shiftById/${shift.id - 1}`)
                   .then(({ data }) => {
                     console.log(data.data, "shift left");
                     setShift(data.data);
-                  }).finally(()=>setLoading(false));
+                  })
+                  .finally(() => setLoading(false));
               }}
             >
               <ArrowBack />
             </LoadingButton>
             <LoadingButton
-            loading={loading}
-            disabled={shift?.id == shift?.maxShiftId}
+              loading={loading}
+              disabled={shift?.id == shift?.maxShiftId}
               onClick={() => {
                 // if (shift.id == 1) {
                 //   return
                 // }
-                setLoading(true)
+                setLoading(true);
                 axiosClient
                   .get(`shiftById/${shift.id + 1}`)
                   .then(({ data }) => {
                     console.log(data.data, "shift left");
                     setShift(data.data);
-                  }).finally(()=>setLoading(false));
+                  })
+                  .finally(() => setLoading(false));
               }}
             >
               <ArrowForward />
@@ -207,45 +244,47 @@ function Result() {
                 .map((p, i) => {
                   let unfinshed_count = 0;
                   let allResultsFinished = true;
-                  p.labrequests.forEach((labRequest)=>{
-                    unfinshed_count+= labRequest.unfinished_results_count.length
-    
-                  })
-                 return <Patient
-                 actviePatient={actviePatient}
-                 unfinshed_count = {unfinshed_count}
-                    delay={i * 100}
-                    key={p.id}
-                    patient={p}
-                    onClick={() => {
-                      setActivePatientHandler(p);
-                    }}
-                  />
-                }
-                  
-                )
+                  p.labrequests.forEach((labRequest) => {
+                    unfinshed_count +=
+                      labRequest.unfinished_results_count.length;
+                  });
+                  return (
+                    <Patient
+                      actviePatient={actviePatient}
+                      unfinshed_count={unfinshed_count}
+                      delay={i * 100}
+                      key={p.id}
+                      patient={p}
+                      onClick={() => {
+                        setActivePatientHandler(p);
+                      }}
+                    />
+                  );
+                })
             )}
           </div>
         </Card>
-        <Card sx={{height: "80vh", overflow: "auto"}} >
+        <Card sx={{ height: "80vh", overflow: "auto" }}>
           {console.log(actviePatient, "activve pateint")}
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <List  sx={{direction:'ltr'}}>
+            <List sx={{ direction: "ltr" }}>
               {actviePatient.labrequests.map((test) => {
                 return (
                   <ListItem
-                  onClick={() => {
-                    setSelectedTest(test);
-                    setSelectedResult(null);
-                    console.log(test, "selected test");
-                  }}
-                  style={selectedTest && selectedTest.id == test.id
-                    ? {
-                        backgroundColor: 'lightblue'
-                      }
-                    : null}
+                    onClick={() => {
+                      setSelectedTest(test);
+                      setSelectedResult(null);
+                      console.log(test, "selected test");
+                    }}
+                    style={
+                      selectedTest && selectedTest.id == test.id
+                        ? {
+                            backgroundColor: "lightblue",
+                          }
+                        : null
+                    }
                     sx={{
-                      cursor:'pointer',
+                      cursor: "pointer",
                       "&:hover": {
                         backgroundColor: "lightblue",
                         color: "white",
@@ -256,15 +295,26 @@ function Result() {
                     }
                     key={test.main_test.id}
                   >
-                      <ListItemText primary={test.main_test.main_test_name} />
+                    <ListItemText primary={test.main_test.main_test_name} />
                   </ListItem>
                 );
               })}
             </List>
           )}
         </Card>
-        <Card sx={{height: "80vh", overflow: "auto",p:1 }}  key={selectedTest?.id + resultUpdated} >
-         {actviePatient && <ResultSection selectedReslult={selectedReslult} selectedTest={selectedTest} setActivePatient={setActivePatient} setSelectedResult={setSelectedResult} setShift={setShift} />}
+        <Card
+          sx={{ height: "80vh", overflow: "auto", p: 1 }}
+          key={selectedTest?.id + resultUpdated}
+        >
+          {actviePatient && (
+            <ResultSection
+              selectedReslult={selectedReslult}
+              selectedTest={selectedTest}
+              setActivePatient={setActivePatient}
+              setSelectedResult={setSelectedResult}
+              setShift={setShift}
+            />
+          )}
         </Card>
 
         <div>
@@ -285,53 +335,60 @@ function Result() {
                 >
                   print
                 </Button> */}
-                <Button
-                
-                sx={{mt:1}}
-                  disabled={actviePatient.result_is_locked == 1 || actviePatient.is_lab_paid == 0}
-                  onClick={()=>{
-
-                     actviePatient.labrequests.map((lr)=>{
-                       lr.requested_results.map((req)=>{
+              {actviePatient.result_auth ?   <Button 
+                  sx={{ mt: 1 }}
+                 
+                  onClick={() => {
+                    actviePatient.labrequests.map((lr) => {
+                      lr.requested_results.map((req) => {
                         if (req.child_test != null) {
-                          const low = Number( req.child_test.lowest)
-                          const max =  Number(req.child_test.max)
-                          const result =  Number(req.result)
-                          console.log(low)
-                          console.log(max)
+                          const low = Number(req.child_test.lowest);
+                          const max = Number(req.child_test.max);
+                          const result = Number(req.result);
+                          console.log(low);
+                          console.log(max);
                           if (low > 0 && max > 0) {
-                             if (result < low || result > max) {
-                               alert(`abnormal result for  ${req.child_test.child_test_name} `)
-                             }
+                            if (result < low || result > max) {
+                              alert(
+                                `abnormal result for  ${req.child_test.child_test_name} `
+                              );
+                            }
                           }
                         }
-                       
-                       })
-                     })
-                    const form = new URLSearchParams()
-                    axiosClient.get(`result?pid=${actviePatient.id}&base64=1`).then(({data})=>{
-                    form.append('data',data)
-                    console.log(data,'daa')
-                    printJS({
-                      printable:data.slice(data.indexOf('JVB')),
-                      base64:true,
-                      type:'pdf'
+                      });
                     });
+                    const form = new URLSearchParams();
+                    axiosClient
+                      .get(`result?pid=${actviePatient.id}&base64=1`)
+                      .then(({ data }) => {
+                        
+                        form.append("data", data);
+                        console.log(data, "daa");
+                        printJS({
+                          printable: data.slice(data.indexOf("JVB")),
+                          base64: true,
+                          type: "pdf",
+                        });
 
-                    // fetch('http://127.0.0.1:3000/',{
-                    //   method: 'POST',
-                    //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        // fetch('http://127.0.0.1:3000/',{
+                        //   method: 'POST',
+                        //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
 
-                    //   body: form
-                    // }).then((res)=>{
-                      
-                    //   });
-                    })
+                        //   body: form
+                        // }).then((res)=>{
+
+                        //   });
+                      });
                   }}
                   variant="contained"
                 >
-                  print 
-                </Button>
+                  print
+                </Button> :<LoadingButton loading={loading} onClick={()=>{
+                   axiosClient(`resultFinished/${actviePatient.id}`).then(({data})=>{
+                    
+                   })
+                  updateHandler(1,'result_auth')
+                }} sx={{mt:1}} color="warning"  variant="contained">Authenticate</LoadingButton> }
               </Stack>
             </div>
           )}
@@ -340,16 +397,16 @@ function Result() {
           )}
         </div>
         <ResultSidebar
-        setShift={setShift}
-            actviePatient={actviePatient}
-            loading={loading}
-            selectedTest={selectedTest}
-            setActivePatient={setActivePatient}
-            setDialog={setDialog}
-            setLoading={setLoading}
-            setResultUpdated={setResultUpdated}
-            setSelectedTest={setSelectedTest}
-          />
+          setShift={setShift}
+          actviePatient={actviePatient}
+          loading={loading}
+          selectedTest={selectedTest}
+          setActivePatient={setActivePatient}
+          setDialog={setDialog}
+          setLoading={setLoading}
+          setResultUpdated={setResultUpdated}
+          setSelectedTest={setSelectedTest}
+        />
         <MoneyDialog />
         <ErrorDialog />
       </div>

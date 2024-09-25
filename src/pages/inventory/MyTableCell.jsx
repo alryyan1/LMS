@@ -22,7 +22,9 @@ function MyTableCell({
   change=null,
   isNum = false,
   setDialog= null,
-  setDeposit=null
+  setDeposit=null,
+  changeDoctorVisit=null,
+  disabled = false,
 }) {
   const [edited, setEdited] = useState(show);
   const [intial, setInitialVal] = useState(children);
@@ -66,6 +68,10 @@ function MyTableCell({
               // console.log(data.data,'inside updater function')
               setData(data.data.data)
               
+            }
+            if (changeDoctorVisit) {
+              console.log(data,'data.changeDoctorVisit')
+              changeDoctorVisit(data.data.data)
             }
             if (setShift) {
               setShift(data.data.shift)
@@ -139,7 +145,7 @@ function MyTableCell({
     >
       {show || edited ? (
         <TextField
-      
+        disabled={disabled}
           multiline={multiline}
          
          sx={sx}

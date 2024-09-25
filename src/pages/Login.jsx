@@ -58,7 +58,8 @@ function App() {
       
                 <Card className="w-[450px]  rtl text-right col-span-3 mt-4 ">
                   <CardHeader>
-                    <CardTitle>  تسجيل بيانات الدخول</CardTitle>
+                    <CardTitle>  Register login data
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <form noValidate dir="rtl" onSubmit={handleSubmit(sumbitHamdler)} >
@@ -66,7 +67,7 @@ function App() {
                       <div className="grid w-full items-center gap-4">
                         {/** User Name  */}
                         <div className="flex flex-col space-y-1.5 text-right">
-                          <Label htmlFor="name"> اسم المستخدم</Label>
+                          <Label htmlFor="name"> Username </Label>
                           <Input
                             
                             className="text-right"
@@ -95,7 +96,7 @@ function App() {
                         {errors.username && errors.username.message}
 
                         <div className="flex flex-col space-y-1.5 text-right">
-                          <Label htmlFor="cash_percentage"> كلمة المرور</Label>
+                          <Label htmlFor="cash_percentage">  Password</Label>
                           <Input
                             
                             className="text-right"

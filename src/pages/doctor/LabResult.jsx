@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { t } from "i18next";
@@ -24,7 +25,11 @@ function LabResults(props) {
   const [selectedTest, setSelectedTest] = useState(null);
 
   const [selectedReslult, setSelectedResult] = useState(null);
-
+  useEffect(()=>{
+    if (patient.labrequests.length > 0) {
+      setSelectedTest(patient.labrequests[0]);
+    }
+  },[])
   return (
     <div
       role="tabpanel"
@@ -80,14 +85,18 @@ function LabResults(props) {
               sx={{ height: "80vh", overflow: "auto", p: 1 }}
               key={selectedTest?.id}
             >
-              {patient && (
+              {patient.result_auth ?  (
                 <ResultSection disabled={true}
                   selectedReslult={selectedReslult}
                   selectedTest={selectedTest}
                   setSelectedResult={setSelectedResult}
                   setShift={setShift}
                 />
-              )}
+              ):<>
+              <Typography textAlign={'center'} variant="h2">RESULT </Typography>
+              <Typography textAlign={'center'} variant="h2"> IS NOT </Typography>
+              <Typography textAlign={'center'} variant="h2"> AUTHENTICATED</Typography>
+              </>}
             </Card>
           </Grid>
         </Grid>

@@ -64,7 +64,11 @@ function SickLeave(props) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
+          <Stack direction={"column" } alignItems={'center'} gap={2} justifyContent={"space-around"}>
+            <Button variant="contained">File Report</Button>
+            <Button variant="contained">Lab Report</Button>
+      <Button variant="contained" href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}>Attendance</Button>
+
             <LoadingButton
               loading={loading}
               disabled={patient?.sickleave != null}
@@ -85,6 +89,7 @@ function SickLeave(props) {
             >
               Generate Sickleave Report
             </LoadingButton>
+            
           </Stack>
 
           {show && (
@@ -178,7 +183,6 @@ function SickLeave(props) {
                 </TableBody>
               </Table>
       <Button sx={{m:1}} variant="contained" href={`${webUrl}sickleave?pid=${patient.id}&user=${user?.id}`}>PDF</Button>
-      <Button variant="contained" href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}>Attendance</Button>
 
             </div>
           )}

@@ -31,9 +31,15 @@ function BottomMoney({actviePatient,activeShift,total_endurance}) {
           </Typography>
         </div>
         <div className="sub-price">
+          <div className="title">Discount</div>
+          <Typography variant="h3">
+            {formatNumber( actviePatient.patient.discount + actviePatient.total_discounted + actviePatient.patient?.discountAmount)}
+          </Typography>
+        </div>
+        <div className="sub-price">
           <div className="title">Paid</div>
           <Typography variant="h3">
-            {formatNumber(actviePatient?.total_paid_services +  actviePatient.patient.paid)}
+            {formatNumber(actviePatient?.total_paid_services +  actviePatient.patient.paid - actviePatient.patient.discount)}
           </Typography>
         </div>
       </div>

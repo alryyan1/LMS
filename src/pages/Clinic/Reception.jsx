@@ -9,6 +9,7 @@ import {
   Slide,
   Badge,
   Button,
+  TextField,
 } from "@mui/material";
 import {  useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
@@ -72,6 +73,39 @@ function Reception() {
     patientDetails: "0.8fr",
     patients: "1fr",
   });
+  const updateHandler = (e, colName) => {
+    axiosClient
+      .patch(`patients/${actviePatient.patient.id}`, {
+        [colName]: e.target.value,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          axiosClient.get(`doctorvisit/find?pid=${actviePatient.patient.id}`).then(({data})=>{
+            change(data)
+           })
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+  };
   // console.log(openDrawer, "open drawer");
 
   // useEffect(() => {
@@ -346,6 +380,9 @@ function Reception() {
              
             </Slide>
           )}
+         {actviePatient &&  <TextField sx={{mt:1}} defaultValue={actviePatient.patient.discount} onChange={(e)=>{
+            updateHandler(e,'discount')
+          }} label='Total Discount'></TextField>}
          </Paper>
         <Paper sx={{ backgroundColor: "#ffffffbb!important" }}>
           <div style={{ overflow: "auto" }}>

@@ -49,7 +49,7 @@ function ReceptionForm({ hideForm,lab }) {
   const phone = watch("phone");
 
   useEffect(() => {
-    setValue('gender', 'انثي');
+    setValue('gender', 'female');
     if (name != undefined) {
       console.log(name, "name");
       const timer = setTimeout(() => {
@@ -374,15 +374,15 @@ function ReceptionForm({ hideForm,lab }) {
                 render={({ field }) => {
                   return (
                     <Select
-                      value={field.value || 'انثي'}
+                      value={field.value || 'female'}
                       onChange={(data) => {
                         console.log(data.target.value);
                         return field.onChange(data.target.value);
                       }}
                       label={t('gender')}
                     >
-                      <MenuItem value={"ذكر"}>{t('male')}</MenuItem>
-                      <MenuItem value={"انثي"}>{t('female')}</MenuItem>
+                      <MenuItem value={"male"}>{t('male')}</MenuItem>
+                      <MenuItem value={"female"}>{t('female')}</MenuItem>
                     </Select>
                   );
                 }}
@@ -422,6 +422,9 @@ function ReceptionForm({ hideForm,lab }) {
             }}
           />
           <LoadingButton
+           onClick={()=>{
+             
+           }}
             disabled={btn}
             loading={loading}
             type="submit"

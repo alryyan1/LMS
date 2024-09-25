@@ -178,10 +178,11 @@ function RequestedServices({
             component={Card}
             sx={{
               backgroundColor: "#ffffffbb!important",
-              width: "75%",
+            
               minHeight: " 100px",
-              m: 1,
-              display: "inline-block",
+            
+              p:1,
+        
             }}
           >
             <Table size="small">
@@ -331,7 +332,7 @@ function RequestedServices({
               </TableBody>
             </Table>
           </TableContainer>
-          <TableContainer style={{ width: "20%", display: "inline-block" }}>
+          {/* <TableContainer style={{ width: "20%", display: "inline-block" }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -361,9 +362,9 @@ function RequestedServices({
                 </TableRow>
               </TableBody>
             </Table>
-          </TableContainer>
+          </TableContainer> */}
         </div>
-        {actviePatient?.patient.is_lab_paid && <BottomMoney
+        {actviePatient && <BottomMoney
           activeShift={activeShift}
           actviePatient={actviePatient}
           total_endurance={total_endurance}

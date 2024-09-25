@@ -11,6 +11,37 @@ import React from "react";
 import axiosClient from "../../../axios-client";
 
 function VitalSigns({ patient, setDialog, change }) {
+  const updateHandler = (e, colName) => {
+    axiosClient
+      .patch(`patients/${patient.id}`, {
+        [colName]: e.target.value,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          change(data.patient);
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+  };
   return (
     <div style={{ padding: "5px" }}>
       <Typography textAlign={"center"} variant="h6">
@@ -26,43 +57,17 @@ function VitalSigns({ patient, setDialog, change }) {
         <TableBody>
           <TableRow>
             <TableCell>Blood Pressure</TableCell>
-            <TableCell>
-              <TextField
+            <TableCell className="vital">
+              <TextField 
                 inputProps={{
                   style: {
+                    fontSize:'28px',
                     padding: 0,
                     minWidth: "66px",
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      bp: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                  updateHandler(e, "bp");
                 }}
                 defaultValue={patient.bp}
               />
@@ -75,38 +80,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
+                    fontSize:'28px',
+
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      temp: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        change(data.patient);
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                updateHandler(e, "temp");
                 }}
                 defaultValue={patient.temp}
               />
@@ -120,39 +99,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
+                    fontSize:'28px',
+
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      weight: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        change(data.patient);
-
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                  updateHandler(e,'weight')
                 }}
                 defaultValue={patient.weight}
               />
@@ -166,39 +118,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
+                    fontSize:'28px',
+
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      height: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        change(data.patient);
-
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                    updateHandler(e, "height")
                 }}
                 defaultValue={patient.height}
               />
@@ -211,38 +136,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
+                    fontSize:'28px',
+
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      heart_rate: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        change(data.patient);
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                  updateHandler(e, "heart_rate")
                 }}
                 defaultValue={patient.heart_rate}
               />
@@ -255,40 +154,32 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
+                    fontSize:'28px',
+
                   },
                 }}
                 onChange={(e) => {
-                  axiosClient
-                    .patch(`patients/${patient.id}`, {
-                      spo2: e.target.value,
-                    })
-                    .then(({ data }) => {
-                      console.log(data);
-                      if (data.status) {
-                        change(data.patient);
-                        setDialog((prev) => {
-                          return {
-                            ...prev,
-                            message: "Saved",
-                            open: true,
-                            color: "success",
-                          };
-                        });
-                      }
-                    })
-                    .catch(({ response: { data } }) => {
-                      console.log(data);
-                      setDialog((prev) => {
-                        return {
-                          ...prev,
-                          message: data.message,
-                          open: true,
-                          color: "error",
-                        };
-                      });
-                    });
+                  updateHandler(e, "spo2")
                 }}
                 defaultValue={patient.spo2}
+              />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>RBS</TableCell>
+            <TableCell>
+              <TextField
+                inputProps={{
+                  style: {
+                    padding: 0,
+                    fontSize:'28px',
+
+                  },
+                }}
+                onChange={(e) => {
+                  updateHandler(e, "rbs")
+                }}
+                defaultValue={patient.rbs}
               />
             </TableCell>
           </TableRow>

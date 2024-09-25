@@ -46,7 +46,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function AddPatient() {
   const { user } = useStateContext();
-
+ 
   const {
     actviePatient,
     setActivePatient,
@@ -161,6 +161,7 @@ function AddPatient() {
 
   return (
     <>
+
       <Stack direction={'row'}   justifyContent={'space-between'} >
         <Box flexGrow={'1'}>
 

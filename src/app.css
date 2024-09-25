@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap'); */
 
 /* @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900"); */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 body {
-  font-family: "Playpen Sans",'Almarai' ;
-
+  font-family: 'Almarai',sans-serif ;
   /* font-family: "Almarai", sans-serif; */
   /* font-family: "Playwrite CU", sans-serif,'Almarai'; */
   font-optical-sizing: auto;
@@ -35,6 +34,18 @@ body {
   display: flex;
   justify-content: space-around;
   margin-bottom: 15px;
+}
+td{
+  font-weight: 700!important;
+}
+.header{
+  color: black!important;
+  font-weight: 700!important;
+  font-size: larger!important;
+}
+.head{
+  color: black!important;
+  font-weight: 700!important;
 }
  .heading{
 
@@ -96,7 +107,9 @@ a.active{
   /* background-color: white!important; */
 }
 
-
+.vital{
+  font-size: 28px!important;
+}
 .patient-no{
   margin-left: 4px!important;
   background-color: burlywood!important;
@@ -111,12 +124,12 @@ thead {
 }
 .patient-no2{
   margin-left: 4px!important;
-  background-color: burlywood!important;
+  /* background-color: burlywood!important; */
   /* padding: 5px!important; */
   width: 60px!important;
   font-size: 17px!important;
     font-weight: bold!important;
-    color: black!important;
+    /* color: black!important; */
 }
 
 @property --gradient-angle {

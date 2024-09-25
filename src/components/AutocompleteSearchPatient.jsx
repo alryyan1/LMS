@@ -9,7 +9,7 @@ function isNumeric(str) {
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
-export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null,setActivePatient}) {
+export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null,setActivePatient,changeDoctorVisit,change}) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
@@ -21,8 +21,9 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
       axiosClient
         .get(`patients?name=${search}&withTests=${withTests}`)
         .then(({ data }) => {
+          console.log(data,'doctor visit data')
           setOptions(data);
-          console.log(data, "patients in autocomplete search");
+
         })
         .finally(() => setLoading(false));
     }, 300);
@@ -49,6 +50,17 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
           if(setActivePatient){
             setActivePatient(newVal);
           }
+          if (change) {
+            console.log(newVal, "change new val");
+            // 
+            
+          }
+          if (changeDoctorVisit) {
+            axiosClient.get(`doctorvisit/find?pid=${newVal.id}`).then(({data})=>{
+             changeDoctorVisit(data)
+             change(data.patient)
+            })
+         }
         }
       }}
       sx={{ width: 300, display: "inline-block" }}

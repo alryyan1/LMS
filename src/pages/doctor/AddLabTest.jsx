@@ -15,17 +15,18 @@ import { useEffect, useState } from "react";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { t } from "i18next";
 function AddLabTests(props) {
-  const { value, index, patient, setDialog, change,complains,setShift, ...other } =
+
+  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,changeDoctorVisit, ...other } =
     props;
   const [selectedTests, setSelectedTests] = useState([]);
   
   const deleteTest = (id) => {
     console.log(id);
-    axiosClient.delete(`labRequest/${id}`).then(({ data }) => {
+    axiosClient.delete(`labRequest/${id}/${activeDoctorVisit.id}`).then(({ data }) => {
       console.log(data, "data");
       if (data.status) {
         console.log(data,'data')
-        change(data.data)
+        changeDoctorVisit(data.patient)
       }
     });
   };
@@ -42,10 +43,10 @@ function AddLabTests(props) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <AddTestAutoComplete change={change} setShift={setShift}  actviePatient={patient}  setDialog={setDialog}  setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
+          <AddTestAutoComplete  changeDoctorVisit={changeDoctorVisit}  setShift={setShift}  actviePatient={activeDoctorVisit}  setDialog={setDialog}  setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
   
-          <TableContainer sx={{ border: "none", textAlign: "left" }}>
-            <Table size="small">
+          <TableContainer >
+            <Table sx={{mt:1}} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell> {t('name')}</TableCell>
@@ -54,7 +55,7 @@ function AddLabTests(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {patient.labrequests.map((test) => {
+                {activeDoctorVisit.patient.labrequests.map((test) => {
           
 
                   return (

@@ -2,6 +2,7 @@ import { FavoriteBorder } from "@mui/icons-material";
 import { Badge, Chip, Grow, Icon, Paper, Stack, styled } from "@mui/material";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../../axios-client";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -9,32 +10,38 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit,setLayout,showPatients, setShowPatients}) {
+function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit,setLayout,showPatients, setShowPatients,changeDoctorVisit}) {
   // console.log(activePatient,'active patient')
   return (
     <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
     <Badge
       color="primary"
       badgeContent={
-        visit.patient.visit_count
+        visit.patient.visit_count == 1 ? undefined :  visit.patient.visit_count
       }
       key={visit.patient.id}
     >
-      <Stack
-        sx={{ cursor: "pointer" }}
+      <Stack 
+        sx={{ cursor: "pointer",gap:1 }}
         onClick={() => {
+             axiosClient.get(`patient/visit/${visit.id}`).then(({data})=>{
+              console.log(data,'data from fresh doctor visit')
+              changeDoctorVisit(data)
+             })
             setActivePatient(visit.patient)
             setActiveDoctorVisit(visit)
             console.log(visit,'selected visit')
             setLayout((prev)=>{
-              return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
+              return {...prev,patients:'0fr',vitals:'0.7fr',visits:'0fr',}
             })
             setShowPatients(false)
    
         }}
         direction={"row"}
       >
-        <Item
+        <Item sx={visit.patient.doctor_finish ? {backgroundColor:(theme)=>theme.palette.success.main} :  {backgroundColor:(theme)=>theme.palette.primary.main}} className="patient-no2 text-white">{index}</Item>
+
+        <Item className="head"
           style={ activePatient && activePatient.id === visit.patient.id ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
@@ -42,7 +49,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            minWidth: "220px",
+            minWidth: "360px",
             cursor: "pointer",
             
        
@@ -56,21 +63,20 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
             </Icon>}
          
 
-            {visit.patient.totalservicebank > 0 && (
-            <Chip
-              label="bank"
+            
+           {visit.patient.labrequests.length > 0 &&   <Chip
+              label="Lab"
               sx={{
-                backgroundColor: (theme) => theme.palette.error.light,
+                backgroundColor: (theme) => visit.patient.result_auth == 1 ?  theme.palette.success.light :  theme.palette.error.light,
                 fontSize: "smaller",
               }}
               size="small"
-              />
-            )}
+              />}
+            
           </div>
             
 
         </Item>
-        {/* <Item className="patient-no2">{visit.patient.id}</Item> */}
       </Stack>
     </Badge>
     </Grow>

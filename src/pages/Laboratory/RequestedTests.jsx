@@ -57,7 +57,7 @@ function RequestedTests({
     }
     setLoading(true);
     axiosClient
-      .patch(`payment/${doctorVisit.id}/${pid}`)
+      .patch(`payment/${doctorVisit.id}`)
       .then(({ data: data }) => {
         if (data.status) {
           console.log(data, "data");
@@ -151,11 +151,7 @@ function RequestedTests({
 
         <div className="requested-table">
           <TableContainer
-            sx={{
-              minHeight:' 200px',
-              width: "80%",
-              display: "inline-block",
-            }}
+          
           >
             <Table size="small">
               <TableHead>
@@ -298,7 +294,7 @@ function RequestedTests({
               </TableBody>
             </Table>
           </TableContainer>
-          <TableContainer sx={{m:1}} style={{ width: "18%", display: "inline-block" }}>
+          {/* <TableContainer sx={{m:1}} style={{ width: "18%", display: "inline-block" }}>
               <Table  size="small">
             <TableHead>
               <TableRow>
@@ -360,9 +356,36 @@ function RequestedTests({
               </TableRow>
             </TableBody>
           </Table>
-          </TableContainer>
+          </TableContainer> */}
         
         </div>
+        {actviePatient.patient.is_lab_paid ? (
+                    <LoadingButton
+                      // disabled={actviePatient.patient.result_print_date}
+                      loading={loading}
+                      color="error"
+                      onClick={cancelPayHandler}
+                      sx={{ textAlign: "center", mb: 1 }}
+                      variant="contained"
+                    >
+                      {t("cancel")}
+                    </LoadingButton>
+                  ) : (
+                    <LoadingButton
+                      loading={loading}
+                      disabled={actviePatient.patient.is_lab_paid == 1}
+                      color={
+                        actviePatient.patient.is_lab_paid
+                          ? "success"
+                          : "primary"
+                      }
+                      onClick={payHandler}
+                      sx={{ textAlign: "center", mb: 1 }}
+                      variant="contained"
+                    >
+                      {t("pay")}
+                    </LoadingButton>
+                  )}
       </Box>
     </>
   );
