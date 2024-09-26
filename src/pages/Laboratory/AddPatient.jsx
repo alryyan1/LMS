@@ -17,6 +17,7 @@ import {
   Grid,
   Button,
   Card,
+  TextField,
 } from "@mui/material";
 import RequestedTests from "./RequestedTests";
 import AddTestAutoComplete from "./AddTestAutoComplete";
@@ -74,6 +75,49 @@ function AddPatient() {
     showTestPanel: false,
     patientDetails: "0.7fr",
   });
+  const updateHandler = (e, colName) => {
+    axiosClient
+      .patch(`patients/${actviePatient.id}`, {
+        [colName]: e.target.value,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          axiosClient.get(`doctorvisit/find?pid=${actviePatient.id}`).then(({data})=>{
+            setActivePatient(data.patient)
+            setPatients((prePatients) => {
+              return prePatients.map((patient) => {
+                if (patient.id === data.patient.id) {
+                  // console.log("patient founded");
+                  return { ...data.patient, active: true };
+                } else {
+                  return { ...patient, active: false };
+                }
+              });
+            });
+           })
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+  };
 //  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
     // setPatientsLoading(true);
@@ -262,7 +306,9 @@ function AddPatient() {
             <RequestedTestsLab  pid={actviePatient} activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
-      
+          {actviePatient &&  <TextField sx={{mt:1}} defaultValue={actviePatient.discount} onChange={(e)=>{
+            updateHandler(e,'discount')
+          }} label='Total Discount'></TextField>}
         </Card>
         <div>
         {!actviePatient && foundedPatients.length > 0 && (

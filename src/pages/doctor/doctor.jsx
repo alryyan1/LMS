@@ -41,6 +41,7 @@ import LabResults from "./LabResult";
 import VitalSigns from "./VitalSigns";
 import SickLeave from "./SickLeave";
 import CarePlan from "./CarePlan";
+import { finishedImg, newImage } from "../constants";
 
 function Doctor() {
   const [value, setValue] = useState(0);
@@ -102,23 +103,59 @@ function Doctor() {
   const [activePatient, setActivePatient] = useState(null);
   const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
   const [items, setItems] = useState([]);
+  const focusPatientDeleteNotfication = (data) =>{
+    setLayout((prev)=>{
+      return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
+    })
+    setShowPatients(false)
+    changeDoctorVisit(data)
+    change(data.patient)
+    axiosClient.get(`removeLabFinishedNotifications/${data.patient.id}`)
+    setValue(9)
+  }
+  const focusTheNewPAtient = (data) =>{
+    setLayout((prev)=>{
+      return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
+    })
+    setShowPatients(false)
+    changeDoctorVisit(data)
+    change(data.patient)
+    axiosClient.get(`removeNewPatient/${data.patient.id}`)
+    // setValue(9)
+  }
+  const checkResults = (action)=>{
+    axiosClient.get('labFinishedNotifications').then(({data})=>{
+      data.map((d)=>{
+       axiosClient.get(`doctorvisit/find?pid=${d.patient_id}`).then(({data})=>{
+         console.log(data,'patient data')
+
+        notifyMe(`Lab Results just finished for patient '${data.patient.name}'`,data,finishedImg,action)
+      
+        })
+      })
+    })
+  }
+  const checkNewPatients = (action)=>{
+    axiosClient.get('NewPatients').then(({data})=>{
+      data.map((d)=>{
+       axiosClient.get(`doctorvisit/find?pid=${d.patient_id}`).then(({data})=>{
+         console.log(data,'patient data')
+        notifyMe(`A new  patient '${data.patient.name}' has just booked`,data,newImage,action)
+      
+        })
+      })
+    })
+  }
   useEffect(()=>{
    const timer =  setInterval(() => {
-       axiosClient.get('labFinishedNotifications').then(({data})=>{
-         data.map((d)=>{
-          axiosClient.get(`doctorvisit/find?pid=${d.patient_id}`).then(({data})=>{
-            console.log(data,'patient data')
-           notifyMe(`Lab Results just finished for patient '${data.patient.name}'`,data)
-         
-           })
-         })
-       })
+    checkResults(focusPatientDeleteNotfication)
+    checkNewPatients(focusTheNewPAtient)
     }, 15000);
     return ()=>{
       clearInterval(timer)
     }
   },[])
-  const notifyMe = (title,data) => {
+  const notifyMe = (title,data,address,action) => {
     // alert(Notification.permission)
     if (!("Notification" in window)) {
       // Check if the browser supports notifications
@@ -126,16 +163,15 @@ function Doctor() {
     } else if (Notification.permission === "granted") {
       // Check whether notification permissions have already been granted;
       // if so, create a notification
-      const notification = new Notification(title,{icon:'data:image/png;base64,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'});
+      const notification = new Notification(title,{icon:address});
       notification.onclick = function () {
-        setLayout((prev)=>{
-          return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
-        })
-        setShowPatients(false)
-         changeDoctorVisit(data)
-         change(data.patient)
-         axiosClient.get(`removeLabFinishedNotifications/${data.patient.id}`)
-         setValue(9)
+        
+        console.log(action,'action')
+        if (action) {
+          // alert('ss')
+          action(data)
+        }
+   
       }
      
       // …
@@ -144,7 +180,7 @@ function Doctor() {
       Notification.requestPermission().then((permission) => {
         // If the user accepts, let's create a notification
         if (permission === "granted") {
-          const notification = new Notification(title,{icon:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAA2FBMVEX////MS0xeX2Ls8PHm5+gsLzixkEbMSUrt8/RbXGDLRkd2d3nf4OHLQ0RRU1lXWFwnKjTP0NLu+frKPj8AABPJODk1N0CuizvJNDXOVlfXjY7p5OXpurr57e3++vrPXV7es7TTaWnuysro3N2rhi/o384AAADam5zgu7zTdXbRbW7jycrbpKX25eXy2dnmr6/UfX7w6t7PvJbg1L0TGCWWl5nIKCnXwaXBUje9dEnAbUi3mlrCqnj28+y9omq+v8Grq61ER03c2NGogh28qICGhonTlIDHmHP833LFAAANHElEQVR4nM1aaWObuBY1gUSYmMSBUgNOwMTpeI9ps3TmtZmk02bm//+jp3slQBLCdhebnk8BZN2ju0tKp/N9SJKrq6vVanULuKa4RKw52BO8xwF04OrqKkmS75SyC65Wt9eX68kkjvPZPMvSNIqI47q+HwRhgPA5ggK+77oOiaIoTbNsNsvjyXJ9eX27uvoJGgnlQYlM4nxuBCEA5LpUkEM4jK0oRjoOXQEsgU1E0lk8odqkDHfUYLK6vlzGs3maGg6u19lF/PeAkkQdu0aazvN4eXm9auCWgIEmeeoEoBOmj1/LRceO6tAF/QVOmk8k4yaX63iWRYa/D7XsSg+U5xtRNsuXl1RvqyhEMq2wUbkBuTBadXK/bS4q/Lzz8xqSlfwLVE466Q9MQmhqKB8cx3DKOYgDz9VAyAXC2N1mTzux2/xVSEc0iMuBTroczQqru7PFcGGQ4hfT4WJeDCS+SzPSJM5CQQbZytHNOxOtTxGXZkpi0IzMtODE43HuFt+Gnm3O3OrBm/JJ/Cl9GLuMouNOxqZt26a5mLnF4pw0nlWK1Rrbn3SuAw0nP4qXo+liPDStEczn5h6dfM7W6Maeadpjph1nToXawwgfSDSEpwzHuemCckfY3pKzcnPT80aVKtOorpPgunNbf0vc5dBmoPOBfYMp8JiwyXwgZXqTgJEyVVKMvJMOOSUA1SWOCMblAPC4hWkta0rxbzsrQ9UgcYBCOd3IL0jxFaKmKCKnIGUWpNIhPIGmCFngKDQfrsFHayHT3OF2okO8ueJjxFh1rmrhh2MLME35ayDFPYfaEr9MgaOTIalUJcXUaZvjxYJrLCOgSgv+nDEewcIu2Iqk0qtOMlOj4RFnsT2EtfYLnvaCa2rGSUOY6UildMYQ7GSbMQmCaITmhjhxUhzNnI64MMZTw9+Z0TqjviQGrmwxWsY5bRXQQ5lvL3yJlD2mfsLFqKQIvrZj8CQSgiXtOQGBorEjJD5T5LsxLcg19UU2igmFAo0WoyTYUjKuKZuup0FTknQnHXveEheXm1XgkgxG26liKZoROp2p4v4kQE1J/ueAcuwhJxUVpKhQWVMZI0WoNvE7DyLiRwbXOOiGJzJG3A4Un6YZgbYJofzSeMSxuUQKY8zk+bIgZXrLkETMS0RSVD9MgWaZ9wuNT8zKDZwcV/+oiA9X0E+ppJiPSq7GZXC1kyo6M1dPyggxjQ5T6gOCJtwlvF0w23C11cRjH+or+guFSOXFj6QQyjZ3UB9XiCE6DURSTkXKX2JKGI7inIRlXXFHMPUoxGce0gop4mPrmSnuH0AIe6NHaEVpH+2SIlV7LJSNEOQNgToNdCIEuZNZhUKJMWbUPc8e5wUrdwrTrKmH0ckfmRzFpd0MScVK+PEV0Oq3oNVvuHaL6C2Sb8j8xURT+PC3xUnNS1I00OyizNh0FPulgysZDmlKHS1zbe7E4Ot0LlWuLBnTJWL1g58R49bm+Q9IWai2JRpwAjysuUiKmTyYDUvf88Zo+VJ9AA/LdS13BpdISu0TeFSUE1Kr00omJF90Ym9uMF82a6SKjoC2CR6vfR66TkFKgBzlBs8Inc6tUpJ5/JekQFOOqGos9d4siEtNFKRmpkDKcMJ0ST0AR+GCeBchQanH1CZIaqWUZMKaDqZiz8O20kEP5U7JSOUuKdetJ0Vf0IQQrXG2BXV2ltRYWWUqtIc14Su28VPJspq0mK5p9ZsTjF8Wyzz5B9yWbmXnmUhKyjGEhNh1WCnhadcysjyejKYohTmbaCa+Xc5lXyu8mh9S4Dsfsx4n5RcOFiw8DSkLSdHNBdcYCTBw6NKxatpDhx2OYD1VfYc26AxqVLr1WPUndlUf/OI7K3xaUsSJp0suEOsW5BNWQsdCi1e0Q4IgTkrNCT7Yyh5JpFhJ4KSgD/WWPreqSmoIpIIl9RvWA7usVtKk77MOyGmSYpQZgYafkumZrRbicF6nmDF9lop9aBgsiVRekcK6tAxdx48WhfNg7WEdK9e3vVRIhbfFEYdKii9IrKQzu2qEcG4WisGSeVVekbKH0IwELIKn+TzGGEWV8AKGpHiWUctJWB4LuaqzeWpccMOw+HWx4UevZ5Eqk4KGtGj0IfqRE24zAkwsTDm8cil9J3HL06lMzglOihU3E0mJzTUjxco7F85JxSUpVgOqxI1hg/0H36mxNsdT+k4nK0kpOiQO6z0FUizt8RyJxZGTIr6wk0N92sxFHaPMF1RfLJQDoVMjWDdsRzaSH5ek1ophWe8pbnMI+ohV9nI0IefF3sayix0hRKNtcYs4ZGnyLe04Z/mULYD90Jnp+k5/XZJSSzJusjypVFIz0ea/kD2fTsuvbjbJixxO/HhStmckyCa09xlPY5cvGhzdK3YT6LhDhRQvx5gTlHMG+LFtZtJLKls4pijTNXsQhomHKg4UBFINJcZ0OC5ORjIqQm3xCLktSdVKMqSWWOkpHP87z5m4GKkQBk5QajimaUepfEU5xkQlKwUik++JfjnE3GdEqgySCafXta37rzgl3Iq6DGdWcWo4OTs8ynKsK8ltoSzHupLcFsJbgdTVD5AiW/EDpMRLrqR2nNfAA68r/IDd3xgGXp0hMgR/oK/hKNvFgd9xvUKMjohMn4PYnY6LtzqPj48h3IrFk3V5y7hit4wy8GV5R7mexHD148PPQ9ZhN166COUYkKsnZ7DMgG5FMrg/nKx/8vqQ+QjclC0ncQ7XU3R631WqcdWgM/zrcvOwu7jQzeCu65qq4ddftSYJVeY13OTRrRK7U+Tmdf+VBn78E6+QojnVy/R21TDdHrC6ncL1a4QXaX9+lL7dDf7631//rXa+QP21SJLV6j9K4OZOev1ucHJy8qkNQgU+UQKDd9Kr9ydAqhU1MTwBgZP38rtP9XcHBdPKk/zy77r2Dop3QOpv5eVn6lSDO+34g+AOnPqz8vIDkPqoHX8QfAT5H5SXdzf05bdW+CC+UVI3qqXe34BNWwu/BHz6Rg20BEidPGl/cQBgRripvYa3g9ZIoaFOaq//Hmj0dzAAqYGaERo87WDAOFODryEmD4aGjATZa6Bmr4MBC0rdTpjnW+sTsPTWq9yTriIeCk3Ckzb7hPdNZmow60GgLceANvuEj01R1mZO+NCkkHc37eUEsNKNrsV8+tpam56An3/VRT72CYN2SA2aRGNOaKckN5RjwOfWSvJdsztDCNy00qZvCPy71nJCY0bgW3e9ZfeMDZvO1rbum8qubjt/EKA2mjYtDU3N3rGxlWurJG/ICO1t3Te2Ag1bir3jw6as/a452+8VWN+afPkJS/JB+SAgP9407Q7Yhv7ge4enjccYSTtbd9YjNCbtdvqELfHVTpu+JRO1s3XfkrO1R7T7Bh7ibahu2sPsfWPrEX4bfQLrETYMgJxw6CN+6C031pE2+oSt0dVGTtjam2zsbPaErRm74eR4rzjZtgd+goL99WB8EF+3HeBjztCeNOwN7Fxlk8ik8Uxmb2AnUBs3dodv03cI+MPnhB3U0Hgiujd83n7++37QeO1nXgjoif98b4lfLPFLT/xi6mbFHmGwudw2bt17p3+8KfHHcc8S8Cx+eha/9I7FT6c9jRY2bdkLNPQRz/3+cYW+JNl8ua8+3b+YEl/pZ/1nPaltty/6kvxyL05+/yAJNk9FUqfyt4d7kdX9izrzTs2uNhhexZmP+18kuZb5pb/jR8r5VZl6p3DXlGRJEzXjUUhi+8pHyYCU1ZHs7zttoDDBSjbuncmcFOOpYlXKsgHpz79ciLN/2qWEYE4Qt+4Xx/JS+28VTuaLTOpF/f5WmeBYZDXYnhGKklw9yy6uM551KpM6Vb8/qzMI7p5sLcc4St66P7zpy6gZz+p15RHdnjKAGlCZ5M1DaZjNW/YC0mHR65czBV8uVDx35RHnz7Uh9VmKINzxSOxDFaOJ1avh6K2C4yN1VFcd8vaoPo+VqNI2ocpmiWqHeihBNL2qjv1aH1OzObU6stpx+1Qe8Zt1Tlavr8o7flOLtpcaqeN73VyQsHb8XzJs02k8WJp5rG6dVF3eRZ1Uv6uZzLJYrO/yHzasT9DNodNB/219XF9DXdUnw9Yte4FPkNL/0U2hUYEmLamJi7O60M34DyT0Xf5D4/OggZN1pBNW92GNp1PyR9opKaudNr8fvn7TuRONvDd1WTTB10lprEwDQhOBFL1vX3fZEtx9067JUosgw1uNWZ4146DkaVlZ33Y5UNFTsno649H2STf0i5ZVrf4U2EopeThtwLkWXd3QrnboWdPMD1tqn/l61m3AkR4/ORRw9qrd6BTonZ43TLhXnOv2OQUujlrhRFkdXTRxem5U/N7RPavvvhAvLamJ4fxFQ8l+bZUTZVV3d7MdF5dYnSqsLtrnBKwkd79oz8VFdLsCq5fz34ITZVW5+8tZ22QqnDFW9u/gThXOT+3fIuxkQBC2nZ7qOH/t/CYuLqLbefiNvJzh7KFjPvxm9jt/MP8PrP/ATIdZpiYAAAAASUVORK5CYII='});
+          const notification = new Notification(title,{icon:address});
           
           // …
         }

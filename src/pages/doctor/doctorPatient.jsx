@@ -15,7 +15,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
   return (
     <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
     <Badge
-      color="primary"
+      color="secondary"
       badgeContent={
         visit.patient.visit_count == 1 ? undefined :  visit.patient.visit_count
       }

@@ -98,7 +98,11 @@ function ReceptionForm({ hideForm,lab }) {
       .then((data) => {
         console.log(data, "reception added");
         if (data.status) {
+          console.log(data,'data of new patient')
           //set is loading to false
+          axiosClient(`newPatient/${data.data.patient}`).then(({data})=>{
+                    
+          })
           setIsLoading(false);
           setDialog((prev) => ({
             ...prev,
