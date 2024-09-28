@@ -63,7 +63,7 @@ function ResultSection({
                 {selectedTest &&
                   selectedTest.requested_results.map((req, i) => {
                   
-                    console.log(selectedTest, "req result in table");
+                   
                     if (req.child_test == null) {
                       return;
                     }

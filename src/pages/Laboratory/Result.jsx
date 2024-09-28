@@ -1,5 +1,5 @@
 import "./addPatient.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
 import { webUrl } from "../constants";
@@ -28,8 +28,10 @@ import ResultSidebar from "./ResultSidebar";
 import printJS from "print-js";
 import ResultSection from "./ResultSection";
 import { LoadingButton } from "@mui/lab";
-
+import { socket } from "../../socket";
+import urgentSound from '../../assets/sounds/urgent.mp3'
 function Result() {
+  const audioRef =  useRef()
   const {
     actviePatient,
     setActivePatient,
@@ -46,7 +48,7 @@ function Result() {
         [colName]: val,
       })
       .then(({ data }) => {
-        console.log(data);
+       
         if (data.status) {
           setActivePatient(data.patient);
           setShift((prev)=>{
@@ -68,7 +70,7 @@ function Result() {
         }
       })
       .catch(({ response: { data } }) => {
-        console.log(data);
+       
         setDialog((prev) => {
           return {
             ...prev,
@@ -79,15 +81,15 @@ function Result() {
         });
       }).finally(()=>setLoading(false));
   };
-  console.log(searchByName, "searchByname");
+ 
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
-  console.log(actviePatient);
+ 
   const [shift, setShift] = useState(null);
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedReslult, setSelectedResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  console.log(selectedReslult, "selected result");
+ 
 
   const [layOut, setLayout] = useState({
     form: "1fr",
@@ -97,14 +99,20 @@ function Result() {
     showTestPanel: false,
     patientDetails: "0.8fr",
   });
+  
   useEffect(() => {
+    const audio = new Audio(urgentSound)
+     setTimeout(() => {
+      audio.play()
+      audioRef.current.play()
+     }, 3000);
     document.title = "تنزيل النتائج";
   }, []);
 
   useEffect(() => {
     setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
-      console.log(data.data, "today patients");
+     
       //add activeProperty to patient object
       data.data.patients.forEach((patient) => {
         patient.active = false;
@@ -113,20 +121,20 @@ function Result() {
       setPatientsLoading(false);
     });
   }, [update]);
-  console.log(shift, "selected shift");
+ 
 
   const setActivePatientHandler = (pat) => {
     // setSelectedTest(null)
     // setSelectedResult(null)
     setSelectedResult(null);
-    console.log("start active patient clicked");
+   
     const data = shift?.patients.find((p) => p.id === pat.id);
     // axiosClient.get(`patient/${id}`).then(({data})=>{
-    console.log(data, "patient from db");
+   
     // alert(shift.id)
     if (pat.shift_id == shift.maxShiftId) {
       axiosClient.get(`shift/last`).then(({ data: data }) => {
-        console.log(data.data, "today patients");
+       
         //add activeProperty to patient object
         data.data.patients.forEach((patient) => {
           patient.active = false;
@@ -156,9 +164,10 @@ function Result() {
           setActivePatientHandler={setActivePatientHandler}
         />
       </div>
-
+        <audio hidden ref={audioRef} controls src={urgentSound}></audio>
       <div
         style={{
+          userSelect:'none',
           gap: "15px",
           transition: "0.3s all ease-in-out",
           height: "80vh",
@@ -201,7 +210,7 @@ function Result() {
                 axiosClient
                   .get(`shiftById/${shift.id - 1}`)
                   .then(({ data }) => {
-                    console.log(data.data, "shift left");
+                   
                     setShift(data.data);
                   })
                   .finally(() => setLoading(false));
@@ -220,7 +229,7 @@ function Result() {
                 axiosClient
                   .get(`shiftById/${shift.id + 1}`)
                   .then(({ data }) => {
-                    console.log(data.data, "shift left");
+                   
                     setShift(data.data);
                   })
                   .finally(() => setLoading(false));
@@ -265,7 +274,7 @@ function Result() {
           </div>
         </Card>
         <Card sx={{ height: "80vh", overflow: "auto" }}>
-          {console.log(actviePatient, "activve pateint")}
+          
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <List sx={{ direction: "ltr" }}>
               {actviePatient.labrequests.map((test) => {
@@ -274,7 +283,7 @@ function Result() {
                     onClick={() => {
                       setSelectedTest(test);
                       setSelectedResult(null);
-                      console.log(test, "selected test");
+                     
                     }}
                     style={
                       selectedTest && selectedTest.id == test.id
@@ -345,8 +354,8 @@ function Result() {
                           const low = Number(req.child_test.lowest);
                           const max = Number(req.child_test.max);
                           const result = Number(req.result);
-                          console.log(low);
-                          console.log(max);
+                         
+                         
                           if (low > 0 && max > 0) {
                             if (result < low || result > max) {
                               alert(
@@ -363,7 +372,7 @@ function Result() {
                       .then(({ data }) => {
                         
                         form.append("data", data);
-                        console.log(data, "daa");
+                       
                         printJS({
                           printable: data.slice(data.indexOf("JVB")),
                           base64: true,
@@ -384,7 +393,10 @@ function Result() {
                 >
                   print
                 </Button> :<LoadingButton loading={loading} onClick={()=>{
-                   axiosClient(`resultFinished/${actviePatient.id}`).then(({data})=>{
+                  //authentication event
+                  
+                  axiosClient(`resultFinished/${actviePatient.id}`).then(({data})=>{
+                     socket.emit('resultAuthenticated',actviePatient.id)
                     
                    })
                   updateHandler(1,'result_auth')
@@ -397,6 +409,7 @@ function Result() {
           )}
         </div>
         <ResultSidebar
+         key={actviePatient?.id}
           setShift={setShift}
           actviePatient={actviePatient}
           loading={loading}

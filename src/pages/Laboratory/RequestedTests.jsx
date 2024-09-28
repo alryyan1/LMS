@@ -21,6 +21,7 @@ import axiosClient from "../../../axios-client";
 import { useStateContext } from "../../appContext";
 import { t } from "i18next";
 import printJS from "print-js";
+import { socket } from "../../socket";
 function RequestedTests({
   setPatients,
   activePatient: actviePatient,
@@ -62,7 +63,6 @@ function RequestedTests({
         if (data.status) {
           console.log(data, "data");
           change(data.data);
-
           const form = new URLSearchParams();
           axiosClient
             .get(`printLab?pid=${actviePatient.patient.id}&base64=1`)

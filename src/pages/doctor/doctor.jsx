@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../Laboratory/addPatient.css";
-
+import io from 'socket.io-client'
 import {
   Divider,
   Stack,
@@ -17,6 +17,9 @@ import {
   ArrowBack,
   ArrowForward,
   FormatListBulleted,
+  NotificationAdd,
+  NotificationImportantSharp,
+  Notifications,
   RemoveRedEyeSharp,
 } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
@@ -42,6 +45,7 @@ import VitalSigns from "./VitalSigns";
 import SickLeave from "./SickLeave";
 import CarePlan from "./CarePlan";
 import { finishedImg, newImage } from "../constants";
+import { socket } from "../../socket";
 
 function Doctor() {
   const [value, setValue] = useState(0);
@@ -50,6 +54,14 @@ function Doctor() {
   const [diagnosis, setDiagnosis] = useState([]);
   const { user } = useStateContext();
   const [showPatients, setShowPatients] = useState(true);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  function onConnect() {
+    setIsConnected(true);
+  }
+
+  function onDisconnect() {
+    setIsConnected(false);
+  }
 
   const [showPreviousVisits, setShowPreviousVisits] = useState(false);
   const [layOut, setLayout] = useState({
@@ -59,6 +71,32 @@ function Doctor() {
     panel: false,
     panelList: "minmax(0,2fr)",
   });
+  useEffect(()=>{
+  //  const socket =  io('ws://localhost:3000')
+   
+  socket.on('connect', onConnect);
+  socket.on('disconnect', onDisconnect);
+  socket.on('disconnect',()=>{
+    console.log('socket disconnected')
+  })
+   socket.on('connect',(args)=>{
+    console.log('doctor connected succfully with id'+socket.id,args)
+   })
+   socket.on('greeting',(data)=>{
+    console.log('received greeting from server '+data)
+   })
+   socket.on('authenticatedResult',(pid)=>{
+    console.log('received result from server for patient '+pid)
+    checkResults(focusPatientDeleteNotfication,pid)
+   })
+
+
+   return ()=>{
+    socket.off('connect', onConnect);
+    socket.off('disconnect', onDisconnect);
+    socket.off('authenticatedResult')
+   }
+  },[])
   const hideVisits = () => {
     setShowPreviousVisits(false);
     setLayout((prev) => {
@@ -123,16 +161,16 @@ function Doctor() {
     axiosClient.get(`removeNewPatient/${data.patient.id}`)
     // setValue(9)
   }
-  const checkResults = (action)=>{
-    axiosClient.get('labFinishedNotifications').then(({data})=>{
-      data.map((d)=>{
-       axiosClient.get(`doctorvisit/find?pid=${d.patient_id}`).then(({data})=>{
+  const checkResults = (action,pid)=>{
+    
+       axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({data})=>{
          console.log(data,'patient data')
-
-        notifyMe(`Lab Results just finished for patient '${data.patient.name}'`,data,finishedImg,action)
+        if (data != '') {
+          
+          notifyMe(`Lab Results just finished for patient '${data.patient.name}'`,data,finishedImg,action)
+        }
       
-        })
-      })
+      
     })
   }
   const checkNewPatients = (action)=>{
@@ -146,15 +184,15 @@ function Doctor() {
       })
     })
   }
-  useEffect(()=>{
-   const timer =  setInterval(() => {
-    checkResults(focusPatientDeleteNotfication)
-    checkNewPatients(focusTheNewPAtient)
-    }, 15000);
-    return ()=>{
-      clearInterval(timer)
-    }
-  },[])
+  // useEffect(()=>{
+  //  const timer =  setInterval(() => {
+  //   checkResults(focusPatientDeleteNotfication)
+  //   checkNewPatients(focusTheNewPAtient)
+  //   }, 15000);
+  //   return ()=>{
+  //     clearInterval(timer)
+  //   }
+  // },[])
   const notifyMe = (title,data,address,action) => {
     // alert(Notification.permission)
     if (!("Notification" in window)) {
@@ -397,6 +435,20 @@ function Doctor() {
             variant="contained"
           >
             <RemoveRedEyeSharp />
+          </LoadingButton>
+          <Divider />
+          <LoadingButton 
+            sx={{ mt: 1 }}
+            color="inherit"
+            title="show patient list"
+            size="small"
+            onClick={() => {
+              isConnected ?  socket.disconnect() : socket.connect()
+             
+            }}
+            variant="contained"
+          >
+            <Notifications color={isConnected ? 'success' : 'error'} />
           </LoadingButton>
         </Stack>
         {showPatients ? (

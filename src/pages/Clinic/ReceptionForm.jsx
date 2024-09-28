@@ -100,6 +100,7 @@ function ReceptionForm({ hideForm,lab }) {
         if (data.status) {
           console.log(data,'data of new patient')
           //set is loading to false
+          //new patient notification
           axiosClient(`newPatient/${data.data.patient}`).then(({data})=>{
                     
           })

@@ -229,7 +229,7 @@ function PatientDetail({
               axiosClient
                 .post(`patient/copy/${data.id}/${patient.id}/${true}`)
                 .then(({ data }) => {
-                  console.log(data,'data from copy')
+                 
                   if (data.status) {
                     // alert('status')
                     setUpdate((prev) => prev + 1);
@@ -248,7 +248,7 @@ function PatientDetail({
 
             isOptionEqualToValue={(option, val) => option.id === val.id}
             renderInput={(params) => {
-              // console.log(params)
+              //
 
               return <TextField {...params} label={t("copy_patient")} />;
             }}

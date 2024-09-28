@@ -14,6 +14,8 @@ import { Delete, DeleteOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { t } from "i18next";
+import { Stack } from "rsuite";
+import { LoadingButton } from "@mui/lab";
 function AddLabTests(props) {
 
   const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,changeDoctorVisit, ...other } =
@@ -83,12 +85,19 @@ function AddLabTests(props) {
                 })}
               </TableBody>
             </Table>
+            
           </TableContainer>
+
           <Divider />
+        
          
          
         </Box>
       )}
+        <Stack direction="row" gap={2}>
+            <LoadingButton variant="contained">Confirm</LoadingButton>
+            <LoadingButton variant="contained">Urgent</LoadingButton>
+          </Stack>
     </div>
   );
 }

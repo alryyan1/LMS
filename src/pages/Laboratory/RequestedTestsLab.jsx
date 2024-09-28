@@ -23,6 +23,7 @@ import {
   import printJS from "print-js";
 import DiscountSelectLab from "./DiscountSelectLab";
 import MyCheckBoxLab from "./MyCheckboxLab";
+import { socket } from "../../socket";
   function RequestedTestsLab({ setPatients }) {
     // console.log("requested tests rendered");
     const {
@@ -55,7 +56,8 @@ import MyCheckBoxLab from "./MyCheckboxLab";
           console.log(data, "patient paid data");
           if (data.status) {
             setActivePatient(data.data);
-  
+          socket.emit('newLabPatient',actviePatient.id)
+            
             const form = new URLSearchParams();
             axiosClient
               .get(`printLab?pid=${actviePatient.id}&base64=1`)

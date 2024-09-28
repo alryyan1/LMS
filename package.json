@@ -39,8 +39,9 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "generate-serial-number": "^0.0.3",
+    "http": "^0.0.1-security",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "lucide-react": "^0.441.0",
@@ -62,10 +63,12 @@
     "react-router-dom": "^6.22.0",
     "rsuite": "^5.70.1",
     "save-dev": "^0.0.1-security",
+    "socket.io-client": "^4.8.0",
     "stylis": "^4.3.1",
     "stylis-plugin-rtl": "^2.1.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "websocket": "^1.0.35",
     "zod": "^3.23.8"
   },
   "devDependencies": {
