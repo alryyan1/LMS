@@ -30,7 +30,8 @@ function App() {
         <div className="app-container2">
           
         <Nav />
-        <Outlet key={i18n.language} />
+        {/* <Outlet key={i18n.language} /> */}
+        <Outlet  />
         </div>
       </div>
     </>

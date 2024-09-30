@@ -11,6 +11,7 @@ i18next
     resources: {
       ar: {
         translation: {
+          reports:'التقارير',
           finance: "الحسابات",
           print_time: "زمن الطباعه",
           register_lab_patient: "التسجيل  ",
@@ -115,12 +116,21 @@ i18next
           trialBalance:'ميزان المراجعه',
           departments:'الاقسام',
           govId:' رقم بطاقه مدنيه ',
-          patients:'المرضي'
+          patients:'المرضي',
+          city:'المدينه',
+          zipCode:'الرمز البريدي',
+          accountNumber:'رقم الحساب',
+          bankName:'ا��م البنك',
+
         },
 
       },
       en: {
         translation: {
+          
+
+           reports:'reports',
+          finance: "finance",
           patients:'patients',
          address:'Address',
          country:'Country',
@@ -206,6 +216,7 @@ i18next
           expenses: "expenses",
           income: "New Purchase Invoice",
           sales: "sales",
+          
           items: "items",
           define: "define item",
           pos: "POS",

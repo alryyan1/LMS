@@ -195,7 +195,7 @@ function ItemDeposit() {
   }, [update]);
 
   useEffect(() => {
-    document.title = "اذن وارد";
+    document.title = "المشتروات ";
   }, []);
   const deleteIncomeItemHandler = (id) => {
     setLoading(true);
@@ -355,7 +355,7 @@ function ItemDeposit() {
                     <TableCell>عرض التفاصيل</TableCell>
                     <TableCell> دفع</TableCell>
                     <TableCell> التقرير</TableCell>
-                    <TableCell> ملخص الفاتوره</TableCell>
+                    <TableCell>  حذف</TableCell>
                     <TableCell> %الخصم </TableCell>
                   </TableRow>
                 </TableHead>
@@ -436,20 +436,22 @@ function ItemDeposit() {
                           <a href={`${webUrl}pdf?id=${deposit.id}`}>pdf</a>
                         </TableCell>
                         <TableCell>
-                          <IconButton
-                            onClick={() => {
-                              // console.log(deposit, "deposit");
-                              setLoading(true);
-                            
-                              axiosClient(`getDepositWithItemsAndSummery/${deposit.id}`).then(({data})=>{
-                               change(data);
-                               setShowSummery(true);
- 
-                              }).finally(()=>setLoading(false))
-                            }}
-                          >
-                            <Info />
-                          </IconButton>
+                       <LoadingButton onClick={()=>{
+                        let result  =  confirm(
+                          `هل تريد حذف الفاتورة ${deposit.bill_number}?`  
+                        )
+                        if(result){
+                             axiosClient.delete(`inventory/${deposit.id}`).then(({data})=>{
+                          if (data.status) {
+                            setTodayDeposits((prev)=>{
+                              return prev.filter((d) => d.id!== deposit.id);
+                            })
+                          }
+                        })
+                        }
+                     
+                       }}>Delete</LoadingButton>
+                       
                         </TableCell>
                         <MyTableCell
                           setDialog={setDialog}

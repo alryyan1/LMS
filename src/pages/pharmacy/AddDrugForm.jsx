@@ -64,13 +64,13 @@ function AddDrugForm({setUpdate}) {
       }
     },[sell_price,strips])
 
-    // useEffect(()=>{
-    //   axiosClient.get("inventory/deposit/all").then(({data})=>{
-    //     setDeposits(data)
-    //     console.log(data,'all deposits')
-    //   })
+    useEffect(()=>{
+      axiosClient.get("inventory/deposit/all").then(({data})=>{
+        setDeposits(data)
+        console.log(data,'all deposits')
+      })
  
-    // },[])
+    },[])
     // useEffect(() => {
     //   setItemsIsLoading(true);
     //   //fetch all Items
@@ -380,7 +380,7 @@ function AddDrugForm({setUpdate}) {
             />
           </LocalizationProvider> */}
         {/* </Stack> */}
-        {/* <Stack direction={"column"}>
+        { <Stack direction={"column"}>
         {deposits.length > 0 && <Controller
             name="deposit"
           
@@ -393,9 +393,9 @@ function AddDrugForm({setUpdate}) {
                   isOptionEqualToValue={(option, val) => option.id === val.id}
                   sx={{ mb: 1 }}
                   {...field}
-                  // value={deposits[0]}
+                  value={deposits[0]}
                   options={deposits}
-                  getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number}`}
+                  getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number} ------ (${option.id})`}
                   onChange={(e, data) => field.onChange(data)}
                   renderInput={(params) => {
                     return (
@@ -414,7 +414,7 @@ function AddDrugForm({setUpdate}) {
             }}
           />
 }
-        </Stack> */}
+        </Stack> }
 
         <LoadingButton
           fullWidth

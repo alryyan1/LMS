@@ -82,6 +82,8 @@ function MyTableCell({
             }
             if (change) {
               change(data.data.deposit)
+            stateUpdater((prev) => prev + 1);
+
             }
          
             if(setDialog){

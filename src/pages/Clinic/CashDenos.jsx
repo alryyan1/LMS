@@ -26,7 +26,7 @@ const options = {
 };
 function CashDenos() {
   useEffect(() => {
-    document.title = "الفئات -المصروفات";
+    document.title = "الفئات -";
   }, []);
   const [shift, setShift] = useState(null);
   useEffect(() => {
@@ -89,77 +89,10 @@ function CashDenos() {
       )}
       <Grid container spacing={2}>
        
-        <Grid  item lg={3} xs={12}>
-          <Card sx={{ borderRadius: 10, flexBasis: "70px", p: 1 }}>
-            <CardContent>
-              <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
-                <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography variant="h4" textAlign={"center"}>
-                    الفئات
-                  </Typography>
-                  <Divider />
-                  <Typography textAlign={"center"} variant="h4">
-                    {denosAmount.toLocaleString({ minimumFractionDigits: 2 })}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{ borderRadius: 10, flexBasis: "70px", p: 1, mt: 2 }}>
-            <CardContent>
-              <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
-                <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography variant="h4" textAlign={"center"}>
-                    المصروفات
-                  </Typography>
-                  <Divider />
-                  <Typography textAlign={"center"} variant="h4">
-                    {totalCost?.toLocaleString({ minimumFractionDigits: 2 })}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card sx={{ borderRadius: 10, flexBasis: "70px", p: 1, mt: 2 }}>
-            <CardContent>
-              <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
-                <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography variant="h4" textAlign={"center"}>
-                    الدخل
-                  </Typography>
-                  <Divider />
-                  <Typography variant="h4">
-                    {totalIncome.toLocaleString({ minimumFractionDigits: 2 }) }
-                  </Typography>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card  sx={{ borderRadius: 10, flexBasis: "70px", p: 1, mt: 2,color:(theme)=> (denosAmount + totalCost - totalIncome)  == 0? theme.palette.success.main :theme.palette.error.light}}>
-            <CardContent>
-              <Stack direction={"row"} justifyContent={"space-evenly"} gap={2}>
-                <Stack justifyContent={"space-between"} direction={"column"}>
-                  <Typography variant="h4" textAlign={"center"}>
-                    {/* {(denosAmount + totalCost - totalIncome)  > 0 &&  '+'} */}
-                    {/* {(denosAmount + totalCost - totalIncome) < 0 &&  '-'} */}
-                    --
-                  </Typography>
-                  <Divider />
-                  <Typography textAlign={"center"} variant="h4">
-                    {(denosAmount + totalCost - totalIncome).toLocaleString({
-                      minimumFractionDigits: 2,
-                    })}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid  item lg={3} xs={12}>
+        
+        {/* <Grid  item lg={3} xs={12}>
           <Box sx={{ p: 1 }}>
-            <Typography variant="h3" textAlign={"center"}>
-              الفئات
-            </Typography>
+       
             <Table size="small" style={{ direction: "rtl" }}>
               <TableHead>
                 <TableRow>
@@ -204,16 +137,20 @@ function CashDenos() {
               </TableBody>
             </Table>
           </Box>
+        </Grid> */}
+         <Grid   item lg={3} xs={12}>
+         <AddCostForm setShift={setShift}/>
         </Grid>
-        <Grid  item  lg={3} xs={12}>
+        <Grid  item  lg={6} xs={12}>
           <Box sx={{ p: 1 }}>
-            <Typography variant="h4" textAlign={"center"}>
+            <Typography variant="h6" textAlign={"center"}>
               مصروفات الورديه
             </Typography>
             <Table size="small" style={{ direction: "rtl" }}>
               <TableHead>
                 <TableRow>
                   <TableCell>وصف المنصرف</TableCell>
+                  <TableCell>قسم </TableCell>
                   <TableCell>المبلغ</TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
@@ -223,6 +160,7 @@ function CashDenos() {
                   return (
                     <TableRow key={cost.id}>
                       <TableCell>{cost.description}</TableCell>
+                      <TableCell>{cost?.cost_category?.name}</TableCell>
                       <TableCell>{cost.amount}</TableCell>
                       <TableCell>
                         <LoadingButton onClick={()=>{
@@ -241,9 +179,7 @@ function CashDenos() {
             </Table>
           </Box>
         </Grid>
-        <Grid   item lg={3} xs={12}>
-         <AddCostForm setShift={setShift}/>
-        </Grid>
+       
       </Grid>
     </>
   );

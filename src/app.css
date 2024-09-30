@@ -154,7 +154,9 @@ body {
 
 }
 
-
+.blurForNormalUsers{
+   filter: blur(5px);
+}
 
 
 .effect {

@@ -2,7 +2,16 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
+export function onlyAdmin (user,action){
+  if(user != 1){
+     return action()
+  }
+}
 
+export function blurForNoramlUsers (){
+  // return classname has filter properties
+  return "blurForNormalUsers"
+}
 // export const url = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api/"
 export const url = "http://127.0.0.1/laravel-react-app/public/api/"
 //  export const url = "http://192.168.1.5/laravel-react-app/public/api/"

@@ -284,7 +284,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
               <Tab
                 className={`opacity-1 ${value == 11 ? "header" : ""}`}
                 value={11}
-                label="Patient Care Plan"
+                label="Plan of Care"
               />
             )}
           </Stack>

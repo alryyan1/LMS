@@ -1,22 +1,36 @@
 import { LoadingButton } from '@mui/lab';
 import { Box, Divider, Stack, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import axiosClient from '../../axios-client';
+import MyCustomControlledAutocomplete from '../pages/doctor/MyCutomAutocomplete';
 
 function AddCostForm({setShift}) {
     const [loading , setLoading] = useState(false)
+    const [costCategories,setCostCategories] = useState([])
+    useEffect(()=>{
+        axiosClient.get(`costCategory`).then(({data})=>{
+          setCostCategories(data);
+        })
+    },[])
     const {
         handleSubmit,
+        setValue,
         register,
-        formState: { errors },
+        control,
+        reset,
+        
+        formState: { errors,submitCount },
       } = useForm();
+      console.log(errors,'errors')
       const submitHandler = (data) => {
+        console.log(data)
         setLoading(true);
-        console.log("function called");
-        axiosClient.post("cost/general", data).then(({ data }) => {
+        axiosClient.post("cost/general", {...data,cost_category_id:data.costCategory.id}).then(({ data }) => {
           console.log(data);
           if (data.status) {
+            reset()
+            
             if (setShift) {
                 
                 setShift(data.data);
@@ -26,7 +40,7 @@ function AddCostForm({setShift}) {
       };
   return (
     <Box elevation={2}>
-    <Typography textAlign={"center"} variant="h4">
+    <Typography textAlign={"center"} >
       اضافه مصروف
     </Typography>
     <Divider></Divider>
@@ -34,7 +48,7 @@ function AddCostForm({setShift}) {
       onSubmit={handleSubmit(submitHandler)}
       style={{ padding: "5px" }}
     >
-      <Stack direction={"column"} spacing={2}>
+      <Stack direction={"column"} gap={2}>
         <TextField
           error={errors?.description != null}
           helperText={errors?.description && errors.description.message}
@@ -47,6 +61,7 @@ function AddCostForm({setShift}) {
           multiline
           label="وصف المصروف"
         />
+        <MyCustomControlledAutocomplete key={submitCount} setValue={setValue} control={control} errors={errors} rows={costCategories} setRows={setCostCategories} submitPath={'costCategory'}  isRequired={true} title='اضافه قسم' label='قسم المصروف' controllerName={'costCategory'} />
         <TextField
           error={errors?.amount != null}
           helperText={errors?.amount && errors.amount.message}
@@ -58,7 +73,7 @@ function AddCostForm({setShift}) {
           })}
           label="المبلغ"
         />
-        <LoadingButton loading={loading} type="submit">حفظ</LoadingButton>
+        <LoadingButton variant='contained' loading={loading} type="submit">حفظ</LoadingButton>
       </Stack>
     </form>
   </Box>

@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useEffect, useState } from "react";
-import { theme, toFixed, webUrl } from "../constants";
+import { blurForNoramlUsers, onlyAdmin, theme, toFixed, webUrl } from "../constants";
 import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyCheckbox from "../../components/MyCheckBox";
@@ -31,6 +31,7 @@ import profit from "./../../assets/images/profit.png";
 import discount from "./../../assets/images/discount.png";
 import discount2 from "./../../assets/images/discount2.png";
 import paid from "./../../assets/images/paid.png";
+import { useStateContext } from "../../appContext";
 
 function DepoistItemsTable({
   selectedDeposit,
@@ -42,12 +43,14 @@ function DepoistItemsTable({
   change,
 }) {
   const { setDialog } = useOutletContext();
+  const {user} = useStateContext()
   console.log(selectedDeposit,'selected Deposit')
   // console.log(setDialog, "setdialog");
   // console.log(data, "data of cloned deposit");
   const [ld, setLd] = useState(false);
   const [search, setSearch] = useState(null);
   const [depsitWithSummery,setDepsitWithSummery] = useState(null)
+  const [updateSummery,setUpdateSummery] = useState(0)
   const changedItems = [];
   const [page, setPage] = useState(0);
   // console.log("data in deposit items table", data);
@@ -93,7 +96,7 @@ function DepoistItemsTable({
       console.log(data,'data')
       setDepsitWithSummery(data)
     })
-  },[])
+  },[updateSummery])
   return (
     <TableContainer sx={{ height: "80vh", overflow: "auto", p: 1 }}>
       <Stack direction={"row"} alignItems={"center"} gap={2}>
@@ -196,7 +199,7 @@ function DepoistItemsTable({
           <Stack
             justifyContent={"center"}
             alignItems={"center"}
-            className={` hover:bg-sky-700`}
+            className={` hover:bg-sky-700 ${onlyAdmin(user?.id,blurForNoramlUsers)}`}
             sx={{ p: 1, color: "black", fontSize: "large" }}
             direction={"column"}
             gap={1}
@@ -353,6 +356,7 @@ function DepoistItemsTable({
                       </span>
                     </TableCell>
                     <MyTableCell
+                      stateUpdater={setUpdateSummery}
                       setDialog={setDialog}
                       sx={{ width: "60px", textAlign: "center" }}
                       show
@@ -365,6 +369,7 @@ function DepoistItemsTable({
                     </MyTableCell>
                     <MyTableCell
                       setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
                       show
                       sx={{ width: "60px", textAlign: "center" }}
                       change={change}
@@ -377,6 +382,7 @@ function DepoistItemsTable({
 
                     <MyTableCell
                       setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
                       show
                       sx={{ width: "60px", textAlign: "center" }}
                       change={change}
@@ -397,6 +403,7 @@ function DepoistItemsTable({
                     </TableCell>
                     <MyTableCell
                       setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
                       sx={{ width: "60px", textAlign: "center" }}
                       show
                       change={change}
@@ -408,6 +415,7 @@ function DepoistItemsTable({
                     </MyTableCell>
                     <MyTableCell
                       setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
                       sx={{ width: "60px", textAlign: "center" }}
                       change={change}
                       item={depositItem}
@@ -447,6 +455,7 @@ function DepoistItemsTable({
                     </TableCell>
                     <MyTableCell
                       setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
                       sx={{ width: "60px", textAlign: "center" }}
                       change={change}
                       item={depositItem}
