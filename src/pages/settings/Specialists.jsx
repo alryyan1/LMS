@@ -102,7 +102,7 @@ import { Label } from "/src/components/ui/label"
           )}
           <Grid item xs={2} >
 
-            <Card className="w-[450px]  rtl text-right col-span-3 ">
+            <Card className="  rtl text-right col-span-3 ">
               <CardHeader>
                 <CardTitle>اضافه  تخصص طبي </CardTitle>
               </CardHeader>

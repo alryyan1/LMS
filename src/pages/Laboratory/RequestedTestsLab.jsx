@@ -56,7 +56,7 @@ import { socket } from "../../socket";
           console.log(data, "patient paid data");
           if (data.status) {
             setActivePatient(data.data);
-          socket.emit('newLabPatient',actviePatient.id)
+          socket.emit('labPayment',actviePatient.id)
             
             const form = new URLSearchParams();
             axiosClient
@@ -72,7 +72,7 @@ import { socket } from "../../socket";
                     type: "pdf",
                   });
                 }
-                if (userSettings?.node_dialog) {
+                if (userSettings?.node_direct) {
                   fetch("http://127.0.0.1:4000/", {
                     method: "POST",
                     headers: {

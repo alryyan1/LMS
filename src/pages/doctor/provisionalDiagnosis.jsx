@@ -63,7 +63,7 @@ function ProvisionalDiagnosis(props) {
             value={sentense}
             multiline
             fullWidth
-            rows={13}
+            rows={3}
           ></TextField>
              <List>
             {showSuggestions &&

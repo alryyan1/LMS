@@ -47,7 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function AddPatient() {
   const { user } = useStateContext();
- 
+
   const {
     actviePatient,
     setActivePatient,
@@ -60,8 +60,15 @@ function AddPatient() {
     setUpdate,
     openEdit,
     setOpenEdit,
-    dialog,patientsLoading, setPatientsLoading,selectedTests,setSelectedTests
+    dialog,
+    patientsLoading,
+    setPatientsLoading,
+    selectedTests,
+    setSelectedTests,
+    settings,
+    userSettings,
   } = useOutletContext();
+
   // console.log(searchByName, "searchByname");
   // const [patientsLoading, setPatientsLoading] = useState(false);
   // console.log(actviePatient);
@@ -83,19 +90,21 @@ function AddPatient() {
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
-          axiosClient.get(`doctorvisit/find?pid=${actviePatient.id}`).then(({data})=>{
-            setActivePatient(data.patient)
-            setPatients((prePatients) => {
-              return prePatients.map((patient) => {
-                if (patient.id === data.patient.id) {
-                  // console.log("patient founded");
-                  return { ...data.patient, active: true };
-                } else {
-                  return { ...patient, active: false };
-                }
+          axiosClient
+            .get(`doctorvisit/find?pid=${actviePatient.id}`)
+            .then(({ data }) => {
+              setActivePatient(data.patient);
+              setPatients((prePatients) => {
+                return prePatients.map((patient) => {
+                  if (patient.id === data.patient.id) {
+                    // console.log("patient founded");
+                    return { ...data.patient, active: true };
+                  } else {
+                    return { ...patient, active: false };
+                  }
+                });
               });
             });
-           })
           setDialog((prev) => {
             return {
               ...prev,
@@ -118,7 +127,7 @@ function AddPatient() {
         });
       });
   };
-//  console.log(setActivePatient, "setActviePatient");
+  //  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
     // setPatientsLoading(true);
     axiosClient.get(`shift/last`).then(({ data: data }) => {
@@ -138,10 +147,7 @@ function AddPatient() {
   const setActivePatientHandler = (id) => {
     // console.log(id, "in active patient handler");
     hideForm();
-    // console.log("start active patient clicked");
-    // const data = patients.find((p) => p.id === id);
-    // axiosClient.get(`patient/${id}`).then(({data})=>{
-    // console.log(data, "patient from db");
+
     setActivePatient({ ...id, active: true });
     setPatients((prePatients) => {
       return prePatients.map((patient) => {
@@ -153,22 +159,7 @@ function AddPatient() {
         }
       });
     });
-    //}//).catch((error)=>console.log(error))
-    // setActivePatient({...foundedPatient,active:true});
   };
-
-  // useEffect(()=>{
-  //   if(foundedPatients.length>0){
-  //     setLayout((prev)=>{
-  //       return {
-  //        ...prev,
-  //        form: "1.5fr",
-
-  //       };
-  //     })
-  //   }
-
-  // },[foundedPatients.length])
 
   const hideForm = () => {
     setLayout((prev) => {
@@ -205,12 +196,9 @@ function AddPatient() {
 
   return (
     <>
-
-      <Stack direction={'row'}   justifyContent={'space-between'} >
-        <Box flexGrow={'1'}>
-
-        </Box>
-        <Box >
+      <Stack direction={"row"} justifyContent={"space-between"}>
+        <Box flexGrow={"1"}></Box>
+        <Box>
           <AutocompleteSearchPatient
             setActivePatientHandler={setActivePatientHandler}
           />
@@ -219,10 +207,10 @@ function AddPatient() {
 
       <div
         style={{
-          marginTop:'5px',
+          marginTop: "5px",
           gap: "15px",
           transition: "0.3s all ease-in-out",
-         
+
           display: "grid",
           // direction:'rtl',
           gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
@@ -237,7 +225,6 @@ function AddPatient() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
-
             <Item>
               <IconButton variant="contained" onClick={showFormHandler}>
                 <CreateOutlinedIcon />
@@ -273,11 +260,29 @@ function AddPatient() {
               lab={true}
               setUpdate={setUpdate}
               hideForm={hideForm}
+              settings={settings}
             />
           )}
         </div>
-        <Card sx={{p:1}} style={{ height:'80vh', overflow: "auto",backgroundColor: "#ffffff73" }}>
-       {actviePatient && <AddTestAutocompleteLab  patients={patients} actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests} setPatients={setPatients} />}
+        <Card
+          sx={{ p: 1 }}
+          style={{
+            height: "80vh",
+            overflow: "auto",
+            backgroundColor: "#ffffff73",
+          }}
+        >
+          {actviePatient && (
+            <AddTestAutocompleteLab
+              patients={patients}
+              actviePatient={actviePatient}
+              selectedTests={selectedTests}
+              setActivePatient={setActivePatient}
+              setDialog={setDialog}
+              setSelectedTests={setSelectedTests}
+              setPatients={setPatients}
+            />
+          )}
 
           <div className="patients" style={{ padding: "15px" }}>
             {patientsLoading ? (
@@ -300,90 +305,118 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card  style={{backgroundColor: "#ffffff73"}}  sx={{ p: 1 }}>
-       
+        <Card style={{ backgroundColor: "#ffffff73" }} sx={{ p: 1 }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
-            <RequestedTestsLab  pid={actviePatient} activePatient={actviePatient} key={actviePatient.id} setPatients={setPatients} />
+            <RequestedTestsLab
+              pid={actviePatient}
+              activePatient={actviePatient}
+              key={actviePatient.id}
+              setPatients={setPatients}
+            />
           )}
           {actviePatient?.labrequests.length == 0 && <TestGroups />}
-          {actviePatient &&  <TextField sx={{mt:1}} defaultValue={actviePatient.discount} onChange={(e)=>{
-            updateHandler(e,'discount')
-          }} label='Total Discount'></TextField>}
+          {actviePatient && (
+            <TextField
+              sx={{ mt: 1 }}
+              defaultValue={actviePatient.discount}
+              onChange={(e) => {
+                updateHandler(e, "discount");
+              }}
+              label="Total Discount"
+            ></TextField>
+          )}
         </Card>
         <div>
-        {!actviePatient && foundedPatients.length > 0 && (
-                <SearchDialog lab={true} />
+          {!actviePatient && foundedPatients.length > 0 && (
+            <SearchDialog lab={true} />
           )}
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
-            setUpdate={setUpdate}
-
+              settings={settings}
+              setUpdate={setUpdate}
               key={actviePatient.id}
               patient={actviePatient}
               setPatients={setPatients}
             />
           )}
-           {actviePatient && <Stack sx={{mt:1}} direction={"row"} gap={2}>
-           <a href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}>Receipt</a>
+          {actviePatient && (
+            <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
+              <a
+                href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}
+              >
+                Receipt
+              </a>
 
-                  <Button size="small"
-                    sx={{ flexGrow: 1 }}
-                    onClick={() => {
-                      setOpenEdit(true);
-                    }}
-                    variant="contained"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                  size="small"
-                    sx={{ flexGrow: 1 }}
-                    onClick={() => {
-                      const form = new URLSearchParams();
+              <Button
+                size="small"
+                sx={{ flexGrow: 1 }}
+                onClick={() => {
+                  setOpenEdit(true);
+                }}
+                variant="contained"
+              >
+                Edit
+              </Button>
+              <Button
+                size="small"
+                sx={{ flexGrow: 1 }}
+                onClick={() => {
+                  const form = new URLSearchParams();
+                  if (settings?.barcode) {
+                    axiosClient
+                      .get(`patient/barcode/${actviePatient.id}`)
+                      .then(({ data }) => {
+                        console.log(data, "barcode");
+                      });
+                  }
 
-                      axiosClient
-                        .get(`printLab?pid=${actviePatient.id}&base64=1`)
-                        .then(({ data }) => {
-                          form.append("data", data);
-                          // console.log(data, "daa");
-                          printJS({
-                            printable: data.slice(data.indexOf("JVB")),
-                            base64: true,
-                            type: "pdf",
-                          });
-
-                          // fetch("http://127.0.0.1:4000/", {
-                          //   method: "POST",
-                          //   headers: {
-                          //     "Content-Type":
-                          //       "application/x-www-form-urlencoded",
-                          //   },
-
-                          //   body: form,
-                          // }).then(() => {});
+                  axiosClient
+                    .get(`printLab?pid=${actviePatient.id}&base64=1`)
+                    .then(({ data }) => {
+                      form.append("data", data);
+                      // console.log(data, "daa");
+                      if (userSettings?.web_dialog) {
+                        printJS({
+                          printable: data.slice(data.indexOf("JVB")),
+                          base64: true,
+                          type: "pdf",
                         });
-                    }}
-                    color="warning"
-                    variant="contained"
-                    target="myframe"
-                  >
-                    Print
-                  </Button>
-                </Stack>}
-         
+                      }
+                      if (userSettings?.node_dialog) {
+                        fetch("http://127.0.0.1:4000/", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                          },
+
+                          body: form,
+                        }).then(() => {});
+                      }
+                    });
+                }}
+                color="warning"
+                variant="contained"
+                target="myframe"
+              >
+                Print
+              </Button>
+            </Stack>
+          )}
         </div>
-        {dialog.showMoneyDialog &&<MoneyDialog />}
+        {dialog.showMoneyDialog && <MoneyDialog />}
         <ErrorDialog />
-        {actviePatient &&<EditPatientDialog
-        key={actviePatient?.id}
-        setDialog={setDialog}
-          open={openEdit}
-          isLab = {true}
-          setOpen={setOpenEdit}
-          patient={actviePatient}
-          // setPatients={setPatients}
-        />}
+        {actviePatient && (
+          <EditPatientDialog
+            key={actviePatient?.id}
+            setDialog={setDialog}
+            open={openEdit}
+            isLab={true}
+            setOpen={setOpenEdit}
+            patient={actviePatient}
+            // setPatients={setPatients}
+          />
+        )}
       </div>
     </>
   );

@@ -30,6 +30,7 @@ import { webUrl } from "../constants";
 import TestGroups from "../../../TestGroups";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import RequestedTests from "../Laboratory/RequestedTests";
+import { socket } from "../../socket";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -62,9 +63,32 @@ function Reception() {
    companies,
    showTestPanel, setShowTestPanel,
    selectedTests, setSelectedTests,
-   showLabTests,setShowLabTests
+   showLabTests,setShowLabTests,
+   settings
   } = useOutletContext();
+  
   const { user } = useStateContext();
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  function onConnect() {
+    setIsConnected(true);
+  }
+
+  function onDisconnect() {
+    setIsConnected(false);
+  }
+
+  useEffect(()=>{
+    socket.on("disconnect", onDisconnect);
+    socket.on("connect", onConnect);
+
+    socket.on("connect", (args) => {
+      console.log("reception connected succfully with id" + socket.id, args);
+    });
+    return () => {
+      socket.off("connect", onConnect);
+    }
+  })
+
   const [layOut, setLayout] = useState({
     form: "minmax(350px, 1fr)",
     hideForm: false,
@@ -222,7 +246,7 @@ function Reception() {
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
-        {openedDoctors.map((shift) => {
+        {openedDoctors.filter((shift)=>shift.user_id == user?.id).map((shift) => {
           // console.log(shift, "shift");
           return (
             <Badge
@@ -301,6 +325,7 @@ function Reception() {
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <PatientDetail
+                settings={settings}
                 openedDoctors={openedDoctors}
                 activeShift={activeShift}
                   key={actviePatient.id}
@@ -411,7 +436,7 @@ function Reception() {
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <ReceptionForm setUpdate={setUpdate} hideForm={hideForm} />
+            <ReceptionForm socket={socket} settings={settings} setUpdate={setUpdate} hideForm={hideForm} />
           )}
         </div>
         <CustumSideBar

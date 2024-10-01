@@ -110,6 +110,57 @@ function PaperConfig() {
             <FormControlLabel
               control={
                 <Checkbox
+                defaultChecked={settings?.country}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "country",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"الجنسيه"}
+            />
+          </FormGroup>
+          <Divider />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.gov}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "gov",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"الرقم الوطني"}
+            />
+          </FormGroup>
+          <Divider />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.barcode}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "barcode",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={" طباعه باركود مع الايصال"}
+            />
+          </FormGroup>
+          <Divider />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
                 defaultChecked={settings?.is_footer}
                   onChange={(e) => {
                     axiosClient.post("settings", {

@@ -2,6 +2,7 @@ import {
   Box,
   Divider,
   IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -14,11 +15,11 @@ import { Delete, DeleteOutline } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { t } from "i18next";
-import { Stack } from "rsuite";
 import { LoadingButton } from "@mui/lab";
+import { updateHandler } from "../constants";
 function AddLabTests(props) {
 
-  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,changeDoctorVisit, ...other } =
+  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,changeDoctorVisit,socket, ...other } =
     props;
   const [selectedTests, setSelectedTests] = useState([]);
   
@@ -94,9 +95,17 @@ function AddLabTests(props) {
          
         </Box>
       )}
-        <Stack direction="row" gap={2}>
-            <LoadingButton variant="contained">Confirm</LoadingButton>
-            <LoadingButton variant="contained">Urgent</LoadingButton>
+        <Stack direction="row" justifyContent={'space-around'} gap={2}>
+            <LoadingButton disabled={patient.doctor_lab_request_confirm == 1} onClick={()=>{
+              updateHandler(1,'doctor_lab_request_confirm',patient,change,setDialog).then((data)=>{
+                console.log(data,'data from handler')
+                  socket.emit('lab_request_confirm',data.id)
+              })
+            }} variant="contained">Confirm</LoadingButton>
+            <LoadingButton disabled={patient.doctor_lab_urgent_confirm == 1} onClick={()=>{
+              updateHandler(1,'doctor_lab_urgent_confirm',patient,change,setDialog)
+
+            }} variant="contained">Urgent</LoadingButton>
           </Stack>
     </div>
   );

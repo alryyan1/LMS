@@ -163,13 +163,13 @@ const SignUp = ({ setUsers, doctors }) => {
 
     //   {error.val && <Alert severity="error">{error.msg}</Alert>}
     // </form>
-    <Card className="w-[450px]  rtl text-right col-span-3 ">
+    <Card className="   text-right col-span-3 ">
       <CardHeader>
         <CardTitle> تسجيل بيانات المستخدم</CardTitle>
         <CardDescription>الرجاء ادخال بيانات المستخدم</CardDescription>
       </CardHeader>
       <CardContent>
-        <form noValidate dir="rtl" onSubmit={handleSubmit(sumbitHamdler)}>
+        <form noValidate  onSubmit={handleSubmit(sumbitHamdler)}>
           <div className="grid w-full items-center gap-4">
             {/** Name  */}
             <div className="flex flex-col space-y-1.5 text-right">

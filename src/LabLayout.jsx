@@ -38,6 +38,7 @@ function LabLayout() {
   const [companies, setCompanies] = useState([]);
   const [selectedTests, setSelectedTests] = useState([]);
   const [userSettings, setUserSettings] = useState(null);
+  const [settings, setSettings] = useState(null);
 
   const [update, setUpdate] = useState(0);
 
@@ -56,6 +57,12 @@ function LabLayout() {
         console.log(data, "comapnies");
         setCompanies(data);
       }),
+  
+        axiosClient.get("settings").then(({ data }) => {
+          console.log(data,'data see')
+          setSettings(data);
+        }),
+ 
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
@@ -167,7 +174,7 @@ function LabLayout() {
             setFoundedPatients,
             updateTests,setUpdateTests,
             openEdit, setOpenEdit,
-            userSettings, setUserSettings,patientsLoading,setPatientsLoading
+            userSettings, setUserSettings,patientsLoading,setPatientsLoading,settings, setSettings
           }}
         />}
 

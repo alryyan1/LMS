@@ -9,39 +9,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import axiosClient from "../../../axios-client";
+import { updateHandler } from "../constants";
 
 function VitalSigns({ patient, setDialog, change }) {
-  const updateHandler = (e, colName) => {
-    axiosClient
-      .patch(`patients/${patient.id}`, {
-        [colName]: e.target.value,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          change(data.patient);
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
+
   return (
     <div style={{ padding: "5px" }}>
       <Typography textAlign={"center"} variant="h6">
@@ -61,13 +32,13 @@ function VitalSigns({ patient, setDialog, change }) {
               <TextField 
                 inputProps={{
                   style: {
-                    fontSize:'28px',
+                    fontSize:'22px',
                     padding: 0,
                     minWidth: "66px",
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e, "bp");
+                  updateHandler(e.target.value, "bp",patient,change,setDialog);
                 }}
                 defaultValue={patient.bp}
               />
@@ -80,12 +51,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                updateHandler(e, "temp");
+                updateHandler(e.target.value, "temp",patient,change,setDialog);
                 }}
                 defaultValue={patient.temp}
               />
@@ -99,12 +70,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e,'weight')
+                  updateHandler(e.target.value,'weight',patient,change,setDialog)
                 }}
                 defaultValue={patient.weight}
               />
@@ -118,12 +89,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                    updateHandler(e, "height")
+                    updateHandler(e.target.value, "height",patient,change,setDialog)
                 }}
                 defaultValue={patient.height}
               />
@@ -136,12 +107,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e, "heart_rate")
+                  updateHandler(e.target.value, "heart_rate",patient,change,setDialog)
                 }}
                 defaultValue={patient.heart_rate}
               />
@@ -154,12 +125,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e, "spo2")
+                  updateHandler(e.target.value, "spo2",patient,change,setDialog)
                 }}
                 defaultValue={patient.spo2}
               />
@@ -172,12 +143,12 @@ function VitalSigns({ patient, setDialog, change }) {
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'28px',
+                    fontSize:'22px',
 
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e, "rbs")
+                  updateHandler(e.target.value, "rbs",patient,change,setDialog)
                 }}
                 defaultValue={patient.rbs}
               />

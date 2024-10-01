@@ -16,7 +16,6 @@ import {
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import CableIcon from "@mui/icons-material/Cable";
-import { socket } from "../../socket";
 function ResultSidebar({
   actviePatient,
   loading,
@@ -27,66 +26,11 @@ function ResultSidebar({
   setResultUpdated,
   setDialog,
   setShift,
+  socket,
+  isConnected
 }) {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  function onConnect() {
-    setIsConnected(true);
-  }
 
-  function onDisconnect() {
-    setIsConnected(false);
-  }
 
-  useEffect(() => {
-    //  const socket =  io('ws://localhost:3000')
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("disconnect", () => {
-      console.log("socket disconnected");
-    });
-    socket.on("connect", (args) => {
-      console.log("lab connected succfully with id" + socket.id, args);
-    });
-
-    socket.on("newLabPatientFromServer", (pid) => {
-      console.log('newEvent from Server')
-      axiosClient.get(`findPatient/${pid}`).then(({ data }) => {
-         console.log(actviePatient,'active patient')
-        if (actviePatient?.id == pid) {
-          console.log(data,'from find')
-          setActivePatient(data);
-          
-        }
-        setShift((prev) => {
-          if (prev.patients.map((p) => p.id).includes(pid)) {
-            return {
-              ...prev,
-              patients: prev.patients.map((p) => {
-                if (p.id === data.id) {
-                  return { ...data };
-                }
-                return p;
-              }),
-            };
-
-         
-          }else{
-            return {
-             ...prev,
-              patients: [...prev.patients, {...data }],
-            };
-          }
-        });
-      });
-    });
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("authenticatedResult");
-    };
-  }, []);
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -142,7 +86,7 @@ function ResultSidebar({
 
       <IconButton
         target="_blank"
-        href="http://127.0.0.1/server/classes/server.php"
+        href="http://127.0.0.1/server/classes/client.php"
         title="LIS"
         color="inherit"
       >

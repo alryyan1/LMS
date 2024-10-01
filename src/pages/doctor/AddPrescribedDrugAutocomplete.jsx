@@ -12,6 +12,12 @@ function AddPrescribedDrugAutocomplete({setUpdater,patient,setDialog,change,setS
   const [selectedDrugs, setSelectedDrugs] = useState([]);
  
   const addDrugsHandler = ()=>{
+
+    
+    if (patient.present_complains == '') {
+      alert('please Fill Presenting complains field first')
+      return
+   }
  
     setLoading(true)
      selectedDrugs.forEach((drug)=>{

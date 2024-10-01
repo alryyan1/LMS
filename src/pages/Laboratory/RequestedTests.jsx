@@ -77,7 +77,7 @@ function RequestedTests({
                   type: "pdf",
                 });
               }
-              if (userSettings?.node_dialog) {
+              if (userSettings?.node_direct) {
                 fetch("http://127.0.0.1:4000/", {
                   method: "POST",
                   headers: {

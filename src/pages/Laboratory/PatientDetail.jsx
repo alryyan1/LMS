@@ -9,6 +9,7 @@ function PatientDetail({
   setUpdate,
   activeShift,
   copyPatient = false,
+  settings,
 }) {
   const { i18n } = useTranslation();
 
@@ -122,7 +123,7 @@ function PatientDetail({
           </div>
         </div>
         <Divider />
-        <div className="form-control">
+        {settings?.gov ? <div className="form-control">
           <div>{t('govId')}</div>
 
           <div>
@@ -131,7 +132,7 @@ function PatientDetail({
               patient?.gov_id
             }
           </div>
-        </div>
+        </div> : ''}
         <Divider />
         <div className="form-control">
           <div>{t('address')}</div>
@@ -144,7 +145,7 @@ function PatientDetail({
           </div>
         </div>
         <Divider />
-        <div className="form-control">
+        {settings?.country ?  <div className="form-control">
           <div>{t('country')}</div>
 
           <div>
@@ -153,7 +154,7 @@ function PatientDetail({
               patient?.country?.name
             }
           </div>
-        </div>
+        </div>: ''}
         {patient.company_id && (
           <div>
             <div className="form-control">

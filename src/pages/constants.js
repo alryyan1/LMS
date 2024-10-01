@@ -2,6 +2,7 @@ import { Paper, createTheme, styled } from "@mui/material"
 import createCache from "@emotion/cache";
 import { prefixer } from "stylis";
 import stylisRTLPlugin from "stylis-plugin-rtl";
+import axiosClient from "../../axios-client";
 export function onlyAdmin (user,action){
   if(user != 1){
      return action()
@@ -20,6 +21,74 @@ export const url = "http://127.0.0.1/laravel-react-app/public/api/"
 //  export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
  export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
+export   const notifyMe = (title, data, address, action) => {
+  // alert(Notification.permission)
+  if (!("Notification" in window)) {
+    // Check if the browser supports notifications
+    alert("This browser does not support desktop notification");
+  } else if (Notification.permission === "granted") {
+    // Check whether notification permissions have already been granted;
+    // if so, create a notification
+    const notification = new Notification(title, { icon: address });
+    notification.onclick = function () {
+      console.log(action, "action");
+      if (action) {
+        // alert('ss')
+        action(data);
+      }
+    };
+
+    // …
+  } else if (Notification.permission !== "denied") {
+    // We need to ask the user for permission
+    Notification.requestPermission().then((permission) => {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        const notification = new Notification(title, { icon: address });
+
+        // …
+      }
+    });
+  }
+
+  // At last, if the user has denied notifications, and you
+  // want to be respectful there is no need to bother them anymore.
+};
+export const updateHandler = (val, colName,patient,change,setDialog) => {
+  return new Promise((resolve,reject)=>{
+    axiosClient
+    .patch(`patients/${patient.id}`, {
+      [colName]: val,
+    })
+    .then(({ data }) => {
+      console.log(data);
+      if (data.status) {
+        change(data.patient);
+        resolve(data.patient);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: "Saved",
+            open: true,
+            color: "success",
+          };
+        });
+      }
+    })
+    .catch(({ response: { data } }) => {
+      console.log(data);
+      setDialog((prev) => {
+        return {
+          ...prev,
+          message: data.message,
+          open: true,
+          color: "error",
+        };
+      });
+    });
+  })
+
+};
 export const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, stylisRTLPlugin],

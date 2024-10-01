@@ -34,6 +34,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         indicatorColor="primary"
         sx={{ gap: 3 }}
         orientation="vertical"
+        variant="scrollable"
         textColor="secondary"
         value={value}
         onChange={handleChange}
@@ -53,27 +54,10 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
           <Tab
             className={`opacity-1 ${value == 0 ? "header" : ""}`}
             value={0}
-            label="Patient Information"
+            label=" Information"
           />
         </Stack>
-        <Stack
-          className={` hover:bg-sky-700 cursor-pointer   ${
-            value == 1 ? "bg-sky-500 hover:text-white font-extrabold " : ""
-          }`}
-          onClick={() => {
-            setValue(1);
-          }}
-          sx={{ p: 1, color: "black" }}
-          direction={"row"}
-          gap={1}
-        >
-          <img style={{ marginRight: "5px" }} width={50} src={examination} />
-          <Tab
-            className={`opacity-1 ${value == 1 ? "header" : ""}`}
-            value={1}
-            label="General Examination"
-          />
-        </Stack>
+        
         {!user?.is_nurse && (
           <Stack
             className={` hover:bg-sky-700 cursor-pointer   ${
@@ -123,7 +107,24 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
             )}
           </Stack>
         )}
-
+<Stack
+          className={` hover:bg-sky-700 cursor-pointer   ${
+            value == 1 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          }`}
+          onClick={() => {
+            setValue(1);
+          }}
+          sx={{ p: 1, color: "black" }}
+          direction={"row"}
+          gap={1}
+        >
+          <img style={{ marginRight: "5px" }} width={50} src={examination} />
+          <Tab
+            className={`opacity-1 ${value == 1 ? "header" : ""}`}
+            value={1}
+            label="General Examination"
+          />
+        </Stack>
         <Stack
           className={` hover:bg-sky-700 cursor-pointer   ${
             value == 6 ? "bg-sky-500 hover:text-white font-extrabold " : ""
@@ -296,6 +297,11 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
           loading={loading}
           color={patient.doctor_finish ? "success" : "primary"}
           onClick={() => {
+
+            if (patient.present_complains == '') {
+               alert('please Fill Presenting complains field first')
+               return
+            }
             setLoading(true);
             axiosClient
               .patch(`patients/${patient.id}`, {

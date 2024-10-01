@@ -2,7 +2,7 @@ import "./addPatient.css";
 import { useEffect, useRef, useState } from "react";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import { webUrl } from "../constants";
+import { newImage, notifyMe, webUrl } from "../constants";
 
 import {
   List,
@@ -89,7 +89,15 @@ function Result() {
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedReslult, setSelectedResult] = useState(null);
   const [loading, setLoading] = useState(false);
- 
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  function onConnect() {
+    setIsConnected(true);
+    console.log('connected succfully')
+  }
+
+  function onDisconnect() {
+    setIsConnected(false);
+  }
 
   const [layOut, setLayout] = useState({
     form: "1fr",
@@ -101,11 +109,7 @@ function Result() {
   });
   
   useEffect(() => {
-    const audio = new Audio(urgentSound)
-     setTimeout(() => {
-      audio.play()
-      audioRef.current.play()
-     }, 3000);
+   
     document.title = "تنزيل النتائج";
   }, []);
 
@@ -147,6 +151,72 @@ function Result() {
     setActivePatient({ ...pat, active: true });
     setSelectedTest(pat.labrequests[0]);
   };
+
+  const patientsUpdateSocketHandler = (pid)=>{
+    axiosClient.get(`findPatient/${pid}`).then(({ data }) => {
+      console.log(actviePatient,'active patient')
+      //patient is already exists and selected
+     if (actviePatient?.id == pid) {
+       console.log(data,'from find')
+       setActivePatient(data);
+       
+     }
+
+     //if patietn exist replace
+     setShift((prev) => {
+       if (prev.patients.map((p) => p.id).includes(pid)) {
+         return {
+           ...prev,
+           patients: prev.patients.map((p) => {
+             if (p.id === data.id) {
+               return { ...data };
+             }
+             return p;
+           }),
+         };
+
+      //else add patient
+       }else{
+         return {
+          ...prev,
+           patients: [...prev.patients, {...data }],
+         };
+       }
+     });
+   });
+  }
+  useEffect(() => {
+    //  const socket =  io('ws://localhost:3000')
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("disconnect", () => {
+      console.log("socket disconnected");
+    });
+    socket.on("connect", (args) => {
+      console.log("doctor connected succfully with id" + socket.id, args);
+    });
+   
+  
+    socket.on("labrRquestConfirmFromServer", (pid) => {
+      console.log("labrRquestConfirmFromServer " + pid);
+      notifyMe(`New Lab Request '`, null, newImage, null);
+      patientsUpdateSocketHandler(pid)
+
+    });
+    socket.on("labPaymentFromServer", (pid) => {
+      console.log('newEvent from Server')
+      patientsUpdateSocketHandler(pid)
+    });
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("labrRquestConfirmFromServer");
+      socket.off("labPaymentFromServer");
+      
+    };
+  }, []);
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
@@ -409,7 +479,7 @@ function Result() {
           )}
         </div>
         <ResultSidebar
-         key={actviePatient?.id}
+        //  key={actviePatient?.id}
           setShift={setShift}
           actviePatient={actviePatient}
           loading={loading}

@@ -41,7 +41,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
       >
         <Item sx={visit.patient.doctor_finish ? {backgroundColor:(theme)=>theme.palette.success.main} :  {backgroundColor:(theme)=>theme.palette.primary.main}} className="patient-no2 text-white">{index}</Item>
 
-        <Item className="head"
+        <Item className={`head ${visit.is_new == 1 ? 'animate__animated  animate__bounce   animate__infinite animate__slower':''} `}
           style={ activePatient && activePatient.id === visit.patient.id ? {
             borderBottom:"4px solid blue",
             fontWeight:"bolder",
@@ -63,7 +63,11 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
             </Icon>}
          
 
-            
+            {visit?.is_new ==1  &&   <Chip
+              label="new"
+              
+              size="small"
+              />}
            {visit.patient.labrequests.length > 0 &&   <Chip
               label="Lab"
               sx={{

@@ -101,9 +101,9 @@ function AddMedicalService(props) {
                     <TableCell>Count</TableCell>
                     <TableCell>Doctor Note</TableCell>
 
-                  {user?.is_nurse == 0 &&  <TableCell width={"5%"} align="right">
+                 <TableCell width={"5%"} align="right">
                       {t("other")}
-                    </TableCell>}
+                    </TableCell>
                     <TableCell>Status</TableCell>
                     {user?.is_nurse == 1 &&    <TableCell>Nurse Note</TableCell>}
                   </TableRow>
@@ -142,7 +142,7 @@ function AddMedicalService(props) {
                         >
                           {service.doctor_note}
                         </MyTableCell>
-                       {user?.is_nurse == 0  ? <TableCell>
+                     <TableCell>
                           
                             <LoadingButton
                               variant="contained"
@@ -154,7 +154,7 @@ function AddMedicalService(props) {
                             </LoadingButton>
                           
                           
-                        </TableCell> :''}
+                        </TableCell> 
                         <TableCell>
                           {service.done === 1 ? (
                             <img width={15} src={green} alt="green" />

@@ -57,7 +57,7 @@ function PatientMedicalHistory(props) {
             defaultValue={patient.history_of_present_illness}
             multiline
             fullWidth
-            rows={5}
+            rows={3}
           ></TextField>
             <Typography sx={{ mb: 1 }}  variant="h5">
         Past Medical History
@@ -70,7 +70,7 @@ function PatientMedicalHistory(props) {
             multiline
             sx={{p:2}}
             fullWidth
-            rows={5}
+            rows={3}
           ></TextField>
               <Typography sx={{ mb: 1 }}  variant="h5">
         Drug History
@@ -83,7 +83,7 @@ function PatientMedicalHistory(props) {
             multiline
             sx={{p:2}}
             fullWidth
-            rows={5}
+            rows={3}
           ></TextField>
         </Box>
       )}

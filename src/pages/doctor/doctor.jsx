@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../Laboratory/addPatient.css";
-import io from 'socket.io-client'
+import io from "socket.io-client";
 import {
   Divider,
   Stack,
@@ -44,10 +44,13 @@ import LabResults from "./LabResult";
 import VitalSigns from "./VitalSigns";
 import SickLeave from "./SickLeave";
 import CarePlan from "./CarePlan";
-import { finishedImg, newImage } from "../constants";
+import { finishedImg, newImage, notifyMe } from "../constants";
 import { socket } from "../../socket";
+import urgentSound from "../../assets/sounds/urgent.mp3";
 
 function Doctor() {
+  const audioRef = useRef();
+
   const [value, setValue] = useState(0);
   const [file, setFile] = useState(null);
   const [complains, setComplains] = useState([]);
@@ -65,38 +68,59 @@ function Doctor() {
 
   const [showPreviousVisits, setShowPreviousVisits] = useState(false);
   const [layOut, setLayout] = useState({
-    patients: "1.6fr",
+    patients: "2.3fr",
     visits: "0fr",
     vitals: "0fr",
     panel: false,
     panelList: "minmax(0,2fr)",
   });
-  useEffect(()=>{
-  //  const socket =  io('ws://localhost:3000')
-   
-  socket.on('connect', onConnect);
-  socket.on('disconnect', onDisconnect);
-  socket.on('disconnect',()=>{
-    console.log('socket disconnected')
-  })
-   socket.on('connect',(args)=>{
-    console.log('doctor connected succfully with id'+socket.id,args)
-   })
-   socket.on('greeting',(data)=>{
-    console.log('received greeting from server '+data)
-   })
-   socket.on('authenticatedResult',(pid)=>{
-    console.log('received result from server for patient '+pid)
-    checkResults(focusPatientDeleteNotfication,pid)
-   })
+  useEffect(() => {
+    //  const socket =  io('ws://localhost:3000')
 
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("disconnect", () => {
+      console.log("socket disconnected");
+    });
+    socket.on("connect", (args) => {
+      console.log("doctor connected succfully with id" + socket.id, args);
+    });
+    socket.on("greeting", (data) => {
+      console.log("received greeting from server " + data);
+    });
+    socket.on("authenticatedResult", (pid) => {
+      console.log("received result from server for patient " + pid);
+      getDoctorVisit(pid).then((patientData)=>{
+        socketEventHandler(
+          focusPatientafterLabResultAuthAction,
+          patientData,
+          "Lab Results just finished for patient",
+          finishedImg
+        );
+      })
+     
+    });
+    socket.on("newDoctorPatientFromServer", (pid) => {
+      console.log("newDoctorPatientFromServer " + pid);
+      getDoctorVisit(pid).then((patientData)=>{
+        updateDoctorPatients(patientData);
+        showDocPatients();
+        socketEventHandler(
+          null,
+          patientData,
+          " has just booked",
+          newImage
+        );
+      })
+    });
 
-   return ()=>{
-    socket.off('connect', onConnect);
-    socket.off('disconnect', onDisconnect);
-    socket.off('authenticatedResult')
-   }
-  },[])
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("authenticatedResult");
+      socket.off("newDoctorPatientFromServer");
+    };
+  }, []);
   const hideVisits = () => {
     setShowPreviousVisits(false);
     setLayout((prev) => {
@@ -141,106 +165,51 @@ function Doctor() {
   const [activePatient, setActivePatient] = useState(null);
   const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
   const [items, setItems] = useState([]);
-  const focusPatientDeleteNotfication = (data) =>{
-    setLayout((prev)=>{
-      return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
-    })
-    setShowPatients(false)
-    changeDoctorVisit(data)
-    change(data.patient)
-    axiosClient.get(`removeLabFinishedNotifications/${data.patient.id}`)
-    setValue(9)
-  }
-  const focusTheNewPAtient = (data) =>{
-    setLayout((prev)=>{
-      return {...prev,patients:'0fr',vitals:'0.5fr',visits:'0fr',}
-    })
-    setShowPatients(false)
-    changeDoctorVisit(data)
-    change(data.patient)
-    axiosClient.get(`removeNewPatient/${data.patient.id}`)
-    // setValue(9)
-  }
-  const checkResults = (action,pid)=>{
-    
-       axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({data})=>{
-         console.log(data,'patient data')
-        if (data != '') {
-          
-          notifyMe(`Lab Results just finished for patient '${data.patient.name}'`,data,finishedImg,action)
-        }
-      
-      
-    })
-  }
-  const checkNewPatients = (action)=>{
-    axiosClient.get('NewPatients').then(({data})=>{
-      data.map((d)=>{
-       axiosClient.get(`doctorvisit/find?pid=${d.patient_id}`).then(({data})=>{
-         console.log(data,'patient data')
-        notifyMe(`A new  patient '${data.patient.name}' has just booked`,data,newImage,action)
-      
-        })
-      })
-    })
-  }
-  // useEffect(()=>{
-  //  const timer =  setInterval(() => {
-  //   checkResults(focusPatientDeleteNotfication)
-  //   checkNewPatients(focusTheNewPAtient)
-  //   }, 15000);
-  //   return ()=>{
-  //     clearInterval(timer)
-  //   }
-  // },[])
-  const notifyMe = (title,data,address,action) => {
-    // alert(Notification.permission)
-    if (!("Notification" in window)) {
-      // Check if the browser supports notifications
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "granted") {
-      // Check whether notification permissions have already been granted;
-      // if so, create a notification
-      const notification = new Notification(title,{icon:address});
-      notification.onclick = function () {
-        
-        console.log(action,'action')
-        if (action) {
-          // alert('ss')
-          action(data)
-        }
-   
-      }
-     
-      // …
-    } else if (Notification.permission !== "denied") {
-      // We need to ask the user for permission
-      Notification.requestPermission().then((permission) => {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-          const notification = new Notification(title,{icon:address});
-          
-          // …
-        }
+  const alaram = () => {
+    const audio = new Audio(urgentSound);
+    setTimeout(() => {
+      audio.play();
+      audioRef.current.play();
+    }, 3000);
+  };
+  const getDoctorVisit = (pid) => {
+    return new Promise((resolve, reject) => {
+      axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({ data }) => {
+        resolve(data);
       });
-    }
-  
-    // At last, if the user has denied notifications, and you
-    // want to be respectful there is no need to bother them anymore.
-  }
-  
-  // console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
-   useEffect(()=>{
-    axiosClient.get(`items/all`).then(({ data: data }) => {
-        setItems(data);
-        if (data.status == false) {
-          setDialog((prev)=>{
-            return {...prev,open: true, msg: data.message}
-          })
-        }
-  
     });
-   },[])
+  };
+  const focusPatientafterLabResultAuthAction = (data) => {
+    setLayout((prev) => {
+      return { ...prev, patients: "0fr", vitals: "0.7fr", visits: "0fr" };
+    });
+    setShowPatients(false);
+    changeDoctorVisit(data);
+    change(data.patient);
+    setValue(9);
+  };
+   
+  
+
+  const socketEventHandler = (action, patientData, title, img) => {
+    if (patientData != "") {
+      notifyMe(`${patientData.patient.name} ${title} `, patientData, img, action);
+    }
+  };
+
+
+
+  // console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
+  useEffect(() => {
+    axiosClient.get(`items/all`).then(({ data: data }) => {
+      setItems(data);
+      if (data.status == false) {
+        setDialog((prev) => {
+          return { ...prev, open: true, msg: data.message };
+        });
+      }
+    });
+  }, []);
   // console.log(activePatient, "active patient from doctor page");
   let visitCount = activePatient?.visit_count;
   // console.log(visitCount, "visitCount");
@@ -248,6 +217,20 @@ function Doctor() {
   useEffect(() => {
     document.title = "صفحه الطبيب";
   }, []);
+
+  const showDocPatients = () => {
+    setActivePatient(null);
+    setActiveDoctorVisit(null);
+    setLayout((prev) => {
+      return {
+        ...prev,
+        patients: "2.4fr",
+        vitals: "0fr",
+        visits: "0fr",
+      };
+    });
+    setShowPatients(true);
+  };
 
   useEffect(() => {
     // console.log(id, "doctor id from router");
@@ -308,9 +291,23 @@ function Doctor() {
       };
     });
   };
+
+  const updateDoctorPatients = (docVisit) => {
+    console.log("start patient update");
+   
+      console.log("start adding patient");
+
+      setShift((prev) => {
+        return { ...prev, visits: [ {...docVisit},...prev.visits] };
+      });
+    
+  };
   const changeDoctorVisit = (doctorVisit) => {
+    if (doctorVisit.is_new == 1) {
+      axiosClient.patch(`doctorVisit/${doctorVisit.id}`,{is_new:false})
+    }
     setActiveDoctorVisit((prev) => {
-      return { ...doctorVisit };
+      return { ...doctorVisit  };
     });
     setShift((prev) => {
       return {
@@ -324,49 +321,52 @@ function Doctor() {
       };
     });
   };
-  let count = (shift?.visits.length ?? 0) 
+  let count = shift?.visits.length ?? 0;
   // console.log(file, "is file");
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
-      <Stack  direction={"row"} gap={1} justifyContent={"space-between"}>
-       {activePatient &&  <Stack sx={{border:'1px dashed grey',borderRadius:'5px',p:1}} direction={'row'} gap={2} flexGrow={"1"}>
-          <Typography sx={{mr:1}} variant="h3">
-            {activePatient?.name}
-
-  
-        
-          </Typography>
-          <Typography variant="h6">
-          <Box sx={{display:'inline-block',ml:1}}>
-              Age :{" "}
-              {
-                //print iso date
-                ` ${activePatient?.age_year ?? 0} Y ${
-                  activePatient?.age_month == null
-                    ? ""
-                    : " / " + activePatient?.age_month + " M "
-                } ${
-                  activePatient?.age_day == null
-                    ? ""
-                    : " / " + activePatient?.age_day + " D "
-                } `
-              }
-            </Box>
-          </Typography>
-          <Typography variant="h6">
-          <Box sx={{display:'inline-block',ml:1}}>
-              Date :{" "}
-              {new Date(activePatient.created_at).toLocaleString()}
-            </Box>
-          </Typography>
-          <Typography variant="h6">
-          <Box sx={{display:'inline-block',ml:1}}>
-              Nationality :{" "}
-            {    activePatient?.country?.name}
-            </Box>
-          </Typography>
-        </Stack>}
+      <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
+        {activePatient && (
+          <Stack
+            sx={{ border: "1px dashed grey", borderRadius: "5px", p: 1 }}
+            direction={"row"}
+            gap={2}
+            flexGrow={"1"}
+          >
+            <Typography sx={{ mr: 1 }} variant="h3">
+              {activePatient?.name}
+            </Typography>
+            <Typography variant="h6">
+              <Box sx={{ display: "inline-block", ml: 1 }}>
+                Age :{" "}
+                {
+                  //print iso date
+                  ` ${activePatient?.age_year ?? 0} Y ${
+                    activePatient?.age_month == null
+                      ? ""
+                      : " / " + activePatient?.age_month + " M "
+                  } ${
+                    activePatient?.age_day == null
+                      ? ""
+                      : " / " + activePatient?.age_day + " D "
+                  } `
+                }
+              </Box>
+            </Typography>
+            <Typography variant="h6">
+              <Box sx={{ display: "inline-block", ml: 1 }}>
+                Date : {new Date(activePatient.created_at).toLocaleString()}
+              </Box>
+            </Typography>
+            <Typography variant="h6">
+              <Box sx={{ display: "inline-block", ml: 1 }}>
+                Nationality : {activePatient?.country?.name}
+              </Box>
+            </Typography>
+          </Stack>
+        )}
+        <audio hidden ref={audioRef} controls src={urgentSound}></audio>
 
         <Box>
           <AutocompleteSearchPatient
@@ -380,7 +380,7 @@ function Doctor() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `70px    ${layOut.patients} ${layOut.visits} ${layOut.vitals} 2fr 0.5fr   70px  `,
+          gridTemplateColumns: `70px    ${layOut.patients} ${layOut.visits} ${layOut.vitals} 2fr 0.5fr     `,
         }}
       >
         <div></div>
@@ -396,10 +396,10 @@ function Doctor() {
           transition: "0.3s all ease-in-out",
           height: "80vh",
           display: "grid",
-          gridTemplateColumns: `70px    ${layOut.patients}  ${layOut.visits} ${layOut.vitals} 2fr 0.7fr   70px `,
+          gridTemplateColumns: `70px    ${layOut.patients}  ${layOut.visits} ${layOut.vitals} 2fr 1fr    `,
         }}
       >
-        <Stack  direction={"column"}>
+        <Stack direction={"column"}>
           {activePatient && (
             <LoadingButton
               color="inherit"
@@ -420,41 +420,30 @@ function Doctor() {
             title="show patient list"
             size="small"
             onClick={() => {
-              setActivePatient(null);
-              setActiveDoctorVisit(null);
-              setLayout((prev) => {
-                return {
-                  ...prev,
-                  patients: "1.6fr",
-                  vitals: "0fr",
-                  visits: "0fr",
-                };
-              });
-              setShowPatients(true);
+              showDocPatients();
             }}
             variant="contained"
           >
             <RemoveRedEyeSharp />
           </LoadingButton>
           <Divider />
-          <LoadingButton 
+          <LoadingButton
             sx={{ mt: 1 }}
             color="inherit"
             title="show patient list"
             size="small"
             onClick={() => {
-              isConnected ?  socket.disconnect() : socket.connect()
-             
+              isConnected ? socket.disconnect() : socket.connect();
             }}
             variant="contained"
           >
-            <Notifications color={isConnected ? 'success' : 'error'} />
+            <Notifications color={isConnected ? "success" : "error"} />
           </LoadingButton>
         </Stack>
         {showPatients ? (
           <Card
             style={{ backgroundColor: "#ffffffeb" }}
-            sx={{ overflow: "auto", p: 1,ml:1 }}
+            sx={{ overflow: "auto", p: 1, ml: 1 }}
           >
             <div>
               <Stack justifyContent={"space-around"} direction={"row"}>
@@ -586,151 +575,163 @@ function Doctor() {
             />
           )}
         </Card>
-        {activePatient ?   <Card
-          style={{ backgroundColor: "#ffffffeb" }}
-          key={activePatient?.id}
-          sx={{ height: "80vh", overflow: "auto", p: 1 }}
-        >
-          {activePatient && (
-            <>
-              <PatientInformationPanel
-                index={0}
-                value={value}
-                patient={activePatient}
-              />
-              {/* <GeneralTab index={1} value={value}></GeneralTab> */}
-              <GeneralExaminationPanel
-                setShift={setShift}
-                change={change}
-                setDialog={setDialog}
-                patient={activePatient}
-                index={1}
-                value={value}
-              />
-              {!user?.is_nurse == 1 && (
-                <PresentingComplain
-                  setShift={setShift}
-                  complains={complains}
-                  change={change}
-                  setDialog={setDialog}
-                  patient={activePatient}
-                  index={2}
+        {activePatient ? (
+          <Card
+            style={{ backgroundColor: "#ffffffeb" }}
+            key={activePatient?.id}
+            sx={{ height: "80vh", overflow: "auto", p: 1 }}
+          >
+            {activePatient && (
+              <>
+                <PatientInformationPanel
+                  index={0}
                   value={value}
+                  patient={activePatient}
                 />
-              )}
-              {!user?.is_nurse == 1 && (
-                <PatientMedicalHistory
+                {/* <GeneralTab index={1} value={value}></GeneralTab> */}
+                <GeneralExaminationPanel
                   setShift={setShift}
                   change={change}
                   setDialog={setDialog}
                   patient={activePatient}
-                  index={3}
+                  index={1}
                   value={value}
                 />
-              )}
-              {!user?.is_nurse == 1 && (
-                <PatientPrescribedMedsTab
-                  items={items}
-                  user={user}
+                {!user?.is_nurse == 1 && (
+                  <PresentingComplain
+                    setShift={setShift}
+                    complains={complains}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={2}
+                    value={value}
+                  />
+                )}
+                {!user?.is_nurse == 1 && (
+                  <PatientMedicalHistory
+                    setShift={setShift}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={3}
+                    value={value}
+                  />
+                )}
+                {!user?.is_nurse == 1 && (
+                  <PatientPrescribedMedsTab
+                    items={items}
+                    user={user}
+                    activeDoctorVisit={activeDoctorVisit}
+                    setShift={setShift}
+                    complains={complains}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={4}
+                    value={value}
+                  />
+                )}
+                {!user?.is_nurse == 1 && (
+                  <ProvisionalDiagnosis
+                    diagnosis={diagnosis}
+                    setShift={setShift}
+                    complains={complains}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={5}
+                    value={value}
+                  />
+                )}
+
+                <AddLabTests
+                socket={socket}
+                  changeDoctorVisit={changeDoctorVisit}
                   activeDoctorVisit={activeDoctorVisit}
                   setShift={setShift}
                   complains={complains}
                   change={change}
                   setDialog={setDialog}
                   patient={activePatient}
-                  index={4}
+                  index={6}
                   value={value}
                 />
-              )}
-              {!user?.is_nurse == 1 && (
-                <ProvisionalDiagnosis
-                diagnosis={diagnosis}
-                  setShift={setShift}
-                  complains={complains}
-                  change={change}
-                  setDialog={setDialog}
-                  patient={activePatient}
-                  index={5}
-                  value={value}
-                />
-              )}
 
-              <AddLabTests
-                changeDoctorVisit={changeDoctorVisit}
-
-              activeDoctorVisit={activeDoctorVisit}
-                setShift={setShift}
-                complains={complains}
-                change={change}
-                setDialog={setDialog}
-                patient={activePatient}
-                index={6}
-                value={value}
-              />
-
-              <AddMedicalService
-                changeDoctorVisit={changeDoctorVisit}
-                activeDoctorVisit={activeDoctorVisit}
-                setActivePatient={setActivePatient}
-                setShift={setShift}
-                complains={complains}
-                change={change}
-                setDialog={setDialog}
-                patient={activePatient}
-                index={7}
-                value={value}
-              />
-              {user?.is_nurse == 1 && (
-                <Collection
+                <AddMedicalService
+                  changeDoctorVisit={changeDoctorVisit}
+                  activeDoctorVisit={activeDoctorVisit}
                   setActivePatient={setActivePatient}
                   setShift={setShift}
                   complains={complains}
                   change={change}
                   setDialog={setDialog}
                   patient={activePatient}
-                  index={8}
+                  index={7}
                   value={value}
                 />
-              )}
+                {user?.is_nurse == 1 && (
+                  <Collection
+                    setActivePatient={setActivePatient}
+                    setShift={setShift}
+                    complains={complains}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={8}
+                    value={value}
+                  />
+                )}
 
-              <LabResults
-                setActivePatient={setActivePatient}
-                setShift={setShift}
-                complains={complains}
-                change={change}
-                setDialog={setDialog}
-                patient={activePatient}
-                index={9}
-                value={value}
-              />
-              <SickLeave
-              user={user}
-                setActivePatient={setActivePatient}
-                setShift={setShift}
-                complains={complains}
-                change={change}
-                setDialog={setDialog}
-                patient={activePatient}
-                index={10}
-                value={value}
-              />
-                   {user?.is_nurse == 0 && (
-                <CarePlan
+                <LabResults
                   setActivePatient={setActivePatient}
                   setShift={setShift}
                   complains={complains}
                   change={change}
                   setDialog={setDialog}
                   patient={activePatient}
-                  index={11}
+                  index={9}
                   value={value}
                 />
-              )}
-            </>
-          )}
-        </Card>  : ''}
+                <SickLeave
+                  user={user}
+                  setActivePatient={setActivePatient}
+                  setShift={setShift}
+                  complains={complains}
+                  change={change}
+                  setDialog={setDialog}
+                  patient={activePatient}
+                  index={10}
+                  value={value}
+                />
+                {user?.is_nurse == 0 && (
+                  <CarePlan
+                    setActivePatient={setActivePatient}
+                    setShift={setShift}
+                    complains={complains}
+                    change={change}
+                    setDialog={setDialog}
+                    patient={activePatient}
+                    index={11}
+                    value={value}
+                  />
+                )}
+              </>
+            )}
+          </Card>
+        ) : (
+          ""
+        )}
 
-        {activePatient && <PatientPanel change={change} setDialog={setDialog} patient={activePatient} value={value} setValue={setValue} />}
+        {activePatient && (
+          <PatientPanel
+            change={change}
+            setDialog={setDialog}
+            patient={activePatient}
+            value={value}
+            setValue={setValue}
+          />
+        )}
         <Snackbar
           open={dialog.open}
           autoHideDuration={4000}

@@ -95,8 +95,9 @@ export const router = createBrowserRouter([
 
         children: [
           {
+            
             path: "login",
-            element: <Login />,
+            element: <Login  />,
           },
           {
             path: "/signup",

@@ -19,14 +19,14 @@ import { Item } from "../constants";
 import {t} from 'i18next'
 import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
-function ReceptionForm({ hideForm,lab }) {
+function ReceptionForm({ hideForm,lab,settings,socket }) {
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
   console.log(selectedCompany, "selected company");
   console.log(selectedSubCompany, "selected sub company");
-
+ 
   const { setDialog, setFoundedPatients, activeShift, setUpdate ,companies,doctors} =
     useOutletContext();
     let btn
@@ -101,9 +101,14 @@ function ReceptionForm({ hideForm,lab }) {
           console.log(data,'data of new patient')
           //set is loading to false
           //new patient notification
-          axiosClient(`newPatient/${data.data.patient}`).then(({data})=>{
-                    
+         console.log(socket,'socket')
+          if (socket) {
+            socket.emit('newDoctorPatient',data.data.patient,(val)=>{
+            console.log(val,'from server')
           })
+          }
+          
+       
           setIsLoading(false);
           setDialog((prev) => ({
             ...prev,
@@ -351,7 +356,7 @@ function ReceptionForm({ hideForm,lab }) {
                 />
               </Item>
             </Stack>
-            <TextField
+          {settings?.gov &&  <TextField
             size="small"
               error={errors?.gov_id}
               {...register("gov_id", {
@@ -362,8 +367,8 @@ function ReceptionForm({ hideForm,lab }) {
               })}
               label={t('govId')}
               helperText={errors?.gov_id && errors.gov_id.message}
-            />
-            <CountryAutocomplete control={control} errors={errors} setValue={setValue} />
+            />}
+           {settings?.country && <CountryAutocomplete control={control} errors={errors} setValue={setValue} />}
             <TextField
               size="small"
               {...register("address")}
