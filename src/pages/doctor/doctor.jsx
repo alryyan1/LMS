@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import "../Laboratory/addPatient.css";
-import io from "socket.io-client";
 import {
   Divider,
   Stack,
-  Skeleton,
   Card,
   Snackbar,
   Alert,
@@ -17,8 +15,6 @@ import {
   ArrowBack,
   ArrowForward,
   FormatListBulleted,
-  NotificationAdd,
-  NotificationImportantSharp,
   Notifications,
   RemoveRedEyeSharp,
 } from "@mui/icons-material";
@@ -47,9 +43,18 @@ import CarePlan from "./CarePlan";
 import { finishedImg, newImage, notifyMe } from "../constants";
 import { socket } from "../../socket";
 import urgentSound from "../../assets/sounds/urgent.mp3";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CodeEditor from "./CodeMirror";
 
 function Doctor() {
   const audioRef = useRef();
+  const notify = (data) =>
+    toast("Lab result has just finished", {
+      onClick: () => {
+        focusPatientafterLabResultAuthAction(data);
+      },
+    });
 
   const [value, setValue] = useState(0);
   const [file, setFile] = useState(null);
@@ -58,6 +63,8 @@ function Doctor() {
   const { user } = useStateContext();
   const [showPatients, setShowPatients] = useState(true);
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [showSearch , setShowSearch] = useState(false)
+
   function onConnect() {
     setIsConnected(true);
   }
@@ -90,28 +97,24 @@ function Doctor() {
     });
     socket.on("authenticatedResult", (pid) => {
       console.log("received result from server for patient " + pid);
-      getDoctorVisit(pid).then((patientData)=>{
+
+      getDoctorVisit(pid).then((patientData) => {
+        notify(patientData);
         socketEventHandler(
           focusPatientafterLabResultAuthAction,
           patientData,
           "Lab Results just finished for patient",
           finishedImg
         );
-      })
-     
+      });
     });
     socket.on("newDoctorPatientFromServer", (pid) => {
       console.log("newDoctorPatientFromServer " + pid);
-      getDoctorVisit(pid).then((patientData)=>{
+      getDoctorVisit(pid).then((patientData) => {
         updateDoctorPatients(patientData);
         showDocPatients();
-        socketEventHandler(
-          null,
-          patientData,
-          " has just booked",
-          newImage
-        );
-      })
+        socketEventHandler(null, patientData, " has just booked", newImage);
+      });
     });
 
     return () => {
@@ -137,14 +140,14 @@ function Doctor() {
     // alert('start of use effect')
     axiosClient.get("complains").then(({ data }) => {
       // console.log(data);
-      setComplains(data.map((c) => c.name));
+      setComplains(data.map((c) => ({ label: c.name, type: c.name })));
     });
   }, []);
   useEffect(() => {
     // alert('start of use effect')
     axiosClient.get("diagnosis").then(({ data }) => {
       // console.log(data);
-      setDiagnosis(data.map((c) => c.name));
+      setDiagnosis(data.map((c) => ({ label: c.name, type: c.name })));
     });
   }, []);
   const { id } = useParams();
@@ -159,6 +162,7 @@ function Doctor() {
     message: "Addition was successfull",
   });
   //   alert(id)
+
   const [shift, setShift] = useState(null);
   const [shifts, setShifts] = useState([]);
   const [doctor, setDoctor] = useState();
@@ -188,16 +192,17 @@ function Doctor() {
     change(data.patient);
     setValue(9);
   };
-   
-  
 
   const socketEventHandler = (action, patientData, title, img) => {
     if (patientData != "") {
-      notifyMe(`${patientData.patient.name} ${title} `, patientData, img, action);
+      notifyMe(
+        `${patientData.patient.name} ${title} `,
+        patientData,
+        img,
+        action
+      );
     }
   };
-
-
 
   // console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
   useEffect(() => {
@@ -214,8 +219,21 @@ function Doctor() {
   let visitCount = activePatient?.visit_count;
   // console.log(visitCount, "visitCount");
   // console.log(shift, "doc shift");
+  const SearchHandler = (e)=>{
+    console.log(e.key)
+    if (e.key == 'F9') {
+      setShowSearch(true)
+    }
+  }
   useEffect(() => {
     document.title = "صفحه الطبيب";
+
+      document.addEventListener('keydown',SearchHandler)
+
+      return ()=>{
+        document.removeEventListener('keydown',SearchHandler)
+      }
+
   }, []);
 
   const showDocPatients = () => {
@@ -294,20 +312,19 @@ function Doctor() {
 
   const updateDoctorPatients = (docVisit) => {
     console.log("start patient update");
-   
-      console.log("start adding patient");
 
-      setShift((prev) => {
-        return { ...prev, visits: [ {...docVisit},...prev.visits] };
-      });
-    
+    console.log("start adding patient");
+
+    setShift((prev) => {
+      return { ...prev, visits: [{ ...docVisit }, ...prev.visits] };
+    });
   };
   const changeDoctorVisit = (doctorVisit) => {
     if (doctorVisit.is_new == 1) {
-      axiosClient.patch(`doctorVisit/${doctorVisit.id}`,{is_new:false})
+      axiosClient.patch(`doctorVisit/${doctorVisit.id}`, { is_new: false });
     }
     setActiveDoctorVisit((prev) => {
-      return { ...doctorVisit  };
+      return { ...doctorVisit };
     });
     setShift((prev) => {
       return {
@@ -326,6 +343,9 @@ function Doctor() {
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
         {activePatient && (
           <Stack
@@ -334,7 +354,7 @@ function Doctor() {
             gap={2}
             flexGrow={"1"}
           >
-            <Typography sx={{ mr: 1 }} variant="h3">
+            <Typography sx={{ mr: 1 }} variant="h4">
               {activePatient?.name}
             </Typography>
             <Typography variant="h6">
@@ -368,13 +388,16 @@ function Doctor() {
         )}
         <audio hidden ref={audioRef} controls src={urgentSound}></audio>
 
-        <Box>
+        {showSearch && <Box>
           <AutocompleteSearchPatient
             changeDoctorVisit={changeDoctorVisit}
             change={change}
           />
-        </Box>
+        </Box> }
       </Stack>
+
+      {/* <CodeMirrorComponent/> */}
+
       <div
         style={{
           gap: "15px",
@@ -442,7 +465,7 @@ function Doctor() {
         </Stack>
         {showPatients ? (
           <Card
-            style={{ backgroundColor: "#ffffffeb" }}
+            style={{ backgroundColor: "#ffffff40" }}
             sx={{ overflow: "auto", p: 1, ml: 1 }}
           >
             <div>
@@ -531,7 +554,7 @@ function Doctor() {
           <div></div>
         )}
         {activeDoctorVisit ? (
-          <Card style={{ backgroundColor: "#ffffffeb" }}>
+          <Card style={{ backgroundColor: "ffffff40" }}>
             {/* file visits */}
             <List>
               {file &&
@@ -550,13 +573,14 @@ function Doctor() {
                       }}
                       key={patient.id}
                     >
-                      sheet ({visitCount--}){" "}
-                      <span className="text-neutral-500 dark:text-neutral-400 text-xs ml-1">
-                        {" "}
-                        {dayjs(new Date(Date.parse(patient.created_at))).format(
-                          "YYYY/MM/DD"
-                        )}
-                      </span>
+                      <Stack gap={2} direction='row'>
+                        <Typography>sheet ({visitCount--})</Typography>
+                        <Typography className="text-neutral-500 dark:text-neutral-400  ">
+                          {dayjs(
+                            new Date(Date.parse(patient.created_at))
+                          ).format("YYYY/MM/DD")}
+                        </Typography>
+                      </Stack>
                     </ListItem>
                   );
                 })}
@@ -565,7 +589,7 @@ function Doctor() {
         ) : (
           <div></div>
         )}
-        <Card style={{ backgroundColor: "#ffffffeb" }}>
+        <Card style={{ backgroundColor: "#ffffff40" }}>
           {activePatient && (
             <VitalSigns
               key={activePatient?.id}
@@ -577,7 +601,7 @@ function Doctor() {
         </Card>
         {activePatient ? (
           <Card
-            style={{ backgroundColor: "#ffffffeb" }}
+            style={{ backgroundColor: "#ffffff40" }}
             key={activePatient?.id}
             sx={{ height: "80vh", overflow: "auto", p: 1 }}
           >
@@ -599,6 +623,7 @@ function Doctor() {
                 />
                 {!user?.is_nurse == 1 && (
                   <PresentingComplain
+                    setComplains={setComplains}
                     setShift={setShift}
                     complains={complains}
                     change={change}
@@ -634,6 +659,7 @@ function Doctor() {
                 )}
                 {!user?.is_nurse == 1 && (
                   <ProvisionalDiagnosis
+                    setDiagnosis={setDiagnosis}
                     diagnosis={diagnosis}
                     setShift={setShift}
                     complains={complains}
@@ -646,7 +672,7 @@ function Doctor() {
                 )}
 
                 <AddLabTests
-                socket={socket}
+                  socket={socket}
                   changeDoctorVisit={changeDoctorVisit}
                   activeDoctorVisit={activeDoctorVisit}
                   setShift={setShift}

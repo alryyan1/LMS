@@ -34,15 +34,15 @@ function AddMedicalService(props) {
     user,
     ...other
   } = props;
-  console.log(patient, "patient");
-  console.log(activeDoctorVisit, "activeDoctorVisit");
+  
+  
   const [selectedService, setSelectedService] = useState(null);
 
   const deleteService = (id) => {
     axiosClient
       .delete(`requestedService/${id}`)
       .then(({ data }) => {
-        console.log(data, "deleted data");
+        
         if (data.status) {
           // change(data.patient);
           if (changeDoctorVisit) {
@@ -110,8 +110,8 @@ function AddMedicalService(props) {
                 </TableHead>
                 <TableBody>
                   {activeDoctorVisit.services.map((service) => {
-                    console.log(service);
-                    // console.log(actviePatient,'active patient')
+                    
+                    // 
 
                     return (
                       <TableRow

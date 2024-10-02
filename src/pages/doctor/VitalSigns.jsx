@@ -27,7 +27,7 @@ function VitalSigns({ patient, setDialog, change }) {
         </TableHead>
         <TableBody>
           <TableRow>
-            <TableCell>Blood Pressure</TableCell>
+            <TableCell>B.Pressure</TableCell>
             <TableCell className="vital">
               <TextField 
                 inputProps={{

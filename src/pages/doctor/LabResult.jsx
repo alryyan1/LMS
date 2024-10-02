@@ -86,7 +86,9 @@ function LabResults(props) {
               key={selectedTest?.id}
             >
               {patient.result_auth ?  (
-                <ResultSection disabled={true}
+                <ResultSection 
+                is_doctor={true}
+                disabled={true}
                   selectedReslult={selectedReslult}
                   selectedTest={selectedTest}
                   setSelectedResult={setSelectedResult}

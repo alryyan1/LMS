@@ -23,6 +23,7 @@ function ResultSection({
   setSelectedResult,
   selectedReslult,
   disabled = false,
+  is_doctor = false
 }) {
   const [value, setValue] = React.useState(0);
 
@@ -86,6 +87,7 @@ function ResultSection({
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
+                          {is_doctor ? <Typography textAlign={'center'}>{req.result}</Typography> :
                           <AutocompleteResultOptions 
                           disabled={disabled}
                           type={type}
@@ -97,7 +99,7 @@ function ResultSection({
                             id={req.id}
                             req={req}
                             child_test={req.child_test}
-                          />
+                          />}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
                           {req.normal_range}

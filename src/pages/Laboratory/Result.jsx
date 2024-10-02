@@ -41,6 +41,8 @@ function Result() {
     setUpdate,
     setDialog,
   } = useOutletContext();
+
+  console.log(actviePatient,'active patietn in result')
   const updateHandler = (val, colName) => {
     setLoading(true)
     axiosClient
@@ -128,36 +130,24 @@ function Result() {
  
 
   const setActivePatientHandler = (pat) => {
-    // setSelectedTest(null)
-    // setSelectedResult(null)
     setSelectedResult(null);
-   
-    const data = shift?.patients.find((p) => p.id === pat.id);
-    // axiosClient.get(`patient/${id}`).then(({data})=>{
-   
-    // alert(shift.id)
     if (pat.shift_id == shift.maxShiftId) {
       axiosClient.get(`shift/last`).then(({ data: data }) => {
-       
-        //add activeProperty to patient object
-        data.data.patients.forEach((patient) => {
-          patient.active = false;
-        });
         setShift(data.data);
         setPatientsLoading(false);
       });
     }
-
-    setActivePatient({ ...pat, active: true });
+    setActivePatient({ ...pat });
     setSelectedTest(pat.labrequests[0]);
   };
 
   const patientsUpdateSocketHandler = (pid)=>{
     axiosClient.get(`findPatient/${pid}`).then(({ data }) => {
-      console.log(actviePatient,'active patient')
       //patient is already exists and selected
-     if (actviePatient?.id == pid) {
-       console.log(data,'from find')
+      console.log(data,'founded patient')
+      console.log(actviePatient,'active patient')
+     if (actviePatient?.id == data.id) {
+       console.log('patient is currently focus ')
        setActivePatient(data);
        
      }
@@ -480,6 +470,7 @@ function Result() {
         </div>
         <ResultSidebar
         //  key={actviePatient?.id}
+        isConnected={isConnected}
           setShift={setShift}
           actviePatient={actviePatient}
           loading={loading}

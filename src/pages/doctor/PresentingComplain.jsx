@@ -14,6 +14,7 @@ import {
 import axiosClient from "../../../axios-client";
 import PatientEditSelect from "./PatientEditSelect";
 import { useState } from "react";
+import CodeEditor from "./CodeMirror";
 
 function PresentingComplain(props) {
   const {
@@ -23,45 +24,12 @@ function PresentingComplain(props) {
     setDialog,
     change,
     complains,
+    setComplains,
     setShift,
     ...other
   } = props;
-  const [showSuggestions, setShowSeggestions] = useState(false);
 
-  const [sentense, setSentense] = useState(patient.present_complains ?? "");
-  const arr = ["alryyan", "sara", "tsabeh", "mama"];
-  const updateHandler = (val) => {
-    axiosClient
-      .patch(`patients/${patient.id}`, {
-        present_complains: val,
-      })
-      .then(({ data }) => {
-        // console.log(data);
-        if (data.status) {
-    
-          change(data.patient);
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
+ 
   return (
     <div
       role="tabpanel"
@@ -74,71 +42,10 @@ function PresentingComplain(props) {
         Presenting Complain
       </Divider>
       {value === index && (
-        <Box sx={{ justifyContent: "space-around" }} className="group">
-          <TextField sx={{mb:1}}
-            onClick={()=>setShowSeggestions(true)}
-
-            onChange={(e) => {
-              setSentense(() => e.target.value);
-
-              updateHandler(e.target.value);
-            }}
-            value={sentense}
-            multiline
-            fullWidth
-            rows={13}
-          ></TextField>
-          <List>
-            {showSuggestions &&
-              sentense.length > 0 &&
-              complains
-                .filter((w) => {
-                  if (String(sentense).lastIndexOf(" ") == -1) {
-                    return w.includes(sentense);
-                  }
-                  if (
-                    String(sentense.trim()).slice(
-                      String(sentense).lastIndexOf(" ")
-                    ).length == 0
-                  ) {
-                    return false;
-                  }
-                  // console.log(
-                  //   String(sentense.trim())
-                  //     .slice(String(sentense).lastIndexOf(" "))
-                  //     .trim(),'includes ??',String(sentense).lastIndexOf(" ")
-                  // );
-                  return w.includes(
-                    String(sentense.trim())
-                      .slice(String(sentense).lastIndexOf(" "))
-                      .trim()
-                  );
-                })
-                .map((w) => {
-                  return (
-                    <ListItem
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => {
-                        setSentense((prev) => {
-                          updateHandler(
-                            `${String(prev).slice(
-                              0,
-                              prev.lastIndexOf(" ")
-                            )} ${w}`
-                          );
-                          return `${String(prev).slice(
-                            0,
-                            prev.lastIndexOf(" ")
-                          )} ${w}`;
-                        });
-                      }}
-                      key={w}
-                    >
-                      {w}
-                    </ListItem>
-                  );
-                })}
-          </List>
+        <Box sx={{ justifyContent: "space-around" }} className="">
+          
+           <CodeEditor tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.present_complains} patient={patient} change={change} setDialog={setDialog} colName={'present_complains'}/>
+        
         </Box>
       )}
     </div>

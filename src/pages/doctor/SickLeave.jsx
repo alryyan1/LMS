@@ -64,9 +64,9 @@ function SickLeave(props) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <Stack direction={"column" } alignItems={'center'} gap={2} justifyContent={"space-around"}>
-            <Button variant="contained">File Report</Button>
-            <Button variant="contained">Lab Report</Button>
+          <Stack direction={"row" } alignItems={'center'} gap={2} justifyContent={"space-around"}>
+            <Button variant="contained">File </Button>
+            <Button variant="contained">Lab </Button>
       <Button variant="contained" href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}>Attendance</Button>
 
             <LoadingButton

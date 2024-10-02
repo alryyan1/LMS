@@ -14,12 +14,12 @@ export function blurForNoramlUsers (){
   return "blurForNormalUsers"
 }
 // export const url = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api/"
-export const url = "http://127.0.0.1/laravel-react-app/public/api/"
-//  export const url = "http://192.168.1.5/laravel-react-app/public/api/"
+// export const url = "http://127.0.0.1/laravel-react-app/public/api/"
+ export const url = "http://192.168.1.5/laravel-react-app/public/api/"
 // export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
 // export const webUrl = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/"
-//  export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
- export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
+ export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
+//  export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
 export   const notifyMe = (title, data, address, action) => {
   // alert(Notification.permission)
@@ -55,6 +55,7 @@ export   const notifyMe = (title, data, address, action) => {
   // want to be respectful there is no need to bother them anymore.
 };
 export const updateHandler = (val, colName,patient,change,setDialog) => {
+  console.log('called update handler')
   return new Promise((resolve,reject)=>{
     axiosClient
     .patch(`patients/${patient.id}`, {
@@ -63,8 +64,11 @@ export const updateHandler = (val, colName,patient,change,setDialog) => {
     .then(({ data }) => {
       console.log(data);
       if (data.status) {
-        change(data.patient);
-        resolve(data.patient);
+        if (change) {
+          
+          change(data.patient);
+        }
+        resolve(data.patient,data);
         setDialog((prev) => {
           return {
             ...prev,

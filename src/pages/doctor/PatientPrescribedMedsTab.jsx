@@ -107,7 +107,7 @@ function PatientPrescribedMedsTab(props) {
                 <TableRow key={i}>
                   <TableCell>{medicine.item.market_name}</TableCell>
                   <MyTableCell
-                    
+                    show
                     colName={"course"}
                     item={medicine}
                     table="prescribedDrugs"
@@ -118,7 +118,7 @@ function PatientPrescribedMedsTab(props) {
                     <MyCustomAutocompleteWithAdditionCababilty  label="method"  updater={change} id={medicine.id}  path={`drugMedicalRoutes/${medicine.id}`} title="add route" object={medicine.medical_drug_route} setRows={setDrugMedicalRoutes} rows={drugMedicalRoutes}/>
                   </TableCell>
                   <MyTableCell
-                    
+                    show
                     colName={"days"}
                     item={medicine}
                     table="prescribedDrugs"
@@ -164,80 +164,7 @@ function PatientPrescribedMedsTab(props) {
               ))}
             </TableBody>
           </Table>
-          <Divider />
-          <TextField
-            
-          // onBlur={()=>setShowSeggestions(false)}
-            onClick={()=>setShowSeggestions(true)}
-            onChange={(e) => {
-               
-              setSentense(() => e.target.value);
-              updateHandler(e.target.value)
-              // console.log(
-              //   String(e.target.value).slice(
-              //     String(e.target.value).lastIndexOf(" ")
-              //   ),
-              //   "sliced"
-              // );
-              // const word = arr.filter((w) =>
-              //   w.includes(
-              //     String(e.target.value)
-              //       .slice(String(e.target.value).lastIndexOf(" "))
-              //       .trim()
-              //   )
-              // )[0];
-              // console.log(word, "word first match");
-              // if (word) {
-              //   alert(word);
-              //   setSentense(
-              //     (prev) =>
-              //       `${String(prev).slice(0, prev.lastIndexOf(" "))} ${word}`
-              //   );
-              // }
-             
-            }}
-            color="info"
-            value={sentense}
-            sx={{ mt: 3 }}
-            label="Notes"
-            fullWidth
-            multiline
-            rows={5}
-          ></TextField>
-          <List>
-            {showSuggestions && sentense.length > 0 && complains
-              .filter((w) => {
-                if (String(sentense).lastIndexOf(" ") == -1) {
-                  return  w.includes(sentense)
-                }
-                if ( String(sentense.trim())
-                  .slice(String(sentense).lastIndexOf(" ")).length  == 0 ) {
-                  return false;
-                }
-                // console.log(
-                //   String(sentense.trim())
-                //     .slice(String(sentense).lastIndexOf(" "))
-                //     .trim(),'includes ??',String(sentense).lastIndexOf(" ")
-                // );
-             return   w.includes(
-                  String(sentense.trim())
-                    .slice(String(sentense).lastIndexOf(" "))
-                    .trim()
-                );
-              })
-              .map((w) => {
-                return <ListItem sx={{cursor:'pointer'}} onClick={()=>{
-                  setSentense(
-                        (prev) =>
-                          {
-                            updateHandler(`${String(prev).slice(0, prev.lastIndexOf(" "))} ${w}`)
-                           return `${String(prev).slice(0, prev.lastIndexOf(" "))} ${w}`
-                          }
-                      );
-                     
-                }} key={w}>{w}</ListItem>;
-              })}
-          </List>
+        
         </Box>
       )}
     </div>

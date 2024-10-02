@@ -25,22 +25,26 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
 
   return (
     <Stack
+
       justifyContent={"space-around"}
       direction={"column"}
       component={Card}
-      sx={{ border: "1px dashed black", p: 1 }}
+
+      sx={{ border: "1px solid black", p: 1 ,backgroundColor:'ffffff40'}}
     >
       <Tabs
-        indicatorColor="primary"
+    
+        indicatorColor=""
         sx={{ gap: 3 }}
         orientation="vertical"
         variant="scrollable"
-        textColor="secondary"
+        textColor=""
         value={value}
         onChange={handleChange}
+
       >
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer     font-extrabold  ${
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3   font-extrabold  ${
             value == 0 ? "bg-sky-500 hover:text-black" : ""
           }`}
           onClick={() => {
@@ -60,7 +64,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 2 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
@@ -79,7 +83,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
               <Tab
                 className={`opacity-1 ${value == 2 ? "header" : ""}`}
                 value={2}
-                label="Presenting Complains"
+                label="P. Complains"
               />
             )}
           </Stack>
@@ -87,7 +91,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
 
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 3 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
@@ -108,7 +112,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
           </Stack>
         )}
 <Stack
-          className={` hover:bg-sky-700 cursor-pointer   ${
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
             value == 1 ? "bg-sky-500 hover:text-white font-extrabold " : ""
           }`}
           onClick={() => {
@@ -122,11 +126,11 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
           <Tab
             className={`opacity-1 ${value == 1 ? "header" : ""}`}
             value={1}
-            label="General Examination"
+            label=" Examination"
           />
         </Stack>
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer   ${
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
             value == 6 ? "bg-sky-500 hover:text-white font-extrabold " : ""
           }`}
           onClick={() => {
@@ -144,7 +148,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
           />
         </Stack>
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer   ${
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
             value == 9 ? "bg-sky-500 hover:text-white font-extrabold " : ""
           }`}
           onClick={() => {
@@ -163,7 +167,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         </Stack>
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer    ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3  ${
               value == 5 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
@@ -178,14 +182,14 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
               <Tab
                 className={`opacity-1 ${value == 5 ? "header" : ""}`}
                 value={5}
-                label="Provisional Diagnosis"
+                label=" Diagnosis"
               />
             )}
           </Stack>
         )}
         {/* <Tab  label='Appointments' />; */}
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer   ${
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
             value == 7 ? "bg-sky-500 hover:text-white font-extrabold " : ""
           }`}
           onClick={() => {
@@ -204,7 +208,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         </Stack>
         {user?.is_nurse == 1 && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 8 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
@@ -226,8 +230,8 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         )}
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
-              value == 4 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
+              value == 4 ? " font-extrabold " : ""
             }`}
             onClick={() => {
               setValue(4);
@@ -241,14 +245,14 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
               <Tab
                 className={`opacity-1 ${value == 4 ? "header" : ""}`}
                 value={4}
-                label="Medicine Prescribed"
+                label="Medicines"
               />
             )}
           </Stack>
         )}
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 10 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
@@ -270,7 +274,7 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
         )}
          {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer   ${
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 11 ? "bg-sky-500 hover:text-white font-extrabold " : ""
             }`}
             onClick={() => {
