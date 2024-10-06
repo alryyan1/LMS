@@ -215,7 +215,7 @@ function Result() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "inline-grid",
-          gridTemplateColumns: `0.1fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.1fr  `,
+          gridTemplateColumns: `  ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.1fr  `,
         }}
       >
         <div></div>
@@ -232,7 +232,7 @@ function Result() {
           transition: "0.3s all ease-in-out",
           height: "80vh",
           display: "grid",
-          gridTemplateColumns: `0.2fr   ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
+          gridTemplateColumns: `20px  ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
         }}
       >
         <div>
@@ -299,7 +299,7 @@ function Result() {
             </LoadingButton>
           </Stack>
           <Divider></Divider>
-          <div className="patients" style={{ padding: "15px" }}>
+          <div className="patients" >
             {patientsLoading ? (
               <Skeleton
                 animation="wave"
@@ -397,13 +397,13 @@ function Result() {
                 setShift={setShift}
               />
               <Stack>
-                {/* <Button sx={{mb:1}}
+                <Button sx={{mb:1}}
                   disabled={actviePatient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button> */}
+                </Button> 
               {actviePatient.result_auth ?   <Button 
                   sx={{ mt: 1 }}
                  

@@ -97,7 +97,7 @@ function LabResults(props) {
               ):<>
               <Typography textAlign={'center'} variant="h2">RESULT </Typography>
               <Typography textAlign={'center'} variant="h2"> IS NOT </Typography>
-              <Typography textAlign={'center'} variant="h2"> AUTHENTICATED</Typography>
+              <Typography textAlign={'center'} variant="h3"> AUTHENTICATED</Typography>
               </>}
             </Card>
           </Grid>

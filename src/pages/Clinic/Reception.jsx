@@ -186,7 +186,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "0.7fr",
+        patients: "1.2fr",
       };
     });
   };
@@ -289,7 +289,7 @@ function Reception() {
                     setLayout((prev) => {
                       return {
                         ...prev,
-                        patients: "2.4fr",
+                        patients: "3.2fr",
                       };
                     });
                   }
@@ -409,13 +409,14 @@ function Reception() {
             updateHandler(e,'discount')
           }} label='Total Discount'></TextField>}
          </Paper>
-        <Paper sx={{ backgroundColor: "#ffffffbb!important" }}>
+        <Paper sx={{ backgroundColor: "#ffffffbb!important",overflow:'auto' ,height:'77vh'}}>
           <div style={{ overflow: "auto" }}>
             <Stack
               flexDirection={"row"}
               flexWrap={"wrap"}
               gap={2}
-              style={{ padding: "15px", display: "flex" }}
+              justifyContent={'center'}
+              style={{ padding: "5px", display: "flex" }}
             >
               {activeShift &&
                 activeShift.visits.map((visit) => {

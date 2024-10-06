@@ -58,7 +58,9 @@ import { socket } from "../../socket";
             setActivePatient(data.data);
           socket.emit('labPayment',actviePatient.id)
             
-            const form = new URLSearchParams();
+          const  r = confirm('هل تريد طباعه الايصال')
+          if(r){
+              const form = new URLSearchParams();
             axiosClient
               .get(`printLab?pid=${actviePatient.id}&base64=1`)
               .then(({ data }) => {
@@ -83,6 +85,8 @@ import { socket } from "../../socket";
                   }).then(() => {});
                 }
               });
+          }
+          
   
             setLoading(false);
             setPatients((prevPatients) => {

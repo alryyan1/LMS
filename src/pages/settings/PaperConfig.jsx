@@ -144,6 +144,23 @@ function PaperConfig() {
             <FormControlLabel
               control={
                 <Checkbox
+                defaultChecked={settings?.show_water_mark}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "show_water_mark",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"العلامه المائيه"}
+            />
+          </FormGroup>
+          <Divider />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
                 defaultChecked={settings?.barcode}
                   onChange={(e) => {
                     axiosClient.post("settings", {

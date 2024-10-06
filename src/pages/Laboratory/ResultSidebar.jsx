@@ -1,6 +1,6 @@
 import { Button, Divider, IconButton, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Item } from "../constants";
+import { host, Item } from "../constants";
 import {
   Download,
   ElectricBolt,
@@ -86,7 +86,7 @@ function ResultSidebar({
 
       <IconButton
         target="_blank"
-        href="http://127.0.0.1/server/classes/client.php"
+        href={`http://${host}/server/classes/client.php`}
         title="LIS"
         color="inherit"
       >

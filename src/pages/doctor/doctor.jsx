@@ -164,11 +164,22 @@ function Doctor() {
   //   alert(id)
 
   const [shift, setShift] = useState(null);
-  const [shifts, setShifts] = useState([]);
   const [doctor, setDoctor] = useState();
   const [activePatient, setActivePatient] = useState(null);
   const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getDoctorShift = (id,currentShiftId)=>{
+    return new Promise((resolve,reject)=>{
+      axiosClient.get(`doctorShift/find?id=${id}&currentShiftId=${currentShiftId}`).then(({ data }) => {
+        resolve(data)
+      }).catch((err)=>{
+      reject(err)
+      });
+    })
+   
+  }
   const alaram = () => {
     const audio = new Audio(urgentSound);
     setTimeout(() => {
@@ -258,12 +269,12 @@ function Doctor() {
       axiosClient
         .get("/user")
         .then(({ data }) => {
-          // console.log(data, "user data");
+          console.log(data, "user data");
           axiosClient.get(`doctors/find/${data.doctor_id}`).then(({ data }) => {
             console.log(data, "finded doctor");
-            setDoctor(data);
-            setShift(data.shifts[0]);
-            setShifts(data.shifts);
+            setDoctor(data.doctor);
+            setShift(data);
+            // setShifts(data.shifts);
             // console.log(data.shifts, "data shifts");
             // console.log(data.shifts[0]);
           });
@@ -271,10 +282,10 @@ function Doctor() {
         .catch((err) => {});
     } else {
       axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
-        // console.log(data, "finded doctor");
-        setDoctor(data);
-        setShift(data.shifts[0]);
-        setShifts(data.shifts);
+        console.log(data, "finded doctor");
+        setDoctor(data.doctor);
+        setShift(data);
+        // setShifts(data.shifts);
         // console.log(data.shifts, "data shifts");
         // console.log(data.shifts[0]);
       });
@@ -491,6 +502,7 @@ function Doctor() {
 
               <Stack justifyContent={"space-around"} direction={"row"}>
                 <LoadingButton
+                 loading={loading}
                   disabled={shift?.id == 1}
                   onClick={() => {
                     if (shift?.id == 1) {
@@ -500,22 +512,27 @@ function Doctor() {
                     //   shifts.map((s) => s.id).indexOf(shift.id),
                     //   "index of current shift"
                     // );
-                    setShift(
-                      shifts[shifts.map((s) => s.id).indexOf(shift.id) + 1]
-                    );
+
+                    setLoading(true)
+
+                    
+                    getDoctorShift(doctor.id,shift.id).then((data)=>{
+                      console.log(data,'last shift is')
+                      setShift(data)
+                    }).finally(()=>setLoading(false))
                   }}
                 >
                   <ArrowBack />
                 </LoadingButton>
                 <LoadingButton
-                  disabled={shift?.id == shifts[0]?.id}
+                  // disabled={shift?.id == shifts[0]?.id}
                   onClick={() => {
-                    if (shift?.id == shifts[0]?.id) {
-                      return;
-                    }
-                    setShift(
-                      shifts[shifts.map((s) => s.id).indexOf(shift.id) - 1]
-                    );
+                    // if (shift?.id == shifts[0]?.id) {
+                    //   return;
+                    // }
+                    // setShift(
+                    //   shifts[shifts.map((s) => s.id).indexOf(shift.id) - 1]
+                    // );
                   }}
                 >
                   <ArrowForward />

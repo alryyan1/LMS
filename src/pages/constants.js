@@ -8,18 +8,19 @@ export function onlyAdmin (user,action){
      return action()
   }
 }
+export const host = 'server1'
 
 export function blurForNoramlUsers (){
   // return classname has filter properties
   return "blurForNormalUsers"
 }
 // export const url = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api/"
-// export const url = "http://127.0.0.1/laravel-react-app/public/api/"
- export const url = "http://192.168.1.5/laravel-react-app/public/api/"
+export const url = `http://${host}/laravel-react-app/public/api/`
+//  export const url = "http://192.168.1.5/laravel-react-app/public/api/"
 // export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
 // export const webUrl = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/"
- export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
-//  export const webUrl = "http://127.0.0.1/laravel-react-app/public/"
+//  export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
+ export const webUrl = `http://${host}/laravel-react-app/public/`
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
 export   const notifyMe = (title, data, address, action) => {
   // alert(Notification.permission)

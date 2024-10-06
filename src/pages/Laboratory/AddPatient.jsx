@@ -213,7 +213,7 @@ function AddPatient() {
 
           display: "grid",
           // direction:'rtl',
-          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}    `,
+          gridTemplateColumns: `0.1fr   ${layOut.form}  1fr    ${layOut.requestedDiv} ${layOut.patientDetails}   `,
         }}
       >
         <div>
@@ -326,10 +326,14 @@ function AddPatient() {
             ></TextField>
           )}
         </Card>
-        <div>
-          {!actviePatient && foundedPatients.length > 0 && (
+        <div >
+          <div style={{position: 'absolute',
+    right: '0',zIndex:'3',maxWidth:'60vw'}}>
+   {!actviePatient && foundedPatients.length > 0 && (
             <SearchDialog lab={true} />
           )}
+          </div>
+       
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
