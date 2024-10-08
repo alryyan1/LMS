@@ -8,19 +8,22 @@ export function onlyAdmin (user,action){
      return action()
   }
 }
-export const host = 'server1'
+export const host = 'sahara-pharma.com'
+export const schema = 'https'
+// export const host = '127.0.0.1'
+// export const host = 'server1'مركز النعيم
 
 export function blurForNoramlUsers (){
   // return classname has filter properties
   return "blurForNormalUsers"
 }
 // export const url = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api/"
-export const url = `http://${host}/laravel-react-app/public/api/`
+export const url = `${schema}://${host}/laravel-react-app/public/api/`
 //  export const url = "http://192.168.1.5/laravel-react-app/public/api/"
 // export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
 // export const webUrl = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/"
 //  export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
- export const webUrl = `http://${host}/laravel-react-app/public/`
+ export const webUrl = `${schema}://${host}/laravel-react-app/public/`
 // export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
 export   const notifyMe = (title, data, address, action) => {
   // alert(Notification.permission)

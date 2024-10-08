@@ -8,6 +8,7 @@ import { cacheRtl } from "../constants";
 
 function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
+  const [itemsIsLoading,setItemsIsLoading] = useState(false)
   const [activeSell, setActiveSell] = useState();
   const [suppliers, setSuppliers] = useState([]);
   const [itemsTobeAddedToChache, setItemsTobeAddedToChache] = useState([]);
@@ -47,7 +48,7 @@ function PharmacyLayout() {
   
     }).finally(()=>setShiftIsLoading(false));
     
-   
+    setItemsIsLoading(true)
       axiosClient.get(`items/all`).then(({ data: data }) => {
         setItems(data);
         if (data.status == false) {
@@ -57,7 +58,7 @@ function PharmacyLayout() {
           })
         }
   
-    });
+    }).finally(()=>setItemsIsLoading(false));
   
     
   
@@ -99,6 +100,7 @@ function PharmacyLayout() {
             openClientDialog,setOpenClientDialog,
             showSummery, setShowSummery,
             itemsTobeAddedToChache, setItemsTobeAddedToChache,
+            itemsIsLoading,setItemsIsLoading
             
           
           }}

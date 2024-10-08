@@ -69,7 +69,8 @@ function DepoistItemsTable({
         });
         // alert('number search')
         const filtered = data.items.filter((item) => {
-          return item.item.barcode.trim() == search.trim();
+          console.log(item,'item filtered')
+          return item.item?.barcode?.trim() == search.trim();
         });
         const sliced = filtered.slice(page, page + 10).map((i) => {
           // alert(i)

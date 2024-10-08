@@ -1,9 +1,9 @@
 import axios from "axios";
-import { host } from "./src/pages/constants";
+import { host, schema } from "./src/pages/constants";
 
 const axiosClient =  axios.create({
     // baseURL : `https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api`
-    baseURL : `http://${host}/laravel-react-app/public/api`
+    baseURL : `${schema}://${host}/laravel-react-app/public/api`
     //  baseURL : `http://192.168.1.5/laravel-react-app/public/api`
     // baseURL : `https://om-pharmacy.com/laravel-react-app/public/api`
 })
