@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Divider,
@@ -17,6 +18,7 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import AddCostForm from "../../components/AddCostForm";
+import { webUrl } from "../constants";
 
 const options = {
   weekday: "long",
@@ -178,6 +180,19 @@ function CashDenos() {
               </TableBody>
             </Table>
           </Box>
+        </Grid>
+        <Grid  item  lg={3} xs={12}>
+           <form  action={`${webUrl}previewLabel`} method="POST" >
+            <Stack gap={2} justifyContent={'space-around'} sx={{mb:1}} direction={'row'}>
+            <TextField name='orientation' label='orientation' ></TextField>
+            <TextField type="number" label='height' name='height'></TextField>
+            <TextField type="number" label='width' name='width'></TextField>
+            </Stack>
+            
+           <TextField name="data" multiline rows={16} fullWidth></TextField>
+           <Button fullWidth sx={{mt:1}} type="submit" variant="contained">Preview</Button>
+           </form>
+          
         </Grid>
        
       </Grid>

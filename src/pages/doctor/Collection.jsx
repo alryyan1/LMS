@@ -88,7 +88,15 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
                     .then(({ data }) => {
                     //  setShift(data.shift);
                     });
+  
+                    fetch("http://127.0.0.1:5000/", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "APPLICATION/JSON",
+                      },
 
+                      body: JSON.stringify(patient),
+                    }).then(() => {});
                   axiosClient
                     .get(`printBarcode?pid=${patient.id}&base64=1`)
                     .then(({ data }) => {

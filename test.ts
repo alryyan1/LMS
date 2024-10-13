@@ -1,27 +1,17 @@
-let message: string = 'Hello, World!';
+let getUknownTuple = (...args : (number|string)[]):[number,string] =>{
+    let total = 0;
+    let str = ''
+    
+    args.forEach((args)=>{
+        if (typeof args == 'number') {
+            total+=args
+        }else{
+            str.concat(args)
+        }
+    })
 
-let arr:(string|number)[] = [];
-arr.push('a')
-arr.push(1)
-console.log(message);
-
-
-
-const add = (one:number|boolean,two:number|boolean) => {
-    return (one as number)+ (two as number)
+    return [total, str]
 }
 
-let greeting : (name: string) => string;
-let greet : (name:string) => string[]
-greet = (name:string)=>{
-    return [`Hello, ${name}`]
-}
 
-let info : (name:string,age:number) => string 
-
-
-greeting = (name: string) => {
-    return `Hello, ${name}`;
-}
-
-const hello = ( name:string)=> name
+console.log(getUknownTuple(1,2,3,'abc','cdf'))

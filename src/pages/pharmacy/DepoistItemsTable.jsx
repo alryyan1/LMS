@@ -1,11 +1,13 @@
-import { Add, Delete, SwapHoriz } from "@mui/icons-material";
+import { Add, ArrowBack, ArrowForward, Delete, RemoveRedEye, SwapHoriz, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Card,
+  Grid,
   Icon,
   IconButton,
   Pagination,
+  Skeleton,
   Stack,
   Table,
   TableBody,
@@ -24,247 +26,142 @@ import MyCheckbox from "../../components/MyCheckBox";
 import { useOutletContext } from "react-router-dom";
 import MyDateField from "../../components/MyDateField";
 import MyDateField2 from "../../components/MyDateField2";
-import counting from "./../../assets/images/counting.png";
-import reduction from "./../../assets/images/reduction.png";
-import vat from "./../../assets/images/vat.png";
-import profit from "./../../assets/images/profit.png";
-import discount from "./../../assets/images/discount.png";
-import discount2 from "./../../assets/images/discount2.png";
-import paid from "./../../assets/images/paid.png";
+
 import { useStateContext } from "../../appContext";
+import ButtonOptions from "./ButtonOptions";
+import MyLoadingButton from "../../components/MyLoadingButton";
+import ExcelReader from "../../ExcelReader";
+import InvoiceSummary from "./InvoiceSummary";
 
 function DepoistItemsTable({
-  selectedDeposit,
-  loading,
-  deleteIncomeItemHandler,
   data,
   setData,
   setLayout,
   change,
+  setSelectedDeposit,
+  invoiceItems,
+  setInvoiceItems,
 }) {
-  const { setDialog } = useOutletContext();
+  const { setDialog,selectedInvoice:selectedDeposit,excelLoading,links,setLinks,setUpdateSummery,updateSummery } = useOutletContext();
   const {user} = useStateContext()
   console.log(selectedDeposit,'selected Deposit')
-  // console.log(setDialog, "setdialog");
-  // console.log(data, "data of cloned deposit");
   const [ld, setLd] = useState(false);
-  const [search, setSearch] = useState(null);
-  const [depsitWithSummery,setDepsitWithSummery] = useState(null)
-  const [updateSummery,setUpdateSummery] = useState(0)
-  const changedItems = [];
+  const [search, setSearch] = useState('');
+  const [loading,setLoading]= useState(false)
+  const [summeryIsLoading,setSummeryIsLoading]= useState(false)
   const [page, setPage] = useState(0);
-  // console.log("data in deposit items table", data);
-  // console.log("selectedDeposit in deposit items table", selectedDeposit);
   useEffect(() => {
-    if (search != null) {
-      if (search == "") {
-        // alert('empty search')
-        // console.log(data, "data");
-        change(data);
-        return;
-      }
+      if (search != "") {
+    
       if (!isNaN(search)) {
         setPage(() => {
           return 0;
         });
         // alert('number search')
         const filtered = data.items.filter((item) => {
-          console.log(item,'item filtered')
           return item.item?.barcode?.trim() == search.trim();
         });
-        const sliced = filtered.slice(page, page + 10).map((i) => {
-          // alert(i)
-        });
+        
+        setSelectedDeposit({ ...selectedDeposit, items: filtered })
 
-        change({ ...selectedDeposit, items: filtered });
       } else {
-        if (search == "") {
-          alert("empty search");
-          change(data);
-          return;
-        }
-        change({
+        setSelectedDeposit({
           ...selectedDeposit,
           items: data.items.filter((item) =>
             item.item.market_name.toLowerCase().includes(search?.toLowerCase())
           ),
+        })
+      
+      
+      }
+    
+}}, [search]);
+
+
+const updateItemsTable = (link, setLoading) => {
+  console.log(search);
+  setLoading(true);
+  axiosClient(`${link.url}&word=${search}`)
+    .then(({ data }) => {
+      console.log(data, "pagination data");
+      setInvoiceItems(data.data);
+      setLinks(data.links);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+};
+useEffect(() => {
+  //fetch all Items
+
+
+  axiosClient
+    .get(`deposit/items/all/pagination/${selectedDeposit.id}?rows=7`)
+    .then(({ data: { data, links } }) => {
+      console.log(data, "items");
+      console.log(links);
+      setInvoiceItems(data);
+      console.log(links);
+      setLinks(links);
+    })
+    .catch(({ response: { data } }) => {
+    });
+}, [page]);
+useEffect(() => {
+  const timer = setTimeout(() => {
+    axiosClient
+      .get(`deposit/items/all/pagination/${selectedDeposit.id}?word=${search}&rows=7`)
+      .then(({ data: { data, links } }) => {
+        console.log(data);
+        console.log(links,'links');
+        setInvoiceItems(data);
+        // console.log(links)
+        setLinks(links);
+      })
+      .catch(({ response: { data } }) => {
+        setDialog((prev) => {
+          return {
+            ...prev,
+            open: true,
+            color: "error",
+            message: data.message,
+          };
+        });
+      });
+  }, 300);
+  return () => clearTimeout(timer);
+}, [search]);
+
+
+  // useEffect(() => {
+  //   setSummeryIsLoading(true)
+  //   axiosClient.get(`depositSummery/${selectedDeposit?.id}`).then(({data})=>{
+  //     console.log(data,'data')
+  //     setSelectedDeposit(data)
+  //   }).finally(()=>setSummeryIsLoading(false))
+  // },[updateSummery])
+  const deleteIncomeItemHandler = (id) => {
+    setLoading(true);
+    axiosClient.delete(`depositItem/${id}`).then((data) => {
+      if (data.status) {
+        setLoading(false);
+        setInvoiceItems((prev)=>{
+          return prev.filter((item) => item.id!== id)
+        })
+        //delete supplier by id
+        setDialog({
+          open: true,
+          message: "Delete was successfull",
         });
       }
-    }
-  }, [search]);
-  useEffect(() => {
-    axiosClient.get(`depositSummery/${selectedDeposit?.id}`).then(({data})=>{
-      console.log(data,'data')
-      setDepsitWithSummery(data)
-    })
-  },[updateSummery])
+    });
+  };
   return (
     <TableContainer sx={{ height: "80vh", overflow: "auto", p: 1 }}>
-      <Stack direction={"row"} alignItems={"center"} gap={2}>
-        <LoadingButton
-          variant="contained"
-          loading={ld}
-          onClick={() => {
-            setLd(true);
-            const result = confirm(
-              "هل انت متاكد من اضافه كل الاصناف لهذه الفاتوره"
-            );
-            if (result) {
-              axiosClient
-                .post(`income-item/bulk/${selectedDeposit.id}`)
-                .then(({ data }) => {
-                  change(data.deposit);
-                  setData(data);
-                })
-                .finally(() => setLd(false));
-            }
-          }}
-        >
-           مخزون افتتاحي  
-        </LoadingButton>
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          href={`${webUrl}pdf?id=${selectedDeposit.id}`}
-        >
-          pdf
-        </Button>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={counting} />
-            <span style={{ color: "black", fontSize: "20px" }}>{selectedDeposit?.items?.length}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              عدد الاصناف
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={reduction} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.costWithOutVat ?? 0,3)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-              التكلفه قبل
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={vat} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.totalVatCost, 3)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-              اجمالي الضريبه
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={reduction} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.CostWithVat, 3)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-              التكلفه بعد
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700 ${onlyAdmin(user?.id,blurForNoramlUsers)}`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={profit} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.profit, 3)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-              اجمالي الربح
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={discount} />
-            <span style={{ color: "black", fontSize: "20px" }}>{depsitWithSummery?.discount}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-               الخصم نسبه
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={discount2} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.discountedMoney)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-               الخصم ريال
-            </span>
-          </Stack>
-        </Card>
-        <Card sx={{ backgroundColor: "#ffffff73",height:142,width:142 }}>
-          <Stack
-            justifyContent={"center"}
-            alignItems={"center"}
-            className={` hover:bg-sky-700`}
-            sx={{ p: 1, color: "black", fontSize: "large" }}
-            direction={"column"}
-            gap={1}
-          >
-            <img width={50} src={paid} />
-            <span style={{ color: "black", fontSize: "20px" }}>{toFixed(depsitWithSummery?.CostWithVat -depsitWithSummery?.discountedMoney ,3)}</span>
-            <span style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-                التكلفه النهائيه
-            </span>
-          </Stack>
-        </Card>
-      </Stack>
+      <InvoiceSummary summeryIsLoading={summeryIsLoading} user={user} selectedDeposit={selectedDeposit}/>
       {/* <a href={`${webUrl}pdf?id=${selectedDeposit.id}`}></a> */}
 
       <Stack
@@ -316,32 +213,95 @@ function DepoistItemsTable({
           label="بحث"
           type="search"
         ></TextField>
-      </Stack>
+  <LoadingButton
+          variant="contained"
+          loading={ld}
+          onClick={() => {
+            setLd(true);
+            const result = confirm(
+              "هل انت متاكد من اضافه كل الاصناف لهذه الفاتوره"
+            );
+            if (result) {
+              axiosClient
+                .post(`income-item/bulk/${selectedDeposit.id}`)
+                .then(({ data }) => {
+                  change(data.deposit);
+                  setData(data);
+                })
+                .finally(() => setLd(false));
+            }
+          }}
+        >
+              تعريف الكل  
+        </LoadingButton>
+<ExcelReader setItems={setInvoiceItems} setSelectedDeposit={setSelectedDeposit} selectedDeposit={selectedDeposit}/>
 
-      <Card sx={{ backgroundColor: "#ffffff73" }}>
-        <Table key={selectedDeposit.items.length} size="small">
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          href={`${webUrl}pdf?id=${selectedDeposit.id}`}
+        >
+          pdf
+        </Button>
+        <LoadingButton
+         loading={loading}
+            sx={{ mt: 1 }}
+            color="inherit"
+            title="show patient list"
+            size="small"
+            onClick={() => {
+              setLoading(true)
+              axiosClient.patch(`inventory/deposit/update/${selectedDeposit.id}`,{
+                colName:'showAll',
+                val:!selectedDeposit.showAll
+              }).then(({data})=>{
+                setSelectedDeposit(data.data)
+                axiosClient
+                .get(`deposit/items/all/pagination/${selectedDeposit.id}?rows=7`)
+                .then(({ data: { data, links } }) => {
+                  console.log(data, "items");
+                  console.log(links);
+                  setInvoiceItems(data);
+                  console.log(links);
+                  setLinks(links);
+                })
+                .catch(({ response: { data } }) => {
+                }).finally(()=>setLoading(false));
+              })
+            }}
+            variant="contained"
+          >
+           {selectedDeposit.showAll ? <RemoveRedEye /> : <VisibilityOff/> } 
+          </LoadingButton>
+      </Stack>
+      {excelLoading     ?  <Skeleton width={'100%'} height={'80vh'}/> :
+      <>
+       <Card sx={{ backgroundColor: "#ffffff73" }}>
+        <Table  size="small">
           <thead>
             <TableRow>
               <TableCell>Item</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Cost</TableCell>
               <TableCell>Vat(Cost) %</TableCell>
-              <TableCell>Vat (OMR)</TableCell>
-              <TableCell> Cost + vat </TableCell>
               <TableCell> R.P </TableCell>
               <TableCell> Vat(Sell) % </TableCell>
               <TableCell> R.P + Vat </TableCell>
-              <TableCell>T.Cost</TableCell>
-              <TableCell>Dlt</TableCell>
-              <TableCell> return</TableCell>
-              <TableCell> Free QYN</TableCell>
+              <TableCell> Other</TableCell>
               <TableCell>Expire</TableCell>
+              <TableCell>Barcode</TableCell>
             </TableRow>
           </thead>
 
           <TableBody>
-            {selectedDeposit.items
-              .slice(page, page + 10)
+            {invoiceItems.filter((depositItem)=>{
+                 if (selectedDeposit.showAll == 0){
+                  return depositItem.quantity > 0 
+                     
+              }else{
+                return depositItem.quantity == 0
+              }
+            })
               .map((depositItem, i) => {
                 return (
                   <TableRow key={depositItem.id}>
@@ -361,7 +321,6 @@ function DepoistItemsTable({
                       setDialog={setDialog}
                       sx={{ width: "60px", textAlign: "center" }}
                       show
-                      change={change}
                       item={depositItem}
                       table="depositItems/update"
                       colName={"quantity"}
@@ -373,7 +332,6 @@ function DepoistItemsTable({
                       stateUpdater={setUpdateSummery}
                       show
                       sx={{ width: "60px", textAlign: "center" }}
-                      change={change}
                       item={depositItem}
                       table="depositItems/update"
                       colName={"cost"}
@@ -386,28 +344,19 @@ function DepoistItemsTable({
                       stateUpdater={setUpdateSummery}
                       show
                       sx={{ width: "60px", textAlign: "center" }}
-                      change={change}
                       item={depositItem}
                       table="depositItems/update"
                       colName={"vat_cost"}
                     >
                       {depositItem.vat_cost}
                     </MyTableCell>
-                    <TableCell>
-                      {toFixed(
-                        (depositItem.vat_cost * depositItem.cost) / 100,
-                        3
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {toFixed(depositItem.finalCostPrice, 3)}
-                    </TableCell>
+                   
+                  
                     <MyTableCell
                       setDialog={setDialog}
                       stateUpdater={setUpdateSummery}
                       sx={{ width: "60px", textAlign: "center" }}
                       show
-                      change={change}
                       item={depositItem}
                       table="depositItems/update"
                       colName={"sell_price"}
@@ -418,7 +367,6 @@ function DepoistItemsTable({
                       setDialog={setDialog}
                       stateUpdater={setUpdateSummery}
                       sx={{ width: "60px", textAlign: "center" }}
-                      change={change}
                       item={depositItem}
                       table="depositItems/update"
                       colName={"vat_sell"}
@@ -429,60 +377,82 @@ function DepoistItemsTable({
                       {toFixed(depositItem.finalSellPrice, 3)}
                     </TableCell>
 
-                    <TableCell>
-                      {toFixed(
-                        depositItem.quantity * depositItem.finalCostPrice,
-                        3
-                      )}
-                    </TableCell>
 
+                  
                     <TableCell>
-                      <LoadingButton
-                        loading={loading}
-                        title="Delete"
-                        endIcon={<Delete />}
-                        onClick={() => {
-                          deleteIncomeItemHandler(depositItem.id);
-                        }}
-                      ></LoadingButton>
+                      <ButtonOptions loading={loading} deleteIncomeItemHandler={deleteIncomeItemHandler} item={depositItem} change={change}  />
                     </TableCell>
-                    <TableCell>
-                      <MyCheckbox
-                        change={change}
-                        path={`depositItems/update/${depositItem.id}`}
-                        isChecked={depositItem.return}
-                        colName={"return"}
-                      />
-                    </TableCell>
-                    <MyTableCell
-                      setDialog={setDialog}
-                      stateUpdater={setUpdateSummery}
-                      sx={{ width: "60px", textAlign: "center" }}
-                      change={change}
-                      item={depositItem}
-                      table="depositItems/update"
-                      colName={"free_quantity"}
-                    >
-                      {depositItem.free_quantity}
-                    </MyTableCell>
+                
                     <TableCell>
                       <MyDateField2
                         val={depositItem.expire}
                         item={depositItem}
                       />
                     </TableCell>
+                    <MyTableCell
+                        show
+                        colName={"barcode"}
+                        item={depositItem.item}
+                        table="items"
+                      >
+                        {depositItem?.item?.barcode}
+                      </MyTableCell>
+                  
                   </TableRow>
                 );
               })}
           </TableBody>
         </Table>
       </Card>
-      <Pagination
-        shape="rounded"
-        onChange={(e, number) => setPage(number * 10 - 10)}
-        count={Math.ceil(selectedDeposit.items.length / 10)}
-        variant="outlined"
-      />
+     
+        <Grid sx={{ gap: "4px", mt: 1 }} container>
+          {links.map((link, i) => {
+            if (i == 0) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowBack />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else if (links.length - 1 == i) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowForward />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    active={link.active}
+                    onClick={(setLoading) => {
+                      updateItemsTable(link, setLoading);
+                    }}
+                  >
+                    {link.label}
+                  </MyLoadingButton>
+                </Grid>
+              );
+          })}
+        </Grid>
+      </>
+     
+}
     </TableContainer>
   );
 }

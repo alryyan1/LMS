@@ -86,6 +86,7 @@ function Reception() {
     });
     return () => {
       socket.off("connect", onConnect);
+      socket.off("disconnect", onConnect);
     }
   })
 

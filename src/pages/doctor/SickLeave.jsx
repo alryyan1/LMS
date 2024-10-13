@@ -21,6 +21,39 @@ function SickLeave(props) {
     props;
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(patient.sickleave != null);
+
+
+  const updateSickleave = (e, colName) => {
+    axiosClient
+      .patch(`sickleave/${patient.sickleave.id}`, {
+        [colName]: e.target.value,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+  };
+
   const updateHandler = (e, colName) => {
     axiosClient
       .patch(`patients/${patient.id}`, {
@@ -140,7 +173,7 @@ function SickLeave(props) {
                           },
                         }}
                         onChange={(e) => {
-                          updateHandler(e, "job_and_place_of_work");
+                          updateSickleave(e, "job_and_place_of_work");
                         }}
                         defaultValue={patient.sickleave.job_and_place_of_work}
                       />
@@ -157,7 +190,7 @@ function SickLeave(props) {
                           },
                         }}
                         onChange={(e) => {
-                          updateHandler(e, "o_p_department");
+                          updateSickleave(e, "o_p_department");
                         }}
                         defaultValue={patient.sickleave.o_p_department}
                       />
@@ -174,7 +207,7 @@ function SickLeave(props) {
                           },
                         }}
                         onChange={(e) => {
-                          updateHandler(e, "hospital_no");
+                          updateSickleave(e, "hospital_no");
                         }}
                         defaultValue={patient.sickleave.hospital_no}
                       />

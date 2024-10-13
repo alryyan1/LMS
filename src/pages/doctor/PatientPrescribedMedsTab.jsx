@@ -22,9 +22,10 @@ import { useStateContext } from "../../appContext";
 import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete";
 import MyCustomAutocompleteWithAdditionCababilty from "./MyCustomAutocompleteWithAdditionCababilty";
 import { ItemTypes } from "@minoru/react-dnd-treeview";
+import printJS from "print-js";
 function PatientPrescribedMedsTab(props) {
 
-  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user,items, ...other } =
+  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user,items,userSettings, ...other } =
     props;
   const [loading, setLoading] = useState();
   const [showSuggestions, setShowSeggestions] = useState(false);
@@ -80,8 +81,33 @@ function PatientPrescribedMedsTab(props) {
       <Divider sx={{ mb: 1 }} variant="middle">
         Prescribed Medicines({items.length})
       </Divider>
-      <Button variant="contained" href={`${webUrl}printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user?.id}`}>PDF</Button>
+      <Button onClick={()=>{
+         const form = new URLSearchParams();
+         axiosClient
+           .get(`printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user.id}&base64=1`)
+           .then(({ data }) => {
+             form.append("data", data);
+             form.append("node_direct", userSettings.node_direct);
+             // console.log(data, "daa");
+             if (userSettings?.web_dialog) {
+               printJS({
+                 printable: data.slice(data.indexOf("JVB")),
+                 base64: true,
+                 type: "pdf",
+               });
+             }
+             if (userSettings?.node_dialog) {
+               fetch("http://127.0.0.1:4000/", {
+                 method: "POST",
+                 headers: {
+                   "Content-Type": "application/x-www-form-urlencoded",
+                 },
 
+                 body: form,
+               }).then(() => {});
+             }
+           });
+      }} variant="contained">PDF</Button>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddPrescribedDrugAutocomplete

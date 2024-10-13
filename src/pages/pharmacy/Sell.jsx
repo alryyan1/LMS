@@ -26,6 +26,7 @@ import {
   FormControlLabel,
   Checkbox,
   FormGroup,
+  TableHead,
 } from "@mui/material";
 import {
   Calculate,
@@ -108,6 +109,19 @@ function SellDrug() {
       setUserSettings(data);
     });
   }, []);
+
+  useEffect(() => {
+    if (activeSell) {
+      const timer = setTimeout(() => {
+    
+      }, 300);
+      return ()=>{
+        clearTimeout(timer);
+      }
+    }
+  
+ 
+  }, [activeSell?.id]);
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -245,6 +259,8 @@ function SellDrug() {
                 .filter((d) => d.is_sell != 0)
                 .map((p, i) => (
                   <SellBox
+                    setActiveSell={setActiveSell}
+                    setShift={setShift}
                     delay={i * 100}
                     key={p.id}
                     sell={p}
@@ -448,10 +464,10 @@ function SellDrug() {
              backgroundColor: "#ffffff73" ,
             p: 1,
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             flexDirection: "column",
-            alignContent: "center",
-            alignItems: "center",
+            alignContent: "space-between",
+            alignItems: "space-between",
           }}
         >
           {activeSell && (
@@ -465,115 +481,52 @@ function SellDrug() {
               <Divider />
               {activeSell && <PayOptions key={activeSell.id} />}
               <Divider />
-              <Card
-                sx={{
-                  borderRadius: 10,
-                  width: "150px",
-                  textAlign: "center",
-                  height: "120px",
-                }}
-              >
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"center"}>
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography textAlign={"right"} variant="h5">
-                        Total
-                      </Typography>
-                      <Divider />
-                      {activeSell && (
-                        <Typography variant="h6">
-                          {Number(activeSell?.total_price_unpaid).toFixed(3)}
-                        </Typography>
-                      )}
-                    </Stack>
-                    <Stack
-                      direction={"column"}
-                      justifyContent={"center"}
-                    ></Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
-              <Card
-                sx={{
-                  borderRadius: 10,
-                  width: "150px",
-                  mt: 2,
-                  height: "120px",
-             backgroundColor: "#ffffff73" ,
-
-                }}
-              >
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"center"}>
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography>Discount</Typography>
-                      <Divider />
-
-                      <TextField key={activeSell?.id}
-                        defaultValue={activeSell?.discount}
-                        onChange={(e) => {
-                          setRecieved(e.target.value);
-                          axiosClient
-                            .patch(`deduct/${activeSell.id}`, {
-                              colName: "discount",
-                              val: e.target.value,
-                            })
-                            .then(({ data }) => {
-                              setActiveSell(data.data);
-                          setShift(data.shift);
-
-
-                            });
-                        }}
-                        variant="standard"
-                      ></TextField>
-                    </Stack>
-                    <Stack
-                      direction={"column"}
-                      justifyContent={"center"}
-                    ></Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
-              <Card
-                sx={{
-             backgroundColor: "#ffffff73" ,
-
-                  borderRadius: 10,
-                  width: "150px",
-                  mt: 2,
-                  height: "120px",
-                }}
-              >
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"center"}>
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography>Balance</Typography>
-                      <Divider />
-
-                      <Typography variant="h6">
-                        {(
-                          Number(activeSell?.total_price_unpaid) -
-                          Number(activeSell?.discount)
-                        ).toFixed(3)}
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction={"column"}
-                      justifyContent={"center"}
-                    ></Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
+              <Table>
+                <TableHead>
+                  <TableRow >
+                    <TableCell colSpan={2}>Invoice</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Sub Total</TableCell>
+                    <TableCell>
+                      {Number(activeSell?.total_price_unpaid).toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                
+                  <TableRow>
+                    <TableCell>Tax</TableCell>
+                    <TableCell>
+                      {Number(activeSell?.calculateTax).toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                  
+                  <TableRow>
+                    <TableCell> TOTAL</TableCell>
+                    <TableCell>
+                      {Number(activeSell?.total_price_unpaid + activeSell?.calculateTax).toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Discount</TableCell>
+                    <MyTableCell colName={'discount'} sx={{width:'80px'}} table="deduct" item={activeSell} disabled={activeSell.complete == 1}>
+                      {Number(activeSell?.discount).toFixed(3)}
+                    </MyTableCell>
+                  </TableRow>
+                  
+                  <TableRow>
+                    <TableCell>Amount Paid</TableCell>
+                    <TableCell>
+                      {Number(activeSell?.paid).toFixed(3)}
+                    </TableCell>
+                  </TableRow>
+             
+    
+                </TableBody>
+              </Table>
+            
+              
               <Divider />
 
               <Stack justifyContent={"center"} sx={{ mt: 2 }}>

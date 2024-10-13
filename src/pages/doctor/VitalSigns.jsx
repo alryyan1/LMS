@@ -7,12 +7,52 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-import { updateHandler } from "../constants";
 
-function VitalSigns({ patient, setDialog, change }) {
-
+function VitalSigns({ patient, setDialog, change,socket }) {
+ 
+ 
+  const updateHandler = (val, colName,patient,change,setDialog) => {
+    console.log('called update handler')
+    return new Promise((resolve,reject)=>{
+      axiosClient
+      .patch(`patients/${patient.id}`, {
+        [colName]: val,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          socket.emit('patientUpdated',patient.id)
+          if (change) {
+            
+            change(data.patient);
+          }
+          resolve(data.patient,data);
+          setDialog((prev) => {
+            return {
+              ...prev,
+              message: "Saved",
+              open: true,
+              color: "success",
+            };
+          });
+        }
+      })
+      .catch(({ response: { data } }) => {
+        console.log(data);
+        setDialog((prev) => {
+          return {
+            ...prev,
+            message: data.message,
+            open: true,
+            color: "error",
+          };
+        });
+      });
+    })
+  
+  };
   return (
     <div style={{ padding: "5px" }}>
       <Typography textAlign={"center"} variant="h6">

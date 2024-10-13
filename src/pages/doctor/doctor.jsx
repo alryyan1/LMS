@@ -64,7 +64,15 @@ function Doctor() {
   const [showPatients, setShowPatients] = useState(true);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showSearch , setShowSearch] = useState(false)
+  const [userSettings, setUserSettings] = useState(null);
+  useEffect(() => {
 
+
+    axiosClient.get("userSettings").then(({ data }) => {
+      // console.log(data, "user settings from axios");
+      setUserSettings(data);
+    });
+  }, []);
   function onConnect() {
     setIsConnected(true);
   }
@@ -92,9 +100,7 @@ function Doctor() {
     socket.on("connect", (args) => {
       console.log("doctor connected succfully with id" + socket.id, args);
     });
-    socket.on("greeting", (data) => {
-      console.log("received greeting from server " + data);
-    });
+  
     socket.on("authenticatedResult", (pid) => {
       console.log("received result from server for patient " + pid);
 
@@ -117,11 +123,23 @@ function Doctor() {
       });
     });
 
+    socket.on("patientUpdatedFromServer", (pid) => {
+      console.log(pid,'patient updated from server')
+      // console.log("newDoctorPatientFromServer " + pid);
+      getDoctorVisit(pid).then((patientData) => {
+        console.log(patientData,'doctorVisit Data fetched from paitent Id triggered by patiet update visit from vital signs')
+          change(patientData.patient)
+        // updateDoctorPatients(patientData);
+        // showDocPatients();
+      });
+    });
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("authenticatedResult");
       socket.off("newDoctorPatientFromServer");
+      socket.off("patientUpdatedFromServer");
     };
   }, []);
   const hideVisits = () => {
@@ -305,6 +323,7 @@ function Doctor() {
   };
 
   const change = (patient) => {
+    console.log('change function called')
     setActivePatient((prev) => {
       return { ...patient };
     });
@@ -549,6 +568,7 @@ function Doctor() {
                   // console.log(visit, "visit in doctor page");
                   return (
                     <DoctorPatient
+                    change={change}
                       changeDoctorVisit={changeDoctorVisit}
                       showPatients={showPatients}
                       setShowPatients={setShowPatients}
@@ -609,7 +629,8 @@ function Doctor() {
         <Card style={{ backgroundColor: "#ffffff40" }}>
           {activePatient && (
             <VitalSigns
-              key={activePatient?.id}
+             key={activePatient.updated_at}
+            socket={socket}
               change={change}
               patient={activePatient}
               setDialog={setDialog}
@@ -661,18 +682,19 @@ function Doctor() {
                   />
                 )}
                 {!user?.is_nurse == 1 && (
-                  <PatientPrescribedMedsTab
-                    items={items}
-                    user={user}
-                    activeDoctorVisit={activeDoctorVisit}
-                    setShift={setShift}
-                    complains={complains}
-                    change={change}
-                    setDialog={setDialog}
-                    patient={activePatient}
-                    index={4}
-                    value={value}
-                  />
+                 <PatientPrescribedMedsTab
+                 userSettings={userSettings}
+                   items={items}
+                   user={user}
+                   activeDoctorVisit={activeDoctorVisit}
+                   setShift={setShift}
+                   complains={complains}
+                   change={change}
+                   setDialog={setDialog}
+                   patient={activePatient}
+                   index={4}
+                   value={value}
+                 />
                 )}
                 {!user?.is_nurse == 1 && (
                   <ProvisionalDiagnosis

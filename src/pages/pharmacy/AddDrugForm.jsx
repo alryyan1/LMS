@@ -39,6 +39,7 @@ function AddDrugForm({setUpdate}) {
       watch
     } = useForm({
       defaultValues:{
+        strips:1
         // deposit:deposits[0]
       }
     });
@@ -172,7 +173,7 @@ function AddDrugForm({setUpdate}) {
       textAlign={"center"}
       variant="h3"
     >
-      Item Definition
+    تعريف منتج
     </Typography>
     <form noValidate  onSubmit={handleSubmit(submitHandler)}>
       <Stack direction={"column"} spacing={3}>
@@ -187,7 +188,7 @@ function AddDrugForm({setUpdate}) {
                 message: " Sc name is required",
               },
             })}
-            label="S.Name"
+            label="الماده الفعاله"
             variant="outlined"
             helperText={errors.sc_name && errors.sc_name.message}
           />
@@ -203,7 +204,7 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             defaultValue={market}
-            label="M.Name"
+            label="الاسم التجاري"
             variant="outlined"
             helperText={errors.market_name && errors.market_name.message}
           />
@@ -262,7 +263,7 @@ function AddDrugForm({setUpdate}) {
           <TextField
             size="small"
             type="number"
-            
+            defaultValue={1}
          
             error={errors.strips && errors.strips.message}
             fullWidth
@@ -276,7 +277,7 @@ function AddDrugForm({setUpdate}) {
                 message: "Strips count must be at least 1",
               },
             })}
-            label="Strips"
+            label="عدد الشرائط"
             variant="outlined"
             helperText={errors.strips && errors.strips.message}
           />
@@ -285,6 +286,7 @@ function AddDrugForm({setUpdate}) {
             size="small"
             fullWidth
             value={barcode}
+
             
             helperText={errors.barcode && errors.barcode.message}
             error={errors.barcode}
@@ -307,7 +309,7 @@ function AddDrugForm({setUpdate}) {
 
             }}
 
-            label="Barcode"
+            label="الباركود"
             variant="outlined"
             InputProps={{
               startAdornment: (
@@ -317,6 +319,7 @@ function AddDrugForm({setUpdate}) {
               ),
             }}
           />
+          <Stack direction={'row'} gap={2}>
           <PharmacyTypeAutocomplete
             errors={errors}
             Controller={Controller}
@@ -329,6 +332,8 @@ function AddDrugForm({setUpdate}) {
             control={control}
             setValue={setValue}
           />
+          </Stack>
+        
         <Stack gap={2} direction={"row"}>
           {/* <TextField
             size="small"
@@ -389,11 +394,12 @@ function AddDrugForm({setUpdate}) {
               return (
                 <Autocomplete
                     
+                  value={deposits[0] ?? field.value}
                   fullWidth
-                  isOptionEqualToValue={(option, val) => option.id === val.id}
+                  isOptionEqualToValue={(option, val) => option.id === val?.id}
                   sx={{ mb: 1 }}
                   {...field}
-                  value={deposits[0]}
+               
                   options={deposits}
                   getOptionLabel={(option) => `${option.supplier.name} - فاتوره رقم  ${option.bill_number} ------ (${option.id})`}
                   onChange={(e, data) => field.onChange(data)}

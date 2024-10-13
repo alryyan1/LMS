@@ -15,13 +15,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 import {t} from "i18next"
+import { useOutletContext } from "react-router-dom";
 function NewInvoiceForm({
   hideNewFormHandler,
   suppliers,
   setDialog,
   setUpdate,
+  showInvoices
 }) {
   const [loading, setLoading] = useState(false);
+  const {setInvoices} = useOutletContext()
 
   const newInvoiceHandler = (formData) => {
     setLoading(true);
@@ -34,14 +37,21 @@ function NewInvoiceForm({
       })
       .then((data) => {
         if (data.status) {
+          console.log(data.data,'data of new deposit')
+
+          setInvoices((prev) => {
+            console.log(prev,'prev')
+            return [ data.data.data,...prev]
+          })
           hideNewFormHandler();
           setLoading(false);
-          setUpdate((prev) => prev + 1);
           setDialog({
             open: true,
             message: "Added successfully",
           });
         }
+        showInvoices()
+
         console.log(data, "deposit complete");
       })
       .catch(({ response: { data } }) => {

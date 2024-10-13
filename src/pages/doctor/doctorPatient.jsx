@@ -10,7 +10,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit,setLayout,showPatients, setShowPatients,changeDoctorVisit}) {
+function DoctorPatient({change, visit, setActivePatient, index,activePatient ,delay,setActiveDoctorVisit,setLayout,showPatients, setShowPatients,changeDoctorVisit}) {
   // console.log(activePatient,'active patient')
   return (
     <Grow  style={{ transitionDelay: `${delay}ms` }} timeout={2000} in>
@@ -27,6 +27,7 @@ function DoctorPatient({ visit, setActivePatient, index,activePatient ,delay,set
              axiosClient.get(`patient/visit/${visit.id}`).then(({data})=>{
               console.log(data,'data from fresh doctor visit')
               changeDoctorVisit(data)
+              change(data.patient)
              })
             setActivePatient(visit.patient)
             setActiveDoctorVisit(visit)

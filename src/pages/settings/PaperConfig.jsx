@@ -259,6 +259,34 @@ function PaperConfig() {
               data: e.target.value,
             });
           }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.vatin} label='vat in' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "vatin",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.cr} label='cr' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "cr",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.email} label='email' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "email",
+              data: e.target.value,
+            });
+          }}/>
+           <Divider/>
+           <TextField defaultValue={settings?.address} label='address' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "address",
+              data: e.target.value,
+            });
+          }}/>
         </Box>
       </Grid>
       <Grid xs={3}>

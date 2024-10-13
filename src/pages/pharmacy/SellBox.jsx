@@ -1,8 +1,9 @@
 import { Lock } from "@mui/icons-material";
 import { Badge, Box, Grow,  } from "@mui/material";
 import 'animate.css';
+import axiosClient from "../../../axios-client";
 
-function SellBox({ onClick, sell,index,activeSell }) {
+function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift }) {
   
   
 
@@ -28,6 +29,17 @@ function SellBox({ onClick, sell,index,activeSell }) {
         
             onClick={() => {
               onClick(sell);
+              axiosClient(`sells/find/${sell.id}`).then(({ data }) => {
+                 setActiveSell(data)
+                  setShift((prev)=>{
+                    return {...prev, deducts : prev.deducts.map((d)=>{
+                      if(d.id == sell.id){
+                        return {...data}
+                      }
+                      return d;
+                    })}
+                  })
+                });
             }}
             
             sx={ activeSell?.id == sell.id ? {
@@ -48,6 +60,17 @@ function SellBox({ onClick, sell,index,activeSell }) {
             
           onClick={() => {
             onClick(sell);
+            axiosClient(`sells/find/${sell.id}`).then(({ data }) => {
+              setActiveSell(data)
+               setShift((prev)=>{
+                 return {...prev, deducts : prev.deducts.map((d)=>{
+                   if(d.id == sell.id){
+                     return {...data}
+                   }
+                   return d;
+                 })}
+               })
+             });
           }}
           sx={ activeSell?.id == sell.id ? {
             borderBottom:"4px solid blue",

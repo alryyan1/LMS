@@ -6,7 +6,7 @@ import axiosClient from "../../axios-client";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-function MyDateField2({ val, item ,setDialog, label='تاريخ الانتهاء',path='depositItems/update',colName="expire"}) {
+function MyDateField2({ val, item ,setDialog,disabled, label='تاريخ الانتهاء',path='depositItems/update',colName="expire"}) {
   // console.log(item,'item in date field')
   // console.log(item , val,'date filed ')
   // console.log(dayjs(val), "date filed ", val, "val");
@@ -14,6 +14,7 @@ function MyDateField2({ val, item ,setDialog, label='تاريخ الانتهاء
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateField
+      disabled={disabled}
       label={label}
       format='YYYY-MM-DD'
       fullWidth

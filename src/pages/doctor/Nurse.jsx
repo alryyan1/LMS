@@ -39,6 +39,7 @@ import Collection from "./Collection";
 import LabResults from "./LabResult";
 import VitalSigns from "./VitalSigns";
 import SickLeave from "./SickLeave";
+import { socket } from "../../socket";
 
 function Nurse() {
   const [value, setValue] = useState(0);
@@ -47,7 +48,29 @@ function Nurse() {
   const [diagnosis, setDiagnosis] = useState([]);
   const { user } = useStateContext();
   const [showPatients, setShowPatients] = useState(true);
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
+  function onConnect() {
+    setIsConnected(true);
+  }
+
+  function onDisconnect() {
+    setIsConnected(false);
+  }
+  useEffect(() => {
+    //  const socket =  io('ws://localhost:3000')
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("authenticatedResult");
+      socket.off("newDoctorPatientFromServer");
+    };
+  }, []);
   const [showPreviousVisits, setShowPreviousVisits] = useState(false);
   const [layOut, setLayout] = useState({
     patients: "1.7fr",
@@ -412,6 +435,7 @@ function Nurse() {
         <Card >
           {activePatient && (
             <VitalSigns
+              socket={socket}
               key={activePatient?.id}
               change={change}
               patient={activePatient}

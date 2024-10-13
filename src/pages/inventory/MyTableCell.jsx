@@ -81,7 +81,9 @@ function MyTableCell({
               
             }
             if (change) {
-              change(data.data.deposit)
+              console.log(data.data.data,'data')
+              console.log(data.data.deposit,'deposit')
+              change(data.data.deposit,data.data.data)
             stateUpdater((prev) => prev + 1);
 
             }

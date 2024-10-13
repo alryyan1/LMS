@@ -33,6 +33,21 @@ function PharmacyLayout() {
   const [pharmacyTypes, setPharmacyTypes] = useState([]);
   const [items, setItems] = useState([]);
   const [deduct, setDeduct] = useState(null);
+  const [depositLoading, setDepositLoading] = useState(false);
+  const [invoices, setInvoices] = useState([]);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [excelLoading,setExeclLoading] = useState(false)
+  const [links,setLinks] = useState([])
+  const [updateSummery,setUpdateSummery] = useState(0)
+
+  useEffect(() => {
+    setDepositLoading(true)
+    axiosClient.get("inventory/deposit/all").then(({ data }) => {
+      
+      setInvoices(data);
+     
+    }).finally(()=>setDepositLoading(false));
+  }, []);
   useEffect(() => {
     //fetch all suppliers
     axiosClient.get(`suppliers/all`).then(({ data }) => {
@@ -100,7 +115,10 @@ function PharmacyLayout() {
             openClientDialog,setOpenClientDialog,
             showSummery, setShowSummery,
             itemsTobeAddedToChache, setItemsTobeAddedToChache,
-            itemsIsLoading,setItemsIsLoading
+            itemsIsLoading,setItemsIsLoading,
+            invoices, setInvoices,
+            selectedInvoice, setSelectedInvoice,depositLoading,excelLoading,setExeclLoading,links,setLinks,
+            updateSummery,setUpdateSummery
             
           
           }}
