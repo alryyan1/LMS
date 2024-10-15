@@ -340,6 +340,7 @@ function DrugItems() {
                   <TableCell> code</TableCell>
                   {/* <TableCell>الاسم العلمي</TableCell> */}
                   <TableCell>M.Name </TableCell>
+                  <TableCell>Pack size </TableCell>
                   <TableCell>Active 1 </TableCell>
                   <TableCell>Active 2 </TableCell>
                   <TableCell> Cost</TableCell>
@@ -378,6 +379,10 @@ function DrugItems() {
                           drug?.market_name.toUpperCase()[0]
                         }${drug?.market_name.slice(1).toLowerCase()}`}
                       </MyTableCell>
+                      <TableCell>
+                      {`${drug?.pack_size}`}
+
+                      </TableCell>
                       <MyTableCell
                         colName={"active1"}
                         item={drug}

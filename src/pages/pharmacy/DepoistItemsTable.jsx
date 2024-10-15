@@ -294,14 +294,7 @@ useEffect(() => {
           </thead>
 
           <TableBody>
-            {invoiceItems.filter((depositItem)=>{
-                 if (selectedDeposit.showAll == 0){
-                  return depositItem.quantity > 0 
-                     
-              }else{
-                return depositItem.quantity == 0
-              }
-            })
+            {invoiceItems
               .map((depositItem, i) => {
                 return (
                   <TableRow key={depositItem.id}>

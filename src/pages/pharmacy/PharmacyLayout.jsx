@@ -58,8 +58,8 @@ function PharmacyLayout() {
   }, []);
   useEffect(()=>{
     setShiftIsLoading(true);
-    axiosClient.get(`shift/last`).then(({ data: data }) => {
-        setShift(data.data);
+    axiosClient.get(`shiftWith?with=deducts`).then(({ data: data }) => {
+        setShift(data);
   
     }).finally(()=>setShiftIsLoading(false));
     

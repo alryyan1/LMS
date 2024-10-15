@@ -126,6 +126,7 @@ export const theme = createTheme({
   }));
 
   export function toFixed(num, fixed) {
+    if(num == undefined) return 0
     try {
         if (typeof num == 'string' && isNaN(num)) {
       return 0

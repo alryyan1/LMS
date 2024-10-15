@@ -129,18 +129,18 @@ function AddPatient() {
   };
   //  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
-    // setPatientsLoading(true);
-    axiosClient.get(`shift/last`).then(({ data: data }) => {
+    setPatientsLoading(true);
+    axiosClient.get(`shiftWith?with=patients`).then(({ data }) => {
       // console.log(first)
-      console.log(data.data, "today patients");
-      //add activeProperty to patient object
-      data.data.patients.forEach((patient) => {
-        // console.log('patients',patient)
-        patient.active = false;
-      });
-      // setPatientsLoading(false);
+      console.log(data, "last shift");
+      // //add activeProperty to patient object
+      // data.data.patients.forEach((patient) => {
+      //   // console.log('patients',patient)
+      //   patient.active = false;
+      // });
+      setPatientsLoading(false);
 
-      setPatients(data.data.patients);
+      setPatients(data.patients);
     });
   }, [update]);
   console.log(actviePatient, "active patient");

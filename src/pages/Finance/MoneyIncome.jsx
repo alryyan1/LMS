@@ -29,7 +29,7 @@ function MoneyIncome() {
                             <TableCell>{item.date}</TableCell>
                             <TableCell>{item.totalLab}</TableCell>
                             <TableCell>{item.totalClinic}</TableCell>
-                            <TableCell>{0}</TableCell>
+                            <TableCell>{item.total_cost}</TableCell>
                             <TableCell>{0}</TableCell>
                         </TableRow>
                     ))}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Item, webUrl } from "../constants";
+import { Item, toFixed, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import { useSymbologyScanner } from "@use-symbology-scanner/react";
 
@@ -56,13 +56,7 @@ import MyCheckbox from "../../components/MyCheckBox";
 import CalculateInventory from "./CalculateInventory";
 import MyDateField2 from "../../components/MyDateField2";
 // import Calculator from "../../components/calculator/Calculator";
-function toFixed(num, fixed) {
-  if (num == null) {
-    return 0;
-  }
-  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
-  return num.toString().match(re)[0];
-}
+
 function SellDrug() {
   const ref = useRef(null);
   const handleSymbol = (symbol, matchedSymbologies) => {
@@ -78,19 +72,15 @@ function SellDrug() {
   const [recieved, setRecieved] = useState(0);
   const {
     setDialog,
-    deduct,
     setDeduct,
     shift,
     shiftIsLoading,
     activeSell,
     setActiveSell,
     setShift,
-    showDialogMoney,
     setShowDialogMoney,
-    openClientDialog,
     setOpenClientDialog,
-    setItemsTobeAddedToChache,
-    itemsTobeAddedToChache,setItems,items
+    itemsTobeAddedToChache,setItems,items,showDialogMoney
   } = useOutletContext();
   // console.log(shift, "shift");
   // console.log(activeSell, "active sell");
@@ -122,15 +112,7 @@ function SellDrug() {
   
  
   }, [activeSell?.id]);
-  const [layOut, setLayout] = useState({
-    form: "1fr",
-    tests: "1fr",
-    hideForm: false,
-    testWidth: "400px",
-    requestedDiv: "minmax(0,1.5fr)",
-    showTestPanel: false,
-    patientDetails: "0.7fr",
-  });
+
   useEffect(() => {
     itemsTobeAddedToChache.map((id)=>{
     
@@ -161,24 +143,7 @@ function SellDrug() {
       // console.log(data);
     });
   }, []);
-  // const hideForm = () => {
-  //   setLayout((prev) => {
-  //     return {
-  //       ...prev,
-  //       form: "0fr",
-  //       hideForm: true,
-  //       tests: "2fr",
-  //       testWidth: "500px",
-  //       showTestPanel: false,
-  //       patientDetails: "0.7fr",
-  //     };
-  //   });
-  // };
-  // const showFormHandler = () => {
-  //   setLayout((prev) => {
-  //     return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
-  //   });
-  // };
+
 
   const showShiftMoney = () => {
     setShowDialogMoney(true);
@@ -187,22 +152,36 @@ function SellDrug() {
     document.title = "Sales";
   }, []);
 
+  const update = (deduct)=>{
+      setActiveSell(deduct)
+      setShift((prev)=>{
+        if(prev.deducts.map((d)=>d.id).find((d)=>d == deduct.id)){
+          return {...prev,deducts:prev.deducts.map((d)=>{
+            if(d.id == deduct.id){
+              return {...deduct}
+            }else{
+              return d
+            }
+          })}
+
+        }else{
+        return {...prev,deducts:[deduct,...prev.deducts]}
+
+        }
+      })
+  }
+
   return (
     <>
       <div
-        style={{
-          userSelect: "none",
-          gap: "15px",
-          transition: "0.3s all ease-in-out",
-          display: "grid",
-          gridTemplateColumns: `0.1fr  1fr  2fr 0.5fr 0.1fr      `,
-        }}
+    
       >
                 
 
         <div style={{ marginRight: "65px" }}></div>
         {activeSell && (
           <AddDrugAutocomplete
+           update={update}
             key={activeSell?.id}
             setLoading={setLoading}
             loading={loading}
@@ -260,7 +239,7 @@ function SellDrug() {
                 .map((p, i) => (
                   <SellBox
                     setActiveSell={setActiveSell}
-                    setShift={setShift}
+                    update={update}
                     delay={i * 100}
                     key={p.id}
                     sell={p}
@@ -321,7 +300,7 @@ function SellDrug() {
                       label="Postpaid"
                       control={
                         <MyCheckbox
-                          setShift={setShift}
+                          update={update}
                           setDialog={setDialog}
                           path={`deduct/${activeSell?.id}`}
                           colName={"is_postpaid"}
@@ -341,7 +320,7 @@ function SellDrug() {
                   height={400}
                 />
               ) : (
-                <Table className="white" key={updater} size="small">
+                <Table className="white"  size="small">
                   <thead>
                     <TableRow>
                       <TableCell>Item</TableCell>
@@ -362,18 +341,14 @@ function SellDrug() {
                             return !dayjs(
                               deductedItem?.item?.lastDepositItem?.expire
                             ).isAfter(dayjs())
-                              ? theme.palette.error.light
-                              : theme.palette.background.defaultLight;
+                              ? "#ef535087"
+                              : "theme.palette.background.defaultLight";
                           },
                           fontWeight: "500",
                         }}
                         key={deductedItem.id}
                       >
-                        <TableCell><span style={{    
-          color: "black",
-          fontSize: "large",
-          fontWeight: "bolder",
-        }}>{deductedItem.item?.market_name}</span></TableCell>
+                        <TableCell>{deductedItem.item?.market_name}</TableCell>
                    
                         <TableCell>
                           {" "}
@@ -393,7 +368,7 @@ function SellDrug() {
                             item={deductedItem}
                             table="deductedItem"
                             colName={"strips"}
-                            setShift={setShift}
+                            update={update}
                           >
                             {deductedItem.strips}
                           </MyTableCell>
@@ -404,7 +379,7 @@ function SellDrug() {
                           <MyTableCell
                             stateUpdater={setUpdater}
                             setData={setActiveSell}
-                            setShift={setShift}
+                            update={update}
                             sx={{ width: "70px" }}
                             type={"number"}
                             item={deductedItem}
@@ -432,8 +407,8 @@ function SellDrug() {
                                 .delete(`inventory/deduct/${deductedItem.id}`)
                                 .then(({ data }) => {
                                   setLoading(false);
-                                  setActiveSell(data.data);
-                                  setShift(data.shift);
+                                  update(data.data);
+                                 
                                 });
                             }}
                           >
@@ -481,42 +456,42 @@ function SellDrug() {
               <Divider />
               {activeSell && <PayOptions key={activeSell.id} />}
               <Divider />
-              <Table>
+              <Table size="small">
                 <TableHead>
                   <TableRow >
-                    <TableCell colSpan={2}>Invoice</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} colSpan={2}>Invoice</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>Sub Total</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} >Sub Total</TableCell>
                     <TableCell>
                       {Number(activeSell?.total_price_unpaid).toFixed(3)}
                     </TableCell>
                   </TableRow>
                 
                   <TableRow>
-                    <TableCell>Tax</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} >Tax</TableCell>
                     <TableCell>
                       {Number(activeSell?.calculateTax).toFixed(3)}
                     </TableCell>
                   </TableRow>
                   
                   <TableRow>
-                    <TableCell> TOTAL</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} > TOTAL</TableCell>
                     <TableCell>
                       {Number(activeSell?.total_price_unpaid + activeSell?.calculateTax).toFixed(3)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Discount</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} >Discount</TableCell>
                     <MyTableCell colName={'discount'} sx={{width:'80px'}} table="deduct" item={activeSell} disabled={activeSell.complete == 1}>
                       {Number(activeSell?.discount).toFixed(3)}
                     </MyTableCell>
                   </TableRow>
                   
                   <TableRow>
-                    <TableCell>Amount Paid</TableCell>
+                    <TableCell align="center" sx={{textAlign:'center'}} >Amount Paid</TableCell>
                     <TableCell>
                       {Number(activeSell?.paid).toFixed(3)}
                     </TableCell>
@@ -541,8 +516,7 @@ function SellDrug() {
                         .get(`inventory/deduct/cancel/${activeSell.id}`)
                         .then(({ data }) => {
                           setRecieved(0);
-                          setActiveSell(data.data);
-                          setShift(data.shift);
+                          update(data.data)
                         })
                         .catch(({ response: { data } }) => {
                           // console.log({ data });
@@ -588,8 +562,8 @@ function SellDrug() {
                             });
                             setRecieved(0);
                             // console.log(data.data, "new active sell");
-                            setActiveSell(data.data);
-                            setShift(data.shift);
+                            update(data.data)
+
                           } catch (e) {
                             // console.log(e);
                           }
@@ -634,8 +608,7 @@ function SellDrug() {
                   .then(({ data }) => {
                     try {
                       setRecieved(0);
-                      setActiveSell(data.data);
-                      setShift(data.shift);
+                      update(data.data)
                     } catch (error) {
                       // console.log(error);
                     }
@@ -707,7 +680,7 @@ function SellDrug() {
             <Divider />
           </Stack>
         </Box>
-        <SellsMoneyDialog />
+        {showDialogMoney &&<SellsMoneyDialog />}
         <AddDrugDialog />
         <AddClientDialog
           loading={loading}

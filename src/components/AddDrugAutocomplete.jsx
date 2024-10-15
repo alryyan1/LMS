@@ -6,7 +6,7 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
 import dayjs from "dayjs";
 
-function AddDrugAutocomplete({setUpdater}) {
+function AddDrugAutocomplete({setUpdater,update}) {
   const { setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
@@ -70,9 +70,7 @@ function AddDrugAutocomplete({setUpdater}) {
     axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.lastDepositItem!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         // console.log(data,'data')
         
-        setActiveSell(data.data)
-        setShift(data.shift)
-        setUpdater((prev)=>prev+1)
+        update(data.data)
         setSelectedDrugs([])
     }).finally(()=>{
       setLoading(false)
@@ -92,7 +90,8 @@ function AddDrugAutocomplete({setUpdater}) {
           }}
         >
           <Autocomplete
-          
+          size="small"
+          fullWidth
           value={selectedDrugs}
           inputValue={field}
             onInputChange={(e,v)=>{
@@ -100,7 +99,6 @@ function AddDrugAutocomplete({setUpdater}) {
               setField(v)
             }}
             multiple
-            sx={{ flexGrow: 1 }}
            
             onChange={(event, newValue) => {
               // console.log(newValue);

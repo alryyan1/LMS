@@ -16,7 +16,7 @@ function MyTableCell({
   multiline = false,
   child_id = null,
   stateUpdater = null,
-  setShift=null,
+  update=null,
   sx = null,
   setData=null,
   change=null,
@@ -73,8 +73,8 @@ function MyTableCell({
               console.log(data,'data.changeDoctorVisit')
               changeDoctorVisit(data.data.data)
             }
-            if (setShift) {
-              setShift(data.data.shift)
+            if (update) {
+              update(data.data.data)
             }
             if (stateUpdater) {
             stateUpdater((prev) => prev + 1);

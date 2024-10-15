@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter,createHashRouter } from "react-router-dom";
 import App from "./App";
 import LabTests from "./pages/Laboratory/LabTests";
 import AddPatient from "./pages/Laboratory/AddPatient";
@@ -79,8 +79,9 @@ import Chemwell from "./pages/Chemwell";
 import MyTree from "./pages/Finance/Tree";
 import Nurse from "./pages/doctor/Nurse";
 import Patients from "./pages/Patients";
+import Reclaim from "./pages/insurance/Reclaim";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "shipping/:id",
     element: <FindShipping />,
@@ -469,6 +470,10 @@ export const router = createBrowserRouter([
           {
             path: "create",
             element: <AddInsurance />,
+          },
+          {
+            path: "reclaim",
+            element: <Reclaim />,
           },
           {
             path: "subcomapny",

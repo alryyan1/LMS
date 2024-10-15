@@ -46,17 +46,32 @@ function LabLayout() {
 
   useEffect(() => {
 
-    setPatientsLoading(true)
+    const companiesStorage =  localStorage.getItem('companies')
+
+    if (companiesStorage == null) {
+
+
+      axiosClient
+   .get(`company/all`)
+   .then(({ data }) => {
+    setCompanies(data);
+      localStorage.setItem('companies', JSON.stringify(data))
+    })
+   .catch((err) => {
+      console.log(err);
+    });
+  }else{
+    setCompanies(JSON.parse(companiesStorage))
+  }
+
+    // setPatientsLoading(true)
     Promise.all([
         axiosClient.get("userSettings").then(({ data }) => {
           console.log(data, "user settings from axios");
           setUserSettings(data);
         }),
       
-      axiosClient.get("company/all").then(({ data }) => {
-        console.log(data, "comapnies");
-        setCompanies(data);
-      }),
+     
   
         axiosClient.get("settings").then(({ data }) => {
           console.log(data,'data see')
@@ -98,7 +113,7 @@ function LabLayout() {
     
       })
     ]).finally(() => {
-      setPatientsLoading(false);
+      // setPatientsLoading(false);
     });
   }, []);
   // useEffect(() => {

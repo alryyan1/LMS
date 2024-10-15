@@ -36,7 +36,7 @@ function InsuranceNav() {
   }, []);
   return (
     <>
-      <ul className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-4 rtl text-center my-12">
+      <ul className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-8 gap-4 rtl text-center my-12">
         <NavLink to={"create"}>
           <Card>
             <CardHeader>
@@ -46,7 +46,7 @@ function InsuranceNav() {
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={new_contract} width={60} height={60} />
+              <img src={new_contract} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
@@ -54,26 +54,26 @@ function InsuranceNav() {
         <NavLink to={"lab"}>
           <Card>
             <CardHeader>
-              <CardTitle>التحاليل الطبية </CardTitle>
+              <CardTitle>التحاليل  </CardTitle>
             </CardHeader>
             <CardContent
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={lab_result} width={60} height={60} />
+              <img src={lab_result} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
         <NavLink to={"service"}>
           <Card>
             <CardHeader>
-              <CardTitle> الخدمات الطبية </CardTitle>
+              <CardTitle> الخدمات  </CardTitle>
             </CardHeader>
             <CardContent
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={services} width={60} height={60} />
+              <img src={services} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
@@ -86,7 +86,7 @@ function InsuranceNav() {
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={sub_company} width={60} height={60} />
+              <img src={sub_company} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
@@ -99,24 +99,24 @@ function InsuranceNav() {
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={relations} width={60} height={60} />
+              <img src={relations} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
         <NavLink to={"copy"}>
           <Card>
             <CardHeader>
-              <CardTitle> نسخ العقد </CardTitle>
+              <CardTitle> نسخ  </CardTitle>
             </CardHeader>
             <CardContent
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={copy_contract} width={60} height={60} />
+              <img src={copy_contract} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
-        <NavLink to={"income/deduct"}>
+        <NavLink to={"reclaim"}>
           <Card>
             <CardHeader>
               <CardTitle> المطالبات </CardTitle>
@@ -125,7 +125,7 @@ function InsuranceNav() {
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={income_deduct} width={60} height={60} />
+              <img src={income_deduct} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
@@ -138,7 +138,7 @@ function InsuranceNav() {
               className="flex justify-center items-center text-center"
               style={{ justifyContent: "center" }}
             >
-              <img src={report} width={60} height={60} />
+              <img src={report} width={30} height={30} />
             </CardContent>
           </Card>
         </NavLink>
