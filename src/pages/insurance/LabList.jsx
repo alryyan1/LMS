@@ -27,6 +27,7 @@ function LabList() {
   const [search, setSearch] = useState(null);
   const [page, setPage] = useState(0);
   const [tests, setTests] = useState([]);
+  const {setDialog} =  useOutletContext()
   console.log(activeCompany, "active company", "page = ", page);
   useEffect(() => {
     if (activeCompany) {
@@ -69,6 +70,7 @@ function LabList() {
                     <TableRow key={test.id}>
                       <TableCell>{test.main_test_name}</TableCell>
                       <MyTableCell
+                        setDialog={setDialog}
                         show={true}
                         item={activeCompany}
                         test_id={test.id}
@@ -80,6 +82,8 @@ function LabList() {
                       <MyTableCell
                         show={true}
                         item={activeCompany}
+                        setDialog={setDialog}
+
                         test_id={test.id}
                         table="company/test"
                         colName={"endurance_percentage"}
@@ -98,12 +102,16 @@ function LabList() {
                       <MySelectTableCell
                         item={activeCompany}
                         myVal={test.pivot.approve}
+                        setDialog={setDialog}
+
                         test_id={test.id}
                         table="company/test"
                         colName={"approve"}
                       ></MySelectTableCell>
                       <MySelectTableCell
                         item={activeCompany}
+                        setDialog={setDialog}
+
                         myVal={test.pivot.status}
                         test_id={test.id}
                         table="company/test"

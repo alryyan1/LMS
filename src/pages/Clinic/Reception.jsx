@@ -64,7 +64,7 @@ function Reception() {
    showTestPanel, setShowTestPanel,
    selectedTests, setSelectedTests,
    showLabTests,setShowLabTests,
-   settings
+   settings,dialog
   } = useOutletContext();
   
   const { user } = useStateContext();
@@ -315,10 +315,10 @@ function Reception() {
         }}
       >
         <div>
-          {!actviePatient && foundedPatients.length > 0 && (
+          {!actviePatient && dialog.showHistory > 0 && (
           
               
-                <SearchDialog />
+                <SearchDialog  user={user}/>
               
          
           )}
@@ -326,6 +326,7 @@ function Reception() {
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <PatientDetail
+                user={user}
                 settings={settings}
                 openedDoctors={openedDoctors}
                 activeShift={activeShift}

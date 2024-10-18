@@ -67,6 +67,12 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
           .then(({ data }) => {
             console.log(data, "founded patients");
             setFoundedPatients(data);
+            if (data.length > 0) {
+              setDialog((prev)=>{
+                return {...prev,showHistory:true}
+              })
+            }
+            
           });
       }, 300);
       return () => {
@@ -83,6 +89,11 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
         axiosClient.post("patient/search/phone", { phone }).then(({ data }) => {
           console.log(data, "founded patients");
           setFoundedPatients(data);
+          if (data.length > 0) {
+            setDialog((prev)=>{
+              return {...prev,showHistory:true}
+            })
+          }
         });
       }, 300);
       return () => {

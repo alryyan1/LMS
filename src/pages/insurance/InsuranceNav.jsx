@@ -28,7 +28,7 @@ function InsuranceNav() {
     open: false,
     openError: false,
     openLabReport: false,
-    msg: "Addition was successfull",
+    message:'',
   });
 
   useEffect(() => {
@@ -151,7 +151,7 @@ function InsuranceNav() {
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
         <Alert severity={dialog.color} variant="filled" sx={{ width: "100%" }}>
-          {dialog.msg}
+          {dialog.message}
         </Alert>
       </Snackbar>
     </>

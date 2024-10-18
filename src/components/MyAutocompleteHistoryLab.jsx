@@ -1,12 +1,12 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState } from "react";
 
-function MyAutocomepleteHistoryLab({ options,val,setDoctor }) {
+function MyAutocomepleteHistoryLab({ options,val,setDoctor}) {
   const [selected, setSelected] = useState(val);
-
   return (
     <Autocomplete
-      sx={{width:'300px'}}
+    size="small"
+      sx={{width:'200px'}}
   
       onChange={(e, data) => {
         setSelected(data);

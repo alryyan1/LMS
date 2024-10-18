@@ -52,7 +52,7 @@ function ReceptionDoctorsDialog() {
         setSearchedDoctors((prev)=>{
          return prev.map((d)=>{
            if(d.id === doctor.id){
-             return {...d,last_shift:{...data.shift}}
+             return {...d,lastShift:{...data.shift}}
            }else{
              return d
            }
@@ -71,7 +71,7 @@ function ReceptionDoctorsDialog() {
   };
   const closeDoctorShift = (doctor,setIsLoading) => {
     setIsLoading(true)
-    axiosClient.get(`doctor/shift/close/${doctor.last_shift.id}`).then(({ data }) => {
+    axiosClient.get(`doctor/shift/close/${doctor.lastShift.id}`).then(({ data }) => {
       if (data.status) {
         setOpenedDoctors((prev) => {
           return prev.filter((shift) => {
@@ -81,7 +81,7 @@ function ReceptionDoctorsDialog() {
         setSearchedDoctors((prev)=>{
            return prev.map((d)=>{
              if(d.id === doctor.id){
-               return {...d,last_shift:{...d.last_shift,status:0}};
+               return {...d,lastShift:{...d.lastShift,status:0}};
              }else{
                return d
              }
@@ -124,8 +124,8 @@ function ReceptionDoctorsDialog() {
                       <TableCell>
                         <MyCustomLoadingButton
                           disabled={
-                            doctor.last_shift &&
-                            doctor.last_shift.status === 1
+                            doctor.lastShift &&
+                            doctor.lastShift.status === 1
                           }
                           onClick={(setLoading) => openDoctorShiftHandler(doctor,setLoading)}
                           variant="contained"
@@ -136,8 +136,8 @@ function ReceptionDoctorsDialog() {
                       <TableCell>
                         <MyCustomLoadingButton
                           disabled={
-                            doctor.last_shift &&
-                            doctor.last_shift.status === 0
+                            doctor.lastShift &&
+                            doctor.lastShift.status === 0
                           }
                           onClick={(setIsLoading) => closeDoctorShift(doctor,setIsLoading)}
                           variant="contained"

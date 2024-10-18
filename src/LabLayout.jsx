@@ -11,7 +11,8 @@ function LabLayout() {
     open: false,
     openError: false,
     openLabReport: false,
-    msg: "Addition was successfull",
+    showHistory:false,
+    message: "operation was successfull",
   });
   const [openEdit, setOpenEdit] = useState(false);
 

@@ -1,8 +1,11 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState } from "react";
 
-function MyAutocomepleteHistory({ options,val,setDoctor }) {
+function MyAutocomepleteHistory({ options,val,setDoctor ,user }) {
   const [selected, setSelected] = useState();
+  const doctorsFilteredByUserOpened = options.filter((shift)=>shift.user_id == user?.id).map((shift) => {
+    return shift.doctor;
+  })
 
   return (
     <Autocomplete
@@ -17,9 +20,7 @@ function MyAutocomepleteHistory({ options,val,setDoctor }) {
       }}
       getOptionKey={(op) => op.id}
       getOptionLabel={(option) => option.name}
-      options={options.map((shift) => {
-        return shift.doctor;
-      })}
+      options={doctorsFilteredByUserOpened}
       //fill isOptionEqualToValue
 
       isOptionEqualToValue={(option, val) => option.id === val.id}

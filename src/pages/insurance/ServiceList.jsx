@@ -25,6 +25,7 @@ function ServiceList() {
   console.log(services);
   console.log(activeCompany, "active company", "page = ", page);
   useEffect(() => {
+     document.title = 'تعاقد الخدمات'
     if (activeCompany) {
       console.log(activeCompany);
       setServices(() => {

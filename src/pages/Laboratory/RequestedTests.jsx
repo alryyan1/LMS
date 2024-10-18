@@ -198,22 +198,8 @@ function RequestedTests({
                     founedTest = company.tests.find(
                       (t) => t.id == test.main_test_id
                     );
-                    // console.log(test, "patient test");
-                    // console.log(founedTest, "founed test");
                     price = test.price;
-                    if (founedTest.pivot.endurance_static > 0) {
-                      // alert('s')
-                      endurance = founedTest.pivot.endurance_static;
-                    } else {
-                      if (founedTest.pivot.endurance_percentage > 0) {
-                        endurance =
-                          (price * founedTest.pivot.endurance_percentage) / 100;
-                      } else {
-                        endurance = (price * company.lab_endurance) / 100;
-                      }
-                    }
-
-                    total_endurance += endurance;
+                    total_endurance += test.endurance;
                     // console.log(company, "patient company");
                   } else {
                     price = test.main_test.price;
@@ -261,7 +247,7 @@ function RequestedTests({
                         </TableCell>
                       )}
                       {actviePatient.company ? (
-                        <TableCell align="right">{endurance}</TableCell>
+                        <TableCell align="right">{test.endurance}</TableCell>
                       ) : (
                         ""
                       )}

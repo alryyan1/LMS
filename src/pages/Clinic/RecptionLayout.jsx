@@ -13,6 +13,7 @@ function ReceptionLayout() {
     openError: false,
     openLabReport: false,
     showDoctorsDialog: false,
+    showHistory:false,
     message: "Addition was successfull",
   });
   const [foundedPatients, setFoundedPatients] = useState([]);

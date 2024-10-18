@@ -10,6 +10,7 @@ function PatientDetail({
   activeShift,
   copyPatient = false,
   settings,
+  user
 }) {
   const { i18n } = useTranslation();
 
@@ -228,7 +229,7 @@ function PatientDetail({
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
-                .post(`patient/copy/${data.id}/${patient.id}/${true}`)
+                .post(`patient/copy/${data.id}?patient_id=${patient.id}`)
                 .then(({ data }) => {
                  
                   if (data.status) {
@@ -242,7 +243,7 @@ function PatientDetail({
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.name}
-            options={openedDoctors.map((shift) => {
+            options={openedDoctors.filter((shift)=>shift.user_id == user?.id).map((shift) => {
               return shift.doctor;
             })}
             //fill isOptionEqualToValue

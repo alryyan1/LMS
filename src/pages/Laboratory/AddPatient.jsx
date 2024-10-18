@@ -328,8 +328,8 @@ function AddPatient() {
         </Card>
         <div >
           <div style={{position: 'absolute',
-    right: '0',zIndex:'3',maxWidth:'60vw'}}>
-   {!actviePatient && foundedPatients.length > 0 && (
+    right: '0',zIndex:'3'}}>
+   {!actviePatient && dialog.showHistory && (
             <SearchDialog lab={true} />
           )}
           </div>
