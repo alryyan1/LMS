@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 axiosClient;
 import { Alert, Snackbar } from "@mui/material";
 import axiosClient from "../../../axios-client";
-
+import {DoctorShift} from "../../types/Patient"
+import { OutletContextType } from "../../types/CutomTypes";
 function ReceptionLayout() {
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
@@ -16,6 +17,8 @@ function ReceptionLayout() {
     showHistory:false,
     message: "Addition was successfull",
   });
+
+
   const [foundedPatients, setFoundedPatients] = useState([]);
   const [searchByName, setSearchByName] = useState(null);
   const [searchByPhone, setSearchByPhone] = useState(null);
@@ -26,8 +29,8 @@ function ReceptionLayout() {
   const [specialists, setSpecialists] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [actviePatient, setActivePatient] = useState(null);
-  const [openedDoctors, setOpenedDoctors] = useState([]);
-  const [activeShift, setActiveShift] = useState(null);
+  const [openedDoctors, setOpenedDoctors] = useState<OutletContextType['openedDoctors'][]>([]);
+  const [activeShift, setActiveShift] = useState<OutletContextType['activeShift']>(null);
   const [serviceCategories, setServiceCategories] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [showPatientServices, setShowPatientServices] = useState(false);

@@ -234,27 +234,8 @@ function RequestedServices({
                       price = service.price;
                       //  alert(price)
 
-                      if (companyService.pivot.static_endurance > 0) {
-                        endurance =
-                          service.count * companyService.pivot.static_endurance;
-                      } else {
-                        if (companyService.pivot.percentage_endurance > 0) {
-                          // alert(companyService.percentage_endurance)
-                          endurance =
-                            (price *
-                              service.count *
-                              companyService.pivot.percentage_endurance) /
-                            100;
-                        } else {
-                          endurance =
-                            (price *
-                              service.count *
-                              company.service_endurance) /
-                            100;
-                        }
-                      }
 
-                      total_endurance += endurance;
+                      total_endurance += service.endurance;
                       // console.log(company,'patient company')
                     } else {
                       price = service.price;
@@ -280,7 +261,7 @@ function RequestedServices({
                             sx={{ border: "none", color: "red" }}
                             align="right"
                           >
-                            {endurance}
+                            {service.endurance}
                           </TableCell>
                         ) : (
                           ""

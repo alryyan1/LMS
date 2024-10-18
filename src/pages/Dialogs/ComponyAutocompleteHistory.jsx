@@ -14,7 +14,9 @@ function ComponyAutocompleteHistory({companies,setSelectedCompany,patientCompany
             setSelectedCompany(null)
         }
     }}
-    sx={{width:'200px'}}
+    // sx={{width:'200px'}}
+    sx={{width:'180px'}}
+
      size="small"
       value={val}
      onChange={(e, newVal) => {

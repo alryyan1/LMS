@@ -14,15 +14,16 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
 import { Add,  } from "@mui/icons-material";
-import MyAutocomepleteHistory from "../../components/MyAutocomepleteHistory";
+import MyAutocomepleteHistory from "../../components/MyAutocomepleteHistory.tsx";
 import MyAutocomepleteHistoryLab from "../../components/MyAutocompleteHistoryLab";
 import dayjs from "dayjs";
 import ComponyAutocompleteHistory from "./ComponyAutocompleteHistory";
 import { MessageCircleDashed } from "lucide-react";
+import { OutletContextType } from "../../types/CutomTypes";
 
 function SearchDialog({lab=false,user}) {
-  const {foundedPatients, openedDoctors, setUpdate ,setDialog,doctors,companies} =
-    useOutletContext();
+  const {foundedPatients, openedDoctors, setUpdate ,setDialog,doctors,companies,activeShift} =
+    useOutletContext<OutletContextType>();
   const [doctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -30,15 +31,12 @@ function SearchDialog({lab=false,user}) {
   const setDoctor = (d) => {
     setSelectedDoctor(d);
   };
-  const addPatientByHistory = (id, oldDoctor) => {
-    console.log(doctor, oldDoctor,'id - oldDoctor');
+  const addPatientByHistory = (id) => {
     if(doctor == undefined) {
       alert('قم بتحديد الطبيب')
       return;
     }
-    setDialog((prev)=>{
-      return {...prev,showHistory:false}
-    })
+
     setLoading(true);
   
     const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor.id}`  :`patients/add-patient-by-history/${doctor.id}/${id}`
@@ -62,6 +60,9 @@ function SearchDialog({lab=false,user}) {
        })
       })
       .finally(() => {
+        setDialog((prev)=>{
+          return {...prev,showHistory:false}
+        })
         setLoading(false);
       });
   };
@@ -90,17 +91,18 @@ function SearchDialog({lab=false,user}) {
           <TableBody>
             {foundedPatients.map((item) => (
               <TableRow key={item.id}>
-                <TableCell  >{item.name}</TableCell>
-                <TableCell>
+                <TableCell  sx={{width:'20%',textWrap:'nowrap'}} >{item.name}</TableCell>
+                <TableCell sx={{textWrap:'nowrap'}}>
                   {dayjs(new Date(Date.parse(item.created_at))).format('YYYY-MM-DD')}
                 </TableCell>
-                <TableCell>{item?.doctor?.name}</TableCell>
+                <TableCell sx={{textWrap:'nowrap'}}>{item?.doctor?.name}</TableCell>
                 <TableCell>
                   {lab  ? <MyAutocomepleteHistoryLab   setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
                   user={user}
-                   
+                  patient={item}
                     setDoctor={setDoctor}
                     options={openedDoctors}
+                    activeShift={activeShift}
                    
                   />}
                 </TableCell>

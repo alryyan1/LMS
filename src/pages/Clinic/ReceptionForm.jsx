@@ -24,8 +24,8 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
-  console.log(selectedCompany, "selected company");
-  console.log(selectedSubCompany, "selected sub company");
+  // console.log(selectedCompany, "selected company");
+  // console.log(selectedSubCompany, "selected sub company");
 
   const {
     setDialog,
@@ -71,6 +71,11 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
               setDialog((prev)=>{
                 return {...prev,showHistory:true}
               })
+            }else{
+              
+              setDialog((prev)=>{
+                return {...prev,showHistory:false}
+              })
             }
             
           });
@@ -93,6 +98,11 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
             setDialog((prev)=>{
               return {...prev,showHistory:true}
             })
+          }else{
+            
+            setDialog((prev)=>{
+              return {...prev,showHistory:false}
+            })
           }
         });
       }, 300);
@@ -103,19 +113,22 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
   }, [phone]);
 
   const sumbitHandler = async (formData) => {
-    const url = lab
-      ? `patients/add/true`
-      : `patients/reception/add/${activeShift.doctor.id}`;
+    setDialog((prev)=>{
+      return {...prev,showHistory:false}
+    })
+   const doc = activeShift?.doctor.id ?? formData.doctor?.id
+      const url = `patients/reception/add/${doc}`;
     setIsLoading(true);
     console.log(formData, "form data");
     axiosClient
       .post(url, {
         ...formData,
-        doctor_id: activeShift?.doctor.id ?? formData.doctor?.id,
+        doctor_id: doc,
         company_id: selectedCompany?.id,
         subcompany_id: selectedSubCompany?.id,
         company_relation_id: selectedRelation?.id,
         country_id: formData.country?.id ?? null,
+        onlyLab: lab ? 1 : 0
       })
       .then((data) => {
         console.log(data, "reception added");
@@ -283,12 +296,12 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
               {lab && (
                 <Controller
                   name="doctor"
-                  // rules={{
-                  //   required: {
-                  //     value: true,
-                  //     message: "يجب اختيار اسم الطبيب",
-                  //   },
-                  // }}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "يجب اختيار اسم الطبيب",
+                    },
+                  }}
                   control={control}
                   render={({ field }) => {
                     return (
@@ -369,7 +382,7 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
                   />
                 </Item>
               </Stack>
-              {settings?.gov && (
+              {settings?.gov ? (
                 <TextField
                   size="small"
                   error={errors?.gov_id}
@@ -382,14 +395,14 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
                   label={t("govId")}
                   helperText={errors?.gov_id && errors.gov_id.message}
                 />
-              )}
-              {settings?.country && (
+              ):''}
+              {settings?.country ? (
                 <CountryAutocomplete
                   control={control}
                   errors={errors}
                   setValue={setValue}
                 />
-              )}
+              ) : ''}
               <TextField
                 size="small"
                 {...register("address")}

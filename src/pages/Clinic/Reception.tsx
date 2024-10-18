@@ -31,6 +31,8 @@ import TestGroups from "../../../TestGroups";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import RequestedTests from "../Laboratory/RequestedTests";
 import { socket } from "../../socket";
+import { DoctorShift, DoctorVisit, Patient } from "../../types/Patient";
+import { OutletContextType } from "../../types/CutomTypes";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -38,6 +40,7 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
+
 
 function Reception() {
   const {
@@ -65,7 +68,7 @@ function Reception() {
    selectedTests, setSelectedTests,
    showLabTests,setShowLabTests,
    settings,dialog
-  } = useOutletContext();
+  } = useOutletContext<OutletContextType>();
   
   const { user } = useStateContext();
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -96,7 +99,7 @@ function Reception() {
     requestedDiv: "minmax(0,2fr)",
     showTestPanel: false,
     patientDetails: "0.8fr",
-    patients: "1fr",
+    patients: "minmax(270px,1fr)",
   });
   const updateHandler = (e, colName) => {
     axiosClient
@@ -133,19 +136,10 @@ function Reception() {
   };
   // console.log(openDrawer, "open drawer");
 
-  // useEffect(() => {
-  //   if (foundedPatients.length > 0) {
-  //     setLayout((prev) => {
-  //       return {
-  //         ...prev,
-  //         patientDetails: "1fr",
-  //       };
-  //     });
-  //   }
-  // }, [foundedPatients.length]);
-  const change = (doctorVisit) =>{
+  
+  const change = (doctorVisit:DoctorVisit) =>{
     setActivePatient(doctorVisit)
-    setActiveShift((prevShift)=>{
+    setActiveShift((prevShift:DoctorShift)=>{
       return {
        ...prevShift,
         visits: prevShift.visits.map((v) => {
@@ -158,7 +152,7 @@ function Reception() {
         }),
       };
      })
-    setOpenedDoctors((prev)=>{
+    setOpenedDoctors((prev:DoctorShift[])=>{
       return prev.map((shift)=>{
         
         return {
@@ -187,7 +181,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "1.2fr",
+        patients: "minmax(267px,1.2fr)",
       };
     });
   };
@@ -257,24 +251,9 @@ function Reception() {
             >
               <Item
                 className={
-                  activeShift && activeShift.id === shift.id ? "active" : "doctor"
+                  activeShift && activeShift.id === shift.id ? "activeDoctor doctor" : "doctor"
                 }
-                sx={
-                  activeShift && activeShift.id === shift.id
-                    ? {
-                    
-                        cursor: "pointer",
-                        flexGrow: 1,
-                        minWidth: "215px",
-                        borderBottom: "4px solid blue",
-                        fontWeight: "bolder",
-                      }
-                    : {
-                        cursor: "pointer",
-                        transition: "0.3s all ease-in-out",
-                        transform: "scale(1.1)",
-                      }
-                }
+             
                 onClick={() => {
                   // console.log('activeShift',doctor.id);
 
@@ -290,7 +269,7 @@ function Reception() {
                     setLayout((prev) => {
                       return {
                         ...prev,
-                        patients: "3.2fr",
+                        patients: "minmax(270px,3.2fr)",
                       };
                     });
                   }
@@ -317,8 +296,10 @@ function Reception() {
         <div>
           {!actviePatient && dialog.showHistory > 0 && (
           
-              
-                <SearchDialog  user={user}/>
+              <div style={{position:'absolute',zIndex:3,width:'60vw',overflow:'auto'}}>
+
+                <SearchDialog   user={user}/>
+              </div>
               
          
           )}
@@ -421,14 +402,14 @@ function Reception() {
               style={{ padding: "5px", display: "flex" }}
             >
               {activeShift &&
-                activeShift.visits.map((visit) => {
+                activeShift.visits.filter((dcVisit)=>dcVisit.only_lab == 0).map((visit) => {
                   return (
                     <PatientReception
                     change={change}
-                      index={count--}
+                     
                       key={visit.id}
                       hideForm={hideForm}
-                      visit={visit}
+                       patient={visit}
                     ></PatientReception>
                   );
                 })}

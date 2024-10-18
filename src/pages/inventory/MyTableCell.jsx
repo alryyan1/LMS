@@ -74,6 +74,7 @@ function MyTableCell({
               changeDoctorVisit(data.data.data)
             }
             if (update) {
+               console.log(data.data.data,'datatat')
               update(data.data.data)
             }
             if (stateUpdater) {

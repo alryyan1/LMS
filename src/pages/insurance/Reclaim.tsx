@@ -16,6 +16,7 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid/components';
+import { DoctorVisit } from "../../types/Patient";
 
 function CustomToolbar() {
   useEffect(()=>{
@@ -51,13 +52,13 @@ function Reclaim() {
       fromDate: data.from.format('YYYY-MM-DD'),
       toDate: data.to.format('YYYY-MM-DD'),
     }).then(({data})=>{
-      console.log([...data.data.map((dv)=>dv.patient),...data.patients])
-      setRows([...data.data.map((dv)=>dv.patient),...data.patients])
+      console.log(data,'data')
+      setRows(data.data)
     }).finally(()=>setLoading(false))
   };
   const columns = [
     { field: "id", headerName: "ID", width: 90,align:'center',valueGetter:(value,row)=>{
-      return row.id
+      return row.patient.id
     } },
     {
       field: "created_at",
@@ -68,7 +69,7 @@ function Reclaim() {
       align:'center',
 
       valueGetter: (value, row) =>
-        dayjs(new Date(Date.parse(row.created_at))).format("YYYY/MM/DD H;m A"),
+        dayjs(new Date(Date.parse(row.patient.created_at))).format("YYYY/MM/DD H;m A"),
     },
  
     
@@ -82,7 +83,7 @@ function Reclaim() {
       type: "number",
       align:'center',
       valueGetter:(value,row)=>{
-        return row.paid
+        return row.patient.paid
       }
 
     },
@@ -96,7 +97,7 @@ function Reclaim() {
       type: "number",
       align:'center',
       valueGetter:(value,row)=>{
-        return row.total_lab_value_unpaid
+        return row.patient.total_lab_value_unpaid
       }
 
     }
@@ -109,7 +110,7 @@ function Reclaim() {
       headerName: "التحاليل",
       width: 110,
       valueGetter:(value,row)=>{
-        return row.labrequests.map((l)=>l.name)
+        return row.patient.labrequests.map((l)=>l.name)
       }
     },
 
@@ -154,7 +155,21 @@ function Reclaim() {
       }
     }
     
-    
+    ,
+
+    {
+      field: "insurance_no",
+      headerAlign:'center',
+      flex:1,
+
+      headerName: "رقم البطاقه",
+      width: 110,
+      align:'center',
+
+      valueGetter:(value,row:DoctorVisit)=>{
+        return `${row.patient.insurance_no}`
+      }
+    }
     ,
 
     {
@@ -167,7 +182,7 @@ function Reclaim() {
       align:'center',
 
       valueGetter:(value,row)=>{
-        return `${row.name}`
+        return `${row.patient.name}`
       }
     }
   

@@ -27,7 +27,7 @@ import {
 } from "/src/components/ui/select"
 
 function AddDoctorForm() {
-  const { specialists, setDoctorUpdater ,setDoctors} = useOutletContext();
+  const { specialists, setDoctorUpdater ,setDoctors,setDialog} = useOutletContext();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -60,6 +60,11 @@ function AddDoctorForm() {
           }
 
         }
+      }).catch(({response:{data}})=>{
+        console.log(data,'error')
+        setDialog((prev)=>{
+          return {...prev,message:data.message,open:true,color:'error'}
+        })
       })
       .finally(() => setLoading(false));
   };

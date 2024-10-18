@@ -166,12 +166,8 @@ function AddDrugAutocomplete({setUpdater,update}) {
     
                             axiosClient.post('addDrugForSell',{deduct_id:activeSell.id,product_id:itemFounded.id}).then(({data})=>{
                               // console.log(data,'add by barcode')
-                              setActiveSell((prev)=>{
-                                return {...prev,...data.data}
-                              })
-                              setShift(data.shift)
+                              update(data.data)
     
-                              setUpdater((prev)=>prev + 1)
                               setField('')
                             }).finally(()=>{
                               setLoading(false)

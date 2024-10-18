@@ -2,14 +2,16 @@ import { FavoriteBorder } from "@mui/icons-material";
 import { Badge, Chip, Icon, Paper, Stack, styled } from "@mui/material";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-function PatientReception({ visit, hideForm, index,change }) {
+import { DoctorVisit, Patient } from '../../types/Patient';
+import  {Item} from '../constants'
+type PatientReceptinPros  = {
+  patient: DoctorVisit;
+  hideForm: ()=>void;
+  index: number;
+  change: (doctorVisit: DoctorVisit) => void;
+}
+
+function PatientReception(props:PatientReceptinPros) {
   const {
     actviePatient,
     setActivePatient,
@@ -24,11 +26,12 @@ function PatientReception({ visit, hideForm, index,change }) {
     <Badge
       color="primary"
       badgeContent={
-        visit.services.filter((service) => {
+        props.patient.services.filter((service) => {
+          
           return service.doctor_id == activeShift.doctor.id;
         }).length
       }
-      key={visit.id}
+      key={props.patient.id}
     >
       <Stack
         sx={{ cursor: "pointer" }}
@@ -37,16 +40,16 @@ function PatientReception({ visit, hideForm, index,change }) {
             setShowTestPanel(false)
             setShowLabTests(true)
             /** this because if was same patient */
-            if (actviePatient.id == visit.id) {
+            if (actviePatient.id == props.patient.id) {
               console.log("same patient");
             } else {
-              change(visit);
+              props.change(props.patient);
             }
           } else {
-            change(visit);
+            props.change(props.patient);
           }
           if (
-            visit.services.filter((service) => {
+            props.patient.services.filter((service) => {
               return service.doctor_id == activeShift.doctor.id;
             }).length > 0
           ) {
@@ -61,16 +64,16 @@ function PatientReception({ visit, hideForm, index,change }) {
             setShowPatientServices(false);
           }
 
-          hideForm();
+          props.hideForm();
         }}
         direction={"row"}
       >
         <Item
           className={
-            actviePatient && actviePatient.id === visit.id ? "active" : ""
+            actviePatient && actviePatient.id === props.patient.id ? "active" : ""
           }
           style={
-            actviePatient && actviePatient.id === visit.id
+            actviePatient && actviePatient.id === props.patient.id
               ? {
                   borderBottom: "4px solid blue",
                   fontWeight: "bolder",
@@ -87,7 +90,7 @@ function PatientReception({ visit, hideForm, index,change }) {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
           
 
-            {visit.totalservicebank > 0 && (
+            {props.patient.totalservicebank > 0 && (
               <Chip
                 label="bank"
                 sx={{
@@ -99,11 +102,11 @@ function PatientReception({ visit, hideForm, index,change }) {
             )}
           </div>
 
-          {visit.patient.name}
+          {props.patient.patient.name}
         </Item>
         <Item className="patient-no">
-          {index - 1}
-          {visit.patient.company && <span
+          {props.patient.number }
+          {props.patient.patient.company && <span
             style={{
               position: "absolute",
               top: "-6px",

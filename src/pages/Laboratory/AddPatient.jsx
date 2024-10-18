@@ -196,8 +196,18 @@ function AddPatient() {
 
   return (
     <>
-      <Stack direction={"row"} justifyContent={"space-between"}>
-        <Box flexGrow={"1"}></Box>
+      <Stack gap={1} direction={"row"} justifyContent={"space-between"}>
+        <Box flexGrow={"1"}>  {actviePatient && (
+            <AddTestAutocompleteLab
+              patients={patients}
+              actviePatient={actviePatient}
+              selectedTests={selectedTests}
+              setActivePatient={setActivePatient}
+              setDialog={setDialog}
+              setSelectedTests={setSelectedTests}
+              setPatients={setPatients}
+            />
+          )}</Box>
         <Box>
           <AutocompleteSearchPatient
             setActivePatientHandler={setActivePatientHandler}
@@ -272,19 +282,9 @@ function AddPatient() {
             backgroundColor: "#ffffff73",
           }}
         >
-          {actviePatient && (
-            <AddTestAutocompleteLab
-              patients={patients}
-              actviePatient={actviePatient}
-              selectedTests={selectedTests}
-              setActivePatient={setActivePatient}
-              setDialog={setDialog}
-              setSelectedTests={setSelectedTests}
-              setPatients={setPatients}
-            />
-          )}
+        
 
-          <div className="patients" style={{ padding: "15px" }}>
+          <div className="patients" >
             {patientsLoading ? (
               <Skeleton
                 animation="wave"
@@ -305,7 +305,7 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card style={{ backgroundColor: "#ffffff73" }} sx={{ p: 1 }}>
+        <Card style={{ backgroundColor: "#ffffff73" }} sx={{ p: 1,height:'80vh',overflow:'auto' }}>
           {actviePatient && actviePatient.labrequests.length > 0 && (
             <RequestedTestsLab
               pid={actviePatient}

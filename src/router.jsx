@@ -26,7 +26,7 @@ import AddServiceGroup from "./pages/services/addServiceGroup";
 import ServiceList from "./pages/insurance/ServiceList";
 import DeductReport from "./pages/inventory/DeductReport";
 import Reception from "./pages/Clinic/Reception";
-import ReceptionLayout from "./pages/Clinic/RecptionLayout";
+import ReceptionLayout from "./pages/Clinic/RecptionLayout.tsx";
 import SettingsNav from "./pages/settings/SettingsNav";
 import Doctors from "./pages/settings/Doctors";
 import Specialists from "./pages/settings/Specialists";

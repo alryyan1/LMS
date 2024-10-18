@@ -108,10 +108,12 @@ function AddTestAutocompleteLab({ patients, setPatients ,actviePatient, setActiv
             gap: "5px",
             width: "inhert",
             zIndex: "3",
+            
           }}
         >
           <Autocomplete
             multiple
+            size="small"
             sx={{ flexGrow: 1 }}
             value={selectedTests}
             onChange={(event, newValue) => {

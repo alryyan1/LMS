@@ -80,7 +80,10 @@ function SellDrug() {
     setShift,
     setShowDialogMoney,
     setOpenClientDialog,
-    itemsTobeAddedToChache,setItems,items,showDialogMoney
+    itemsTobeAddedToChache,
+    setItems,
+    items,
+    showDialogMoney,
   } = useOutletContext();
   // console.log(shift, "shift");
   // console.log(activeSell, "active sell");
@@ -92,8 +95,6 @@ function SellDrug() {
     });
   }, []);
   useEffect(() => {
-
-
     axiosClient.get("userSettings").then(({ data }) => {
       // console.log(data, "user settings from axios");
       setUserSettings(data);
@@ -102,48 +103,41 @@ function SellDrug() {
 
   useEffect(() => {
     if (activeSell) {
-      const timer = setTimeout(() => {
-    
-      }, 300);
-      return ()=>{
+      const timer = setTimeout(() => {}, 300);
+      return () => {
         clearTimeout(timer);
-      }
+      };
     }
-  
- 
   }, [activeSell?.id]);
 
   useEffect(() => {
-    itemsTobeAddedToChache.map((id)=>{
-    
-        if (!items.map((i)=>i.id).includes(id) ) {
-          axiosClient(`items/find/${id}`).then(({ data }) => {
-              setItems((prev)=>{
-                return [...prev, data];
-              })
-          })
-        }
-        if (items.find((i)=>i.id == id)?.lastDepositItem == null) {
-            axiosClient(`items/find/${id}`).then(({ data }) => {
-                setItems((prev)=>{
-                   return prev.map((item)=>{
-                     if(item.id == id){
-                       return {...data };
-                     }else{
-                       return item;
-                     }
-                   })
-                })
-            })
-          }
-      
-    })
+    itemsTobeAddedToChache.map((id) => {
+      if (!items.map((i) => i.id).includes(id)) {
+        axiosClient(`items/find/${id}`).then(({ data }) => {
+          setItems((prev) => {
+            return [...prev, data];
+          });
+        });
+      }
+      if (items.find((i) => i.id == id)?.lastDepositItem == null) {
+        axiosClient(`items/find/${id}`).then(({ data }) => {
+          setItems((prev) => {
+            return prev.map((item) => {
+              if (item.id == id) {
+                return { ...data };
+              } else {
+                return item;
+              }
+            });
+          });
+        });
+      }
+    });
     axiosClient(`client/all`).then(({ data }) => {
       setClients(data);
       // console.log(data);
     });
   }, []);
-
 
   const showShiftMoney = () => {
     setShowDialogMoney(true);
@@ -152,36 +146,33 @@ function SellDrug() {
     document.title = "Sales";
   }, []);
 
-  const update = (deduct)=>{
-      setActiveSell(deduct)
-      setShift((prev)=>{
-        if(prev.deducts.map((d)=>d.id).find((d)=>d == deduct.id)){
-          return {...prev,deducts:prev.deducts.map((d)=>{
-            if(d.id == deduct.id){
-              return {...deduct}
-            }else{
-              return d
+  const update = (deduct) => {
+    setActiveSell(deduct);
+    setShift((prev) => {
+      if (prev.deducts.map((d) => d.id).find((d) => d == deduct.id)) {
+        return {
+          ...prev,
+          deducts: prev.deducts.map((d) => {
+            if (d.id == deduct.id) {
+              return { ...deduct };
+            } else {
+              return d;
             }
-          })}
-
-        }else{
-        return {...prev,deducts:[deduct,...prev.deducts]}
-
-        }
-      })
-  }
+          }),
+        };
+      } else {
+        return { ...prev, deducts: [deduct, ...prev.deducts] };
+      }
+    });
+  };
 
   return (
     <>
-      <div
-    
-      >
-                
-
+      <div>
         <div style={{ marginRight: "65px" }}></div>
         {activeSell && (
           <AddDrugAutocomplete
-           update={update}
+            update={update}
             key={activeSell?.id}
             setLoading={setLoading}
             loading={loading}
@@ -222,9 +213,15 @@ function SellDrug() {
             </Item>
           </Stack>
         </div>
-        
 
-        <Card sx={{ p: 1, height: "80vh", overflow: "auto" ,backgroundColor: "#ffffff73" ,}}>
+        <Card
+          sx={{
+            p: 1,
+            height: "80vh",
+            overflow: "auto",
+            backgroundColor: "#ffffff73",
+          }}
+        >
           <div className="patients" style={{ padding: "15px" }}>
             {shiftIsLoading ? (
               <Skeleton
@@ -251,7 +248,10 @@ function SellDrug() {
             )}
           </div>
         </Card>
-        <Card  sx={{ p: 1 , backgroundColor: "#ffffff73" }} style={{ overflow: "auto" }}>
+        <Card
+          sx={{ p: 1, backgroundColor: "#ffffff73" }}
+          style={{ overflow: "auto" }}
+        >
           {activeSell && (
             <>
               <Stack direction={"row"} alignContent={"center"}>
@@ -320,7 +320,11 @@ function SellDrug() {
                   height={400}
                 />
               ) : (
-                <Table className="white"  size="small">
+                <Table
+                  className="white"
+                  key={activeSell.update_at}
+                  size="small"
+                >
                   <thead>
                     <TableRow>
                       <TableCell>Item</TableCell>
@@ -346,10 +350,10 @@ function SellDrug() {
                           },
                           fontWeight: "500",
                         }}
-                        key={deductedItem.id}
+                        key={deductedItem.updated_at}
                       >
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
-                   
+
                         <TableCell>
                           {" "}
                           {Number(
@@ -361,7 +365,6 @@ function SellDrug() {
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
-                            stateUpdater={setUpdater}
                             setData={setActiveSell}
                             sx={{ width: "70px" }}
                             type={"number"}
@@ -377,7 +380,6 @@ function SellDrug() {
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
                           <MyTableCell
-                            stateUpdater={setUpdater}
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}
@@ -408,22 +410,21 @@ function SellDrug() {
                                 .then(({ data }) => {
                                   setLoading(false);
                                   update(data.data);
-                                 
                                 });
                             }}
                           >
                             <DeleteOutlineSharp />
                           </LoadingButton>
                         </TableCell>
-                        
+
                         <TableCell>
-                        <MyDateField2
-                      val={deductedItem?.item.lastDepositItem?.expire}
-                      item={deductedItem?.item.lastDepositItem}
-                    />
+                          <MyDateField2
+                            val={deductedItem?.item.lastDepositItem?.expire}
+                            item={deductedItem?.item.lastDepositItem}
+                          />
                         </TableCell>
                         <TableCell>
-                          <CalculateInventory item_id={deductedItem.item.id}/>
+                          <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -436,7 +437,7 @@ function SellDrug() {
 
         <Card
           sx={{
-             backgroundColor: "#ffffff73" ,
+            backgroundColor: "#ffffff73",
             p: 1,
             display: "flex",
             justifyContent: "space-between",
@@ -451,57 +452,81 @@ function SellDrug() {
                 Transaction No {activeSell?.id}
               </Typography>
               <Typography className="text-gray-500" textAlign={"center"}>
-                 Date {dayjs(new Date(activeSell?.created_at)).format('YYYY/MM/DD H:m A')}
+                Date{" "}
+                {dayjs(new Date(activeSell?.created_at)).format(
+                  "YYYY/MM/DD H:m A"
+                )}
               </Typography>
               <Divider />
               {activeSell && <PayOptions key={activeSell.id} />}
               <Divider />
               <Table size="small">
                 <TableHead>
-                  <TableRow >
-                    <TableCell align="center" sx={{textAlign:'center'}} colSpan={2}>Invoice</TableCell>
+                  <TableRow>
+                    <TableCell
+                      align="center"
+                      sx={{ textAlign: "center" }}
+                      colSpan={2}
+                    >
+                      Invoice
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell align="center" sx={{textAlign:'center'}} >Sub Total</TableCell>
+                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                      Sub Total
+                    </TableCell>
                     <TableCell>
                       {Number(activeSell?.total_price_unpaid).toFixed(3)}
                     </TableCell>
                   </TableRow>
-                
+
                   <TableRow>
-                    <TableCell align="center" sx={{textAlign:'center'}} >Tax</TableCell>
+                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                      Tax
+                    </TableCell>
                     <TableCell>
                       {Number(activeSell?.calculateTax).toFixed(3)}
                     </TableCell>
                   </TableRow>
-                  
+
                   <TableRow>
-                    <TableCell align="center" sx={{textAlign:'center'}} > TOTAL</TableCell>
+                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                      {" "}
+                      TOTAL
+                    </TableCell>
                     <TableCell>
-                      {Number(activeSell?.total_price_unpaid + activeSell?.calculateTax).toFixed(3)}
+                      {Number(
+                        activeSell?.total_price_unpaid +
+                          activeSell?.calculateTax
+                      ).toFixed(3)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell align="center" sx={{textAlign:'center'}} >Discount</TableCell>
-                    <MyTableCell colName={'discount'} sx={{width:'80px'}} table="deduct" item={activeSell} disabled={activeSell.complete == 1}>
+                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                      Discount
+                    </TableCell>
+                    <MyTableCell
+                      colName={"discount"}
+                      sx={{ width: "80px" }}
+                      table="deduct"
+                      item={activeSell}
+                      disabled={activeSell.complete == 1}
+                    >
                       {Number(activeSell?.discount).toFixed(3)}
                     </MyTableCell>
                   </TableRow>
-                  
+
                   <TableRow>
-                    <TableCell align="center" sx={{textAlign:'center'}} >Amount Paid</TableCell>
-                    <TableCell>
-                      {Number(activeSell?.paid).toFixed(3)}
+                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                      Amount Paid
                     </TableCell>
+                    <TableCell>{Number(activeSell?.paid).toFixed(3)}</TableCell>
                   </TableRow>
-             
-    
                 </TableBody>
               </Table>
-            
-              
+
               <Divider />
 
               <Stack justifyContent={"center"} sx={{ mt: 2 }}>
@@ -516,7 +541,7 @@ function SellDrug() {
                         .get(`inventory/deduct/cancel/${activeSell.id}`)
                         .then(({ data }) => {
                           setRecieved(0);
-                          update(data.data)
+                          update(data.data);
                         })
                         .catch(({ response: { data } }) => {
                           // console.log({ data });
@@ -561,9 +586,21 @@ function SellDrug() {
                               };
                             });
                             setRecieved(0);
+                            setShift((prev) => {
+                                return {
+                                  ...prev,
+                                  deducts: prev.deducts.map((d) => {
+                                    if (d.id == activeSell.id) {
+                                      return { ...activeSell,complete:1 };
+                                    } else {
+                                      return d;
+                                    }
+                                  }),
+                                };
+                              
+                            });
                             // console.log(data.data, "new active sell");
-                            update(data.data)
-
+                            update(data.data);
                           } catch (e) {
                             // console.log(e);
                           }
@@ -608,7 +645,7 @@ function SellDrug() {
                   .then(({ data }) => {
                     try {
                       setRecieved(0);
-                      update(data.data)
+                      update(data.data);
                     } catch (error) {
                       // console.log(error);
                     }
@@ -680,7 +717,7 @@ function SellDrug() {
             <Divider />
           </Stack>
         </Box>
-        {showDialogMoney &&<SellsMoneyDialog />}
+        {showDialogMoney && <SellsMoneyDialog />}
         <AddDrugDialog />
         <AddClientDialog
           loading={loading}

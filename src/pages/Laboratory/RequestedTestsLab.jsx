@@ -213,7 +213,7 @@ function RequestedTestsLab({ setPatients }) {
                   ) : (
                     ""
                   )}
-                  <TableCell align="right">{t("requestedBy")}</TableCell>
+                  {/* <TableCell align="right">{t("requestedBy")}</TableCell> */}
 
                   <TableCell align="right">-</TableCell>
                 </TableRow>
@@ -296,9 +296,9 @@ function RequestedTestsLab({ setPatients }) {
                       ) : (
                         ""
                       )}
-                      <TableCell sx={{ border: "none" }} align="right">
+                      {/* <TableCell sx={{ border: "none" }} align="right">
                         {test.user_requested.username}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
                           disabled={actviePatient?.is_lab_paid == 1}

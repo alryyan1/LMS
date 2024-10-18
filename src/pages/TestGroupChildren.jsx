@@ -4,6 +4,7 @@ function TestGroupChildren(props) {
   
     return (
       <div 
+
         role="tabpanel"
         hidden={value !== index}
         id={`simple-tabpanel-${index}`}
@@ -11,7 +12,7 @@ function TestGroupChildren(props) {
         {...other}
       >
         {value === index && (
-          <Box  className='group' sx={{ p: 3 }}>
+          <Box  className=' mygrid' sx={{ p: 1 }}>
             {children}
           </Box>
         )}
