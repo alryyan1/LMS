@@ -11,11 +11,13 @@ import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { DepositItem } from "../../types/Pharmacy";
 function InvoicesFilter() {
   const [date, setDate] = useState(dayjs(new Date()));
   const [billNumber, setBillNumber] = useState("");
 
-  const {setInvoices,suppliers} =  useOutletContext()
+  const {setInvoices,suppliers,depositItemsSearch, setDepositItemsSearch} =  useOutletContext()
+ 
     const showDepositBySupplier = (supplier) => {
         axiosClient
           .post(`inventory/deposit/getDepositBySupplier`, {
@@ -99,6 +101,13 @@ function InvoicesFilter() {
         return <TextField label={"Search by Supplier"} {...params} />;
       }}
     ></Autocomplete>
+     <TextField
+      size="small"
+      onChange={(event) => {
+        setDepositItemsSearch(event.target.value)
+      }}
+      label="Search Item in Invoices"
+    ></TextField>
   </Stack>
   )
 }

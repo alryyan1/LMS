@@ -165,12 +165,12 @@ useEffect(() => {
       {/* <a href={`${webUrl}pdf?id=${selectedDeposit.id}`}></a> */}
 
       <Stack
-        sx={{ m: 1 }}
         alignItems={"center"}
         justifyContent={"space-between"}
         direction={"row"}
+        gap={1}
       >
-        <Typography align="center" variant="h5" sx={{ mb: 1 }}>
+        <Typography align="center"  >
           {`${selectedDeposit.supplier.name} /  ${selectedDeposit.bill_number}`}
         </Typography>
 
@@ -180,7 +180,7 @@ useEffect(() => {
               return {
                 ...prev,
                 showAddtoDeposit: true,
-                addToDepositForm: "1fr",
+                addToDepositForm: "2fr",
               };
             });
           }}
@@ -204,16 +204,18 @@ useEffect(() => {
         >
           <SwapHoriz />
         </IconButton>
-        <TextField
-          autoComplete="false"
-          placeholder="Barcode/Market name"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          size="small"
-          label="بحث"
-          type="search"
-        ></TextField>
-  <LoadingButton
+      
+
+<ExcelReader setItems={setInvoiceItems} setSelectedDeposit={setSelectedDeposit} selectedDeposit={selectedDeposit}/>
+
+        <Button
+          variant="contained"
+          sx={{ m: 1 }}
+          href={`${webUrl}pdf?id=${selectedDeposit.id}`}
+        >
+          pdf
+        </Button>
+        <LoadingButton
           variant="contained"
           loading={ld}
           onClick={() => {
@@ -232,17 +234,8 @@ useEffect(() => {
             }
           }}
         >
-              تعريف الكل  
+              تعريف   
         </LoadingButton>
-<ExcelReader setItems={setInvoiceItems} setSelectedDeposit={setSelectedDeposit} selectedDeposit={selectedDeposit}/>
-
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          href={`${webUrl}pdf?id=${selectedDeposit.id}`}
-        >
-          pdf
-        </Button>
         <LoadingButton
          loading={loading}
             sx={{ mt: 1 }}
@@ -273,6 +266,15 @@ useEffect(() => {
           >
            {selectedDeposit.showAll ? <RemoveRedEye /> : <VisibilityOff/> } 
           </LoadingButton>
+          <TextField
+          autoComplete="false"
+          placeholder="Barcode/Market name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          size="small"
+          label="بحث"
+          type="search"
+        ></TextField>
       </Stack>
       {excelLoading     ?  <Skeleton width={'100%'} height={'80vh'}/> :
       <>

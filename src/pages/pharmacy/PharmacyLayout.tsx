@@ -5,6 +5,8 @@ import { Alert, Snackbar } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { CacheProvider } from "@emotion/react";
 import { cacheRtl } from "../constants";
+import { DepositItem } from "../../types/Pharmacy";
+
 
 function PharmacyLayout() {
   const [shiftIsLoading,setShiftIsLoading] = useState()
@@ -12,6 +14,7 @@ function PharmacyLayout() {
   const [activeSell, setActiveSell] = useState();
   const [suppliers, setSuppliers] = useState([]);
   const [itemsTobeAddedToChache, setItemsTobeAddedToChache] = useState([]);
+  const [depositItemsLinks ,setDepositItemsLinks] = useState([])
 
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
@@ -39,6 +42,8 @@ function PharmacyLayout() {
   const [excelLoading,setExeclLoading] = useState(false)
   const [links,setLinks] = useState([])
   const [updateSummery,setUpdateSummery] = useState(0)
+  const [depositItems,setDepositItems] = useState<DepositItem[]>([])
+  const [depositItemsSearch, setDepositItemsSearch] = useState("");
 
   useEffect(() => {
     setDepositLoading(true)
@@ -118,7 +123,7 @@ function PharmacyLayout() {
             itemsIsLoading,setItemsIsLoading,
             invoices, setInvoices,
             selectedInvoice, setSelectedInvoice,depositLoading,excelLoading,setExeclLoading,links,setLinks,
-            updateSummery,setUpdateSummery
+            updateSummery,setUpdateSummery,depositItems,setDepositItems,depositItemsSearch, setDepositItemsSearch,depositItemsLinks ,setDepositItemsLinks
             
           
           }}

@@ -14,9 +14,11 @@ import {
   import axiosClient from "../../../axios-client.js";
   import MyLoadingButton from "../../components/MyLoadingButton.jsx";
   import { ArrowBackIos, ArrowForwardIos, FileDownload, FileUpload } from "@mui/icons-material";
+import { DrugItem } from "../../types/Pharmacy.js";
+import dayjs from "dayjs";
   
   function ItemsInventory() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<DrugItem[]>([]);
     const [search, setSearch] = useState(null);
     const [links, setLinks] = useState([]);
     const [page, setPage] = useState(10);
@@ -109,11 +111,13 @@ import {
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Market Name</TableCell>
-                <TableCell>Scientific Name</TableCell>
+                <TableCell>Active Substance </TableCell>
+                <TableCell>Active Substance 1</TableCell>
                 <TableCell>Expire</TableCell>
                 <TableCell>Out<Icon sx={{color:(theme)=>theme.palette.error.light}}> <FileUpload/></Icon> </TableCell>
                 <TableCell>in  <Icon sx={{color:(theme)=>theme.palette.success.light}}><FileDownload/></Icon></TableCell>
                 <TableCell>Balance </TableCell>
+                <TableCell>Barcode </TableCell>
               </TableRow>
             </thead>
   
@@ -125,10 +129,12 @@ import {
                     <TableCell>{item.id}</TableCell>
                     <TableCell  >{item.market_name}</TableCell>
                     <TableCell>{item.sc_name}</TableCell>
-                    <TableCell>{item.expire.trim()}</TableCell>
+                    <TableCell>{item.active1}</TableCell>
+                    <TableCell>{dayjs(new Date(item?.lastDepositItem?.expire)).format('YYYY-MM-DD')}</TableCell>
                     <TableCell>{item.totaldeduct}</TableCell>
                     <TableCell>{item.totaldeposit}</TableCell>
                     <TableCell>{item.remaining }</TableCell>
+                    <TableCell>{item.barcode }</TableCell>
                   </TableRow>
                 );
               })}

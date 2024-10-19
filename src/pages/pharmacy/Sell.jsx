@@ -329,11 +329,11 @@ function SellDrug() {
                     <TableRow>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
-                      <TableCell>Box</TableCell>
-                      <TableCell>Subtotal</TableCell>
+                      {/* <TableCell>Strips</TableCell> */}
+                      <TableCell>QYN</TableCell>
+                      {/* <TableCell>Subtotal</TableCell> */}
                       <TableCell width={"5%"}>action</TableCell>
-                      <TableCell>Expire</TableCell>
+                      {/* <TableCell>Expire</TableCell> */}
                       <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
@@ -357,11 +357,11 @@ function SellDrug() {
                         <TableCell>
                           {" "}
                           {Number(
-                            deductedItem?.item.lastDepositItem?.finalSellPrice
+                            deductedItem?.price
                           ).toFixed(3)}
                         </TableCell>
 
-                        {activeSell.complete ? (
+                        {/* {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -375,7 +375,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )}
+                        )} */}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
@@ -391,13 +391,13 @@ function SellDrug() {
                             {toFixed(deductedItem.box, 3)}
                           </MyTableCell>
                         )}
-                        <TableCell>
+                        {/* <TableCell>
                           {toFixed(
                             (deductedItem.price / deductedItem.item?.strips) *
                               deductedItem.strips,
                             3
                           )}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <LoadingButton
                             disabled={activeSell.complete}
@@ -417,12 +417,12 @@ function SellDrug() {
                           </LoadingButton>
                         </TableCell>
 
-                        <TableCell>
+                        {/* <TableCell>
                           <MyDateField2
                             val={deductedItem?.item.lastDepositItem?.expire}
                             item={deductedItem?.item.lastDepositItem}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
@@ -451,12 +451,17 @@ function SellDrug() {
               <Typography textAlign={"center"}>
                 Transaction No {activeSell?.id}
               </Typography>
-              <Typography className="text-gray-500" textAlign={"center"}>
+              {/* <Typography className="text-gray-500" textAlign={"center"}>
                 Date{" "}
                 {dayjs(new Date(activeSell?.created_at)).format(
                   "YYYY/MM/DD H:m A"
                 )}
-              </Typography>
+
+              </Typography> */}
+              <MyDateField2 path="deduct" colName="created_at" disabled={activeSell?.complete == 1}
+                          val={activeSell.created_at}
+                          item={activeSell}
+                        />
               <Divider />
               {activeSell && <PayOptions key={activeSell.id} />}
               <Divider />
