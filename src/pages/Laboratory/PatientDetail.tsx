@@ -2,16 +2,25 @@ import { Autocomplete, Divider, Paper, Stack, TextField } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-
+import { DoctorShift, DoctorVisit } from "../../types/Patient";
+interface PatientDetailPros {
+  patient: DoctorVisit,
+  openedDoctors: DoctorShift[],
+  activeShift: DoctorShift,
+  copyPatient?: boolean,
+  settings: any,
+  user: any,  
+  update:(patient:DoctorVisit)=>void
+ 
+}
 function PatientDetail({
-  patient,
+  patient:{patient},
   openedDoctors,
-  setUpdate,
   activeShift,
   copyPatient = false,
   settings,
   user
-}) {
+}:PatientDetailPros) {
   const { i18n } = useTranslation();
 
   const date = new Date(patient.created_at);
@@ -233,10 +242,9 @@ function PatientDetail({
                   
                 })
                 .then(({ data }) => {
-                 
+                  update(data);
                   if (data.status) {
                     // alert('status')
-                    setUpdate((prev) => prev + 1);
                   }
                 });
             }}

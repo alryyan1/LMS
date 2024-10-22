@@ -21,8 +21,8 @@ import ComponyAutocompleteHistory from "./ComponyAutocompleteHistory";
 import { MessageCircleDashed } from "lucide-react";
 import { OutletContextType } from "../../types/CutomTypes";
 
-function SearchDialog({lab=false,user}) {
-  const {foundedPatients, openedDoctors, setUpdate ,setDialog,doctors,companies,activeShift} =
+function SearchDialog({lab=false,user,update}) {
+  const {foundedPatients, openedDoctors ,setDialog,doctors,companies,activeShift} =
     useOutletContext<OutletContextType>();
   const [doctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ function SearchDialog({lab=false,user}) {
       )
       .then(({ data }) => {
         console.log(data);
-        setUpdate((prev) => prev + 1);
+        update(data.patient)
       })
       .catch(({response:{data}}) => {
         console.log(data);

@@ -16,7 +16,11 @@ body {
     unicode-range: U+00-FF, U+980-9FF;
 
 }
-
+.test{
+  border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
 .mygrid {
   display: grid;
     grid-template-columns: repeat(autofit, minmax(200px, 1fr));

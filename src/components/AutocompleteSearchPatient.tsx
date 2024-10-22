@@ -4,22 +4,29 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import axiosClient from "../../axios-client";
 import { useOutletContext } from "react-router-dom";
+import { DoctorVisit } from "../types/Patient";
 function isNumeric(str) {
   if (typeof str != "string") return false // we only process strings!  
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
-export default function AutocompleteSearchPatient({ setActivePatientHandler ,withTests =false,setDialog=null,setActivePatient,changeDoctorVisit,change}) {
+
+interface AutocompleteSearchPatientPros{
+  update: (patient: DoctorVisit) => void,
+  setDialog: (args) => void,
+}
+
+export default function AutocompleteSearchPatient({ update,setDialog}:AutocompleteSearchPatientPros) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
-  const [search, setSearch] = React.useState([]);
+  const [options, setOptions] = React.useState<DoctorVisit[]>([]);
+  const [search, setSearch] = React.useState<string>();
 
   React.useEffect(() => {
     if (search != '') {
        const timer = setTimeout(() => {
       axiosClient
-        .get(`patients?name=${search}&withTests=${withTests}`)
+        .get(`patients?name=${search}`)
         .then(({ data }) => {
           console.log(data,'doctor visit data')
           setOptions(data);
@@ -42,25 +49,7 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
             return
         }
         if (newVal) {
-          console.log(newVal, "new Val");
-          if (setActivePatientHandler) {
-            
-            setActivePatientHandler(newVal);
-          }
-          if(setActivePatient){
-            setActivePatient(newVal);
-          }
-          if (change) {
-            console.log(newVal, "change new val");
-            // 
-            
-          }
-          if (changeDoctorVisit) {
-            axiosClient.get(`doctorvisit/find?pid=${newVal.id}`).then(({data})=>{
-             changeDoctorVisit(data)
-             change(data.patient)
-            })
-         }
+            update(newVal)
         }
       }}
       sx={{ width: 300, display: "inline-block" }}
@@ -72,7 +61,7 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) => option.patient.name}
       options={options}
       loading={loading}
       renderInput={(params) => (
@@ -82,9 +71,9 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
               console.log("enter pressed");
               //get test from tests using find
               const enteredId = e.target.value;
-              axiosClient.get(`patients?name=${enteredId}&withTests=${withTests}`).then(({ data }) => {
+              axiosClient.get(`patients?name=${enteredId}`).then(({ data }) => {
                 if (data.data != null) {
-                setActivePatientHandler(data.data);
+                update(data.data);
                     
                 }else{
                    if (setDialog) {
@@ -104,9 +93,6 @@ export default function AutocompleteSearchPatient({ setActivePatientHandler ,wit
           }}
           onChange={(val) => {
             const value = val.target.value
-            console.log(typeof value, "is val");
-            console.log(typeof +value, "is val");
-         
            if ( isNumeric(value)) {
             console.log('inside if')
             return;

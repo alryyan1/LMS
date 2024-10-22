@@ -1,15 +1,22 @@
 import { Checkbox } from "@mui/material";
 import { useState } from "react";
 import axiosClient from "../../../axios-client";
+import { DoctorVisit } from "../../types/Patient";
 
-function MyCheckboxReception({ id, isbankak,disabled ,checked,setUpdate}) {
-  console.log(isbankak, "checked before");
+interface MyCheckboxReceptionProps {
+  id: number;
+  disabled: boolean;
+  checked: boolean;
+  update: (prev:DoctorVisit) => void;
+ 
+}
+function MyCheckboxReception({ id,disabled ,checked,update}:MyCheckboxReceptionProps) {
   const [isChecked, setIsChecked] = useState(checked);
   console.log(isChecked, "checked after");
   const changeHandler = (val) => {
     setIsChecked(val.target.checked);
-    axiosClient.patch(`requestedService/bank/${id}?val=${Number(val.target.checked)}`).then(() => {
-        setUpdate((prev)=>prev+1)
+    axiosClient.patch(`requestedService/bank/${id}?val=${Number(val.target.checked)}`).then(({data}) => {
+        update(data)
     });
  
   };

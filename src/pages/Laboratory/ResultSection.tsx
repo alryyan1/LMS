@@ -15,7 +15,15 @@ import React from "react";
 import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
 import OrganismPanel from "./OrganismPanel";
 import axiosClient from "../../../axios-client";
-
+interface ResultSectionProps {
+  selectedTest: any;
+  setShift: (prev: any) => void;
+  setActivePatient: (prev: any) => void;
+  setSelectedResult: (prev: any) => void;
+  selectedReslult: any;
+  disabled: boolean;
+  is_doctor: boolean; // true for doctor, false for patient
+}
 function ResultSection({
   selectedTest,
   setShift,
@@ -23,7 +31,8 @@ function ResultSection({
   setSelectedResult,
   selectedReslult,
   disabled = false,
-  is_doctor = false
+  is_doctor = false,
+  update
 }) {
   const [value, setValue] = React.useState(0);
 

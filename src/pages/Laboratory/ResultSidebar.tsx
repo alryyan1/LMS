@@ -16,6 +16,21 @@ import {
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import CableIcon from "@mui/icons-material/Cable";
+import { DoctorVisit, Labrequest } from "../../types/Patient";
+import { useOutletContext } from "react-router-dom";
+interface ResultSideBarPros {
+  actviePatient: DoctorVisit;
+  loading: boolean;
+  setLoading: Function;
+  setSelectedTest: Function;
+  setActivePatient: Function;
+  selectedTest: Labrequest;
+  setResultUpdated: Function;
+  setShift: Function;
+  socket: any;
+  isConnected: boolean;
+  update: Function;
+}
 function ResultSidebar({
   actviePatient,
   loading,
@@ -24,13 +39,13 @@ function ResultSidebar({
   setActivePatient,
   selectedTest,
   setResultUpdated,
-  setDialog,
+ 
   setShift,
   socket,
-  isConnected
-}) {
+  isConnected,update
+}:ResultSideBarPros) {
 
-
+ const {setDialog} =  useOutletContext()
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -86,7 +101,7 @@ function ResultSidebar({
 
       <IconButton
         target="_blank"
-        href={`http://${host}/server/classes/client.php`}
+        href={`http://${host}/server/classes/server.php`}
         title="LIS"
         color="inherit"
       >
@@ -137,7 +152,7 @@ function ResultSidebar({
           }}
           variant="contained"
         >
-          {actviePatient.result_is_locked ? (
+          {actviePatient.patient.result_is_locked ? (
             <Lock color="error" />
           ) : (
             <LockOpen />
@@ -158,24 +173,14 @@ function ResultSidebar({
                 console.log(data, "labrequest data");
                 setSelectedTest((prev) => {
                   console.log(prev, "previous selected test");
-                  return data.patient.labrequests.find(
+                  return data.data.patient.labrequests.find(
                     (labr) => labr.id == prev.id
                   );
                 });
                 setResultUpdated((prev) => {
                   return prev + 1;
                 });
-                setActivePatient(data.patient)?.map((prev) => {
-                  return prev.map((patient) => {
-                    if (patient.id === actviePatient.id) {
-                      return {
-                        ...data.patient,
-                        active: true,
-                      };
-                    }
-                    return patient;
-                  });
-                });
+                update(data.data)
               })
               .finally(() => setLoading(false));
           }}
@@ -193,7 +198,7 @@ function ResultSidebar({
           onClick={() => {
             setLoading(true);
             axiosClient
-              .post(`populatePatientCbcData/${actviePatient?.id}`, {
+              .post(`populatePatientCbcData/${actviePatient?.patient.id}`, {
                 main_test_id: selectedTest?.main_test_id,
               })
               .then(({ data }) => {
@@ -213,24 +218,14 @@ function ResultSidebar({
                   console.log(data, "patient cbc");
                   setSelectedTest((prev) => {
                     console.log(prev, "previous selected test");
-                    return data.patient.labrequests.find(
+                    return data.data.patient.labrequests.find(
                       (labr) => labr.id == prev.id
                     );
                   });
                   setResultUpdated((prev) => {
                     return prev + 1;
                   });
-                  setActivePatient(data.patient)?.map((prev) => {
-                    return prev.map((patient) => {
-                      if (patient.id === actviePatient.id) {
-                        return {
-                          ...data.patient,
-                          active: true,
-                        };
-                      }
-                      return patient;
-                    });
-                  });
+                 update(data.data)
                 }
               })
               .finally(() => setLoading(false));

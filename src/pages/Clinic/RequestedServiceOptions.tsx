@@ -15,6 +15,7 @@ import { LoadingButton } from "@mui/lab";
 import { IconButton } from "@mui/material";
 import ServiceCountSelect from "./ServiceCountSelect";
 import DiscountSelectService from "./DiscountSelectService";
+import { DoctorVisit, RequestedService } from "../../types/Patient";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -58,17 +59,22 @@ const StyledMenu = styled((props) => (
     },
   },
 }));
-
+interface RequestedServiceOptionsPros {
+  service: RequestedService;
+  cancelPayHandler: (setDialog,service) => void;
+  loading: boolean;
+  actviePatient: DoctorVisit;
+  deleteService: (service) => void;
+  update: (patient:DoctorVisit) => void;
+}
 export default function RequestedServiceOptions({
   service,
   cancelPayHandler,
   loading,
   actviePatient,
   deleteService,
-  setUpdate,
-  setActivePatient,
-  setDialog,
-}) {
+  update,
+}: RequestedServiceOptionsPros){
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -119,7 +125,7 @@ export default function RequestedServiceOptions({
           <LoadingButton
           variant="contained"
           fullWidth
-            disabled={actviePatient?.is_lab_paid == 1}
+            disabled={actviePatient.patient.is_lab_paid == 1}
             aria-label="delete"
             onClick={() => deleteService(service.id)}
           >
@@ -128,22 +134,19 @@ export default function RequestedServiceOptions({
         </MenuItem>
         <MenuItem>
           <ServiceCountSelect
-            setUpdate={setUpdate}
-            setActivePatient={setActivePatient}
+            update={update}
             service={service}
             id={service.id}
-            actviePatient={actviePatient}
             disabled={service.is_paid == 1}
+
           />
         </MenuItem>
-        {actviePatient.company_id == null && (
+        {actviePatient.patient.company_id == null && (
           <MenuItem>
             <DiscountSelectService
-              setDialog={setDialog}
-              setActivePatient={setActivePatient}
               service={service}
               id={service.id}
-              actviePatient={actviePatient}
+             update={update}
             />
           </MenuItem>
         )}

@@ -1,17 +1,57 @@
-import {  Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { Alert, Snackbar } from "@mui/material";
-
+import { Company, Doctor, DoctorVisit } from "./types/Patient";
+import { Container, LabPackage, MainTest } from "./types/Lab";
+import { Specialist } from "./types/Shift";
+export interface LabLayoutPros {
+  dialog: {
+    showMoneyDialog: boolean;
+    title: string;
+    color: string;
+    open: boolean;
+    openError: boolean;
+    openLabReport: boolean;
+    showHistory: boolean;
+    message: string;
+  };
+  openEdit: boolean;
+  foundedPatients: DoctorVisit[];
+  childGroups: any[];
+  searchByName: string | null;
+  searchByPhone: string | null;
+  containerData: Container[];
+  packageData: LabPackage[];
+  loading: boolean;
+  error: boolean;
+  open: boolean;
+  specialists: Specialist[];
+  tests: MainTest[];
+  doctors: Doctor[];
+  actviePatient: DoctorVisit | null;
+  showUnitList: boolean;
+  searchedTest: string;
+  showSearchBox: boolean;
+  units: any[];
+  showAddTest: boolean;
+  activeTestObj: any | null;
+  setPatientsLoading : ()=>void;
+  selectedTests : MainTest[];
+  setSelectedTests: (tests:MainTest[])=>void;
+  settings:any,
+  userSettings:any,
+  companies:Company[]
+}
 function LabLayout() {
   const [dialog, setDialog] = useState({
-    showMoneyDialog:false,
-    title:'',
-    color:'success',
+    showMoneyDialog: false,
+    title: "",
+    color: "success",
     open: false,
     openError: false,
     openLabReport: false,
-    showHistory:false,
+    showHistory: false,
     message: "operation was successfull",
   });
   const [openEdit, setOpenEdit] = useState(false);
@@ -46,39 +86,34 @@ function LabLayout() {
   const [patientsLoading, setPatientsLoading] = useState(false);
 
   useEffect(() => {
-
-    const companiesStorage =  localStorage.getItem('companies')
+    const companiesStorage = localStorage.getItem("companies");
 
     if (companiesStorage == null) {
-
-
       axiosClient
-   .get(`company/all`)
-   .then(({ data }) => {
-    setCompanies(data);
-      localStorage.setItem('companies', JSON.stringify(data))
-    })
-   .catch((err) => {
-      console.log(err);
-    });
-  }else{
-    setCompanies(JSON.parse(companiesStorage))
-  }
+        .get(`company/all`)
+        .then(({ data }) => {
+          setCompanies(data);
+          localStorage.setItem("companies", JSON.stringify(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setCompanies(JSON.parse(companiesStorage));
+    }
 
     // setPatientsLoading(true)
     Promise.all([
-        axiosClient.get("userSettings").then(({ data }) => {
-          console.log(data, "user settings from axios");
-          setUserSettings(data);
-        }),
-      
-     
-  
-        axiosClient.get("settings").then(({ data }) => {
-          console.log(data,'data see')
-          setSettings(data);
-        }),
- 
+      axiosClient.get("userSettings").then(({ data }) => {
+        console.log(data, "user settings from axios");
+        setUserSettings(data);
+      }),
+
+      axiosClient.get("settings").then(({ data }) => {
+        console.log(data, "data see");
+        setSettings(data);
+      }),
+
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
@@ -95,61 +130,55 @@ function LabLayout() {
       }),
 
       axiosClient.get("packages/all").then((data) => {
-        console.log(data,'packages');
+        console.log(data, "packages");
         setPackageData(data.data);
       }),
       axiosClient.get("childGroup").then((data) => {
         setChildGroups(data.data);
       }),
-      axiosClient.get("units/all")
-      .then((data) => {
+      axiosClient.get("units/all").then((data) => {
         console.log(data, "unists array");
         setUnits(data.data);
       }),
-     
+
       axiosClient.get("tests").then((data) => {
-        console.log(data,'test data');
+        console.log(data, "test data");
         setTests(data.data);
-        setLoading(false)
-    
-      })
+        setLoading(false);
+      }),
     ]).finally(() => {
       // setPatientsLoading(false);
     });
   }, []);
   // useEffect(() => {
   //   console.log("start fetching units");
-   
+
   // }, []);
 
+  // useEffect(()=>{
+  //   setLoading(true)
 
-// useEffect(()=>{
-//   setLoading(true)
-  
-// },[updateTests])
- 
-  
+  // },[updateTests])
+
   function addChildTestHandler(id) {
-    setLoading(true)
-    axiosClient.post(
-      `childTest/create/${id}`
-    )
-      .then(({data}) => {
-        console.log(data)
+    setLoading(true);
+    axiosClient
+      .post(`childTest/create/${id}`)
+      .then(({ data }) => {
+        console.log(data);
         setActiveTestObj((prev) => {
           return { ...prev, child_tests: [...prev.child_tests, data] };
         });
       })
       .catch(() => {})
       .finally(() => {
-        setLoading(false)
+        setLoading(false);
       });
   }
   return (
-    
     <div>
-      
-         {<Outlet
+      {
+        <Outlet
           context={{
             childGroups,
             setChildGroups,
@@ -175,7 +204,8 @@ function LabLayout() {
             setDialog,
             setOpen,
             setError,
-            update,setUpdate,
+            update,
+            setUpdate,
             open,
             dialog,
             companies,
@@ -188,19 +218,30 @@ function LabLayout() {
             setSearchByPhone,
             foundedPatients,
             setFoundedPatients,
-            updateTests,setUpdateTests,
-            openEdit, setOpenEdit,
-            userSettings, setUserSettings,patientsLoading,setPatientsLoading,settings, setSettings
+            updateTests,
+            setUpdateTests,
+            openEdit,
+            setOpenEdit,
+            userSettings,
+            setUserSettings,
+            patientsLoading,
+            setPatientsLoading,
+            settings,
+            setSettings,
           }}
-        />}
+        />
+      }
 
-    
       <Snackbar
         open={dialog.open}
         autoHideDuration={2000}
         onClose={() => setDialog((prev) => ({ ...prev, open: false }))}
       >
-        <Alert  severity={dialog.color} variant="filled" sx={{ width: "100%" ,direction:'rtl'}}>
+        <Alert
+          severity={dialog.color}
+          variant="filled"
+          sx={{ width: "100%", direction: "rtl" }}
+        >
           {dialog.message}
         </Alert>
       </Snackbar>

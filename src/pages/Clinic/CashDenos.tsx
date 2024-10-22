@@ -19,6 +19,8 @@ import {
 import { LoadingButton } from "@mui/lab";
 import AddCostForm from "../../components/AddCostForm";
 import { webUrl } from "../constants";
+import { Deno, Shift } from "../../types/Shift";
+import { ShiftDetails } from "../../types/CutomTypes";
 
 const options = {
   weekday: "long",
@@ -30,15 +32,18 @@ function CashDenos() {
   useEffect(() => {
     document.title = "الفئات -";
   }, []);
-  const [shift, setShift] = useState(null);
+  const [shift, setShift] = useState<Shift | null>(null);
+  const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
   useEffect(() => {
     axiosClient.get("shift/last").then(({ data: { data } }) => {
       setShift(data);
-      console.log(data);
-      console.log(new Date(Date.parse(data.created_at)).toLocaleDateString());
+      axiosClient.get(`shift/summary/${data.id}`).then(({ data }) => {
+        console.log(data, "shift summary");
+        setShiftSummary(data);
+      });
     });
-  }, []);
-  const [userDenos, setUserDenos] = useState([]);
+  }, [shift?.cost.length]);
+  const [userDenos, setUserDenos] = useState<Deno[]>([]);
   useEffect(() => {
     axiosClient.post("populate/denos").then(({ data }) => {
       console.log(data, "denos data");
@@ -50,20 +55,27 @@ function CashDenos() {
       setUserDenos(data.data);
     });
   }, []);
+  useEffect(() => {
 
-  const totalIncome = shift?.totalPaid + shift?.paidLab + shift?.totalDeductsPrice;
-  const denosAmount = userDenos.reduce(
-    (accum, d) => accum + d.name * d.pivot.amount,
-    0
-  );
+  },[])
 
-  const totalCost = shift?.cost.reduce((prev, current) => {
-    return prev + current.amount;
-  }, 0);
+  const updateHandler = (colName,denoId,val,add = false) => {
+       axiosClient
+        .patch("deno/user", {
+          deno_id:denoId,
+          val,
+          colName,
+          add
+        })
+        .then(({ data }) => {
+          setUserDenos(data.data);
+        });
+    
+  }
   return (
     <>
       {shift && (
-        <Card  sx={{ mb: 1 }}>
+        <Card sx={{ mb: 1 }}>
           <CardContent>
             <Stack
               direction={"row"}
@@ -90,11 +102,8 @@ function CashDenos() {
         </Card>
       )}
       <Grid container spacing={2}>
-       
-        
-        {/* <Grid  item lg={3} xs={12}>
+        <Grid item lg={3} xs={12}>
           <Box sx={{ p: 1 }}>
-       
             <Table size="small" style={{ direction: "rtl" }}>
               <TableHead>
                 <TableRow>
@@ -111,27 +120,28 @@ function CashDenos() {
                       <TableCell>{deno.name}</TableCell>
                       <TableCell>
                         <TextField
-                        variant="standard"
-                        type="number"
-                        
+                          variant="standard"
+                          type="number"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              console.log("enter pressed");
-                              //get test from tests using find
-                              axiosClient
-                                .patch("deno/user", {
-                                  deno_id: deno.id,
-                                  val: e.target.value,
-                                })
-                                .then(({ data }) => {
-                                  setUserDenos(data.data);
-                                });
+                              updateHandler('deno', deno.id,e.target.value,true);
+
                             }
                           }}
-                          onChange={(e) => {}}
+                     
                         />
                       </TableCell>
-                      <TableCell>{deno.pivot.amount}</TableCell>
+                      
+                      <TableCell>   <TextField
+                      defaultValue={deno.pivot.amount}
+                          variant="standard"
+                          type="number"
+                         
+                          onChange={(e) => {
+                            updateHandler('amount', deno.id,e.target.value);
+                          }}
+                        />
+                      </TableCell>
                       <TableCell>{deno.pivot.amount * deno.name}</TableCell>
                     </TableRow>
                   );
@@ -139,11 +149,70 @@ function CashDenos() {
               </TableBody>
             </Table>
           </Box>
-        </Grid> */}
-         <Grid   item lg={3} xs={12}>
-         <AddCostForm setShift={setShift}/>
         </Grid>
-        <Grid  item  lg={6} xs={12}>
+        <Grid item lg={3} xs={12}>
+          <AddCostForm setShift={setShift} />
+        </Grid>
+        <Grid item lg={3} xs={12}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>القيمه</TableCell>
+                <TableCell>الاسم</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>{shiftSummary?.total}</TableCell>
+                <TableCell>اجمالي العيادات</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{shiftSummary?.bank}</TableCell>
+                <TableCell>اجمالي بنكك</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{shiftSummary?.expenses}</TableCell>
+                <TableCell>اجمالي المصروفات</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{shiftSummary?.cash}</TableCell>
+                <TableCell>صافي الكاش</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{shiftSummary?.safi}</TableCell>
+                <TableCell>(بنك + كاش)الصافي</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Divider>حساب الموظف -الفئات</Divider>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>القيمه</TableCell>
+                <TableCell>الاسم</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>{userDenos.reduce((curr,red)=>{
+                  return curr + red.pivot.amount * red.name
+                },0)}</TableCell>
+                <TableCell>اجمالي الفئات</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{shiftSummary?.cash}</TableCell>
+                <TableCell>صافي الكاش</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{(shiftSummary?.cash  == undefined ?0:shiftSummary.cash) - userDenos.reduce((curr,red)=>{
+                  return curr + red.pivot.amount * red.name
+                },0)}</TableCell>
+                <TableCell>المتبقي </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Grid>
+        <Grid item lg={3} xs={12}>
           <Box sx={{ p: 1 }}>
             <Typography variant="h6" textAlign={"center"}>
               مصروفات الورديه
@@ -165,14 +234,18 @@ function CashDenos() {
                       <TableCell>{cost?.cost_category?.name}</TableCell>
                       <TableCell>{cost.amount}</TableCell>
                       <TableCell>
-                        <LoadingButton onClick={()=>{
-                          axiosClient.delete(`cost/${cost.id}`).then((
-                            {data}
-                          ) => {
-                            console.log(data);
-                            setShift(data.data);
-                          });
-                        }}>حذف</LoadingButton>
+                        <LoadingButton
+                          onClick={() => {
+                            axiosClient
+                              .delete(`cost/${cost.id}`)
+                              .then(({ data }) => {
+                                console.log(data);
+                                setShift(data.data);
+                              });
+                          }}
+                        >
+                          حذف
+                        </LoadingButton>
                       </TableCell>
                     </TableRow>
                   );
@@ -181,7 +254,7 @@ function CashDenos() {
             </Table>
           </Box>
         </Grid>
-        <Grid  item  lg={3} xs={12}>
+        {/* <Grid  item  lg={3} xs={12}>
            <form  action={`${webUrl}previewLabel`} method="POST" >
             <Stack gap={2} justifyContent={'space-around'} sx={{mb:1}} direction={'row'}>
             <TextField name='orientation' label='orientation' ></TextField>
@@ -193,8 +266,7 @@ function CashDenos() {
            <Button fullWidth sx={{mt:1}} type="submit" variant="contained">Preview</Button>
            </form>
           
-        </Grid>
-       
+        </Grid> */}
       </Grid>
     </>
   );

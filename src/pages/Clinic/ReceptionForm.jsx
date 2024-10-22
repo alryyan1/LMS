@@ -19,7 +19,7 @@ import { Item } from "../constants";
 import { t } from "i18next";
 import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
-function ReceptionForm({ hideForm, lab, settings, socket }) {
+function ReceptionForm({ hideForm, lab, settings, socket,update }) {
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
@@ -155,10 +155,8 @@ function ReceptionForm({ hideForm, lab, settings, socket }) {
           hideForm();
           setFoundedPatients([]);
           //this update patient list
-          setUpdate((prev) => {
-            console.log("inside update");
-            return prev + 1;
-          });
+          console.log(data.data.patient,'data data')
+          update(data.data.patient)
         }
       })
       .catch(({ response: { data } }) => {

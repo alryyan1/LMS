@@ -46,6 +46,7 @@ import urgentSound from "../../assets/sounds/urgent.mp3";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CodeEditor from "./CodeMirror";
+import { DoctorShift, DoctorVisit, Patient } from "../../types/Patient";
 
 function Doctor() {
   const audioRef = useRef();
@@ -65,6 +66,22 @@ function Doctor() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showSearch , setShowSearch] = useState(false)
   const [userSettings, setUserSettings] = useState(null);
+  const [shift, setShift] = useState<DoctorShift|null>(null);
+  const [doctor, setDoctor] = useState();
+  const [activePatient, setActivePatient] = useState<Patient|null>(null);
+  const [activeDoctorVisit, setActiveDoctorVisit] = useState<DoctorVisit|null>(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    document.title = "صفحه الطبيب";
+
+      document.addEventListener('keydown',SearchHandler)
+
+      return ()=>{
+        document.removeEventListener('keydown',SearchHandler)
+      }
+
+  }, []);
   useEffect(() => {
 
 
@@ -73,6 +90,72 @@ function Doctor() {
       setUserSettings(data);
     });
   }, []);
+  useEffect(() => {
+    // alert('start of use effect')
+    axiosClient.get("complains").then(({ data }) => {
+      // console.log(data);
+      setComplains(data.map((c) => ({ label: c.name, type: c.name })));
+    });
+  }, []);
+  useEffect(() => {
+    // alert('start of use effect')
+    axiosClient.get("diagnosis").then(({ data }) => {
+      // console.log(data);
+      setDiagnosis(data.map((c) => ({ label: c.name, type: c.name })));
+    });
+  }, []);
+  useEffect(() => {
+    axiosClient.get(`items/all`).then(({ data: data }) => {
+      setItems(data);
+      if (data.status == false) {
+        setDialog((prev) => {
+          return { ...prev, open: true, msg: data.message };
+        });
+      }
+    });
+  }, []);
+  useEffect(() => {
+    // console.log(id, "doctor id from router");
+
+    if (id == undefined) {
+      // alert("id is null");
+      axiosClient
+        .get("/user")
+        .then(({ data }) => {
+          console.log(data, "user data");
+          axiosClient.get(`doctors/find/${data.doctor_id}`).then(({ data }) => {
+            console.log(data, "finded doctor");
+            setDoctor(data.doctor);
+            setShift(data);
+            // setShifts(data.shifts);
+            // console.log(data.shifts, "data shifts");
+            // console.log(data.shifts[0]);
+          });
+        })
+        .catch((err) => {});
+    } else {
+      axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
+        console.log(data, "finded doctor");
+        setDoctor(data.doctor);
+        setShift(data);
+        // setShifts(data.shifts);
+        // console.log(data.shifts, "data shifts");
+        // console.log(data.shifts[0]);
+      });
+    }
+  }, [activePatient?.id]);
+  useEffect(() => {
+    // alert('start of use effect')
+    if (activePatient) {
+      axiosClient.get(`file/${activePatient?.id}`).then(({ data }) => {
+        setFile(data.data);
+        // console.log(data, "file");
+      });
+    }
+  }, [activePatient?.id]);
+  const handleClose = () => {
+    setDialog((prev) => ({ ...prev, open: false }));
+  };
   function onConnect() {
     setIsConnected(true);
   }
@@ -154,20 +237,7 @@ function Doctor() {
       return { ...prev, visits: "0.5fr" };
     });
   };
-  useEffect(() => {
-    // alert('start of use effect')
-    axiosClient.get("complains").then(({ data }) => {
-      // console.log(data);
-      setComplains(data.map((c) => ({ label: c.name, type: c.name })));
-    });
-  }, []);
-  useEffect(() => {
-    // alert('start of use effect')
-    axiosClient.get("diagnosis").then(({ data }) => {
-      // console.log(data);
-      setDiagnosis(data.map((c) => ({ label: c.name, type: c.name })));
-    });
-  }, []);
+
   const { id } = useParams();
 
   const [dialog, setDialog] = useState({
@@ -181,13 +251,14 @@ function Doctor() {
   });
   //   alert(id)
 
-  const [shift, setShift] = useState(null);
-  const [doctor, setDoctor] = useState();
-  const [activePatient, setActivePatient] = useState(null);
-  const [activeDoctorVisit, setActiveDoctorVisit] = useState(null);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
 
+  const getDoctorVisit = (pid) => {
+    return new Promise((resolve, reject) => {
+      axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({ data }) => {
+        resolve(data);
+      });
+    });
+  };
   const getDoctorShift = (id,currentShiftId)=>{
     return new Promise((resolve,reject)=>{
       axiosClient.get(`doctorShift/find?id=${id}&currentShiftId=${currentShiftId}`).then(({ data }) => {
@@ -205,13 +276,7 @@ function Doctor() {
       audioRef.current.play();
     }, 3000);
   };
-  const getDoctorVisit = (pid) => {
-    return new Promise((resolve, reject) => {
-      axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({ data }) => {
-        resolve(data);
-      });
-    });
-  };
+
   const focusPatientafterLabResultAuthAction = (data) => {
     setLayout((prev) => {
       return { ...prev, patients: "0fr", vitals: "0.7fr", visits: "0fr" };
@@ -233,37 +298,15 @@ function Doctor() {
     }
   };
 
-  // console.log('AddPrescribedDrugAutocomplete rendered',selectedDrugs)
-  useEffect(() => {
-    axiosClient.get(`items/all`).then(({ data: data }) => {
-      setItems(data);
-      if (data.status == false) {
-        setDialog((prev) => {
-          return { ...prev, open: true, msg: data.message };
-        });
-      }
-    });
-  }, []);
-  // console.log(activePatient, "active patient from doctor page");
+
   let visitCount = activePatient?.visit_count;
-  // console.log(visitCount, "visitCount");
-  // console.log(shift, "doc shift");
   const SearchHandler = (e)=>{
     console.log(e.key)
     if (e.key == 'F9') {
       setShowSearch(true)
     }
   }
-  useEffect(() => {
-    document.title = "صفحه الطبيب";
 
-      document.addEventListener('keydown',SearchHandler)
-
-      return ()=>{
-        document.removeEventListener('keydown',SearchHandler)
-      }
-
-  }, []);
 
   const showDocPatients = () => {
     setActivePatient(null);
@@ -279,50 +322,9 @@ function Doctor() {
     setShowPatients(true);
   };
 
-  useEffect(() => {
-    // console.log(id, "doctor id from router");
 
-    if (id == undefined) {
-      // alert("id is null");
-      axiosClient
-        .get("/user")
-        .then(({ data }) => {
-          console.log(data, "user data");
-          axiosClient.get(`doctors/find/${data.doctor_id}`).then(({ data }) => {
-            console.log(data, "finded doctor");
-            setDoctor(data.doctor);
-            setShift(data);
-            // setShifts(data.shifts);
-            // console.log(data.shifts, "data shifts");
-            // console.log(data.shifts[0]);
-          });
-        })
-        .catch((err) => {});
-    } else {
-      axiosClient.get(`doctors/find/${id}`).then(({ data }) => {
-        console.log(data, "finded doctor");
-        setDoctor(data.doctor);
-        setShift(data);
-        // setShifts(data.shifts);
-        // console.log(data.shifts, "data shifts");
-        // console.log(data.shifts[0]);
-      });
-    }
-  }, [activePatient?.id]);
-  useEffect(() => {
-    // alert('start of use effect')
-    if (activePatient) {
-      axiosClient.get(`file/${activePatient?.id}`).then(({ data }) => {
-        setFile(data.data);
-        // console.log(data, "file");
-      });
-    }
-  }, [activePatient?.id]);
-  const handleClose = () => {
-    setDialog((prev) => ({ ...prev, open: false }));
-  };
 
-  const change = (patient) => {
+  const change = (patient:Patient) => {
     console.log('change function called')
     setActivePatient((prev) => {
       return { ...patient };
@@ -349,7 +351,7 @@ function Doctor() {
       return { ...prev, visits: [{ ...docVisit }, ...prev.visits] };
     });
   };
-  const changeDoctorVisit = (doctorVisit) => {
+  const changeDoctorVisit = (doctorVisit:DoctorVisit) => {
     if (doctorVisit.is_new == 1) {
       axiosClient.patch(`doctorVisit/${doctorVisit.id}`, { is_new: false });
     }
@@ -368,7 +370,6 @@ function Doctor() {
       };
     });
   };
-  let count = shift?.visits.length ?? 0;
   // console.log(file, "is file");
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
@@ -577,7 +578,7 @@ function Doctor() {
                       delay={i * 100}
                       activePatient={activePatient}
                       setActivePatient={setActivePatient}
-                      index={count--}
+                     
                       key={visit.id}
                       hideForm={null}
                       visit={visit}

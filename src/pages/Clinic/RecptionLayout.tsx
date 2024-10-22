@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 axiosClient;
 import { Alert, Snackbar } from "@mui/material";
 import axiosClient from "../../../axios-client";
-import {DoctorShift} from "../../types/Patient"
+import { Company, DoctorShift } from "../../types/Patient";
 import { OutletContextType } from "../../types/CutomTypes";
+
 function ReceptionLayout() {
   const [dialog, setDialog] = useState({
     showMoneyDialog: false,
@@ -14,7 +15,7 @@ function ReceptionLayout() {
     openError: false,
     openLabReport: false,
     showDoctorsDialog: false,
-    showHistory:false,
+    showHistory: false,
     message: "Addition was successfull",
   });
 
@@ -29,8 +30,8 @@ function ReceptionLayout() {
   const [specialists, setSpecialists] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [actviePatient, setActivePatient] = useState(null);
-  const [openedDoctors, setOpenedDoctors] = useState<OutletContextType['openedDoctors'][]>([]);
-  const [activeShift, setActiveShift] = useState<OutletContextType['activeShift']>(null);
+  const [openedDoctors, setOpenedDoctors] = useState([]);
+  const [activeShift, setActiveShift] = useState(null);
   const [serviceCategories, setServiceCategories] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [showPatientServices, setShowPatientServices] = useState(false);
@@ -39,14 +40,14 @@ function ReceptionLayout() {
   const [settings, setSettings] = useState(null);
   const [selectedTests, setSelectedTests] = useState([]);
   const [packageData, setPackageData] = useState([]);
-  const [showLabTests,setShowLabTests] = useState(false);
+  const [showLabTests, setShowLabTests] = useState(false);
   const [companies, setCompanies] = useState([]);
-  useEffect(()=>{
+  useEffect(() => {
     axiosClient.get("settings").then(({ data }) => {
-      console.log(data,'data see')
+      console.log(data, "data see");
       setSettings(data);
     });
-  },[])
+  }, []);
   useEffect(() => {
     axiosClient.get("company/all").then(({ data }) => {
       console.log(data, "comapnies");
@@ -64,23 +65,20 @@ function ReceptionLayout() {
         .catch((err) => console.log(err)),
       axiosClient.get("doctors").then(({ data: data }) => {
         setDoctors(data);
-      })
-      ,
+      }),
       axiosClient.get("packages/all").then((data) => {
-        console.log(data,'packages');
+        console.log(data, "packages");
         setPackageData(data.data);
       }),
       axiosClient
-      .get(`serviceGroup/all`)
-      .then(({ data: data }) => {
-        console.log(data, "serviceGroup ");
-        setServiceCategories(data);
-      })
-      .catch((err) => console.log(err)),
+        .get(`serviceGroup/all`)
+        .then(({ data: data }) => {
+          console.log(data, "serviceGroup ");
+          setServiceCategories(data);
+        })
+        .catch((err) => console.log(err)),
     ]).finally(() => {});
   }, []);
-
-  
 
   return (
     <div>
@@ -104,7 +102,7 @@ function ReceptionLayout() {
 
             openedDoctors,
             setOpenedDoctors,
-           
+
             doctors,
             actviePatient,
             setActivePatient,
@@ -113,7 +111,8 @@ function ReceptionLayout() {
             setError,
             open,
             dialog,
-            openEdit, setOpenEdit,
+            openEdit,
+            setOpenEdit,
             specialists,
             setDoctors,
             searchByName,
@@ -123,10 +122,14 @@ function ReceptionLayout() {
             foundedPatients,
             setFoundedPatients,
             settings,
-            showTestPanel, setShowTestPanel,
-            selectedTests, setSelectedTests,
-            packageData, setPackageData,
-            showLabTests,setShowLabTests
+            showTestPanel,
+            setShowTestPanel,
+            selectedTests,
+            setSelectedTests,
+            packageData,
+            setPackageData,
+            showLabTests,
+            setShowLabTests,
           }}
         />
       }

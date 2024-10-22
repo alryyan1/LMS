@@ -19,17 +19,27 @@ import RequestedServiceOptions from "./RequestedServiceOptions";
 import { formatNumber, webUrl } from "../constants";
 import { t } from "i18next";
 import BottomMoney from "./BottomMoney";
+import { Company, DoctorShift, DoctorVisit, User } from "../../types/Patient";
+interface RequestedServiceProps {
+  actviePatient:DoctorVisit;
+  setDialog:( data:()=>void )=>void;
+  setShowServicePanel:()=>void;
+  setShowPatientServices :()=>void;
+  activeShift:DoctorShift;
+  companies:Company[]
+  user:User
+  update:(data:DoctorVisit)=>void;
+}
 function RequestedServices({
   actviePatient,
   setDialog,
-  setActivePatient,
   setShowServicePanel,
   setShowPatientServices,
-  setUpdate,
   activeShift,
   companies,
   user,
-}) {
+  update
+}:RequestedServiceProps) {
   const [loading, setLoading] = useState(false);
   console.log(companies, "companies");
 
@@ -39,9 +49,7 @@ function RequestedServices({
       .patch(`requestedService/pay/${id}`)
       .then(({ data }) => {
         console.log(data, "pay service");
-        setActivePatient(data.patient);
-        setUpdate((prev) => prev + 1);
-
+        update(data.patient)
         setDialog((prev) => {
           return {
             ...prev,
@@ -82,9 +90,8 @@ function RequestedServices({
       .patch(`requestedService/cancel/${id}`)
       .then(({ data }) => {
         if (data.status) {
-          if (setUpdate) {
-            setUpdate((prev) => prev + 1);
-          }
+       
+          update(data.patient)
 
           setDialog((prev) => {
             return {
@@ -94,7 +101,6 @@ function RequestedServices({
               color: "success",
             };
           });
-          setActivePatient(data.patient);
         }
       })
       .catch(({ response: { data } }) => {
@@ -129,8 +135,7 @@ function RequestedServices({
       .delete(`requestedService/${id}`)
       .then(({ data }) => {
         if (data.status) {
-          setActivePatient(data.patient);
-          setUpdate((prev) => prev + 1);
+          update(data.patient)
           setDialog((prev) => {
             return {
               ...prev,
@@ -275,7 +280,8 @@ function RequestedServices({
                         ) : (
                           <TableCell sx={{ border: "none" }} align="right">
                             <MyCheckboxReception
-                              setUpdate={setUpdate}
+                          
+                              update={update}
                               disabled={service.is_paid == 0}
                               checked={service.bank == 1}
                               id={service.id}
@@ -297,9 +303,7 @@ function RequestedServices({
                         </TableCell>
                         <TableCell>
                           <RequestedServiceOptions
-                            setDialog={setDialog}
-                            setActivePatient={setActivePatient}
-                            setUpdate={setUpdate}
+                            update={update}
                             deleteService={deleteService}
                             actviePatient={actviePatient}
                             cancelPayHandler={cancelPayHandler}

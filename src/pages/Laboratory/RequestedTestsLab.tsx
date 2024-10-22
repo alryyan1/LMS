@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import DiscountSelect from "./DiscountSelect";
-import { useState } from "react";
+import { act, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { url } from "../constants";
 import { LoadingButton } from "@mui/lab";
@@ -24,49 +24,48 @@ import printJS from "print-js";
 import DiscountSelectLab from "./DiscountSelectLab";
 import MyCheckBoxLab from "./MyCheckboxLab";
 import { socket } from "../../socket";
-function RequestedTestsLab({ setPatients }) {
-  // console.log("requested tests rendered");
-  const {
-    setDialog,
-    setActivePatient,
-    actviePatient,
-    tests,
-    companies,
-    userSettings,
-  } = useOutletContext();
+import { LabLayoutPros } from "../../LabLayout";
+import { Company, DoctorVisit, MainTest } from "../../types/Patient";
+interface RequestedTestsLab {
+  setDialog: (dialog: any) => void;
+  actviePatient: DoctorVisit;
+  companies: Company[];
+  userSettings: any;
+  update : (patient: DoctorVisit) => void;
+}
+function RequestedTestsLab({
+  setDialog,
+  actviePatient,
+  companies,
+  userSettings,
+  update
+}: RequestedTestsLab) {
+  console.log(actviePatient,'activePatient')
   const { user } = useStateContext();
-  // console.log(actviePatient, "active patient in requested tests");
   const [loading, setLoading] = useState(false);
-  // console.log(actviePatient, "active patient", setActivePatient);
-  // console.log("patient tests rendered with tests", tests);
   const payHandler = () => {
-    // const totalPaid = actviePatient.labrequests.reduce((accum, test) => {
-    //   console.log(Number((test.discount_per * test.price) / 100));
-    //   const discount = Number((test.discount_per * test.price) / 100);
-    //   return accum + (test.price - discount);
-    // }, 0);
     const result = confirm(
-      `${t("paycheckMsg")} ${actviePatient?.total_lab_value_will_pay}`
+      `${t("paycheckMsg")} ${actviePatient?.patient.total_lab_value_will_pay}`
     );
     if (!result) {
       return;
     }
     setLoading(true);
     axiosClient
-      .patch(`lab/payment/${actviePatient.id}`, {
-        paid: actviePatient?.total_lab_value_will_pay,
+      .patch(`payment/${actviePatient.id}`, {
+        paid: actviePatient?.patient.total_lab_value_will_pay,
       })
       .then(({ data: data }) => {
         console.log(data, "patient paid data");
         if (data.status) {
-          setActivePatient(data.data);
-          socket.emit("labPayment", actviePatient.id);
+          update(data.data);
+          socket.emit("labPayment", actviePatient.patient.id);
 
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {
             const form = new URLSearchParams();
             axiosClient
-              .get(`printLab?pid=${actviePatient.id}&base64=1`)
+              .get(`printLab?pid=${actviePatient.patient.id}&base64=1`)
               .then(({ data }) => {
                 form.append("data", data);
                 form.append("node_direct", userSettings.node_direct);
@@ -92,15 +91,7 @@ function RequestedTestsLab({ setPatients }) {
           }
 
           setLoading(false);
-          setPatients((prevPatients) => {
-            return prevPatients.map((p) => {
-              if (p.id === actviePatient.id) {
-                return { ...data.data, active: true };
-              } else {
-                return p;
-              }
-            });
-          });
+    
           //show success dialog
           setDialog(() => ({
             message: "تمت عمليه السداد بنجاح",
@@ -118,33 +109,16 @@ function RequestedTestsLab({ setPatients }) {
   const cancelPayHandler = () => {
     setLoading(true);
     axiosClient
-      .patch(`cancelPaymentLab/${actviePatient.id}`)
+      .patch(`cancelPayment/${actviePatient.id}`)
       .then(({ data }) => {
         console.log(data, "data from cancel");
         if (data.status) {
           setLoading(false);
-          setPatients((prevPatients) => {
-            return prevPatients.map((p) => {
-              if (p.id === actviePatient.id) {
-                return {
-                  ...p,
-                  is_lab_paid: false,
-                  lab_paid: 0,
-                  active: true,
-                };
-              } else {
-                return p;
-              }
-            });
-          });
-          //show success dialog
           setDialog(() => ({
             message: "تمت الغاء السداد بنجاح",
             open: true,
           }));
-          setActivePatient((p) => {
-            return { ...p, is_lab_paid: false, lab_paid: 0 };
-          });
+          update(data.data)
         }
       })
       .catch(({ response: { data } }) => {
@@ -154,32 +128,10 @@ function RequestedTestsLab({ setPatients }) {
       })
       .finally(() => setLoading(false));
   };
-  // useEffect(() => {
-  //   axiosClient.get(`labRequest/${actviePatient.id}`)
-  //     .then(({data}) => {
-  //       console.log(data)
-  //       console.log(data, "lab requestes");
-  //       setTests(data.labrequests);
-  //       // setActivePatient(data)
-  //     }).catch((err)=>console.log(err));
-  // }, [actviePatient]);
-
-  const deleteTest = (id) => {
-    // console.log(id);
-    axiosClient.delete(`deleteLab/labRequest/${id}`).then(({ data }) => {
-      // console.log(data, "data");
-      if (data.status) {
-        setActivePatient(data.data);
-        setPatients((prev) => {
-          return prev.map((p) => {
-            if (p.id === actviePatient.id) {
-              return { ...data.data, active: true };
-            } else {
-              return p;
-            }
-          });
-        });
-      }
+  const deleteTest = (id:number,doctorVisit:DoctorVisit) => {
+    axiosClient.delete(`labRequest/${id}/${doctorVisit.id}`).then(({ data }) => {
+      console.log(data, "data deleted");
+        update(data.data)
     });
   };
   let total_endurance = 0;
@@ -193,22 +145,22 @@ function RequestedTestsLab({ setPatients }) {
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
                   <TableCell align="right">{t("price")}</TableCell>
-                  {actviePatient.company ? (
+                  {actviePatient.patient.company ? (
                     ""
                   ) : (
                     <TableCell align="right">{t("discount")}</TableCell>
                   )}
-                  {actviePatient.company ? (
+                  {actviePatient.patient.company ? (
                     ""
                   ) : (
                     <TableCell align="right">{t("bank")}</TableCell>
                   )}
-                  {actviePatient.company ? (
+                  {actviePatient.patient.company ? (
                     <TableCell align="right">{t("endurance")}</TableCell>
                   ) : (
                     ""
                   )}
-                  {actviePatient.company ? (
+                  {actviePatient.patient.company ? (
                     <TableCell align="right">{t("approval")}</TableCell>
                   ) : (
                     ""
@@ -219,15 +171,15 @@ function RequestedTestsLab({ setPatients }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {actviePatient.labrequests.map((test) => {
+                {actviePatient.patient.labrequests.map((test) => {
                   // console.log(test, "test");
                   let price;
-                  let company;
+                  let company: Company;
                   let endurance;
                   let founedTest;
-                  if (actviePatient.company_id != null) {
+                  if (actviePatient.patient.company_id != null) {
                     company = companies.find(
-                      (c) => c.id == actviePatient.company_id
+                      (c) => c.id == actviePatient.patient.company_id
                     );
                     // console.log("founded company", company);
                     founedTest = company.tests.find(
@@ -253,13 +205,12 @@ function RequestedTestsLab({ setPatients }) {
                       <TableCell sx={{ border: "none" }} align="right">
                         {price}
                       </TableCell>
-                      {actviePatient.company ? (
+                      {actviePatient.patient.company ? (
                         ""
                       ) : (
                         <TableCell sx={{ border: "none" }} align="right">
                           <DiscountSelectLab
-                            setActivePatient={setActivePatient}
-                            setPatients={setPatients}
+                            update={update}
                             setDialog={setDialog}
                             id={test.id}
                             disc={test.discount_per}
@@ -267,25 +218,25 @@ function RequestedTestsLab({ setPatients }) {
                           />
                         </TableCell>
                       )}
-                      {actviePatient.company ? (
+                      {actviePatient.patient.company ? (
                         ""
                       ) : (
                         <TableCell sx={{ border: "none" }} align="right">
                           <MyCheckBoxLab
-                            setActivePatient={setActivePatient}
-                            setPatients={setPatients}
+                          activePatient={actviePatient}
+                            update={update}
                             key={actviePatient.id}
                             isbankak={test.is_bankak == 1}
                             id={test.id}
                           ></MyCheckBoxLab>
                         </TableCell>
                       )}
-                      {actviePatient.company ? (
+                      {actviePatient.patient.company ? (
                         <TableCell align="right">{test.endurance}</TableCell>
                       ) : (
                         ""
                       )}
-                      {actviePatient.company ? (
+                      {actviePatient.patient.company ? (
                         <TableCell align="right">
                           {founedTest.pivot.approve ? (
                             <Button>الموافقه</Button>
@@ -301,9 +252,9 @@ function RequestedTestsLab({ setPatients }) {
                       </TableCell> */}
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
-                          disabled={actviePatient?.is_lab_paid == 1}
+                          disabled={actviePatient.patient?.is_lab_paid == 1}
                           aria-label="delete"
-                          onClick={() => deleteTest(test.id)}
+                          onClick={() => deleteTest(test.id,actviePatient)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -319,18 +270,22 @@ function RequestedTestsLab({ setPatients }) {
         <div style={{ marginTop: "10px" }} className="total-price">
           <div className="sub-price">
             <div className="title">Total</div>
-            <div>{actviePatient?.total_lab_value_unpaid}</div>
+            <div>{actviePatient.patient?.total_lab_value_unpaid}</div>
           </div>
           <div className="sub-price">
             <div className="title">Paid</div>
-            <div>{actviePatient.is_lab_paid ? actviePatient.paid : 0}</div>
+            <div>
+              {actviePatient.patient.is_lab_paid
+                ? actviePatient.patient.paid
+                : 0}
+            </div>
           </div>
         </div>
         <div className="requested-total">
           <div className="money-info">
-            {actviePatient.is_lab_paid ? (
+            {actviePatient.patient.is_lab_paid ? (
               <LoadingButton
-                // disabled={actviePatient.result_print_date}
+                // disabled={actviePatient.patient.result_print_date}
                 loading={loading}
                 color="error"
                 onClick={cancelPayHandler}
@@ -342,8 +297,10 @@ function RequestedTestsLab({ setPatients }) {
             ) : (
               <LoadingButton
                 loading={loading}
-                disabled={actviePatient.is_lab_paid == 1}
-                color={actviePatient.is_lab_paid ? "success" : "primary"}
+                disabled={actviePatient.patient.is_lab_paid == 1}
+                color={
+                  actviePatient.patient.is_lab_paid ? "success" : "primary"
+                }
                 onClick={payHandler}
                 sx={{ textAlign: "center", mb: 1 }}
                 variant="contained"

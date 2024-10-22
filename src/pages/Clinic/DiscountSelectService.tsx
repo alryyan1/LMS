@@ -1,8 +1,18 @@
 import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-const DiscountSelectService = ({ id, setActivePatient ,service,setDialog}) => {
+import { useOutletContext } from "react-router-dom";
+import { ReceptionLayoutProps } from "../../types/CutomTypes";
+import { DoctorVisit, RequestedService } from "../../types/Patient";
+interface DiscountSelectServicePops{
+  id: number;
+  update: (visit:DoctorVisit)=>void;
+
+  service:RequestedService
+}
+const DiscountSelectService = ({ id, update ,service}:DiscountSelectServicePops) => {
   const [discount, setDiscount] = useState(service.discount);
+   const {setDialog} =    useOutletContext<ReceptionLayoutProps>()
   console.log('discount select rendered ')
   
   const changeDiscountHandler = async (id, dis) => {
@@ -12,7 +22,7 @@ const DiscountSelectService = ({ id, setActivePatient ,service,setDialog}) => {
     console.log(data)
     if (data.status) {
       console.log(data.patient);
-      setActivePatient(data.patient);
+      update(data.patient);
     }
 
   

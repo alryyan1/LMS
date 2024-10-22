@@ -1,7 +1,15 @@
 import { Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-const ServiceCountSelect = ({ id ,setActivePatient,setUpdate,service,disabled}) => {
+import { DoctorVisit } from "../../types/Patient";
+interface ServiceCountSelectPros {
+  id: number;
+  service: { count: number };
+  disabled: boolean;
+  update : (dv:DoctorVisit)=>void;
+ 
+}
+const ServiceCountSelect = ({ id ,update,service,disabled}:ServiceCountSelectPros) => {
   const [count, setCount] = useState(service.count);
   console.log('servce in count select',service)
   
@@ -11,8 +19,7 @@ const ServiceCountSelect = ({ id ,setActivePatient,setUpdate,service,disabled}) 
     console.log(data)
     if (data.status) {
       console.log(data.patient);
-      setActivePatient(data.patient);
-      setUpdate((prev)=>prev+1)
+        update(data.patient)
     }
 
   

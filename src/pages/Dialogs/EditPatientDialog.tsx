@@ -20,13 +20,23 @@ import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import { t } from "i18next";
 import { Item } from "../constants";
+import { DoctorVisit } from "../../types/Patient";
 
+interface EditDialog {
+  openEdit: boolean;
+  setDialog: (open: boolean) => void;
+  patient: DoctorVisit;
+  doctorVisitId: number;
+  isLab?: boolean;
+  update:(paitent:DoctorVisit)=>void; 
+}
 function EditPatientDialog({
-  patient,
+  patient:{patient},
   doctorVisitId,
   isLab = false,
   setDialog,
-}) {
+  update,
+}:EditDialog) {
   const {
     doctors,
     setActivePatient,
@@ -41,9 +51,7 @@ function EditPatientDialog({
   const [loading, setLoading] = useState();
   function editDoctorHandler(formData) {
     setLoading(true);
-    const url = isLab
-      ? `patients/${patient.id}`
-      : `patients/edit/${doctorVisitId}`;
+    const url = `patients/edit/${doctorVisitId}`;
     console.log(formData, "formData");
     axiosClient
       .patch(url, {
@@ -55,28 +63,9 @@ function EditPatientDialog({
       .then(({ data }) => {
         console.log(data, "edited data");
         if (data.status) {
-          console.log(data);
-          if (!isLab) {
-            setUpdate((prev) => {
-              return prev + 1;
-            });
-          }
-
-          console.log(data.patient, "new patient");
-
           setOpenEdit(false);
-          if (isLab) {
-            setActivePatient(data.patient);
-          }
-          // setPatients((prev)=>{
-          //   return prev.map((p)=>{
-          //     if (p.id === data.patient.id) {
-          //       return {...data.patient ,active:true}
-          //     } else {
-          //       return p
-          //     }
-          //   })
-          // })
+        
+          update(data.data)
         }
       })
       .catch(({ response: { data } }) => {

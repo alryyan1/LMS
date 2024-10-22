@@ -1,8 +1,16 @@
 import { Delete, Lock, LockOpen } from "@mui/icons-material";
 import { Badge, Box, Grow, Icon, breadcrumbsClasses } from "@mui/material";
 import 'animate.css';
+import { DoctorVisit } from "../../types/Patient";
 
-function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
+interface PatientProps {
+  onClick: (patient: number) => void;
+  patient: DoctorVisit;
+  delay: number;
+  unfinshed_count: number;
+  actviePatient: DoctorVisit | null;
+}
+function Patient({ onClick, patient:{patient}, delay,unfinshed_count,actviePatient }:PatientProps) {
   let patientState= ''
   if (patient.result_print_date == null){
  
@@ -35,7 +43,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
         >
           <Box
           
-            style= { patient.result_print_date !=null &&   actviePatient?.id != patient.id ? {
+            style= { patient.result_print_date !=null &&   actviePatient?.patient.id != patient.id ? {
               
               backgroundColor :'#00b0ff' 
 
@@ -44,7 +52,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
             onClick={() => {
               onClick(patient.id);
             }}
-            sx={ patient.id == actviePatient?.id ? {
+            sx={ patient.id == actviePatient?.patient?.id ? {
               backgroundColor :(theme)=>theme.palette.warning.light
             }:null}
           >
@@ -56,7 +64,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
         </Badge>
       ) : (
         <Box
-        style= { patient.result_print_date !=null &&  actviePatient?.id != patient.id ? {
+        style= { patient.result_print_date !=null &&  actviePatient?.patient?.id != patient.id ? {
               
           backgroundColor :'#00b0ff' 
 
@@ -65,7 +73,7 @@ function Patient({ onClick, patient, delay,unfinshed_count,actviePatient }) {
           onClick={() => {
             onClick(patient.id);
           }}
-          sx={ patient.id == actviePatient?.id ? {
+          sx={ patient.id == actviePatient?.patient?.id ? {
             backgroundColor :(theme)=>theme.palette.warning.light
 
           }:null}        >

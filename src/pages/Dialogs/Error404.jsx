@@ -6,19 +6,24 @@ function Error404() {
   return (
     <div>
       {/* <Stack  spacing={2}> */}
-        <Stack spacing={2}  direction={"row"}>
-      <Button color="error"  variant="contained">mybutton</Button>
-      <Button size="large" color="inherit"  variant="contained">mybutton</Button>
-      <Button size="small" color="secondary"  variant="contained">mybutton</Button>
-      <Button color="info"  variant="contained">mybutton</Button>
-      <Button color="success"  variant="contained">mybutton</Button>
-      <Button color="warning"  variant="contained">mybutton</Button>
-
-        </Stack>
+       
 
       <h1>404 Not Found</h1>
       <h1>{error?.status}</h1>
       <h1>{error?.message}</h1>
+      <div>
+      <h1>Oops! Something went wrong.</h1>
+      <p>{error.statusText || "An unexpected error occurred."}</p>
+      {error.message && (
+        <p><strong>Error Details:</strong> {error.message}</p>
+      )}
+      {error.stack && (
+        <details>
+          <summary>Stack Trace</summary>
+          <pre>{error.stack}</pre>
+        </details>
+      )}
+    </div>
       <h1>{JSON.stringify(error)}</h1>
       <Link to={"/"}>Home</Link>
     </div>

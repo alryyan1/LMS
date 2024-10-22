@@ -1,29 +1,24 @@
 import { Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import axiosClient from "../../../axios-client";
-const DiscountSelectLab = ({ id, disc, actviePatient,setDialog ,setPatients,setActivePatient}) => {
+import { DoctorVisit } from "../../types/Patient";
+interface DiscountSelectLabProps {
+  id: number;
+  disc: number;
+  actviePatient: any;
+  setDialog: (prev: any) => void;
+  update:(doctorVisit:DoctorVisit)=>void;
+ 
+}
+const DiscountSelectLab = ({ id, disc, actviePatient,setDialog,update }:DiscountSelectLabProps) => {
   const [discount, setDiscount] = useState(disc);
   
   const changeDiscountHandler = async (id, dis) => {
     setDiscount(dis);
     try {
-      const {data} = await axiosClient.patch(`labRequest/${id}`,{ test_id: id, discount: dis });
+      const {data} = await axiosClient.patch(`labRequest/${id}/${actviePatient.id}`,{ test_id: id, discount: dis });
     console.log(data,'data from edit')
-        setActivePatient((prev)=>{
-          return {...prev,...data.patient}
-        })
-     
-     if (setPatients) {
-        setPatients((prevPatients) => {
-            return prevPatients.map((p) => {
-              if (p.id === actviePatient.id) {
-                return { ...data.patient, active: true };
-              } else {
-                return p;
-              }
-            });
-          });
-      }
+      update(data.data)
     } catch ({response:{data}}) {
       setDialog((prev)=>{
         return {...prev, open:true, message:data.message ,color:'error'}

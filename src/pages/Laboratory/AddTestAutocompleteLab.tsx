@@ -4,15 +4,25 @@ import { useEffect, useState } from "react";
 import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import { DoctorShift, DoctorVisit, MainTest } from "../../types/Patient";
 
-function AddTestAutocompleteLab({ patients, setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,setClinicPatient,setShift}) {
+interface AddTestAutocompleteLabProps {
+  patients: DoctorVisit[];
+  actviePatient: DoctorVisit;
+  setDialog: (dialog: { showMoneyDialog: boolean; title: string; color: string; open: boolean }) => void;
+  selectedTests: MainTest[];
+  setSelectedTests: (selectedTests: MainTest[]) => void;
+  setClinicPatient: (patient: DoctorVisit) => void;
+  setShift: (shift: DoctorShift) => void;
+  update : (dcVisit:DoctorVisit) => void;
+}
+function AddTestAutocompleteLab({ update,patients ,actviePatient,setDialog,selectedTests,setSelectedTests,setClinicPatient,setShift}:AddTestAutocompleteLabProps) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
-  console.log(setActivePatient,'setActviePatient component rendered successfully');
   const [loading, setLoading] = useState(false);
   // console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
 
-    if (actviePatient.is_lab_paid) {
+    if (actviePatient.patient.is_lab_paid) {
       alert('يجب الغاء السداد')
       return;
     }
@@ -20,19 +30,18 @@ function AddTestAutocompleteLab({ patients, setPatients ,actviePatient, setActiv
     try {
       const payload = selectedTests.map((test) => test.id);
       const { data: data } = await axiosClient.post(
-        `lab/add/${actviePatient.id}`,
+        `labRequest/add/${actviePatient.id}`,
         { main_test_id: payload }
       );
       if (data.status) {
         setLoading(false);
         const newActivePatient = data.patient;
         newActivePatient.active = true;
-        console.log(setActivePatient,'setActivePatient',data.patient,'data')
-        if (setActivePatient) {
+        if (update) {
           // alert('dddddd')
           console.log(data.patient,'new patient ');
 
-          setActivePatient(data.patient);
+          update(data.patient);
         }
         if (setClinicPatient) {
           setClinicPatient((prev)=>{
@@ -48,20 +57,7 @@ function AddTestAutocompleteLab({ patients, setPatients ,actviePatient, setActiv
             })}
           })
         }
-        //then update patients
-        if (setPatients) {
-          setPatients((patients) => {
-            return patients.map((patient) => {
-              if (patient.id === actviePatient.id) {
-                return newActivePatient;
-              } else {
-                return patient;
-              }
-            });
-          });
-        }
-        console.log(data.patient, "from db");
-        console.info(actviePatient, "active p");
+      
       }else{
         setLoading(false);
         setDialog((prev) => {

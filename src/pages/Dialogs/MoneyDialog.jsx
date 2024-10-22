@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import { formatNumber } from "../constants";
 
 function MoneyDialog() {
   const { dialog, setDialog } = useOutletContext();
@@ -29,17 +30,17 @@ function MoneyDialog() {
         <DialogContent>
           <Stack direction={'column'} sx={{m:1 ,backgroundColor:(theme)=>theme.palette.success.light,p:1,borderRadius:'5px',color:'white',fontSize:"2rem"}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>Total</Typography>
-            <Typography variant="h4" textAlign={'center'}>{labUserMoney?.total}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{formatNumber(labUserMoney?.total)}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>Bank</Typography>
-            <Typography variant="h4" textAlign={'center'}>{labUserMoney?.bank}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{formatNumber(labUserMoney?.bank)}</Typography>
           </Stack>
           <Divider></Divider>
           <Stack direction={'column'} sx={{m:1,fontSize:'2rem'}} gap={1}>
             <Typography variant="h4" textAlign={'center'}>Cash</Typography>
-            <Typography variant="h4" textAlign={'center'}>{  labUserMoney?.total - labUserMoney?.bank}</Typography>
+            <Typography variant="h4" textAlign={'center'}>{  formatNumber(labUserMoney?.total - labUserMoney?.bank)}</Typography>
           </Stack>
         </DialogContent>
         <DialogActions>

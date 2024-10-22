@@ -365,5 +365,6 @@ export interface Patient {
     updated_at: string
     relations: any[]
     sub_companies: any[]
+    
   }
   

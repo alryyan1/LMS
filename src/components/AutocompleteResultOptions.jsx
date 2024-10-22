@@ -151,8 +151,8 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
 
             setValue(val.target.value)
             axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
-                setActivePatient(data.patient)
-                if (data.status) {
+              if (data.status) {
+                  setActivePatient(data.patient)
                   setShift((prev)=>{
                     return {...prev, patients:prev.patients.map((p)=>{
                       if(p.id === data.patient.id){

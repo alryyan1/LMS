@@ -1,7 +1,7 @@
 import "../Laboratory/addPatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "../Laboratory/PatientDetail";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 import {
   Stack,
   styled,
@@ -11,7 +11,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import {  useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
 import axiosClient from "../../../axios-client";
 import AddDoctorDialog from "../Dialogs/AddDoctorDialog";
@@ -26,23 +26,16 @@ import PatientReception from "./PatientReception";
 import CustumSideBar from "../../components/CustumSideBar";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
-import { webUrl } from "../constants";
+import { Item, webUrl } from "../constants";
 import TestGroups from "../../../TestGroups";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
-import RequestedTests from "../Laboratory/RequestedTests";
 import { socket } from "../../socket";
 import { DoctorShift, DoctorVisit, Patient } from "../../types/Patient";
-import { OutletContextType } from "../../types/CutomTypes";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
+import RequestedTestsLab from "../Laboratory/RequestedTestsLab";
+import { ReceptionLayoutProps } from "../../types/CutomTypes";
 
 function Reception() {
+  
   const {
     actviePatient,
     setActivePatient,
@@ -57,19 +50,22 @@ function Reception() {
     openEdit,
     setOpenEdit,
     open,
-    update,
-    setUpdate,
+
     showPatientServices,
     setShowPatientServices,
     showServicePanel,
     setShowServicePanel,
-   companies,
-   showTestPanel, setShowTestPanel,
-   selectedTests, setSelectedTests,
-   showLabTests,setShowLabTests,
-   settings,dialog
-  } = useOutletContext<OutletContextType>();
-  
+    companies,
+    showTestPanel,
+    setShowTestPanel,
+    selectedTests,
+    setSelectedTests,
+    showLabTests,
+    setShowLabTests,
+    settings,
+    dialog,
+  } = useOutletContext<ReceptionLayoutProps>();
+
   const { user } = useStateContext();
   const [isConnected, setIsConnected] = useState(socket.connected);
   function onConnect() {
@@ -80,7 +76,7 @@ function Reception() {
     setIsConnected(false);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     socket.on("disconnect", onDisconnect);
     socket.on("connect", onConnect);
 
@@ -90,8 +86,8 @@ function Reception() {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onConnect);
-    }
-  })
+    };
+  });
 
   const [layOut, setLayout] = useState({
     form: "minmax(350px, 1fr)",
@@ -109,9 +105,11 @@ function Reception() {
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
-          axiosClient.get(`doctorvisit/find?pid=${actviePatient.patient.id}`).then(({data})=>{
-            change(data)
-           })
+          axiosClient
+            .get(`doctorvisit/find?pid=${actviePatient.patient.id}`)
+            .then(({ data }) => {
+              change(data);
+            });
           setDialog((prev) => {
             return {
               ...prev,
@@ -136,42 +134,37 @@ function Reception() {
   };
   // console.log(openDrawer, "open drawer");
 
-  
-  const change = (doctorVisit:DoctorVisit) =>{
-    setActivePatient(doctorVisit)
-    setActiveShift((prevShift:DoctorShift)=>{
+  const change = (doctorVisit: DoctorVisit) => {
+    setActivePatient(doctorVisit);
+    setActiveShift((prevShift: DoctorShift) => {
       return {
-       ...prevShift,
+        ...prevShift,
         visits: prevShift.visits.map((v) => {
           if (v.id === doctorVisit.id) {
-            console.log(doctorVisit,'doctor visit in side change')
+            console.log(doctorVisit, "doctor visit in side change");
             // alert('founded')
             return { ...doctorVisit };
           }
           return v;
         }),
       };
-     })
-    setOpenedDoctors((prev:DoctorShift[])=>{
-      return prev.map((shift)=>{
-        
+    });
+    setOpenedDoctors((prev: DoctorShift[]) => {
+      return prev.map((shift) => {
         return {
           ...shift,
           visits: shift.visits.map((v) => {
             if (v.id === doctorVisit.id) {
-              console.log(doctorVisit,'doctor visit in side change')
+              console.log(doctorVisit, "doctor visit in side change");
               // alert('founded')
               return { ...doctorVisit };
             }
             return v;
           }),
         };
-       })
-
-     
-
-    })
-  }
+      });
+    });
+  };
   const hideForm = () => {
     setLayout((prev) => {
       return {
@@ -195,7 +188,6 @@ function Reception() {
         ...prev,
         form: "minmax(350px, 1fr)",
         hideForm: false,
-       
       };
     });
   };
@@ -223,7 +215,7 @@ function Reception() {
   useEffect(() => {
     axiosClient.get("doctor/openShifts").then(({ data }) => {
       setOpenedDoctors(data);
-      console.log(data,'opened doctors');
+      console.log(data, "opened doctors");
       if (activeShift) {
         const findedActiveDoctorShift = data.find(
           (shift) => shift.id == activeShift.id
@@ -235,51 +227,111 @@ function Reception() {
       // setActiveShift()
       // console.log(data, "opened doctors");
     });
-  }, [update]);
+  }, []);
   // console.log(actviePatient, "active patient");
-  let count = (activeShift?.visits?.length ?? 0) + 1;
+  const update = (doctorVisit: DoctorVisit) => {
+    console.log(doctorVisit,'doctor visit in update function',doctorVisit.id)
+    setActivePatient(doctorVisit);
+    setActiveShift((prev) => {
+      if (prev.visits.map((v) => v.id ).find((v)=>v  == doctorVisit.id)) {
+          // alert('patient found')
+        //existing
+        //update patient
+        const ActiveDoctorShiftUpdated = {
+          ...prev,
+          visits: [
+            ...prev.visits.map((visit) => {
+              if (visit.id === doctorVisit.id) {
+                console.log(doctorVisit, "doctor visit in side change");
+                // alert('founded')
+                return { ...doctorVisit };
+              }
+              return visit;
+            }),
+          ],
+        };
+        //update openedDoctos
+        setOpenedDoctors((prev) => {
+          return prev.map((shift) => {
+            if (shift.id === ActiveDoctorShiftUpdated.id) {
+              console.log(doctorVisit, "doctor visit in side change");
+              // alert('founded')
+              return { ...ActiveDoctorShiftUpdated };
+            }
+            return shift;
+          });
+        });
+        //return the updated ActiveDoctorShiftUpdated
+        return ActiveDoctorShiftUpdated;
+      } else {
+        // alert('new patient')
+        console.log('new patient')
+        //new patietn added
+        const ActiveDoctorShiftUpdated = {
+          ...prev,
+          visits: [{ ...doctorVisit }, ...prev.visits],
+        };
+        // update opened doctors state
+        setOpenedDoctors((prev) => {
+          return prev.map((shift) => {
+            if (shift.id === ActiveDoctorShiftUpdated.id) {
+              console.log(doctorVisit, "doctor visit in side change");
+              // alert('founded')
+              return { ...ActiveDoctorShiftUpdated };
+            }
+            return shift;
+          });
+        });
+        //return the updated ActiveDoctorShiftUpdated
+        return ActiveDoctorShiftUpdated;
+      }
+    });
+  };
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
-        {openedDoctors.filter((shift)=>shift.user_id == user?.id).map((shift) => {
-          // console.log(shift, "shift");
-          return (
-            <Badge
-              color="secondary"
-              badgeContent={shift.visits.length}
-              key={shift.id}
-            >
-              <Item
-                className={
-                  activeShift && activeShift.id === shift.id ? "activeDoctor doctor" : "doctor"
-                }
-             
-                onClick={() => {
-                  // console.log('activeShift',doctor.id);
-
-                  setActiveShift(shift);
-                  setFoundedPatients([])
-                  setActivePatient(null);
-                  setShowPatientServices(false);
-                  setShowServicePanel(false);
-                  if (shift.visits.length == 0) {
-                    showFormHandler();
-                  } else {
-                    hideForm();
-                    setLayout((prev) => {
-                      return {
-                        ...prev,
-                        patients: "minmax(270px,3.2fr)",
-                      };
-                    });
-                  }
-                }}
+        {openedDoctors
+          .filter((shift) => shift.user_id == user?.id)
+          .map((shift) => {
+            // console.log(shift, "shift");
+            return (
+              <Badge
+                color="secondary"
+                badgeContent={shift.visits.length}
+                key={shift.id}
               >
-                {shift.doctor.name}
-              </Item>
-            </Badge>
-          );
-        })}
+                <Item
+                  className={
+                    activeShift && activeShift.id === shift.id
+                      ? "activeDoctor doctor"
+                      : "doctor"
+                  }
+                  onClick={() => {
+                    // console.log('activeShift',doctor.id);
+
+                    setActiveShift(shift);
+                    setFoundedPatients([]);
+                    setActivePatient(null);
+                    setShowPatientServices(false);
+                    setShowServicePanel(false);
+                    if (shift.visits.length == 0) {
+                      showFormHandler();
+                    } else {
+                      hideForm();
+                      setLayout((prev) => {
+                        return {
+                          ...prev,
+                          patients: "minmax(270px,3.2fr)",
+                        };
+                      });
+                    }
+                  }}
+                >
+                  {shift.doctor.name}
+                </Item>
+              </Badge>
+            );
+          })}
       </Stack>
       <AddDoctorDialog />
 
@@ -295,34 +347,37 @@ function Reception() {
       >
         <div>
           {!actviePatient && dialog.showHistory > 0 && (
-          
-              <div style={{position:'absolute',zIndex:3,width:'60vw',overflow:'auto'}}>
-
-                <SearchDialog   user={user}/>
-              </div>
-              
-         
+            <div
+              style={{
+                position: "absolute",
+                zIndex: 3,
+                width: "60vw",
+                overflow: "auto",
+              }}
+            >
+              <SearchDialog update={update} user={user} />
+            </div>
           )}
           {actviePatient && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <PatientDetail
-                user={user}
-                settings={settings}
-                openedDoctors={openedDoctors}
-                activeShift={activeShift}
+                  user={user}
+                  settings={settings}
+                  openedDoctors={openedDoctors}
+                  activeShift={activeShift}
                   key={actviePatient.id}
-                  patient={actviePatient.patient}
+                  patient={actviePatient}
                   copyPatient={true}
-                  setUpdate={setUpdate}
                 />
-                <Stack sx={{mt:1}} direction={"row"} gap={2}>
-                <a
-                      href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
-                    >
-                      Receipt
-                    </a>
-                  <Button size="small"
+                <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
+                  <a
+                    href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
+                  >
+                    Receipt
+                  </a>
+                  <Button
+                    size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
                       setOpenEdit(true);
@@ -332,13 +387,15 @@ function Reception() {
                     Edit
                   </Button>
                   <Button
-                  size="small"
+                    size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
                       const form = new URLSearchParams();
 
                       axiosClient
-                        .get(`printReception?doctor_visit=${actviePatient.id}&base64=1`)
+                        .get(
+                          `printReception?doctor_visit=${actviePatient.id}&base64=1`
+                        )
                         .then(({ data }) => {
                           form.append("data", data);
                           console.log(data, "daa");
@@ -371,48 +428,87 @@ function Reception() {
           )}
         </div>
 
-        <Paper  sx={{ p: 1 , backgroundColor: "#ffffffbb!important" }}>
+        <Paper sx={{ p: 1, backgroundColor: "#ffffffbb!important" }}>
           {actviePatient && showServicePanel && <ServiceGroup />}
-          {actviePatient &&   showTestPanel && <AddTestAutoComplete setShowTestPanel={setShowTestPanel} setShowLabTests={setShowLabTests} change={change}   actviePatient={actviePatient} selectedTests={selectedTests} setActivePatient={setActivePatient} setDialog={setDialog} setSelectedTests={setSelectedTests}  />}
-          {actviePatient && showLabTests &&  actviePatient.patient.labrequests.length > 0   && (
-            <RequestedTests change={change}  doctorVisit={actviePatient} setActivePatient={setActivePatient} activePatient={actviePatient} key={actviePatient.id}  />
+          {actviePatient && showTestPanel && (
+            <AddTestAutoComplete
+              setShowTestPanel={setShowTestPanel}
+              setShowLabTests={setShowLabTests}
+              change={change}
+              actviePatient={actviePatient}
+              selectedTests={selectedTests}
+              setActivePatient={setActivePatient}
+              setDialog={setDialog}
+              setSelectedTests={setSelectedTests}
+            />
           )}
-          {actviePatient && showTestPanel  && <TestGroups />}
+          {actviePatient &&
+            showLabTests &&
+            actviePatient.patient.labrequests.length > 0 && (
+              <RequestedTestsLab
+                change={change}
+                setActivePatient={setActivePatient}
+                activePatient={actviePatient}
+                key={actviePatient.id}
+              />
+            )}
+          {actviePatient && showTestPanel && <TestGroups />}
           {showPatientServices && actviePatient.services.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
-              
-                <div>
-                  
-                  <RequestedServices user={user} activeShift={activeShift} setShowServicePanel={setShowServicePanel} setUpdate={setUpdate} companies={companies} setActivePatient={setActivePatient} setDialog={setDialog} setShowPatientServices={setShowPatientServices} actviePatient={actviePatient} />
-                </div>
-             
+              <div>
+                <RequestedServices
+                  update={update}
+                  user={user}
+                  activeShift={activeShift}
+                  setShowServicePanel={setShowServicePanel}
+                  companies={companies}
+                  setActivePatient={setActivePatient}
+                  setDialog={setDialog}
+                  setShowPatientServices={setShowPatientServices}
+                  actviePatient={actviePatient}
+                />
+              </div>
             </Slide>
           )}
-         {actviePatient &&  <TextField sx={{mt:1}} defaultValue={actviePatient.patient.discount} onChange={(e)=>{
-            updateHandler(e,'discount')
-          }} label='Total Discount'></TextField>}
-         </Paper>
-        <Paper sx={{ backgroundColor: "#ffffffbb!important",overflow:'auto' ,height:'77vh'}}>
-          <div style={{ overflow: "auto" }}>
+          {actviePatient && (
+            <TextField
+              sx={{ mt: 1 }}
+              defaultValue={actviePatient.patient.discount}
+              onChange={(e) => {
+                updateHandler(e, "discount");
+              }}
+              label="Total Discount"
+            ></TextField>
+          )}
+        </Paper>
+        <Paper
+          sx={{
+            backgroundColor: "#ffffffbb!important",
+            overflow: "auto",
+            height: "77vh",
+          }}
+        >
+          <div style={{ overflow: "auto",padding:'5px' }}>
             <Stack
               flexDirection={"row"}
               flexWrap={"wrap"}
               gap={2}
-              justifyContent={'center'}
+              justifyContent={"center"}
               style={{ padding: "5px", display: "flex" }}
             >
               {activeShift &&
-                activeShift.visits.filter((dcVisit)=>dcVisit.only_lab == 0).map((visit) => {
-                  return (
-                    <PatientReception
-                    change={change}
-                     
-                      key={visit.id}
-                      hideForm={hideForm}
-                       patient={visit}
-                    ></PatientReception>
-                  );
-                })}
+                activeShift.visits
+                  .filter((dcVisit) => dcVisit.only_lab == 0)
+                  .map((visit) => {
+                    return (
+                      <PatientReception
+                        change={change}
+                        key={visit.id}
+                        hideForm={hideForm}
+                        patient={visit}
+                      ></PatientReception>
+                    );
+                  })}
             </Stack>
           </div>
         </Paper>
@@ -420,11 +516,16 @@ function Reception() {
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <ReceptionForm socket={socket} settings={settings} setUpdate={setUpdate} hideForm={hideForm} />
+            <ReceptionForm
+              socket={socket}
+              settings={settings}
+              hideForm={hideForm}
+              update={update}
+            />
           )}
         </div>
         <CustumSideBar
-        activePatient={actviePatient}
+          activePatient={actviePatient}
           setOpen={setOpen}
           showShiftMoney={showShiftMoney}
           showFormHandler={showFormHandler}
@@ -441,7 +542,8 @@ function Reception() {
             doctorVisitId={actviePatient.id}
             open={openEdit}
             setOpen={setOpenEdit}
-            patient={actviePatient.patient}
+            update={update}
+            patient={actviePatient}
             // setPatients={setPatients}
           />
         )}

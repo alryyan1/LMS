@@ -1,8 +1,7 @@
 import "./addPatient.css";
 import { useEffect, useState } from "react";
-import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import { webUrl } from "../constants";
+import { Item, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
@@ -19,8 +18,6 @@ import {
   Card,
   TextField,
 } from "@mui/material";
-import RequestedTests from "./RequestedTests";
-import AddTestAutoComplete from "./AddTestAutoComplete";
 import { Calculate, PersonAdd, Print, Search } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
@@ -37,13 +34,9 @@ import printJS from "print-js";
 import { useStateContext } from "../../appContext";
 import RequestedTestsLab from "./RequestedTestsLab";
 import AddTestAutocompleteLab from "./AddTestAutocompleteLab";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import { LabLayoutPros } from "../../LabLayout";
+import { DoctorVisit } from "../../types/Patient";
+import { socket } from "../../socket";
 
 function AddPatient() {
   const { user } = useStateContext();
@@ -56,8 +49,7 @@ function AddPatient() {
     searchByName,
     setFoundedPatients,
     foundedPatients,
-    update,
-    setUpdate,
+
     openEdit,
     setOpenEdit,
     dialog,
@@ -67,12 +59,25 @@ function AddPatient() {
     setSelectedTests,
     settings,
     userSettings,
-  } = useOutletContext();
-
-  // console.log(searchByName, "searchByname");
-  // const [patientsLoading, setPatientsLoading] = useState(false);
-  // console.log(actviePatient);
-  const [patients, setPatients] = useState([]);
+    companies,
+  } = useOutletContext<LabLayoutPros>();
+  const update = (doctorVisit: DoctorVisit) => {
+    setActivePatient(doctorVisit);
+    setPatients((prev) => {
+      if (prev.map((d) => d.id).find((d) => d == doctorVisit.id)) {
+        return prev.map((patient) => {
+          if (patient.id === doctorVisit.id) {
+            return { ...doctorVisit };
+          } else {
+            return patient;
+          }
+        });
+      } else {
+        return [  doctorVisit,...prev ];
+      }
+    });
+  };
+  const [patients, setPatients] = useState<DoctorVisit[]>([]);
   const [layOut, setLayout] = useState({
     form: "minmax(350px,1fr)",
     tests: "1fr",
@@ -142,23 +147,12 @@ function AddPatient() {
 
       setPatients(data.patients);
     });
-  }, [update]);
-  console.log(actviePatient, "active patient");
+  }, []);
   const setActivePatientHandler = (id) => {
     // console.log(id, "in active patient handler");
     hideForm();
 
-    setActivePatient({ ...id, active: true });
-    setPatients((prePatients) => {
-      return prePatients.map((patient) => {
-        if (patient.id === id.id) {
-          // console.log("patient founded");
-          return { ...patient, active: true };
-        } else {
-          return { ...patient, active: false };
-        }
-      });
-    });
+    update(id);
   };
 
   const hideForm = () => {
@@ -197,20 +191,24 @@ function AddPatient() {
   return (
     <>
       <Stack gap={1} direction={"row"} justifyContent={"space-between"}>
-        <Box flexGrow={"1"}>  {actviePatient && (
+        <Box flexGrow={"1"}>
+          {" "}
+          {actviePatient && (
             <AddTestAutocompleteLab
+              update={update}
               patients={patients}
               actviePatient={actviePatient}
               selectedTests={selectedTests}
-              setActivePatient={setActivePatient}
               setDialog={setDialog}
               setSelectedTests={setSelectedTests}
-              setPatients={setPatients}
             />
-          )}</Box>
+          )}
+        </Box>
         <Box>
           <AutocompleteSearchPatient
-            setActivePatientHandler={setActivePatientHandler}
+            update={update}
+            setDialog={setDialog}
+            
           />
         </Box>
       </Stack>
@@ -266,12 +264,7 @@ function AddPatient() {
           {layOut.hideForm || actviePatient ? (
             ""
           ) : (
-            <ReceptionForm
-              lab={true}
-              setUpdate={setUpdate}
-              hideForm={hideForm}
-              settings={settings}
-            />
+            <ReceptionForm update={update} lab={true} hideForm={hideForm} settings={settings} />
           )}
         </div>
         <Card
@@ -282,9 +275,7 @@ function AddPatient() {
             backgroundColor: "#ffffff73",
           }}
         >
-        
-
-          <div className="patients" >
+          <div className="patients">
             {patientsLoading ? (
               <Skeleton
                 animation="wave"
@@ -298,6 +289,7 @@ function AddPatient() {
                   delay={i * 100}
                   key={p.id}
                   patient={p}
+                  actviePatient={actviePatient}
                   onClick={setActivePatientHandler}
                 />
               ))
@@ -305,20 +297,25 @@ function AddPatient() {
           </div>
         </Card>
 
-        <Card style={{ backgroundColor: "#ffffff73" }} sx={{ p: 1,height:'80vh',overflow:'auto' }}>
-          {actviePatient && actviePatient.labrequests.length > 0 && (
+        <Card
+          style={{ backgroundColor: "#ffffff73" }}
+          sx={{ p: 1, height: "80vh", overflow: "auto" }}
+        >
+          {actviePatient && actviePatient.patient.labrequests.length > 0 && (
             <RequestedTestsLab
-              pid={actviePatient}
-              activePatient={actviePatient}
+              update={update}
+              setDialog={setDialog}
+              userSettings={userSettings}
+              companies={companies}
+              actviePatient={actviePatient}
               key={actviePatient.id}
-              setPatients={setPatients}
             />
           )}
-          {actviePatient?.labrequests.length == 0 && <TestGroups />}
+          {actviePatient?.patient.labrequests.length == 0 && <TestGroups />}
           {actviePatient && (
             <TextField
               sx={{ mt: 1 }}
-              defaultValue={actviePatient.discount}
+              defaultValue={actviePatient.patient.discount}
               onChange={(e) => {
                 updateHandler(e, "discount");
               }}
@@ -326,22 +323,20 @@ function AddPatient() {
             ></TextField>
           )}
         </Card>
-        <div >
-          <div style={{position: 'absolute',
-    right: '0',zIndex:'3'}}>
-   {!actviePatient && dialog.showHistory && (
-            <SearchDialog lab={true} />
-          )}
+        <div>
+          <div style={{ position: "absolute", right: "0", zIndex: "3" }}>
+            {!actviePatient && dialog.showHistory && (
+              <SearchDialog lab={true} />
+            )}
           </div>
-       
+
           {/** add card using material   */}
           {actviePatient && (
             <PatientDetail
               settings={settings}
-              setUpdate={setUpdate}
               key={actviePatient.id}
               patient={actviePatient}
-              setPatients={setPatients}
+              update={update}
             />
           )}
           {actviePatient && (
@@ -412,12 +407,14 @@ function AddPatient() {
         <ErrorDialog />
         {actviePatient && (
           <EditPatientDialog
+            update={update}
             key={actviePatient?.id}
             setDialog={setDialog}
             open={openEdit}
             isLab={true}
             setOpen={setOpenEdit}
             patient={actviePatient}
+            doctorVisitId={actviePatient.id}
             // setPatients={setPatients}
           />
         )}
