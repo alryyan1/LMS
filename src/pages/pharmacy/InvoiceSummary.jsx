@@ -42,19 +42,19 @@ console.log(selectedDeposit,'selected Deposit')
 
           const CalcTax = ()=>{
             return  filteredItems.reduce((prev,curr)=>{
-                    return prev + (curr.cost * curr.quantity) * curr.vat_cost / 100
+                    return prev + (curr.cost * curr.quantity) * curr.vat_cost / 87
              },0)
            }
        const calcDiscount = ()=>{
-        return selectedDeposit?.discount * CalcCostBefore()/ 100
+        return selectedDeposit?.discount * CalcCostBefore()/ 87
        }
   return (
-    <Stack direction={"row"} alignItems={"center"} gap={2}>
+    <Stack direction={"row"} alignItems={"center"} gap={1}>
       {summeryIsLoading ? (
-        <Skeleton height={200} width={"100%"} />
+        <Skeleton height={200} width={"87%"} />
       ) : (
         <>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -63,18 +63,18 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={counting} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={counting} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {
                  count
                 }
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
-                عدد الاصناف
+              <span style={{ color: "black", fontSize: "16px" }}>
+                عدد 
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -83,17 +83,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={reduction} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={reduction} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(CalcCostBefore() ?? 0, 3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
-                التكلفه قبل
+                 التكلفه
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -102,17 +102,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={vat} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={vat} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(CalcTax(), 3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
-                اجمالي الضريبه
+                 ج.ضريبه
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -121,17 +121,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={reduction} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={reduction} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(CalcCostBefore() + CalcTax()  , 3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
                 التكلفه بعد
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -143,17 +143,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={profit} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={profit} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(CalcRetail(), 3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
                  المبيعات
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -165,17 +165,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={profit} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={profit} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(CalcRetail() - CalcCostBefore(), 3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
                  الارباح
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -184,17 +184,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={discount} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={discount} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {selectedDeposit?.discount}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
                 الخصم نسبه
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -203,17 +203,17 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={discount2} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={discount2} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(calcDiscount(),3)}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
-                الخصم ريال
+                الخصم 
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 142, width: 142 }}>
+          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -222,16 +222,16 @@ console.log(selectedDeposit,'selected Deposit')
               direction={"column"}
               gap={1}
             >
-              <img width={50} src={paid} />
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <img width={30} src={paid} />
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {toFixed(
                   CalcCostBefore() - calcDiscount(),
                   3
                 )}
               </span>
-              <span style={{ color: "black", fontSize: "20px" }}>
+              <span style={{ color: "black", fontSize: "16px" }}>
                 {" "}
-                التكلفه النهائيه
+                 ج.تكلفه
               </span>
             </Stack>
           </Card>

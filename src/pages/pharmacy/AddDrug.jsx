@@ -116,7 +116,7 @@ function AddDrug() {
           />
         ) : (
           <TableContainer>
-            <Table dir="rtl" size="small">
+            <Table  size="small">
               <thead>
                 <TableRow>
                   <TableCell>No </TableCell>

@@ -23,6 +23,7 @@ import MyDateField2 from "../../components/MyDateField2.jsx";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import MyTableCell from "../inventory/MyTableCell.jsx";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
+import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell.jsx";
 
 function DrugItems() {
   const {
@@ -346,6 +347,7 @@ function DrugItems() {
                   <TableCell> Cost</TableCell>
                   <TableCell> Retail </TableCell>
                   <TableCell> Strips </TableCell>
+                  <TableCell> Unit </TableCell>
                   <TableCell style={{ width: "10%" }}> Expire </TableCell>
                   <TableCell> Barcode </TableCell>
                   <TableCell
@@ -435,7 +437,8 @@ function DrugItems() {
           >
             {drug.category?.name}
           </MyAutoCompeleteTableCell> */}
-                      {/* <MyAutoCompeleteTableCell
+          <TableCell>
+          <MyAutoCompeleteTableCell
             sections={pharmacyTypes}
             colName={"pharmacy_type_id"}
             val={drug.type}
@@ -443,7 +446,9 @@ function DrugItems() {
             table="items"
           >
             {drug.type?.name}
-          </MyAutoCompeleteTableCell> */}
+          </MyAutoCompeleteTableCell>
+          </TableCell>
+                     
                       {/* <TableCell>
             {drug?.lastDepositItem?.expire ?? drug.expire}
           </TableCell> */}
