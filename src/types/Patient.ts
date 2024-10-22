@@ -126,6 +126,8 @@ export interface Patient {
     main_test: MainTest
     unfinished_results_count: any[]
     requested_organisms: any[]
+    created_at : string;
+    updated_at : string;
   }
   
   

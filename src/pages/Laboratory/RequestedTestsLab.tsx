@@ -59,7 +59,7 @@ function RequestedTestsLab({
         console.log(data, "patient paid data");
         if (data.status) {
           update(data.data);
-          socket.emit("labPayment", actviePatient.patient.id);
+          socket.emit("labPayment", actviePatient);
 
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {

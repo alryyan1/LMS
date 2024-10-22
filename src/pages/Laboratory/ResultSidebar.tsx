@@ -121,32 +121,12 @@ function ResultSidebar({
                 console.log(data, "labrequest data");
                 setSelectedTest((prev) => {
                   console.log(prev, "previous selected test");
-                  return data.patient.labrequests.find(
+                  return data.data.patient.labrequests.find(
                     (labr) => labr.id == prev.id
                   );
                 });
-                setShift((prev) => {
-                  return {
-                    ...prev,
-                    patients: prev.patients.map((p) => {
-                      if (p.id === data.patient.id) {
-                        return { ...data.patient, active: true };
-                      }
-                      return p;
-                    }),
-                  };
-                });
-                setActivePatient(data.patient)?.map((prev) => {
-                  return prev.map((patient) => {
-                    if (patient.id === actviePatient.id) {
-                      return {
-                        ...data.patient,
-                        active: true,
-                      };
-                    }
-                    return patient;
-                  });
-                });
+               
+               update(data.data)
               })
               .finally(() => setLoading(false));
           }}
@@ -233,7 +213,7 @@ function ResultSidebar({
           variant="contained"
         >
           <FormatListBulleted
-            color={actviePatient.hasCbc ? "error" : "inherit"}
+            color={actviePatient.patient.hasCbc ? "error" : "inherit"}
           />
         </LoadingButton>
       )}

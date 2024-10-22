@@ -20,13 +20,14 @@ import dayjs from "dayjs";
 import ComponyAutocompleteHistory from "./ComponyAutocompleteHistory";
 import { MessageCircleDashed } from "lucide-react";
 import { OutletContextType } from "../../types/CutomTypes";
+import { Company } from "../../types/Patient";
 
 function SearchDialog({lab=false,user,update}) {
   const {foundedPatients, openedDoctors ,setDialog,doctors,companies,activeShift} =
     useOutletContext<OutletContextType>();
-  const [doctor, setSelectedDoctor] = useState(null);
+  const [doctor, setSelectedDoctor] = useState<Doctor|null>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState<Company|null>(null);
 
   const setDoctor = (d) => {
     setSelectedDoctor(d);
@@ -39,7 +40,7 @@ function SearchDialog({lab=false,user,update}) {
 
     setLoading(true);
   
-    const url =    lab ?`patients/add-patient-by-history-lab/${id}/${doctor.id}`  :`patients/add-patient-by-history/${doctor.id}/${id}`
+    const url =    `patients/add-patient-by-history/${doctor.id}/${id}?onlyLab=1`
 
     axiosClient
       .post(
@@ -48,7 +49,7 @@ function SearchDialog({lab=false,user,update}) {
         }
       )
       .then(({ data }) => {
-        console.log(data);
+        console.log(data,'data from history');
         update(data.patient)
       })
       .catch(({response:{data}}) => {

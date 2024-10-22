@@ -17,8 +17,6 @@ import OrganismPanel from "./OrganismPanel";
 import axiosClient from "../../../axios-client";
 interface ResultSectionProps {
   selectedTest: any;
-  setShift: (prev: any) => void;
-  setActivePatient: (prev: any) => void;
   setSelectedResult: (prev: any) => void;
   selectedReslult: any;
   disabled: boolean;
@@ -26,14 +24,12 @@ interface ResultSectionProps {
 }
 function ResultSection({
   selectedTest,
-  setShift,
-  setActivePatient,
   setSelectedResult,
   selectedReslult,
   disabled = false,
   is_doctor = false,
   update
-}) {
+}:ResultSectionProps) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -98,11 +94,10 @@ function ResultSection({
                         <TableCell sx={{ p: 0.5 }}>
                           {is_doctor ? <Typography textAlign={'center'}>{req.result}</Typography> :
                           <AutocompleteResultOptions 
+                           update={update}
                           disabled={disabled}
                           type={type}
                             index={i}
-                            setShift={setShift}
-                            setActivePatient={setActivePatient}
                             setSelectedResult={setSelectedResult}
                             result={req.result}
                             id={req.id}

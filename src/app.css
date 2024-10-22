@@ -17,7 +17,7 @@ body {
 
 }
 .test{
-  border-radius: 5px;
+  border-radius: 5px!important;
     text-align: center;
     font-weight: bold;
 }

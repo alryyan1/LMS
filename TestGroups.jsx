@@ -54,7 +54,7 @@ console.log(packageData,'packages in groups')
               variant="elevation"
               square
                 onClick={()=>handleTestAdd(p,t)}
-                className="testGroupItem"
+                className="testGroupItem test"
                 
                 // sx={{ p: 1, minWidth: "80px" ,cursor:'pointer' }}
                 style={  founded ? {

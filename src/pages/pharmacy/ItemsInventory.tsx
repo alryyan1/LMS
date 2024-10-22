@@ -1,7 +1,10 @@
 import {
+  Box,
   Button,
+    CircularProgress,
     Grid,
     Icon,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -14,13 +17,18 @@ import {
   import axiosClient from "../../../axios-client.js";
   import MyLoadingButton from "../../components/MyLoadingButton.jsx";
   import { ArrowBackIos, ArrowForwardIos, FileDownload, FileUpload } from "@mui/icons-material";
+import { DrugItem, Link, Paginate } from "../../types/pharmacy.js";
+import dayjs from "dayjs";
+import MyDateField2 from "../../components/MyDateField2.jsx";
+import { useOutletContext } from "react-router-dom";
   
   function ItemsInventory() {
-    const [items, setItems] = useState([]);
+    const [paginateObj, setPaginateObj] = useState<Paginate|null>(null);
     const [search, setSearch] = useState(null);
-    const [links, setLinks] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [links, setLinks] = useState<Link[]>([]);
     const [page, setPage] = useState(10);
-  
+    const {setDialog} = useOutletContext()
     const updateBalanceTable = (link, setLoading) => {
       console.log(search);
       setLoading(true);
@@ -34,9 +42,9 @@ import {
         .then((res) => {
           return res.json();
         })
-        .then(({ data, links }) => {
+        .then((data) => {
           console.log(data, links);
-          setItems(data);
+          setPaginateObj(data);
           setLinks(links);
         })
         .finally(() => {
@@ -47,32 +55,34 @@ import {
       document.title = 'المخزون' ;
     }, []);
     useEffect(() => {
+      setLoading(true)
       axiosClient
-        .post(`items/all/balance/paginate/${page}`, { word: "" })
-        .then(({ data: { data, links } }) => {
+        .post<Paginate>(`items/all/balance/paginate/${page}`, { word: "" })
+        .then(({ data }) => {
+          
           console.log(data, "items data");
-          console.log(links);
-          setItems(data);
+          setPaginateObj(data);
           ///    setItems(data)
           // console.log(links)
-          setLinks(links);
-        });
+          setLinks(data.links);
+        }).finally(()=>setLoading(false));
     }, []);
     const searchHandler = (word) => {
       setSearch(word);
     };
     useEffect(() => {
+      setLoading(true)
       const timer = setTimeout(() => {
         axiosClient
           .post(`items/all/balance/paginate/${page}`, { word: search })
-          .then(({ data: { data, links } }) => {
-            console.log(data);
-            console.log(links);
-            setItems(data);
+          .then(({ data}) => {
+            
+            console.log(data, "items data");
+            setPaginateObj(data);
             ///    setItems(data)
             // console.log(links)
-            setLinks(links);
-          });
+            setLinks(data.links);
+          }).finally(()=>setLoading(false));
       }, 300);
       return () => {
         clearTimeout(timer);
@@ -82,6 +92,7 @@ import {
       <>
         <select
           onChange={(val) => {
+            
             setPage(val.target.value);
           }}
         >
@@ -91,10 +102,11 @@ import {
           <option value="30">30</option>
           <option value="50">50</option>
           <option value="100">100</option>
+          <option value="500">500</option>
         </select>
         <TableContainer>
-          <Button sx={{mt:1}} variant="contained"  href={`${webUrl}balance`}>pdf</Button>
-          <div style={{ textAlign: "right", marginBottom: "5px" }}>
+          <Stack sx={{mb:1}} gap={2} direction={'row'}>
+          <Button  variant="contained"  href={`${webUrl}balance`}>pdf</Button>
             <TextField
               value={search}
               onChange={(e) => {
@@ -102,7 +114,9 @@ import {
               }}
               label="بحث"
             ></TextField>
-          </div>
+            <Box>{paginateObj?.total} عدد الاصناف</Box>
+              {loading && <CircularProgress></CircularProgress>}
+          </Stack>
   
           <Table dir="rtl" size="small">
             <thead>
@@ -114,21 +128,33 @@ import {
                 <TableCell>Out<Icon sx={{color:(theme)=>theme.palette.error.light}}> <FileUpload/></Icon> </TableCell>
                 <TableCell>in  <Icon sx={{color:(theme)=>theme.palette.success.light}}><FileDownload/></Icon></TableCell>
                 <TableCell>Balance </TableCell>
+                <TableCell>Barcode </TableCell>
               </TableRow>
             </thead>
   
             <TableBody>
-              {items.map((item) => {
+              {paginateObj?.data.map((item) => {
+                  const expire = item?.lastDepositItem?.expire ?? null;
+                  let is_expired = false;
+                  if (expire != null && !dayjs(expire).isAfter(dayjs())) {
+                    is_expired = true;
+                  }
                 const remaining = item.remaining + item.initial_balance;
                 return (
-                  <TableRow key={item.id}>
+                  <TableRow sx={{backgroundColor:(theme)=> is_expired ? theme.palette.warning.light : ''}} key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <TableCell  >{item.market_name}</TableCell>
                     <TableCell>{item.sc_name}</TableCell>
-                    <TableCell>{item.expire.trim()}</TableCell>
+                    <TableCell>
+                        <MyDateField2 setDialog={setDialog}
+                          val={item?.lastDepositItem?.expire }
+                          item={item?.lastDepositItem}
+                        />
+                      </TableCell>
                     <TableCell>{item.totaldeduct}</TableCell>
                     <TableCell>{item.totaldeposit}</TableCell>
                     <TableCell>{item.remaining }</TableCell>
+                    <TableCell>{item.barcode }</TableCell>
                   </TableRow>
                 );
               })}

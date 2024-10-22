@@ -62,6 +62,8 @@ function AddPatient() {
     companies,
   } = useOutletContext<LabLayoutPros>();
   const update = (doctorVisit: DoctorVisit) => {
+    // alert('added')
+    console.log(doctorVisit,'doctorVisit in update ')
     setActivePatient(doctorVisit);
     setPatients((prev) => {
       if (prev.map((d) => d.id).find((d) => d == doctorVisit.id)) {
@@ -326,7 +328,7 @@ function AddPatient() {
         <div>
           <div style={{ position: "absolute", right: "0", zIndex: "3" }}>
             {!actviePatient && dialog.showHistory && (
-              <SearchDialog lab={true} />
+              <SearchDialog update={update}  lab={true} />
             )}
           </div>
 

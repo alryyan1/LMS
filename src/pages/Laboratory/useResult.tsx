@@ -4,6 +4,7 @@ import { newImage, notifyMe } from "../constants";
 import { socket } from "../../socket";
 import { Shift } from "../../types/Shift";
 import { ResultProps } from "../../types/CutomTypes";
+import { DoctorVisit } from "../../types/Patient";
 
 export default function useResult():ResultProps {
   const audioRef = useRef();
@@ -52,12 +53,12 @@ export default function useResult():ResultProps {
   
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
-  const [shift, setShift] = useState(null);
+  const [shift, setShift] = useState<Shift|null>(null);
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedReslult, setSelectedResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [actviePatient, setActivePatient] = useState(null);
+  const [actviePatient, setActivePatient] = useState<DoctorVisit|null>(null);
   function onConnect() {
     setIsConnected(true);
     console.log("connected succfully");
@@ -66,7 +67,23 @@ export default function useResult():ResultProps {
   function onDisconnect() {
     setIsConnected(false);
   }
-
+  const update = (doctorVisit: DoctorVisit,setCurrent = true) => {
+    if (setCurrent) {
+        
+        setActivePatient(doctorVisit);
+    }
+    setShift((prev) => {
+      return {
+        ...prev,
+        patients: prev.patients.map((p) => {
+          if (p.id === doctorVisit.id) {
+            return { ...doctorVisit };
+          }
+          return p;
+        }),
+      };
+    });
+  };
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -128,38 +145,12 @@ export default function useResult():ResultProps {
     setSelectedTest(pat.patient.labrequests[0]);
   };
 
-  const patientsUpdateSocketHandler = (pid) => {
-    axiosClient.get(`findPatient/${pid}`).then(({ data }) => {
-      //patient is already exists and selected
-      console.log(data, "founded patient");
-      console.log(actviePatient, "active patient");
-      if (actviePatient?.id == data.id) {
-        console.log("patient is currently focus ");
-        setActivePatient(data);
-      }
-
-      //if patietn exist replace
-      setShift((prev) => {
-        if (prev.patients.map((p) => p.id).includes(pid)) {
-          return {
-            ...prev,
-            patients: prev.patients.map((p) => {
-              if (p.id === data.id) {
-                return { ...data };
-              }
-              return p;
-            }),
-          };
-
-          //else add patient
-        } else {
-          return {
-            ...prev,
-            patients: [...prev.patients, { ...data }],
-          };
-        }
-      });
-    });
+  const patientsUpdateSocketHandler = (doctorVisit) => {
+    
+      
+       console.log(doctorVisit,'doctorVisit from socket handler')
+       update(doctorVisit,false)
+    
   };
 
   return {
@@ -178,6 +169,6 @@ export default function useResult():ResultProps {
     setSelectedTest,
     actviePatient,
     selectedReslult,setActivePatient ,
-    setSelectedResult
+    setSelectedResult,update
   };
 }

@@ -28,6 +28,7 @@ import useResult from "./useResult";
 import { ResultProps } from "../../types/CutomTypes";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import { Shift } from "../../types/Shift";
+import { useOutletContext } from "react-router-dom";
 function Result() {
   const {
     shift,
@@ -47,22 +48,11 @@ function Result() {
     selectedReslult,
     setActivePatient,
     setSelectedResult,
+    update
   } = useResult();
+  const {setDialog} = useOutletContext()
   const shiftDate = new Date(Date.parse(shift?.created_at));
-  const update = (doctorVisit: DoctorVisit) => {
-    setActivePatient(doctorVisit);
-    setShift((prev) => {
-      return {
-        ...prev,
-        patients: prev.patients.map((p) => {
-          if (p.id === doctorVisit.id) {
-            return { ...doctorVisit };
-          }
-          return p;
-        }),
-      };
-    });
-  };
+  
   console.log(shift, "shift");
 
   return (
@@ -194,6 +184,7 @@ function Result() {
               {actviePatient.patient.labrequests.map((test) => {
                 return (
                   <ListItem
+                     
                     onClick={() => {
                       setSelectedTest(test);
                       setSelectedResult(null);
@@ -213,9 +204,9 @@ function Result() {
                       },
                     }}
                     secondaryAction={
-                      <MyCheckBoxLab id={test.id} hideTest={test.hidden} />
+                      <MyCheckBoxLab update={update} id={test.id} hideTest={test.hidden} />
                     }
-                    key={test.main_test.id}
+                    key={test.updated_at}
                   >
                     <ListItemText primary={test.main_test.main_test_name} />
                   </ListItem>
@@ -311,16 +302,11 @@ function Result() {
                     loading={loading}
                     onClick={() => {
                       //authentication event
-
-                      axiosClient(
-                        `resultFinished/${actviePatient.patient.id}`
-                      ).then(({ data }) => {
-                        socket.emit(
-                          "resultAuthenticated",
-                          actviePatient.patient.id
-                        );
+                      // setLoading(true);
+                      updateHandler(1, "result_auth", actviePatient,null,setDialog,update).then((data) => {
+                        console.log('after update', data);
+                        update(data)
                       });
-                      updateHandler(1, "result_auth", actviePatient);
                     }}
                     sx={{ mt: 1 }}
                     color="warning"
@@ -335,7 +321,7 @@ function Result() {
         </div>
         <ResultSidebar
         socket={socket}
-        
+
           //  key={actviePatient?.id}
           isConnected={isConnected}
           setShift={setShift}

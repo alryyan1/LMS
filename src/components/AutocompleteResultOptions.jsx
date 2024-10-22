@@ -19,7 +19,7 @@ function isNumeric(str) {
 }
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ setSelectedResult, child_test,id ,result,req,setActivePatient,setShift,index,setDialog,disabled=false}) {
+export default function AutocompleteResultOptions({ update, setSelectedResult, child_test,id ,result,req,index,setDialog,disabled=false}) {
     // console.log('inside table option result rebuilt with result',result)
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
@@ -152,15 +152,7 @@ export default function AutocompleteResultOptions({ setSelectedResult, child_tes
             setValue(val.target.value)
             axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
               if (data.status) {
-                  setActivePatient(data.patient)
-                  setShift((prev)=>{
-                    return {...prev, patients:prev.patients.map((p)=>{
-                      if(p.id === data.patient.id){
-                        return {...data.patient, active:true}
-                      }
-                      return p;
-                    }) };
-                  })
+                 update(data.data)
                   setDialog((prev)=>{
                     return {...prev, open: true, message:'تم الحفظ' };
                   })
