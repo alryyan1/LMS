@@ -31,8 +31,9 @@ function ItemDeposit() {
     setDepositItems,
     setDepositItemsSearch,
     depositItemsSearch,
-    depositItems,depositItemsLinks ,setDepositItemsLinks
-    
+    depositItems,
+    depositItemsLinks,
+    setDepositItemsLinks,
   } = useOutletContext<PharmacyLayoutPros>();
   const [incomeItems, setIncomeItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,10 +42,27 @@ function ItemDeposit() {
   const [update, setUpdate] = useState(0);
   const [data, setData] = useState();
   const [invoiceItems, setInvoiceItems] = useState([]);
-  const [layOut, setLayout] = useState({
+  const [depositItemId, setDepositItemId] = useState(null);
+  interface ItemsDepositLayoutProps {
+    newForm: string;
+    invoices: string;
+    depositItems: string;
+    showDepositItems: boolean;
+    showInvoices: boolean;
+    showNewForm: boolean;
+    showDopsitItemTable: boolean;
+    depositItemTable: string;
+    showAddtoDeposit: boolean;
+    addToDepositForm: string;
+    addToInventoryStyleObj: any;
+    incomeItemsStyleObj: any;
+  }
+  const [layOut, setLayout] = useState<ItemsDepositLayoutProps>({
     newForm: "0fr",
     invoices: "1fr",
-    depositItems:"0fr",
+    depositItems: "0fr",
+    showDepositItems: false,
+
     showInvoices: true,
     showNewForm: false,
     showDopsitItemTable: false,
@@ -54,28 +72,49 @@ function ItemDeposit() {
     addToInventoryStyleObj: {},
     incomeItemsStyleObj: {},
   });
+  const resetLayout = () => {
+    setLayout(() => {
+      return {
+        newForm: "0fr",
+        invoices: "0fr",
+        depositItems: "0fr",
+        showInvoices: false,
+        showNewForm: false,
+        showDopsitItemTable: false,
+        depositItemTable: "0fr",
+        showAddtoDeposit: false,
+        addToDepositForm: "0fr",
+      };
+    });
+  };
   const { id } = useParams();
-  useEffect(()=>{
-    if (depositItemsSearch !='') {
-        const timer = setTimeout(() => {
-      axiosClient.get(`depositItems/search?word=${depositItemsSearch}`).then(({data})=>{
-        console.log(data.links,'data links')
-        setDepositItemsLinks(data.links)
-        if (data.data.length > 0) {
-          setLayout((prev)=>{
-            return {...prev, invoices:'0fr',depositItems:'1fr',showInvoices:false}
-          })
-        }
-        setDepositItems(data.data)
-        
-      })
-    }, 300);
-    return ()=>{
-        clearTimeout(timer)
+  useEffect(() => {
+    if (depositItemsSearch != "") {
+      const timer = setTimeout(() => {
+        axiosClient
+          .get(`depositItems/search?word=${depositItemsSearch}`)
+          .then(({ data }) => {
+            console.log(data.links, "data links");
+            setDepositItemsLinks(data.links);
+            if (data.data.length > 0) {
+              setLayout((prev) => {
+                return {
+                  ...prev,
+                  showDepositItems:true,
+                  invoices: "0fr",
+                  depositItems: "1fr",
+                  showInvoices: false,
+                };
+              });
+            }
+            setDepositItems(data.data);
+          });
+      }, 300);
+      return () => {
+        clearTimeout(timer);
+      };
     }
-    }
-  
-  },[depositItemsSearch])
+  }, [depositItemsSearch]);
   useEffect(() => {
     if (id) {
       axiosClient.post(`defineItemToLastDeposit/${id}`).then(({ data }) => {
@@ -115,8 +154,8 @@ function ItemDeposit() {
       return {
         ...prev,
         showNewForm: true,
-        invoices:"0fr",
-        showInvoices:false,
+        invoices: "0fr",
+        showInvoices: false,
         newForm: "400px",
       };
     });
@@ -167,11 +206,14 @@ function ItemDeposit() {
     });
   };
   const showDepositsTable = () => {
+    resetLayout()
     setLayout((prev) => {
       return {
         ...prev,
         showInvoices: true,
-        depositsTable: "1fr",
+        invoices: "1fr",
+        showDepositItems:false,
+
       };
     });
   };
@@ -206,64 +248,16 @@ function ItemDeposit() {
           gap: "15px",
           transition: "0.3s all ease-in-out",
           display: "grid",
-          gridTemplateColumns: `50px  ${layOut.depositItemTable}  ${layOut.addToDepositForm}    ${layOut.invoices}     ${layOut.newForm}  ${layOut.depositItems}  `,
+          gridTemplateColumns: `  ${layOut.depositItemTable}  ${layOut.addToDepositForm}    ${layOut.invoices}     ${layOut.newForm}  ${layOut.depositItems} 80px `,
         }}
       >
-        <Stack direction={"column"} gap={2}>
-          <Item>
-            <IconButton
-              title="اظهار الفواتير"
-              onClick={() => {
-                showInvoices();
-              }}
-              variant="contained"
-            >
-              <FormatListBulleted />
-            </IconButton>
-          </Item>
-          <Item>
-            <IconButton
-              title="انشاء فاتوره"
-              onClick={() => {
-                hideDepositItemsTable();
-
-                hideAddToDeposit();
-                showNewFormHandler();
-             
-              }}
-              variant="contained"
-            >
-              <CreateOutlinedIcon />
-            </IconButton>
-          </Item>
-          <Item>
-            <IconButton
-              onClick={() => {
-                navigate("/pharmacy/sell");
-              }}
-              title="POS"
-            >
-              <ShoppingCart />
-            </IconButton>
-          </Item>
-          {/* <Item>
-            <IconButton
-             title="اضافه صنف الي فاتوره"
-              onClick={() => {
-                showAddToDeposit();
-                showDepositItemsTable()
-              }}
-              variant="contained"
-            >
-              <Download />
-            </IconButton>
-          </Item> */}
-        </Stack>
+       
 
         <div>
           {/* create table with all suppliers */}
           {layOut.showDopsitItemTable && (
             <DepoistItemsTable
+              depositItemId={depositItemId}
               invoiceItems={invoiceItems}
               setInvoiceItems={setInvoiceItems}
               setSelectedDeposit={setSelectedInvoice}
@@ -304,6 +298,7 @@ function ItemDeposit() {
                 {layOut.showInvoices && (
                   <>
                     <Invoices
+                    resetLayout={resetLayout}
                       hideDepositsTable={hideDepositsTable}
                       showDepositItemsTable={showDepositItemsTable}
                       setData={setData}
@@ -316,22 +311,68 @@ function ItemDeposit() {
         </div>
 
         <div>
-        {layOut.showNewForm && (
-          <NewInvoiceForm
-            showInvoices={showInvoices}
-            hideNewFormHandler={hideNewFormHandler}
-            setDialog={setDialog}
-            setUpdate={setUpdate}
-            suppliers={suppliers}
-          />
-        )}
+          {layOut.showNewForm && (
+            <NewInvoiceForm
+              showInvoices={showInvoices}
+              hideNewFormHandler={hideNewFormHandler}
+              setDialog={setDialog}
+              setUpdate={setUpdate}
+              suppliers={suppliers}
+            />
+          )}
         </div>
-       
 
         {depositLoading && <PurchaseInvoiceSummery deposit={depositLoading} />}
-        <div>
-         {depositItems.length > 0 && <DepositItems/>}
-        </div>
+        <div>{layOut.showDepositItems && depositItems.length > 0  && <DepositItems depositItemId={depositItemId} setDepositItemId={setDepositItemId} hideDepositsTable={hideDepositsTable} resetLayout={resetLayout} showDepositItemsTable={showDepositItemsTable}  setLayout={setLayout} />}</div>
+        <Stack direction={"column"} gap={2}>
+          <Item>
+            <IconButton
+              title="اظهار الفواتير"
+              onClick={() => {
+                showInvoices();
+              }}
+              variant="contained"
+            >
+              <FormatListBulleted />
+            </IconButton>
+          </Item>
+          <Item>
+            <IconButton
+              title="انشاء فاتوره"
+              onClick={() => {
+                hideDepositItemsTable();
+
+                hideAddToDeposit();
+                showNewFormHandler();
+              }}
+              variant="contained"
+            >
+              <CreateOutlinedIcon />
+            </IconButton>
+          </Item>
+          <Item>
+            <IconButton
+              onClick={() => {
+                navigate("/pharmacy/sell");
+              }}
+              title="POS"
+            >
+              <ShoppingCart />
+            </IconButton>
+          </Item>
+          {/* <Item>
+            <IconButton
+             title="اضافه صنف الي فاتوره"
+              onClick={() => {
+                showAddToDeposit();
+                showDepositItemsTable()
+              }}
+              variant="contained"
+            >
+              <Download />
+            </IconButton>
+          </Item> */}
+        </Stack>
       </div>
     </>
   );

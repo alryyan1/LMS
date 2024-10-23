@@ -254,7 +254,7 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Stack direction={"row"} alignContent={"center"}>
+              <Stack direction={"row"} alignContent={"right"}>
                 {/* <input ref={ref}></input> */}
                 <Autocomplete
                   value={activeSell.client}
@@ -329,11 +329,11 @@ function SellDrug() {
                     <TableRow>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      {/* <TableCell>Strips</TableCell> */}
+                      <TableCell>Strips</TableCell>
                       <TableCell>QYN</TableCell>
-                      {/* <TableCell>Subtotal</TableCell> */}
+                      <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
-                      {/* <TableCell>Expire</TableCell> */}
+                      <TableCell>Expire</TableCell>
                       <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
@@ -361,7 +361,7 @@ function SellDrug() {
                           ).toFixed(3)}
                         </TableCell>
 
-                        {/* {activeSell.complete ? (
+                        {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -375,7 +375,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )} */}
+                        )}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
@@ -391,13 +391,13 @@ function SellDrug() {
                             {toFixed(deductedItem.box, 3)}
                           </MyTableCell>
                         )}
-                        {/* <TableCell>
+                        <TableCell>
                           {toFixed(
                             (deductedItem.price / deductedItem.item?.strips) *
                               deductedItem.strips,
                             3
                           )}
-                        </TableCell> */}
+                        </TableCell>
                         <TableCell>
                           <LoadingButton
                             disabled={activeSell.complete}
@@ -417,12 +417,13 @@ function SellDrug() {
                           </LoadingButton>
                         </TableCell>
 
-                        {/* <TableCell>
+                         <TableCell>
                           <MyDateField2
+                          
                             val={deductedItem?.item.lastDepositItem?.expire}
                             item={deductedItem?.item.lastDepositItem}
                           />
-                        </TableCell> */}
+                        </TableCell> 
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
@@ -448,29 +449,29 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Typography textAlign={"center"}>
+              <Typography textAlign={"right"}>
                 Transaction No {activeSell?.id}
               </Typography>
-              {/* <Typography className="text-gray-500" textAlign={"center"}>
+              {/* <Typography className="text-gray-500" textAlign={"right"}>
                 Date{" "}
                 {dayjs(new Date(activeSell?.created_at)).format(
                   "YYYY/MM/DD H:m A"
                 )}
 
               </Typography> */}
-              <MyDateField2 path="deduct" colName="created_at" disabled={activeSell?.complete == 1}
+              <MyDateField2 label="تاريخ البيع" path="deduct" colName="created_at" disabled={true}
                           val={activeSell.created_at}
                           item={activeSell}
                         />
               <Divider />
-              {activeSell && <PayOptions key={activeSell.id} />}
+              {activeSell && <PayOptions update={update} key={activeSell.id} />}
               <Divider />
               <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell
-                      align="center"
-                      sx={{ textAlign: "center" }}
+                      align="right"
+                      sx={{ textAlign: "right" }}
                       colSpan={2}
                     >
                       Invoice
@@ -479,7 +480,7 @@ function SellDrug() {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                    <TableCell align="right" sx={{ textAlign: "right" }}>
                       Sub Total
                     </TableCell>
                     <TableCell>
@@ -488,7 +489,7 @@ function SellDrug() {
                   </TableRow>
 
                   <TableRow>
-                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                    <TableCell align="right" sx={{ textAlign: "right" }}>
                       Tax
                     </TableCell>
                     <TableCell>
@@ -497,11 +498,11 @@ function SellDrug() {
                   </TableRow>
 
                   <TableRow>
-                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                    <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
                       {" "}
                       TOTAL
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{fontSize:'27px'}}>
                       {Number(
                         activeSell?.total_price_unpaid +
                           activeSell?.calculateTax
@@ -509,7 +510,7 @@ function SellDrug() {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell align="center" sx={{ textAlign: "center" }}>
+                    <TableCell align="right" sx={{ textAlign: "right" }}>
                       Discount
                     </TableCell>
                     <MyTableCell
@@ -524,10 +525,10 @@ function SellDrug() {
                   </TableRow>
 
                   <TableRow>
-                    <TableCell align="center" sx={{ textAlign: "center" }}>
-                      Amount Paid
+                    <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
+                       Paid
                     </TableCell>
-                    <TableCell>{Number(activeSell?.paid).toFixed(3)}</TableCell>
+                    <TableCell sx={{fontSize:'27px'}}>{Number(activeSell?.paid).toFixed(3)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

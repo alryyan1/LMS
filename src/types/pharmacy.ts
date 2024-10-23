@@ -1,4 +1,5 @@
 import { User } from "./Patient";
+import { Shift } from "./Shift";
 
 export interface DrugItem {
     id: number;
@@ -102,6 +103,8 @@ export interface Deposit {
   showAll: number;
   supplier: Supplier;
   user: User;
+  items :DepositItem[];
+
 }
 
 
@@ -121,12 +124,40 @@ export interface PharmacyLayoutPros {
   setDepositItemsSearch:(search:string)=>void;
   depositItemsLinks : string[];
   setDepositItemsLinks: (data:string[])=>void;
+  showSummery: boolean;
+  shiftIsLoading: boolean;
+  itemsIsLoading: boolean;
+  activeSell: boolean;
+  suppliers: Supplier[];
+  itemsTobeAddedToChache: DrugItem[];
+  opendDrugDialog: boolean;
+  openClientDialog: boolean;
+  shift: Shift | null;
+  drugCategory: DrugCategory[];
+  pharmacyTypes: PharmacyType[];
+  items: DrugItem[];
+  deduct: number | null;
+  depositLoading: boolean;
+  invoices: Deposit[];
+  selectedInvoice: Deposit | null;
+  excelLoading: boolean;
+  links: string[];
+  updateSummery: number;
+  setSelectedInvoice:(data:Deposit)=>void;
 
 }
 
 
+interface DrugCategory {
+  id: number;
+  name: string;
+}
 
 
-
-
+interface PharmacyType {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
 

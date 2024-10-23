@@ -14,6 +14,7 @@ function MyDateField2({ val, item ,setDialog,disabled, label='تاريخ الا�
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateField
+      
       disabled={disabled}
       label={label}
       format='YYYY-MM-DD'

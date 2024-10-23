@@ -11,16 +11,17 @@ import MenuList from '@mui/material/MenuList';
 import { useOutletContext } from 'react-router-dom';
 import axiosClient from '../../axios-client';
 import { LoadingButton } from '@mui/lab';
+import { PharmacyLayoutPros } from '../types/pharmacy';
 
 const options = [{ id:1 ,name:'Cash'}
   ,{ id:2,name:'Transfer'}
   
   , {id:3,name:'Bank'}];
 
-export default function PayOptions() {
+export default function PayOptions({update}) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const {activeSell,setActiveSell,setShift} =useOutletContext()
+  const {activeSell} =useOutletContext<PharmacyLayoutPros>()
   const [payment, setPayment] = React.useState(activeSell.payment_type_id);
   const [loading , setLoading] = React.useState(false)
   // console.log(payment,'payment')
@@ -33,9 +34,8 @@ export default function PayOptions() {
     setLoading(true)
     setOpen(false);
     axiosClient.patch(`deduct/payment/${activeSell.id}`,{payment:paymentId}).then(({data})=>{
-        console.log(data,'data')
-        setActiveSell(data.data)
-        setShift(data.shift)
+        console.log(data,'data sss')
+      update(data.data)
     }).finally(()=>setLoading(false))
   };
 

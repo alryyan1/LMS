@@ -14,12 +14,13 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 import { webUrl } from "../constants";
-function Invoices({hideDepositsTable,showDepositItemsTable,setData}) {
+import { PharmacyLayoutPros } from "../../types/pharmacy";
+function Invoices({hideDepositsTable,showDepositItemsTable,setData,resetLayout}) {
     const [loading,setLoading] = useState(false)
-    const {invoices,setInvoices,selectedInvoice,setSelectedInvoice,setDialog,excelLoading} = useOutletContext()
+    const {invoices,setInvoices,selectedInvoice,setSelectedInvoice,setDialog,excelLoading} = useOutletContext<PharmacyLayoutPros>()
     console.log(excelLoading,'excelLoading excelLoading')
 
-  
+   
   return (
     <>
     <TableContainer >
@@ -68,15 +69,13 @@ function Invoices({hideDepositsTable,showDepositItemsTable,setData}) {
                             onClick={() => {
                               setLoading(true);
                             
-                               axiosClient(`getDepositWithItems/${deposit.id}`).then(({data})=>{
                                 hideDepositsTable();
+                                resetLayout()
                                 // showAddToDeposit();
                                 showDepositItemsTable();
-                                console.log(data)
-                                setSelectedInvoice(data)
+                                setSelectedInvoice(deposit)
   
-                                setData(data);
-                               }).finally(()=>setLoading(false))
+                            
                               // hideAddToDeposit();
                               // hideNewFormHandler();
                               
@@ -137,7 +136,6 @@ function Invoices({hideDepositsTable,showDepositItemsTable,setData}) {
                         </TableCell>
                         <MyTableCell table="inventory/deposit/update" sx={{width:'100px'}} setDialog={setDialog}  colName={'vat_sell'} item={deposit}>{deposit.vat_sell}</MyTableCell>
                         <MyTableCell table="inventory/deposit/update" sx={{width:'100px'}} setDialog={setDialog}  colName={'vat_cost'} item={deposit}>{deposit.vat_cost}</MyTableCell>
-
                         <MyTableCell
                           setDialog={setDialog}
                           show
