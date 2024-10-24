@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import axiosClient from "../axios-client";
 import { useOutletContext } from "react-router-dom";
+import {  toast } from "react-toastify";
 
 const ExcelReader = ({setItems}) => {
   const [data, setData] = useState([]);
@@ -30,12 +31,21 @@ const ExcelReader = ({setItems}) => {
       axiosClient.post(`uploadExcelToDeposit/${selectedInvoice.id}`,{
         jsonData
       }).then(({data})=>{
-          console.log(data,'data of upload')
-          setUpdateSummery((prev)=>prev+1)
-          setItems(data.data.data)
-          setLinks(data.data.links.map((link)=>{
-            return {...link,url:String(link.url).replace(`uploadExcelToDeposit`,'deposit/items/all/pagination')}
-          }))
+        console.log(data,'data of upload')
+           if (data.status) {
+            toast(`   ${data.message}`, {});
+            toast(`تمت العمليه بنجاح`, {});
+
+            setUpdateSummery((prev)=>prev+1)
+            setItems(data.data.data)
+            setLinks(data.data.links.map((link)=>{
+              return {...link,url:String(link.url).replace(`uploadExcelToDeposit`,'deposit/items/all/pagination')}
+            }))
+           }else{
+            toast(`   ${data.message}`, {});
+
+           }
+         
       }).finally(()=>setExeclLoading(false))
     };
 

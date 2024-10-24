@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Grid,
   Icon,
@@ -16,9 +18,9 @@ import { useEffect, useState } from "react";
 import { webUrl } from "../constants.js";
 import axiosClient from "../../../axios-client.js";
 import MyLoadingButton from "../../components/MyLoadingButton.jsx";
-import { ArrowBack, ArrowBackIos, ArrowForward, ArrowForwardIos, FileDownload, FileUpload } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, FileDownload, FileUpload } from "@mui/icons-material";
 import { DrugItem, Link, Paginate } from "../../types/pharmacy.js";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import MyDateField2 from "../../components/MyDateField2.jsx";
 import { useOutletContext } from "react-router-dom";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
@@ -34,6 +36,7 @@ function ItemsInventory() {
   const [page, setPage] = useState(10);
   const [filterByDate, setFilterByDate] = useState(false);
   const {setDialog} = useOutletContext()
+  
   const updateBalanceTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
@@ -44,7 +47,7 @@ function ItemsInventory() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: search ? JSON.stringify({ word: search,date:selectedDate }) : null,
+      body: search ? JSON.stringify({ word: search, date: selectedDate }) : null,
     })
       .then((res) => {
         return res.json();
@@ -58,68 +61,48 @@ function ItemsInventory() {
         setLoading(false);
       });
   };
-  console.log(filterByDate,'filterByDate')
   
-// const updateBalanceTable = (link, setLoading) => {
-//   console.log(search);
-//   setLoading(true);
-//   const filter = filterByDate ? `&date=${selectedDate}`:''
-//   axiosClient.post(`${link.url}&word=${search}${filter}`)
-//     .then(({ data }) => {
-//       console.log(data, "pagination data");
-//       setPaginateObj(data);
-//       setLinks(data.links);
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     })
-//     .finally(() => {
-//       setLoading(false);
-//     });
-// };
+  console.log(filterByDate, 'filterByDate');
   
   useEffect(() => {
     document.title = 'المخزون' ;
   }, []);
+  
   useEffect(() => {
     setLoading(true)
     axiosClient
       .post<Paginate>(`items/all/balance/paginate/${page}`, { word: "" })
       .then(({ data }) => {
-        
         console.log(data, "items data");
         setPaginateObj(data);
-        ///    setItems(data)
-        // console.log(links)
         setLinks(data.links);
-      }).finally(()=>setLoading(false));
+      }).finally(() => setLoading(false));
   }, []);
+  
   const searchHandler = (word) => {
     setSearch(word);
   };
+  
   useEffect(() => {
     setLoading(true)
     const timer = setTimeout(() => {
       axiosClient
         .post(`items/all/balance/paginate/${page}`, { word: search })
-        .then(({ data}) => {
-          
+        .then(({ data }) => {
           console.log(data, "items data");
           setPaginateObj(data);
-          ///    setItems(data)
-          // console.log(links)
           setLinks(data.links);
-        }).finally(()=>setLoading(false));
+        }).finally(() => setLoading(false));
     }, 300);
     return () => {
       clearTimeout(timer);
     };
   }, [search, page]);
+  
   return (
     <>
       <select
         onChange={(val) => {
-          
           setPage(val.target.value);
         }}
       >
@@ -132,8 +115,8 @@ function ItemsInventory() {
         <option value="500">500</option>
       </select>
       <TableContainer>
-        <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{mb:1}} gap={2} direction={'row'}>
-        <Button  variant="contained"  href={`${webUrl}balance`}>pdf</Button>
+        <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{ mb: 1 }} gap={2} direction={'row'}>
+          <Button variant="contained" href={`${webUrl}balance`}>pdf</Button>
           <TextField
             value={search}
             onChange={(e) => {
@@ -141,55 +124,50 @@ function ItemsInventory() {
             }}
             label="بحث"
           ></TextField>
-          <Box>{paginateObj?.total} عدد اللهفاصناف</Box>
-            {loading && <CircularProgress></CircularProgress>}
-            <Stack direction={"row"} justifyContent={"space-between"}>
-            <Box >
+          <Card sx={{ minWidth: 275, boxShadow: 3 }}>
+            <CardContent>
+              <img src="https://via.placeholder.com/50" alt="Quantity" style={{ marginRight: 8 }} />
+              <Box>{paginateObj?.total} عدد الاصناف</Box>
+            </CardContent>
+          </Card>
+          {loading && <CircularProgress></CircularProgress>}
+          <Stack direction={"row"} justifyContent={"space-between"}>
+            <Box>
               <LoadingButton
-              onClick={()=>{
-                setLoading(true);
-                const date = selectedDate.format('YYYY-MM-DD')
-                setFilterByDate(true)
-
-                axiosClient.post(`items/all/balance/paginate/${page}?filter=expire&date=${selectedDate}`).then(({data})=>{
-                  console.log(data, "items data");
-                  setPaginateObj(data);
-                  ///    setItems(data)
-                  // console.log(links)
-                  setLinks(data.links);
-                }).finally(()=>{
-                  setLoading(false);
-                });
-              }}
-              loading={loading}
-              sx={{ mt: 2 }}
-              size="medium"
-              variant="contained"
-            >
-              بحث
-            </LoadingButton>
-         
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateField
-               format="YYYY-MM-DD"
-              variant="standard"
-                onChange={(val) => {
-
-                  setSelectedDate(val)
+                onClick={() => {
+                  setLoading(true);
+                  const date = selectedDate.format('YYYY-MM-DD');
+                  setFilterByDate(true);
+                  axiosClient.post(`items/all/balance/paginate/${page}?filter=expire&date=${selectedDate}`).then(({ data }) => {
+                    console.log(data, "items data");
+                    setPaginateObj(data);
+                    setLinks(data.links);
+                  }).finally(() => {
+                    setLoading(false);
+                  });
                 }}
-                defaultValue={dayjs(new Date())}
-                sx={{ m: 1 }}
-                label="فلتر تاريخ الصلاحيه"
-              />
-            </LocalizationProvider>
-            
-          </Box>
-      
-
-         
+                loading={loading}
+                sx={{ mt: 2 }}
+                size="medium"
+                variant="contained"
+              >
+                بحث
+              </LoadingButton>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateField
+                  format="YYYY-MM-DD"
+                  variant="standard"
+                  onChange={(val) => {
+                    setSelectedDate(val);
+                  }}
+                  defaultValue={dayjs(new Date())}
+                  sx={{ m: 1 }}
+                  label="فلتر تاريخ الصلاحيه"
+                />
+              </LocalizationProvider>
+            </Box>
+          </Stack>
         </Stack>
-        </Stack>
-
         <Table dir="rtl" size="small">
           <thead>
             <TableRow>
@@ -197,86 +175,85 @@ function ItemsInventory() {
               <TableCell>Market Name</TableCell>
               <TableCell>Scientific Name</TableCell>
               <TableCell>Expire</TableCell>
-              <TableCell>Out<Icon sx={{color:(theme)=>theme.palette.error.light}}> <FileUpload/></Icon> </TableCell>
-              <TableCell>in  <Icon sx={{color:(theme)=>theme.palette.success.light}}><FileDownload/></Icon></TableCell>
+              <TableCell>Out<Icon sx={{ color: (theme) => theme.palette.error.light }}> <FileUpload /></Icon> </TableCell>
+              <TableCell>in  <Icon sx={{ color: (theme) => theme.palette.success.light }}><FileDownload /></Icon></TableCell>
               <TableCell>Balance </TableCell>
               <TableCell>Barcode </TableCell>
             </TableRow>
           </thead>
-
           <TableBody>
             {paginateObj?.data.map((item) => {
-                const expire = item?.lastDepositItem?.expire ?? null;
-                let is_expired = false;
-                if (expire != null && !dayjs(expire).isAfter(dayjs())) {
-                  is_expired = true;
-                }
+              const expire = item?.lastDepositItem?.expire ?? null;
+              let is_expired = false;
+              if (expire != null && !dayjs(expire).isAfter(dayjs())) {
+                is_expired = true;
+              }
               const remaining = item.remaining + item.initial_balance;
               return (
-                <TableRow sx={{backgroundColor:(theme)=> is_expired ? theme.palette.warning.light : ''}} key={item.id}>
+                <TableRow sx={{ backgroundColor: (theme) => is_expired ? theme.palette.warning.light : '' }} key={item.id}>
                   <TableCell>{item.id}</TableCell>
-                  <TableCell  >{item.market_name}</TableCell>
+                  <TableCell>{item.market_name}</TableCell>
                   <TableCell>{item.sc_name}</TableCell>
                   <TableCell>
-                      <MyDateField2 setDialog={setDialog}
-                        val={item?.lastDepositItem?.expire }
-                        item={item?.lastDepositItem}
-                      />
-                    </TableCell>
+                    <MyDateField2 setDialog={setDialog}
+                      val={item?.lastDepositItem?.expire}
+                      item={item?.lastDepositItem}
+                    />
+                  </TableCell>
                   <TableCell>{item.totaldeduct}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
-                  <TableCell>{item.remaining }</TableCell>
-                  <TableCell>{item.barcode }</TableCell>
+                  <TableCell>{item.remaining}</TableCell>
+                  <TableCell>{item.barcode}</TableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
         <Grid key={paginateObj?.current_page} sx={{ gap: "4px", mt: 1 }} container>
-        {links.map((link, i) => {
-          if (i == 0) {
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  onClick={(setLoading) => {
-                    updateBalanceTable(link, setLoading);
-                  }}
-                  variant="contained"
-                  key={i}
-                >
-                  <ArrowBack />
-                </MyLoadingButton>
-              </Grid>
-            );
-          } else if (links.length - 1 == i) {
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  onClick={(setLoading) => {
-                    updateBalanceTable(link, setLoading);
-                  }}
-                  variant="contained"
-                  key={i}
-                >
-                  <ArrowForward />
-                </MyLoadingButton>
-              </Grid>
-            );
-          } else
-            return (
-              <Grid item xs={1} key={i}>
-                <MyLoadingButton
-                  active={link.active}
-                  onClick={(setLoading) => {
-                    updateBalanceTable(link, setLoading);
-                  }}
-                >
-                  {link.label}
-                </MyLoadingButton>
-              </Grid>
-            );
-        })}
-      </Grid>
+          {links.map((link, i) => {
+            if (i === 0) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateBalanceTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowBack />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else if (links.length - 1 === i) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      updateBalanceTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    key={i}
+                  >
+                    <ArrowForward />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    active={link.active}
+                    onClick={(setLoading) => {
+                      updateBalanceTable(link, setLoading);
+                    }}
+                  >
+                    {link.label}
+                  </MyLoadingButton>
+                </Grid>
+              );
+          })}
+        </Grid>
       </TableContainer>
     </>
   );
