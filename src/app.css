@@ -16,6 +16,11 @@ body {
     unicode-range: U+00-FF, U+980-9FF;
 
 }
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
 .test{
   border-radius: 5px!important;
     text-align: center;

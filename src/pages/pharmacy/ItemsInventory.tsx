@@ -35,13 +35,13 @@ function ItemsInventory() {
   const [links, setLinks] = useState<Link[]>([]);
   const [page, setPage] = useState(10);
   const [filterByDate, setFilterByDate] = useState(false);
-  const {setDialog} = useOutletContext()
-  
+  const [filterTouched, setFilterTouched] = useState(false);
+  const [filterQuery, setFilterQuery] = useState('');
+  const {setDialog} = useOutletContext();
   const updateBalanceTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
     const filter = filterByDate ? `&filter=expire&date=${selectedDate}`:''
-
     fetch(`${link.url}${filter}`, {
       method: "POST",
       headers: {
@@ -84,6 +84,9 @@ function ItemsInventory() {
   };
   
   useEffect(() => {
+
+
+
     setLoading(true)
     const timer = setTimeout(() => {
       axiosClient
@@ -98,7 +101,7 @@ function ItemsInventory() {
       clearTimeout(timer);
     };
   }, [search, page]);
-  
+ 
   return (
     <>
       <select
@@ -116,7 +119,7 @@ function ItemsInventory() {
       </select>
       <TableContainer>
         <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{ mb: 1 }} gap={2} direction={'row'}>
-          <Button variant="contained" href={`${webUrl}balance`}>pdf</Button>
+          <Button  variant="contained" href={`${webUrl}balance${filterQuery}`}>pdf</Button>
           <TextField
             value={search}
             onChange={(e) => {
@@ -136,6 +139,9 @@ function ItemsInventory() {
               <LoadingButton
                 onClick={() => {
                   setLoading(true);
+                  setFilterTouched(true)
+                  setFilterQuery( `?date=${selectedDate.format('YYYY-MM-DD')}`)
+
                   const date = selectedDate.format('YYYY-MM-DD');
                   setFilterByDate(true);
                   axiosClient.post(`items/all/balance/paginate/${page}?filter=expire&date=${selectedDate}`).then(({ data }) => {

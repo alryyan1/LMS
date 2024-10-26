@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Item, toFixed, webUrl } from "../constants";
+import { formatNumber, Item, toFixed, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import { useSymbologyScanner } from "@use-symbology-scanner/react";
 
@@ -166,6 +166,35 @@ function SellDrug() {
     });
   };
 
+  const printHandler = ()=>{
+    
+      const form = new URLSearchParams();
+      axiosClient
+        .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
+        .then(({ data }) => {
+          form.append("data", data);
+          form.append("node_direct", userSettings.node_direct);
+          // console.log(data, "daa");
+          if (userSettings?.web_dialog) {
+            printJS({
+              printable: data.slice(data.indexOf("JVB")),
+              base64: true,
+              type: "pdf",
+            });
+          }
+          if (userSettings?.node_dialog) {
+            fetch("http://127.0.0.1:4000/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+
+              body: form,
+            }).then(() => {});
+          }
+        });
+    
+  }
   return (
     <>
       <div>
@@ -327,9 +356,10 @@ function SellDrug() {
                 >
                   <thead>
                     <TableRow>
+                      <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
+                      {/* <TableCell>Strips</TableCell> */}
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
@@ -338,7 +368,7 @@ function SellDrug() {
                     </TableRow>
                   </thead>
                   <TableBody>
-                    {activeSell?.deducted_items?.map((deductedItem) => (
+                    {activeSell?.deducted_items?.map((deductedItem,index) => (
                       <TableRow
                         sx={{
                           background: (theme) => {
@@ -350,18 +380,19 @@ function SellDrug() {
                           },
                           fontWeight: "500",
                         }}
-                        key={deductedItem.updated_at}
+                        key={deductedItem.id}
                       >
+                        <TableCell>{index+1}</TableCell>
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
 
                         <TableCell>
                           {" "}
-                          {Number(
+                          {formatNumber(Number(
                             deductedItem?.price
-                          ).toFixed(3)}
+                          ).toFixed(1))}
                         </TableCell>
 
-                        {activeSell.complete ? (
+                        {/* {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -375,11 +406,12 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )}
+                        )} */}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
                           <MyTableCell
+                           show
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}
@@ -392,11 +424,11 @@ function SellDrug() {
                           </MyTableCell>
                         )}
                         <TableCell>
-                          {toFixed(
+                          {formatNumber(toFixed(
                             (deductedItem.price / deductedItem.item?.strips) *
                               deductedItem.strips,
                             3
-                          )}
+                          ))}
                         </TableCell>
                         <TableCell>
                           <LoadingButton
@@ -484,7 +516,7 @@ function SellDrug() {
                       Sub Total
                     </TableCell>
                     <TableCell>
-                      {Number(activeSell?.total_price_unpaid).toFixed(3)}
+                      {Number(activeSell?.total_price_unpaid).toFixed(1)}
                     </TableCell>
                   </TableRow>
 
@@ -493,7 +525,7 @@ function SellDrug() {
                       Tax
                     </TableCell>
                     <TableCell>
-                      {Number(activeSell?.calculateTax).toFixed(3)}
+                      {Number(activeSell?.calculateTax).toFixed(1)}
                     </TableCell>
                   </TableRow>
 
@@ -506,7 +538,7 @@ function SellDrug() {
                       {Number(
                         activeSell?.total_price_unpaid +
                           activeSell?.calculateTax
-                      ).toFixed(3)}
+                      ).toFixed(1)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -520,7 +552,7 @@ function SellDrug() {
                       item={activeSell}
                       disabled={activeSell.complete == 1}
                     >
-                      {Number(activeSell?.discount).toFixed(3)}
+                      {Number(activeSell?.discount).toFixed(1)}
                     </MyTableCell>
                   </TableRow>
 
@@ -528,7 +560,7 @@ function SellDrug() {
                     <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
                        Paid
                     </TableCell>
-                    <TableCell sx={{fontSize:'27px'}}>{Number(activeSell?.paid).toFixed(3)}</TableCell>
+                    <TableCell sx={{fontSize:'27px'}}>{Number(activeSell?.paid).toFixed(1)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -576,12 +608,14 @@ function SellDrug() {
                     fullWidth
                     loading={loading}
                     onClick={() => {
+                   //   printHandler()
                       setLoading(true);
                       axiosClient
                         .get(
                           `inventory/deduct/complete/${activeSell.id}?is_sell=1`
                         )
                         .then(({ data }) => {
+                          printHandler()
                           try {
                             setDialog((prev) => {
                               return {
@@ -679,33 +713,9 @@ function SellDrug() {
             <Divider />
             {activeSell?.complete == 1 && (
               <IconButton
-                onClick={() => {
-                  const form = new URLSearchParams();
-                  axiosClient
-                    .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
-                    .then(({ data }) => {
-                      form.append("data", data);
-                      form.append("node_direct", userSettings.node_direct);
-                      // console.log(data, "daa");
-                      if (userSettings?.web_dialog) {
-                        printJS({
-                          printable: data.slice(data.indexOf("JVB")),
-                          base64: true,
-                          type: "pdf",
-                        });
-                      }
-                      if (userSettings?.node_dialog) {
-                        fetch("http://127.0.0.1:4000/", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                          },
-
-                          body: form,
-                        }).then(() => {});
-                      }
-                    });
-                }}
+                onClick={
+                  printHandler
+                }
               >
                 <Print />
               </IconButton>
