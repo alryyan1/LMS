@@ -359,7 +359,7 @@ function SellDrug() {
                       <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      {/* <TableCell>Strips</TableCell> */}
+                      <TableCell>Strips</TableCell>
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
@@ -384,15 +384,24 @@ function SellDrug() {
                       >
                         <TableCell>{index+1}</TableCell>
                         <TableCell>{deductedItem.item?.market_name}</TableCell>
+                        {activeSell.complete ? (
+                          <TableCell>{toFixed(deductedItem.price, 3)}</TableCell>
+                        ) : (
+                          <MyTableCell
+                           
+                            setData={setActiveSell}
+                            update={update}
+                            sx={{ width: "70px" }}
+                            type={"number"}
+                            item={deductedItem}
+                            table="deductedItem"
+                            colName={"price"}
+                          >
+                            {toFixed(deductedItem.price, 3)}
+                          </MyTableCell>
+                        )}
 
-                        <TableCell>
-                          {" "}
-                          {formatNumber(Number(
-                            deductedItem?.price
-                          ).toFixed(1))}
-                        </TableCell>
-
-                        {/* {activeSell.complete ? (
+                        {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -406,7 +415,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )} */}
+                        )}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
