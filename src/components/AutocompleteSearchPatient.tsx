@@ -49,6 +49,7 @@ export default function AutocompleteSearchPatient({ update,setDialog}:Autocomple
             return
         }
         if (newVal) {
+          console.log(newVal)
             update(newVal)
         }
       }}

@@ -3,7 +3,10 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
+  FormGroup,
   Grid,
   Icon,
   Stack,
@@ -36,18 +39,20 @@ function ItemsInventory() {
   const [page, setPage] = useState(10);
   const [filterByDate, setFilterByDate] = useState(false);
   const [filterTouched, setFilterTouched] = useState(false);
+  const [filterBySoldQuery, setFilterBySoldQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
   const {setDialog} = useOutletContext();
   const updateBalanceTable = (link, setLoading) => {
     console.log(search);
     setLoading(true);
-    const filter = filterByDate ? `&filter=expire&date=${selectedDate}`:''
-    fetch(`${link.url}${filter}`, {
+    const filterByDateQuery = filterByDate ? `${selectedDate.format('YYYYMMDD')}`:null
+    const filterSold = filterBySoldQuery != '' ? true: false
+    fetch(`${link.url}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: search ? JSON.stringify({ word: search, date: selectedDate }) : null,
+      body:  JSON.stringify({ word: search, date: filterByDateQuery,sold:filterSold}) 
     })
       .then((res) => {
         return res.json();
@@ -68,16 +73,7 @@ function ItemsInventory() {
     document.title = 'المخزون' ;
   }, []);
   
-  useEffect(() => {
-    setLoading(true)
-    axiosClient
-      .post<Paginate>(`items/all/balance/paginate/${page}`, { word: "" })
-      .then(({ data }) => {
-        console.log(data, "items data");
-        setPaginateObj(data);
-        setLinks(data.links);
-      }).finally(() => setLoading(false));
-  }, []);
+
   
   const searchHandler = (word) => {
     setSearch(word);
@@ -90,7 +86,7 @@ function ItemsInventory() {
     setLoading(true)
     const timer = setTimeout(() => {
       axiosClient
-        .post(`items/all/balance/paginate/${page}`, { word: search })
+        .post(`items/all/balance/paginate/${page}`, { word: search ,sold:filterBySoldQuery})
         .then(({ data }) => {
           console.log(data, "items data");
           setPaginateObj(data);
@@ -100,7 +96,7 @@ function ItemsInventory() {
     return () => {
       clearTimeout(timer);
     };
-  }, [search, page]);
+  }, [search, page,filterBySoldQuery]);
  
   return (
     <>
@@ -119,7 +115,20 @@ function ItemsInventory() {
       </select>
       <TableContainer>
         <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{ mb: 1 }} gap={2} direction={'row'}>
-          <Button  variant="contained" href={`${webUrl}balance${filterQuery}`}>pdf</Button>
+          <Button  variant="contained" href={`${webUrl}balance${filterQuery}${filterBySoldQuery}`}>pdf</Button>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+
+                  onChange={(e) => {
+                    setFilterBySoldQuery(e.target.checked? `?sold=1` : '')
+                  }}
+                />
+              }
+              label={"  فلتر بالمستهلك   "}
+            />
+          </FormGroup>
           <TextField
             value={search}
             onChange={(e) => {
@@ -144,7 +153,7 @@ function ItemsInventory() {
 
                   const date = selectedDate.format('YYYY-MM-DD');
                   setFilterByDate(true);
-                  axiosClient.post(`items/all/balance/paginate/${page}?filter=expire&date=${selectedDate}`).then(({ data }) => {
+                  axiosClient.post(`items/all/balance/paginate/${page}?filter=expire&date=${date}`).then(({ data }) => {
                     console.log(data, "items data");
                     setPaginateObj(data);
                     setLinks(data.links);
@@ -181,8 +190,9 @@ function ItemsInventory() {
               <TableCell>Market Name</TableCell>
               <TableCell>Scientific Name</TableCell>
               <TableCell>Expire</TableCell>
-              <TableCell>Out<Icon sx={{ color: (theme) => theme.palette.error.light }}> <FileUpload /></Icon> </TableCell>
               <TableCell>in  <Icon sx={{ color: (theme) => theme.palette.success.light }}><FileDownload /></Icon></TableCell>
+              <TableCell>Out<Icon sx={{ color: (theme) => theme.palette.error.light }}> <FileUpload /></Icon> </TableCell>
+
               <TableCell>Balance </TableCell>
               <TableCell>Barcode </TableCell>
             </TableRow>
@@ -206,9 +216,9 @@ function ItemsInventory() {
                       item={item?.lastDepositItem}
                     />
                   </TableCell>
-                  <TableCell>{item.totaldeduct}</TableCell>
                   <TableCell>{item.totaldeposit}</TableCell>
-                  <TableCell>{item.remaining}</TableCell>
+                  <TableCell>{item.totaldeduct}</TableCell>
+                  <TableCell>{item.totaldeposit - item?.totaldeduct} </TableCell>
                   <TableCell>{item.barcode}</TableCell>
                 </TableRow>
               );

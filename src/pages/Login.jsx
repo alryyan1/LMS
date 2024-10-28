@@ -20,6 +20,7 @@ import {
 } from "/src/components/ui/card"
 import { Input } from "/src/components/ui/input"
 import { Label } from "/src/components/ui/label"
+import ToothChart from "./Dentist/ToothChart";
 
 function App() {
   console.log("login page");

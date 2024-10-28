@@ -68,6 +68,7 @@ function Result() {
         <div></div>
         <AutocompleteSearchPatient
           withTests={1}
+          update={update}
           setActivePatientHandler={setActivePatientHandler}
         />
       </div>

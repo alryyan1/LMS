@@ -80,6 +80,7 @@ import MyTree from "./pages/Finance/Tree";
 import Nurse from "./pages/doctor/Nurse";
 import Patients from "./pages/Patients";
 import Reclaim from "./pages/insurance/Reclaim";
+import ToothChart from "./pages/Dentist/ToothChart";
 
 export const router = createHashRouter([
   {
@@ -105,6 +106,10 @@ export const router = createHashRouter([
             element: <SignUp />,
           },
         ],
+      },
+      {
+        path:'/tooth',
+        element: <ToothChart/> ,
       },
       {
         path: "/settings",
@@ -353,6 +358,7 @@ export const router = createHashRouter([
           },
         ],
       },
+    
       {
         path: "clinic",
         element: <ReceptionLayout />,

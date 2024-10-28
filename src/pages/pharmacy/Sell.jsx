@@ -388,7 +388,7 @@ function SellDrug() {
                           <TableCell>{toFixed(deductedItem.price, 3)}</TableCell>
                         ) : (
                           <MyTableCell
-                           show
+                           
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}

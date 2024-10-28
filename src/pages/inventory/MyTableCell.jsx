@@ -167,6 +167,7 @@ function MyTableCell({
           onChange={changeHandler}
           value={iniVal}
           type={type}
+          autoComplete="false"
         ></TextField>
       ) : (
         isNum ? <span style={{    
