@@ -50,6 +50,9 @@ function RequestedTestsLab({
     if (!result) {
       return;
     }
+    axiosClient.get(`patient/barcode/${actviePatient.patient.id}`).then(({data})=>{
+      console.log(data,'barcode')
+      })
     setLoading(true);
     axiosClient
       .patch(`payment/${actviePatient.id}`, {
