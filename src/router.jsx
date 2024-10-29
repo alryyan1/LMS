@@ -413,7 +413,7 @@ export const router = createHashRouter([
           },
 
           {
-            path: "items",
+            path: "items/:id?",
             element: (
               <ProtectedRoute>
                 <DrugItems />

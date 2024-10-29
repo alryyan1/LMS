@@ -38,7 +38,7 @@ import {
 } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import AddDrugAutocomplete from "../../components/AddDrugAutocomplete";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
@@ -383,7 +383,7 @@ function SellDrug() {
                         key={deductedItem.id}
                       >
                         <TableCell>{index+1}</TableCell>
-                        <TableCell>{deductedItem.item?.market_name}</TableCell>
+                        <TableCell><Link to={`/pharmacy/items/${deductedItem.item.id}`}>{deductedItem.item?.market_name}</Link></TableCell>
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.price, 3)}</TableCell>
                         ) : (
