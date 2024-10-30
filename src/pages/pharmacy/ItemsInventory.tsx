@@ -116,6 +116,7 @@ function ItemsInventory() {
       <TableContainer>
         <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{ mb: 1 }} gap={2} direction={'row'}>
           <Button  variant="contained" href={`${webUrl}balance${filterQuery}${filterBySoldQuery}`}>pdf</Button>
+          <Button  variant="contained" href={`${webUrl}itemsPriceList`}>price list</Button>
           <FormGroup>
             <FormControlLabel
               control={
