@@ -25,7 +25,7 @@ import { Shift } from "./Shift";
   showServicePanel: boolean;
   showTestPanel: boolean;
   openEdit: boolean;
-  actviePatient: DoctorShift | null;
+  actviePatient: DoctorVisit | null;
   openedDoctors: DoctorShift[];
   activeShift: DoctorShift | null;
   serviceCategories: any[];

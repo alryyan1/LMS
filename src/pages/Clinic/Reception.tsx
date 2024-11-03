@@ -50,7 +50,7 @@ function Reception() {
     openEdit,
     setOpenEdit,
     open,
-
+    userSettings,
     showPatientServices,
     setShowPatientServices,
     showServicePanel,
@@ -446,10 +446,12 @@ function Reception() {
             showLabTests &&
             actviePatient.patient.labrequests.length > 0 && (
               <RequestedTestsLab
-                change={change}
-                setActivePatient={setActivePatient}
-                activePatient={actviePatient}
-                key={actviePatient.id}
+              actviePatient={actviePatient}
+              companies={companies}
+              setDialog={setDialog}
+              update={update}
+              userSettings={userSettings}
+              
               />
             )}
           {actviePatient && showTestPanel && <TestGroups />}
@@ -471,7 +473,7 @@ function Reception() {
             </Slide>
           )}
           {actviePatient && (
-            <TextField
+            <TextField hidden
               sx={{ mt: 1 }}
               defaultValue={actviePatient.patient.discount}
               onChange={(e) => {

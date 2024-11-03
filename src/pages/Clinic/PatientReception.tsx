@@ -4,10 +4,10 @@ import React from "react";
 import { useOutletContext } from "react-router-dom";
 import { DoctorVisit, Patient } from '../../types/Patient';
 import  {Item} from '../constants'
+import { ReceptionLayoutProps } from "../../types/CutomTypes";
 type PatientReceptinPros  = {
   patient: DoctorVisit;
   hideForm: ()=>void;
-  index: number;
   change: (doctorVisit: DoctorVisit) => void;
 }
 
@@ -21,14 +21,14 @@ function PatientReception(props:PatientReceptinPros) {
     activeShift,
     setShowTestPanel,
     setShowLabTests
-  } = useOutletContext();
+  } = useOutletContext<ReceptionLayoutProps>();
   return (
     <Badge
       color="primary"
       badgeContent={
         props.patient.services.filter((service) => {
           
-          return service.doctor_id == activeShift.doctor.id;
+          return service.doctor_id == activeShift?.doctor.id;
         }).length
       }
       key={props.patient.id}
@@ -37,6 +37,7 @@ function PatientReception(props:PatientReceptinPros) {
         sx={{ cursor: "pointer" }}
         onClick={() => {
           if (actviePatient) {
+            console.log(actviePatient,'active patient')
             setShowTestPanel(false)
             setShowLabTests(true)
             /** this because if was same patient */

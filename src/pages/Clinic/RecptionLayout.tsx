@@ -19,6 +19,7 @@ function ReceptionLayout() {
     message: "Addition was successfull",
   });
 
+  const [userSettings, setUserSettings] = useState(null);
 
   const [foundedPatients, setFoundedPatients] = useState([]);
   const [searchByName, setSearchByName] = useState(null);
@@ -56,6 +57,10 @@ function ReceptionLayout() {
   }, []);
   useEffect(() => {
     Promise.all([
+      axiosClient.get("userSettings").then(({ data }) => {
+        console.log(data, "user settings from axios");
+        setUserSettings(data);
+      }),
       axiosClient
         .get(`specialists/all`)
         .then(({ data: data }) => {
@@ -129,6 +134,8 @@ function ReceptionLayout() {
             packageData,
             setPackageData,
             showLabTests,
+            userSettings,
+            setUserSettings,
             setShowLabTests,
           }}
         />

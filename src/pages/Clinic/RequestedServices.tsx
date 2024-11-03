@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -163,7 +164,8 @@ function RequestedServices({
   return (
     <>
       <div className="requested-tests">
-        <Button
+       <Stack direction={'row'} gap={1}>
+       <Button
           sx={{ m: 1 }}
           onClick={() => {
             setShowPatientServices(false);
@@ -177,6 +179,8 @@ function RequestedServices({
         >
           Receipt
         </a>
+       </Stack>
+        
 
         <div style={{ position: "relative" }} className="requested-table">
           <TableContainer

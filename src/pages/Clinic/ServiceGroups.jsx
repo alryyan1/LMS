@@ -45,7 +45,7 @@ function ServiceGroup() {
   console.log("start fetching", "packages and their tests");
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Box sx={{ p: 2 }}>
       <Button
         onClick={() => {
           setShowPatientServices(true);
@@ -110,7 +110,7 @@ function ServiceGroup() {
           </TestGroupChildren>
         );
       })}
-    </Paper>
+    </Box>
   );
 }
 

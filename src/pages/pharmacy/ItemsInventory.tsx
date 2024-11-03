@@ -29,6 +29,7 @@ import { useOutletContext } from "react-router-dom";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
+import BasicPopover from "./MyPopOver.js";
 
 function ItemsInventory() {
   const [paginateObj, setPaginateObj] = useState<Paginate|null>(null);
@@ -41,6 +42,8 @@ function ItemsInventory() {
   const [filterTouched, setFilterTouched] = useState(false);
   const [filterBySoldQuery, setFilterBySoldQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
+  const [filterSoldQuantity,setFilterSoldQuantity] = useState(1)
+  const [filterSoldOperator,setFilterSoldOperator] = useState('=')
   const {setDialog} = useOutletContext();
   const updateBalanceTable = (link, setLoading) => {
     console.log(search);
@@ -52,7 +55,7 @@ function ItemsInventory() {
       headers: {
         "Content-Type": "application/json",
       },
-      body:  JSON.stringify({ word: search, date: filterByDateQuery,sold:filterSold}) 
+      body:  JSON.stringify({ word: search, date: filterByDateQuery,sold:filterSold,filterBySoldQuery,filterSoldQuantity,filterSoldOperator}) 
     })
       .then((res) => {
         return res.json();
@@ -86,7 +89,7 @@ function ItemsInventory() {
     setLoading(true)
     const timer = setTimeout(() => {
       axiosClient
-        .post(`items/all/balance/paginate/${page}`, { word: search ,sold:filterBySoldQuery})
+        .post(`items/all/balance/paginate/${page}`, { word: search ,sold:filterBySoldQuery,filterSoldQuantity,filterSoldOperator})
         .then(({ data }) => {
           console.log(data, "items data");
           setPaginateObj(data);
@@ -116,7 +119,15 @@ function ItemsInventory() {
       <TableContainer>
         <Stack justifyContent={'space-between'} alignContent={'center'} alignItems={'center'} sx={{ mb: 1 }} gap={2} direction={'row'}>
           <Button  variant="contained" href={`${webUrl}balance${filterQuery}${filterBySoldQuery}`}>pdf</Button>
+          <Button  variant="contained" href={`${webUrl}rwakid`}>الرواكض</Button>
           <Button  variant="contained" href={`${webUrl}itemsPriceList`}>price list</Button>
+          <Stack direction={'row'} gap={1}>
+             <input value={filterSoldQuantity} onChange={(e)=>{
+              setFilterSoldQuantity(e.target.value)
+             }} style={{width:'50px',border:'1px dashed black'}} type="text" />
+                  <input value={filterSoldOperator} onChange={(e)=>{
+              setFilterSoldOperator(e.target.value)
+             }} style={{width:'50px',border:'1px dashed black'}} type="text" />
           <FormGroup>
             <FormControlLabel
               control={
@@ -130,6 +141,8 @@ function ItemsInventory() {
               label={"  فلتر بالمستهلك   "}
             />
           </FormGroup>
+          </Stack>
+         
           <TextField
             value={search}
             onChange={(e) => {
@@ -217,8 +230,8 @@ function ItemsInventory() {
                       item={item?.lastDepositItem}
                     />
                   </TableCell>
-                  <TableCell>{item.totaldeposit}</TableCell>
-                  <TableCell>{item.totaldeduct}</TableCell>
+                  <TableCell><BasicPopover route="item/deposits" item={item} title={item.totaldeposit} /></TableCell>
+                  <TableCell><BasicPopover isBox={true} route="item/deducts" item={item} title={item.totaldeduct} /></TableCell>
                   <TableCell>{item.totaldeposit - item?.totaldeduct} </TableCell>
                   <TableCell>{item.barcode}</TableCell>
                 </TableRow>

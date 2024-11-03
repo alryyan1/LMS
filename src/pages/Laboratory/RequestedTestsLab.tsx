@@ -40,7 +40,7 @@ function RequestedTestsLab({
   userSettings,
   update
 }: RequestedTestsLab) {
-  console.log(actviePatient,'activePatient')
+  console.log(actviePatient,'activePatient from')
   const { user } = useStateContext();
   const [loading, setLoading] = useState(false);
   const payHandler = () => {
@@ -148,22 +148,22 @@ function RequestedTestsLab({
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
                   <TableCell align="right">{t("price")}</TableCell>
-                  {actviePatient.patient.company ? (
+                  {actviePatient.patient?.company ? (
                     ""
                   ) : (
                     <TableCell align="right">{t("discount")}</TableCell>
                   )}
-                  {actviePatient.patient.company ? (
+                  {actviePatient.patient?.company ? (
                     ""
                   ) : (
                     <TableCell align="right">{t("bank")}</TableCell>
                   )}
-                  {actviePatient.patient.company ? (
+                  {actviePatient.patient?.company ? (
                     <TableCell align="right">{t("endurance")}</TableCell>
                   ) : (
                     ""
                   )}
-                  {actviePatient.patient.company ? (
+                  {actviePatient.patient?.company ? (
                     <TableCell align="right">{t("approval")}</TableCell>
                   ) : (
                     ""
@@ -270,7 +270,7 @@ function RequestedTestsLab({
           </TableContainer>
         </div>
 
-        <div style={{ marginTop: "10px" }} className="total-price">
+        <div  className="total-price">
           <div className="sub-price">
             <div className="title">Total</div>
             <div>{actviePatient.patient?.total_lab_value_unpaid}</div>
@@ -283,8 +283,7 @@ function RequestedTestsLab({
                 : 0}
             </div>
           </div>
-        </div>
-        <div className="requested-total">
+          <div className="requested-total">
           <div className="money-info">
             {actviePatient.patient.is_lab_paid ? (
               <LoadingButton
@@ -292,7 +291,7 @@ function RequestedTestsLab({
                 loading={loading}
                 color="error"
                 onClick={cancelPayHandler}
-                sx={{ textAlign: "center", mb: 1 }}
+                sx={{ textAlign: "center" }}
                 variant="contained"
               >
                 {t("cancel")}
@@ -305,7 +304,7 @@ function RequestedTestsLab({
                   actviePatient.patient.is_lab_paid ? "success" : "primary"
                 }
                 onClick={payHandler}
-                sx={{ textAlign: "center", mb: 1 }}
+                sx={{ textAlign: "center" }}
                 variant="contained"
               >
                 {t("pay")}
@@ -313,6 +312,8 @@ function RequestedTestsLab({
             )}
           </div>
         </div>
+        </div>
+        
       </Box>
     </>
   );

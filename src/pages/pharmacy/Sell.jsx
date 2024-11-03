@@ -27,6 +27,9 @@ import {
   Checkbox,
   FormGroup,
   TableHead,
+  Menu,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import {
   Calculate,
@@ -69,6 +72,7 @@ function SellDrug() {
   const [clients, setClients] = useState([]);
 
   const [updater, setUpdater] = useState(0);
+  const [searchOption, setSearchOption] = useState('market_name');
   const [recieved, setRecieved] = useState(0);
   const {
     setDialog,
@@ -197,10 +201,26 @@ function SellDrug() {
   }
   return (
     <>
-      <div>
-        <div style={{ marginRight: "65px" }}></div>
-        {activeSell && (
+      <Stack direction={'row'} gap={1}>
+        <div style={{ marginRight: "65px" }}>
+
+        </div>
+       <Select onChange={(e)=>{
+        setSearchOption(e.target.value)
+       }} value={searchOption} variant="standard">
+         <MenuItem value='market_name' >
+           Market Name
+          </MenuItem>
+         <MenuItem value='sc_name'>
+         Active 
+          </MenuItem>
+      
+         
+       </Select>
+       <div style={{flexGrow:'1'}}>
+       {activeSell && (
           <AddDrugAutocomplete
+            searchOption={searchOption}
             update={update}
             key={activeSell?.id}
             setLoading={setLoading}
@@ -208,7 +228,9 @@ function SellDrug() {
             setUpdater={setUpdater}
           />
         )}
-      </div>
+       </div>
+      
+      </Stack>
       <div
         style={{
           userSelect: "none",
@@ -359,7 +381,7 @@ function SellDrug() {
                       <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
+                      {/* <TableCell>Strips</TableCell> */}
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
@@ -401,7 +423,7 @@ function SellDrug() {
                           </MyTableCell>
                         )}
 
-                        {activeSell.complete ? (
+                        {/* {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -415,7 +437,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )}
+                        )} */}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
@@ -491,7 +513,15 @@ function SellDrug() {
           {activeSell && (
             <>
               <Typography textAlign={"right"}>
-                Transaction No {activeSell?.id}
+                Transaction No <input key={activeSell?.id} onKeyDown={(e)=>{
+                  if(e.key === 'Enter'){
+                    axiosClient.get(`sells/find/${e.currentTarget.value}`).then(({data})=>{
+                      console.log('find deduct',data)
+                      setActiveSell(data);
+                    })
+                  }
+                 
+                }} style={{width:'70px'}} defaultValue={activeSell?.id}/>
               </Typography>
               {/* <Typography className="text-gray-500" textAlign={"right"}>
                 Date{" "}

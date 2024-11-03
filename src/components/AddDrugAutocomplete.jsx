@@ -6,7 +6,7 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
 import dayjs from "dayjs";
 
-function AddDrugAutocomplete({setUpdater,update}) {
+function AddDrugAutocomplete({setUpdater,update,searchOption}) {
   const { setDeduct ,setShiftIsLoading ,setDialog,  activeSell, setActiveSell,setShift,opendDrugDialog,setOpendDrugDialog} = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [field, setField] = useState('');
@@ -17,7 +17,7 @@ function AddDrugAutocomplete({setUpdater,update}) {
     const timer = setTimeout(() => {
       if (search != '') {
         axiosClient
-        .get(`items/search?word=${search}`)
+        .get(`items/search?word=${search}&searchOption=${searchOption}`)
         .then(({ data}) => {
           console.log(data,'searched data');
           setItems(data);

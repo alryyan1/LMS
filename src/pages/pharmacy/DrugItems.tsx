@@ -193,13 +193,14 @@ function DrugItems() {
                   <TableCell> code</TableCell>
                   {/* <TableCell>الاسم العلمي</TableCell> */}
                   <TableCell>M.Name </TableCell>
-                  <TableCell>Pack size </TableCell>
-                  <TableCell>Active 1 </TableCell>
-                  <TableCell>Active 2 </TableCell>
+                  {/* <TableCell>Pack size </TableCell> */}
+                  {/* <TableCell>Active 1 </TableCell> */}
+                  {/* <TableCell>Active 2 </TableCell> */}
                   <TableCell> Cost</TableCell>
                   <TableCell> Retail </TableCell>
                   <TableCell> Strips </TableCell>
                   <TableCell> Unit </TableCell>
+                  <TableCell> Category </TableCell>
                   <TableCell style={{ width: "10%" }}> Expire </TableCell>
                   <TableCell> Barcode </TableCell>
                   <TableCell
@@ -233,7 +234,7 @@ function DrugItems() {
                           drug?.market_name.toUpperCase()[0]
                         }${drug?.market_name.slice(1).toLowerCase()}`}
                       </MyTableCell>
-                      <TableCell>
+                      {/* <TableCell>
                       {`${drug?.pack_size}`}
 
                       </TableCell>
@@ -250,7 +251,7 @@ function DrugItems() {
                         table="items"
                       >
                         {`${drug?.active2}`}
-                      </MyTableCell>
+                      </MyTableCell> */}
                       <MyTableCell
                         disabled={drug?.lastDepositItem == null }
                         setDialog={setDialog}
@@ -280,15 +281,7 @@ function DrugItems() {
                         {drug.strips}
                       </MyTableCell>
 
-                      {/* <MyAutoCompeleteTableCell
-            sections={drugCategory}
-            val={drug.category}
-            colName="drug_category_id"
-            item={drug}
-            table="items"
-          >
-            {drug.category?.name}
-          </MyAutoCompeleteTableCell> */}
+                   
           <TableCell>
           <MyAutoCompeleteTableCell
             sections={pharmacyTypes}
@@ -300,7 +293,16 @@ function DrugItems() {
             {drug.type?.name}
           </MyAutoCompeleteTableCell>
           </TableCell>
-                     
+             <MyAutoCompeleteTableCell 
+            sections={drugCategory}
+            val={drug.category}
+            colName="drug_category_id"
+            item={drug}
+            table="items"
+          >
+            {drug.category?.name}
+          </MyAutoCompeleteTableCell> 
+                      
                       {/* <TableCell>
             {drug?.lastDepositItem?.expire ?? drug.expire}
           </TableCell> */}
