@@ -26,6 +26,7 @@ import MyCheckBoxLab from "./MyCheckboxLab";
 import { socket } from "../../socket";
 import { LabLayoutPros } from "../../LabLayout";
 import { Company, DoctorVisit, MainTest } from "../../types/Patient";
+import MyTableCell from "../inventory/MyTableCell";
 interface RequestedTestsLab {
   setDialog: (dialog: any) => void;
   actviePatient: DoctorVisit;
@@ -146,48 +147,38 @@ function RequestedTestsLab({
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell> {t("name")}</TableCell>
-                  <TableCell align="right">{t("price")}</TableCell>
+                  <TableCell> Name</TableCell>
+                  <TableCell >Price</TableCell>
                   {actviePatient.patient?.company ? (
                     ""
                   ) : (
-                    <TableCell align="right">{t("discount")}</TableCell>
+                    <TableCell >Discount</TableCell>
                   )}
+               
+                    <TableCell >{t("bank")}</TableCell>
+                  
                   {actviePatient.patient?.company ? (
-                    ""
-                  ) : (
-                    <TableCell align="right">{t("bank")}</TableCell>
-                  )}
-                  {actviePatient.patient?.company ? (
-                    <TableCell align="right">{t("endurance")}</TableCell>
+                    <TableCell >التحمل</TableCell>
                   ) : (
                     ""
                   )}
                   {actviePatient.patient?.company ? (
-                    <TableCell align="right">{t("approval")}</TableCell>
+                    <TableCell >الموافقه</TableCell>
                   ) : (
                     ""
                   )}
-                  {/* <TableCell align="right">{t("requestedBy")}</TableCell> */}
+                  {/* <TableCell >{t("requestedBy")}</TableCell> */}
 
-                  <TableCell align="right">-</TableCell>
+                  <TableCell >-</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {actviePatient.patient.labrequests.map((test) => {
                   // console.log(test, "test");
                   let price;
-                  let company: Company;
                   let endurance;
                   let founedTest;
                   if (actviePatient.patient.company_id != null) {
-                    company = companies.find(
-                      (c) => c.id == actviePatient.patient.company_id
-                    );
-                    // console.log("founded company", company);
-                    founedTest = company.tests.find(
-                      (t) => t.id == test.main_test_id
-                    );
                     price = test.price;
                     total_endurance += endurance;
                   } else {
@@ -205,26 +196,18 @@ function RequestedTestsLab({
                         {test.main_test.main_test_name}
                       </TableCell>
 
-                      <TableCell sx={{ border: "none" }} align="right">
+                      <TableCell >
                         {price}
                       </TableCell>
                       {actviePatient.patient.company ? (
                         ""
                       ) : (
-                        <TableCell sx={{ border: "none" }} align="right">
-                          <DiscountSelectLab
-                            update={update}
-                            setDialog={setDialog}
-                            id={test.id}
-                            disc={test.discount_per}
-                            actviePatient={actviePatient}
-                          />
-                        </TableCell>
+                        <MyTableCell update={update} disabled={actviePatient.patient.is_lab_paid} sx={{width:'70px'}} table="labRequest" colName={'discount_per'} item={test} >
+                         {test.discount_per}
+                        </MyTableCell>
                       )}
-                      {actviePatient.patient.company ? (
-                        ""
-                      ) : (
-                        <TableCell sx={{ border: "none" }} align="right">
+                  
+                        <TableCell >
                           <MyCheckBoxLab
                           activePatient={actviePatient}
                             update={update}
@@ -233,15 +216,15 @@ function RequestedTestsLab({
                             id={test.id}
                           ></MyCheckBoxLab>
                         </TableCell>
-                      )}
+                      
                       {actviePatient.patient.company ? (
-                        <TableCell align="right">{test.endurance}</TableCell>
+                        <TableCell >{test.endurance}</TableCell>
                       ) : (
                         ""
                       )}
                       {actviePatient.patient.company ? (
-                        <TableCell align="right">
-                          {founedTest.pivot.approve ? (
+                        <TableCell >
+                          {test.approve ? (
                             <Button>الموافقه</Button>
                           ) : (
                             "لا يحتاج موافقه"
@@ -250,10 +233,10 @@ function RequestedTestsLab({
                       ) : (
                         ""
                       )}
-                      {/* <TableCell sx={{ border: "none" }} align="right">
+                      {/* <TableCell >
                         {test.user_requested.username}
                       </TableCell> */}
-                      <TableCell sx={{ border: "none" }} align="right">
+                      <TableCell >
                         <IconButton
                           disabled={actviePatient.patient?.is_lab_paid == 1}
                           aria-label="delete"
@@ -270,7 +253,7 @@ function RequestedTestsLab({
           </TableContainer>
         </div>
 
-        <div  className="total-price">
+        <div  className="total-price mt-1">
           <div className="sub-price">
             <div className="title">Total</div>
             <div>{actviePatient.patient?.total_lab_value_unpaid}</div>

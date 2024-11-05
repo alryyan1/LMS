@@ -86,21 +86,8 @@ function LabLayout() {
   const [patientsLoading, setPatientsLoading] = useState(false);
 
   useEffect(() => {
-    const companiesStorage = localStorage.getItem("companies");
 
-    if (companiesStorage == null) {
-      axiosClient
-        .get(`company/all`)
-        .then(({ data }) => {
-          setCompanies(data);
-          localStorage.setItem("companies", JSON.stringify(data));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      setCompanies(JSON.parse(companiesStorage));
-    }
+   
 
     // setPatientsLoading(true)
     Promise.all([
@@ -108,7 +95,14 @@ function LabLayout() {
         console.log(data, "user settings from axios");
         setUserSettings(data);
       }),
-
+      axiosClient
+      .get(`company/all`)
+      .then(({ data }) => {
+        setCompanies(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      }),
       axiosClient.get("settings").then(({ data }) => {
         console.log(data, "data see");
         setSettings(data);

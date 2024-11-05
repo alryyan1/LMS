@@ -168,11 +168,11 @@ function AddService() {
     document.title = "الخدمات";
   }, []);
   return (
-    <Grid container  gap={3}>
+    <Grid container  gap={1}>
       {loading ? (
-        <Skeleton height={400} ></Skeleton>
+        <Skeleton width={'100%'} height={400} ></Skeleton>
       ) : (
-        <Grid item xs={6}  >
+        <Grid item xs={8}  >
           <TableContainer sx={{ mb: 1 }}>
             <Stack
               sx={{ mb: 1 }}
@@ -326,8 +326,8 @@ function AddService() {
       )}
       <Grid item xs={3} >
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
-          <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
-            Add medical Service
+          <Typography variant="h4" fontFamily={"Tajwal-Regular"}>
+            خدمه جديده
           </Typography>
         </Stack>
         <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>

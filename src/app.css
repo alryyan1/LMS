@@ -1,15 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
-/* @import url('https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap'); */
-
-/* @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900"); */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@200..1000&family=Playpen+Sans:wght@100..800&display=swap');
 body {
-  font-family: 'Almarai',sans-serif ;
+  font-family: 'Cairo',sans-serif ;
   /* font-family: "Almarai", sans-serif; */
   /* font-family: "Playwrite CU", sans-serif,'Almarai'; */
   font-optical-sizing: auto;
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-variation-settings:
     "wdth" 100;

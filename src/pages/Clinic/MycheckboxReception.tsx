@@ -16,7 +16,8 @@ function MyCheckboxReception({ id,disabled ,checked,update}:MyCheckboxReceptionP
   const changeHandler = (val) => {
     setIsChecked(val.target.checked);
     axiosClient.patch(`requestedService/bank/${id}?val=${Number(val.target.checked)}`).then(({data}) => {
-        update(data)
+      console.log(data,'data')
+        update(data.patient)
     });
  
   };

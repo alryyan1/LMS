@@ -355,7 +355,7 @@ function Reception() {
                 overflow: "auto",
               }}
             >
-              <SearchDialog update={update} user={user} />
+              <SearchDialog isReception={true} update={update} user={user} />
             </div>
           )}
           {actviePatient && (

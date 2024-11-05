@@ -124,11 +124,11 @@ function App() {
               </div>
 
               <LoadingButton
+              sx={{mt:1}}
                 loading={loading}
                 type="submit"
-                sx={{ m: 1 }}
                 variant="contained"
-                style={{ display: 'block', margin: '0 auto' }}
+                className="flex flex-col"
               >
                 {t('login')}
               </LoadingButton>

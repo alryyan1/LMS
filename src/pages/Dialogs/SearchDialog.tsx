@@ -22,7 +22,7 @@ import { MessageCircleDashed } from "lucide-react";
 import { OutletContextType } from "../../types/CutomTypes";
 import { Company } from "../../types/Patient";
 
-function SearchDialog({lab=false,user,update}) {
+function SearchDialog({lab=false,user,update,isReception}) {
   const {foundedPatients, openedDoctors ,setDialog,doctors,companies,activeShift} =
     useOutletContext<OutletContextType>();
   const [doctor, setSelectedDoctor] = useState<Doctor|null>(null);
@@ -40,7 +40,8 @@ function SearchDialog({lab=false,user,update}) {
 
     setLoading(true);
   
-    const url =    `patients/add-patient-by-history/${doctor.id}/${id}?onlyLab=1`
+    const onlyLab = isReception ? 0 : 1
+    const url =    `patients/add-patient-by-history/${doctor.id}/${id}?onlyLab=${onlyLab}`
 
     axiosClient
       .post(
@@ -116,7 +117,7 @@ function SearchDialog({lab=false,user,update}) {
                   <LoadingButton
                     loading={loading}
                     onClick={() => {
-                      addPatientByHistory(item.id, item.doctor);
+                      addPatientByHistory(item.id);
                      
                     }}
                     variant="contained"

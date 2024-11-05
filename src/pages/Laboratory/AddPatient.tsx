@@ -89,51 +89,7 @@ function AddPatient() {
     showTestPanel: false,
     patientDetails: "0.7fr",
   });
-  const updateHandler = (e, colName) => {
-    axiosClient
-      .patch(`patients/${actviePatient.id}`, {
-        [colName]: e.target.value,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          axiosClient
-            .get(`doctorvisit/find?pid=${actviePatient.id}`)
-            .then(({ data }) => {
-              setActivePatient(data.patient);
-              setPatients((prePatients) => {
-                return prePatients.map((patient) => {
-                  if (patient.id === data.patient.id) {
-                    // console.log("patient founded");
-                    return { ...data.patient, active: true };
-                  } else {
-                    return { ...patient, active: false };
-                  }
-                });
-              });
-            });
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
+
   //  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
     setPatientsLoading(true);
@@ -270,7 +226,7 @@ function AddPatient() {
           )}
         </div>
         <Card
-          sx={{ p: 1 }}
+          sx={{ p: 1,userSelect:'none' }}
           style={{
             height: "80vh",
             overflow: "auto",
@@ -314,16 +270,7 @@ function AddPatient() {
             />
           )}
           {actviePatient?.patient.labrequests.length == 0 && <TestGroups />}
-          {actviePatient && (
-            <TextField
-              sx={{ mt: 1 }}
-              defaultValue={actviePatient.patient.discount}
-              onChange={(e) => {
-                updateHandler(e, "discount");
-              }}
-              label="Total Discount"
-            ></TextField>
-          )}
+         
         </Card>
         <div>
           <div style={{ position: "absolute", right: "0", zIndex: "3" }}>
@@ -344,7 +291,7 @@ function AddPatient() {
           {actviePatient && (
             <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
               <a
-                href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}
+                href={`${webUrl}printLabReceipt/${actviePatient.patient?.id}/${user?.id}`}
               >
                 Receipt
               </a>
@@ -373,7 +320,7 @@ function AddPatient() {
                   }
 
                   axiosClient
-                    .get(`printLab?pid=${actviePatient.id}&base64=1`)
+                    .get(`printLab?pid=${actviePatient.patient.id}&base64=1`)
                     .then(({ data }) => {
                       form.append("data", data);
                       // console.log(data, "daa");

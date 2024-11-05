@@ -353,20 +353,47 @@ export interface Patient {
     service: Service
   }
   
-  export interface Company {
-    id: number
-    name: string
-    lab_endurance: number
-    service_endurance: number
-    status: number
-    lab_roof: number
-    service_roof: number
-    phone: string
-    email: string
-    created_at: string
-    updated_at: string
-    relations: any[]
-    sub_companies: any[]
-    
-  }
-  
+
+  interface Company {
+  id: number;
+  name: string;
+  lab_endurance: number;
+  service_endurance: number;
+  status: number;
+  lab_roof: number;
+  service_roof: number;
+  phone: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  relations: Relation[];
+  sub_companies: Relation[];
+  tests: Test[];
+  services: Service[];
+}
+
+
+
+interface Test {
+  id: number;
+  main_test_name: string;
+  pack_id: number;
+  pageBreak: number;
+  container_id: number;
+  price: null | number;
+  firstChildId: number;
+  pivot: Pivot;
+  container: Container;
+}
+
+
+
+interface Relation {
+  id: number;
+  name: string;
+  lab_endurance: number;
+  service_endurance: number;
+  company_id: number;
+  created_at: string;
+  updated_at: string;
+}

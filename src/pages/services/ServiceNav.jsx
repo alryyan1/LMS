@@ -43,12 +43,7 @@ function ServiceNav() {
             <CardHeader>
               <CardTitle> Define Medical Service </CardTitle>
             </CardHeader>
-            <CardContent
-              className="flex justify-center items-center text-center"
-              style={{ justifyContent: "center" }}
-            >
-              <img src={customer_service} width={60} height={60} />
-            </CardContent>
+   
           </Card>
         </NavLink>
 
@@ -57,12 +52,7 @@ function ServiceNav() {
             <CardHeader>
               <CardTitle> Define Section </CardTitle>
             </CardHeader>
-            <CardContent
-              className="flex justify-center items-center text-center"
-              style={{ justifyContent: "center" }}
-            >
-              <img src={section} width={60} height={60} />
-            </CardContent>
+           
           </Card>
         </NavLink>
       </ul>

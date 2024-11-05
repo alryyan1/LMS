@@ -3,6 +3,7 @@ import axiosClient from '../../../axios-client'
 import { Button, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import dayjs from 'dayjs'
 import MyCustomLoadingButton from '../../components/MyCustomLoadingButton'
+import TdLoader from '../../components/TdLoader'
 
 function DoctorsCredits() {
     const [doctorShifts,setDoctorShifts] = useState([])
@@ -45,8 +46,8 @@ function DoctorsCredits() {
                             <TableCell>{shift.doctor.name}</TableCell>
                             <TableCell>{shift.total}</TableCell>
                             <TableCell>{shift.visits.length}</TableCell>
-                            <TableCell>{shift.doctor_credit_cash}</TableCell>
-                            <TableCell>{shift.doctor_credit_company}</TableCell>
+                            <TdLoader api={`doctor/moneyCash/${shift.id}`}/>
+                            <TdLoader api={`doctor/moneyInsu/${shift.id}`}/>
                             <TableCell>{dayjs(Date.parse(shift.created_at)).format('H:m A')}</TableCell>
                             <TableCell><MyCustomLoadingButton disabled={shift.cost} onClick={(setIsLoading)=>{
                                 

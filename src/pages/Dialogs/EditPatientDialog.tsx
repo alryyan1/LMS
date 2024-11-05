@@ -342,6 +342,7 @@ function EditPatientDialog({
                     render={({ field }) => {
                       return (
                         <Autocomplete
+                         disabled={patient?.labrequests.length > 0}
                           {...field}
                           value={field.value}
                           fullWidth

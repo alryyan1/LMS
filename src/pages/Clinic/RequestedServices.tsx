@@ -21,6 +21,7 @@ import { formatNumber, webUrl } from "../constants";
 import { t } from "i18next";
 import BottomMoney from "./BottomMoney";
 import { Company, DoctorShift, DoctorVisit, User } from "../../types/Patient";
+import MyTableCell from "../inventory/MyTableCell";
 interface RequestedServiceProps {
   actviePatient:DoctorVisit;
   setDialog:( data:()=>void )=>void;
@@ -199,6 +200,7 @@ function RequestedServices({
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
                   <TableCell align="right">{t("price")}</TableCell>
+                  <TableCell align="right">التخفيض</TableCell>
                   {actviePatient.patient.company ? (
                     <TableCell align="right">التحمل</TableCell>
                   ) : (
@@ -236,9 +238,7 @@ function RequestedServices({
                       );
                       //  console.log(company,'finded company')
                       //  console.log(service,'service')
-                      const companyService = company.services.find(
-                        (s) => s.pivot.service_id == service.service.id
-                      );
+                     
                       //  console.log(companyService,'company service')
                       price = service.price;
                       //  alert(price)
@@ -262,9 +262,12 @@ function RequestedServices({
                           {service.service.name}
                         </TableCell>
 
-                        <TableCell sx={{ border: "none" }} align="right">
+                        <TableCell >
                           {price}
                         </TableCell>
+                        <MyTableCell  colName={'discount'} disabled={service.is_paid == 1} table="requestedService/discount" item={service} update={update} >
+                          {service.discount}
+                        </MyTableCell>
                         {actviePatient.patient.company ? (
                           <TableCell
                             sx={{ border: "none", color: "red" }}
@@ -275,14 +278,14 @@ function RequestedServices({
                         ) : (
                           ""
                         )}
-                        <TableCell sx={{ border: "none" }} align="right">
+                        <TableCell >
                           {service.amount_paid}
                         </TableCell>
 
                         {actviePatient.patient.company ? (
                           ""
                         ) : (
-                          <TableCell sx={{ border: "none" }} align="right">
+                          <TableCell >
                             <MyCheckboxReception
                           
                               update={update}
@@ -293,7 +296,7 @@ function RequestedServices({
                           </TableCell>
                         )}
 
-                        <TableCell sx={{ border: "none" }} align="right">
+                        <TableCell >
                           <MyLoadingButton
                             active={service.is_paid}
                             disabled={service.is_paid === 1}

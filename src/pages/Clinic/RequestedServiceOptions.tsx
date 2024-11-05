@@ -141,15 +141,7 @@ export default function RequestedServiceOptions({
 
           />
         </MenuItem>
-        {actviePatient.patient.company_id == null && (
-          <MenuItem>
-            <DiscountSelectService
-              service={service}
-              id={service.id}
-             update={update}
-            />
-          </MenuItem>
-        )}
+    
       </StyledMenu>
     </div>
   );
