@@ -1,5 +1,4 @@
 import { User } from "./Patient";
-import { Shift } from "./Shift";
 
 export interface DrugItem {
     id: number;
@@ -39,27 +38,7 @@ export interface DrugItem {
   }
   
   
-  export interface Paginate {
-    current_page: number;
-    data: DrugItem[];
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: Link[];
-    next_page_url: string;
-    path: string;
-    per_page: number;
-    prev_page_url: null;
-    to: number;
-    total: number;
-  }
   
-  export interface Link {
-    url: null | string;
-    label: string;
-    active: boolean;
-  }
 
 export interface DepositItem {
   id: number;
@@ -103,8 +82,6 @@ export interface Deposit {
   showAll: number;
   supplier: Supplier;
   user: User;
-  items :DepositItem[];
-
 }
 
 
@@ -124,40 +101,12 @@ export interface PharmacyLayoutPros {
   setDepositItemsSearch:(search:string)=>void;
   depositItemsLinks : string[];
   setDepositItemsLinks: (data:string[])=>void;
-  showSummery: boolean;
-  shiftIsLoading: boolean;
-  itemsIsLoading: boolean;
-  activeSell: boolean;
-  suppliers: Supplier[];
-  itemsTobeAddedToChache: DrugItem[];
-  opendDrugDialog: boolean;
-  openClientDialog: boolean;
-  shift: Shift | null;
-  drugCategory: DrugCategory[];
-  pharmacyTypes: PharmacyType[];
-  items: DrugItem[];
-  deduct: number | null;
-  depositLoading: boolean;
-  invoices: Deposit[];
-  selectedInvoice: Deposit | null;
-  excelLoading: boolean;
-  links: string[];
-  updateSummery: number;
-  setSelectedInvoice:(data:Deposit)=>void;
 
 }
 
 
-interface DrugCategory {
-  id: number;
-  name: string;
-}
 
 
-interface PharmacyType {
-  id: number;
-  name: string;
-  created_at: string;
-  updated_at: string;
-}
+
+
 
