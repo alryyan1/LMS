@@ -69,9 +69,9 @@ export const updateHandler = (
   val,
   colName,
   patient,
-  change,
+  setActiveDoctorVisit,
   setDialog,
-  update
+  
 ) => {
   console.log("called update handler");
   return new Promise((resolve, reject) => {
@@ -82,8 +82,8 @@ export const updateHandler = (
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
-          if (change) {
-            change(data.patient);
+          if (setActiveDoctorVisit) {
+            setActiveDoctorVisit(data);
           }
           resolve(data.data);
           if (setDialog) {
@@ -102,14 +102,6 @@ export const updateHandler = (
       })
       .catch(({ response: { data } }) => {
         console.log(data);
-        // setDialog((prev) => {
-        //   return {
-        //     ...prev,
-        //     message: data.message,
-        //     open: true,
-        //     color: "error",
-        //   };
-        // });
       });
   });
 };

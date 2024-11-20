@@ -25,10 +25,9 @@ import { ItemTypes } from "@minoru/react-dnd-treeview";
 import printJS from "print-js";
 function PatientPrescribedMedsTab(props) {
 
-  const { value, index, patient, setDialog, change,complains,setShift,activeDoctorVisit,user,items,userSettings, ...other } =
+  const { value, index, patient, setDialog, setActiveDoctorVisit,complains,setShift,activeDoctorVisit,user,items,userSettings, ...other } =
     props;
   const [loading, setLoading] = useState();
-  const [showSuggestions, setShowSeggestions] = useState(false);
   const [drugMedicalRoutes, setDrugMedicalRoutes] = useState([]);
   useEffect(()=>{
     axiosClient.get('drugMedicalRoutes').then(({data})=>{
@@ -36,40 +35,7 @@ function PatientPrescribedMedsTab(props) {
     })
   },[])
   
-  const [sentense, setSentense] = useState(patient.prescription_notes ?? "");
-  const arr = ["alryyan", "sara", "tsabeh", "mama"];
-  const updateHandler = (val)=>{
-    axiosClient
-    .patch(`patients/${patient.id}`, {
-      prescription_notes: val,
-    })
-    .then(({ data }) => {
-      // console.log(data);
-      if (data.status) {
-      
-        change(data.patient)
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: "Saved",
-            open: true,
-            color: "success",
-          };
-        });
-      }
-    })
-    .catch(({ response: { data } }) => {
-      console.log(data);
-      setDialog((prev) => {
-        return {
-          ...prev,
-          message: data.message,
-          open: true,
-          color: "error",
-        };
-      });
-    });
-  }
+
   return (
     <div
       role="tabpanel"
@@ -141,7 +107,7 @@ function PatientPrescribedMedsTab(props) {
                     {medicine.course}
                   </MyTableCell>
                   <TableCell>
-                    <MyCustomAutocompleteWithAdditionCababilty  label="method"  updater={change} id={medicine.id}  path={`drugMedicalRoutes/${medicine.id}`} title="add route" object={medicine.medical_drug_route} setRows={setDrugMedicalRoutes} rows={drugMedicalRoutes}/>
+                    <MyCustomAutocompleteWithAdditionCababilty  label="method"  updater={setActiveDoctorVisit} id={medicine.id}  path={`drugMedicalRoutes/${medicine.id}`} title="add route" object={medicine.medical_drug_route} setRows={setDrugMedicalRoutes} rows={drugMedicalRoutes}/>
                   </TableCell>
                   <MyTableCell
                     show
@@ -169,7 +135,7 @@ function PatientPrescribedMedsTab(props) {
                           .then(({ data }) => {
                             console.log(data, "delete prescribed drugs data");
                             if (data.status) {
-                              change(data.patient)
+                              setActiveDoctorVisit(data)
                               setDialog((prev) => {
                                 return {
                                   ...prev,

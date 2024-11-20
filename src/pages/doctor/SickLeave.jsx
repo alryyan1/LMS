@@ -17,11 +17,9 @@ import MyDateField2 from "../../components/MyDateField2";
 import { webUrl } from "../constants";
 
 function SickLeave(props) {
-  const { value, index, patient, setDialog, change, setShift,user, ...other } =
-    props;
+  const { value, index, patient, setDialog, change, user, ...other } = props;
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(patient.sickleave != null);
-
 
   const updateSickleave = (e, colName) => {
     axiosClient
@@ -54,36 +52,6 @@ function SickLeave(props) {
       });
   };
 
-  const updateHandler = (e, colName) => {
-    axiosClient
-      .patch(`patients/${patient.id}`, {
-        [colName]: e.target.value,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
   return (
     <div
       role="tabpanel"
@@ -97,10 +65,20 @@ function SickLeave(props) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <Stack direction={"row" } alignItems={'center'} gap={2} justifyContent={"space-around"}>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            gap={2}
+            justifyContent={"space-around"}
+          >
             <Button variant="contained">File </Button>
             <Button variant="contained">Lab </Button>
-      <Button variant="contained" href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}>Attendance</Button>
+            <Button
+              variant="contained"
+              href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}
+            >
+              Attendance
+            </Button>
 
             <LoadingButton
               loading={loading}
@@ -122,7 +100,6 @@ function SickLeave(props) {
             >
               Generate Sickleave Report
             </LoadingButton>
-            
           </Stack>
 
           {show && (
@@ -166,7 +143,7 @@ function SickLeave(props) {
                     <TableCell>Job & Place of work</TableCell>
                     <TableCell>
                       <TextField
-                      fullWidth
+                        fullWidth
                         inputProps={{
                           style: {
                             padding: 0,
@@ -183,7 +160,7 @@ function SickLeave(props) {
                     <TableCell>O.P Department</TableCell>
                     <TableCell>
                       <TextField
-                      fullWidth
+                        fullWidth
                         inputProps={{
                           style: {
                             padding: 0,
@@ -200,7 +177,7 @@ function SickLeave(props) {
                     <TableCell>Hospital No</TableCell>
                     <TableCell>
                       <TextField
-                      fullWidth
+                        fullWidth
                         inputProps={{
                           style: {
                             padding: 0,
@@ -215,8 +192,13 @@ function SickLeave(props) {
                   </TableRow>
                 </TableBody>
               </Table>
-      <Button sx={{m:1}} variant="contained" href={`${webUrl}sickleave?pid=${patient.id}&user=${user?.id}`}>PDF</Button>
-
+              <Button
+                sx={{ m: 1 }}
+                variant="contained"
+                href={`${webUrl}sickleave?pid=${patient.id}&user=${user?.id}`}
+              >
+                PDF
+              </Button>
             </div>
           )}
         </Box>

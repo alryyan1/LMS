@@ -8,10 +8,7 @@ import { DoctorVisit, Patient } from "../../types/Patient";
 
 interface DoctorPatientProps {
   visit: DoctorVisit;
-  change: (patient: Patient) => void;
-  index: number;
-  setActivePatient: (patient: Patient) => void;
-  activePatient: Patient;
+  activeDoctorVisit: DoctorVisit|null;
   delay: number;
   setActiveDoctorVisit: (visit: DoctorVisit) => void;
   setLayout: (layout) => void;
@@ -22,11 +19,9 @@ interface DoctorPatientProps {
 //add type inference to DoctorPatient
 
 const  DoctorPatient = ({
-  change,
   visit,
-  setActivePatient,
-  index,
-  activePatient,
+  activeDoctorVisit,
+
   delay,
   setActiveDoctorVisit,
   setLayout,
@@ -47,12 +42,7 @@ const  DoctorPatient = ({
         <Stack
           sx={{ cursor: "pointer", gap: 1 }}
           onClick={() => {
-            axiosClient.get(`patient/visit/${visit.id}`).then(({ data }) => {
-              console.log(data, "data from fresh doctor visit");
-              changeDoctorVisit(data);
-              change(data.patient);
-            });
-            setActivePatient(visit.patient);
+         
             setActiveDoctorVisit(visit);
             console.log(visit, "selected visit");
             setLayout((prev) => {
@@ -81,12 +71,12 @@ const  DoctorPatient = ({
           <Item
             className={`head ${
               visit.is_new == 1
-                ? "animate__animated  animate__bounce   animate__infinite animate__slower"
+                ? ""
                 : ""
             } `}
             style={
               
-              activePatient && activePatient.id === visit.patient.id
+              activeDoctorVisit && activeDoctorVisit.id === visit.id
                 ? {
                     borderBottom: "4px solid blue",
                     fontWeight: "bolder",

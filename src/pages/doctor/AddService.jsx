@@ -26,11 +26,7 @@ function AddMedicalService(props) {
     index,
     patient,
     setDialog,
-    change,
-    complains,
-    setShift,
-    activeDoctorVisit,
-    changeDoctorVisit,
+    setActiveDoctorVisit,
     user,
     ...other
   } = props;
@@ -45,8 +41,8 @@ function AddMedicalService(props) {
         
         if (data.status) {
           // change(data.patient);
-          if (changeDoctorVisit) {
-            changeDoctorVisit(data.patient);
+          if (setActiveDoctorVisit) {
+            setActiveDoctorVisit(data.patient);
           }
           setDialog((prev) => {
             return {
@@ -85,14 +81,14 @@ function AddMedicalService(props) {
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddServiceAutocomplete
-            changeDoctorVisit={changeDoctorVisit}
-            activeDoctorVisit={activeDoctorVisit}
+            setActiveDoctorVisit={setActiveDoctorVisit}
+            activeDoctorVisit={patient}
             selectedServices={selectedServices}
             setSelectedServices={setSelectedServices}
             actviePatient={patient}
             setDialog={setDialog}
           />
-          {activeDoctorVisit?.services?.length > 0 && (
+          {patient?.services?.length > 0 && (
             <TableContainer sx={{ border: "none", textAlign: "left" }}>
               <Table sx={{ mt: 1 }} size="small">
                 <TableHead>
@@ -109,7 +105,7 @@ function AddMedicalService(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {activeDoctorVisit.services.map((service) => {
+                  {patient.services.map((service) => {
                     
                     // 
 
@@ -127,7 +123,7 @@ function AddMedicalService(props) {
                           table="editRequested"
                           colName={"count"}
                           item={service}
-                          changeDoctorVisit={changeDoctorVisit}
+                          setActiveDoctorVisit={setActiveDoctorVisit}
                         >
                           {service.count}
                         </MyTableCell>
@@ -137,7 +133,7 @@ function AddMedicalService(props) {
                           table="editRequested"
                           colName={"doctor_note"}
                           item={service}
-                          changeDoctorVisit={changeDoctorVisit}
+                          setActiveDoctorVisit={setActiveDoctorVisit}
                           show
                         >
                           {service.doctor_note}
@@ -187,7 +183,7 @@ function AddMedicalService(props) {
                       axiosClient
                         .patch(`editRequested/${selectedService.id}`,{colName:'nurse_note',val:e.target.value})
                         .then(({ data }) => {
-                          changeDoctorVisit(data.data);
+                          setActiveDoctorVisit(data.data);
                         });
                     }}
                     multiline
@@ -201,7 +197,7 @@ function AddMedicalService(props) {
                       axiosClient
                       .patch(`editRequested/${selectedService.id}`,{colName:'done',val:1})
                       .then(({ data }) => {
-                        changeDoctorVisit(data.data);
+                        setActiveDoctorVisit(data.data);
                         setSelectedService(data.requestedService)
                       }).finally(()=>{
                         setLoading(false)

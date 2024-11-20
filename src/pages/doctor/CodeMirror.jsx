@@ -1,27 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
 import { autocompletion } from "@codemirror/autocomplete";
 import axiosClient from "../../../axios-client";
 import { updateHandler } from "../constants";
-import { Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import {EditorView} from "@codemirror/view"
-
-
-// [
-//     {label: "match", type: "keyword"},
-//     {label: "hello", type: "variable", info: "(World)"},
-//     {label: "magic", type: "text", apply: "⠁⭒*.✩.*⭒⠁", detail: "macro"}
-//   ]
-
 function CodeEditor({
   options,
   setOptions,
   init,
   colName,
   patient,
-  change,
+  setActiveDoctorVisit,
   setDialog,
   tableName
 }) {
@@ -36,22 +25,7 @@ function CodeEditor({
       options: options,
     };
   }
-  //   useEffect(()=>{
-  //    const timer =    setTimeout(() => {
-  //     if (init != value) {
-  //          console.log('start of time out')
-  //         //updateHandler(value,colName,patient,null,setDialog)
-  //     }
-
-  //     }, 300);
-  //     return  ()=>{
-  //         console.log('clear time out')
-  //         clearTimeout(timer);
-
-  //     }
-  //   },[value])
-
-  const onChange = React.useCallback((val, viewUpdate) => {
+  const onChange = React.useCallback((val) => {
     console.log("val:", val);
     setValue(val);
   }, []);
@@ -86,7 +60,7 @@ function CodeEditor({
 
               console.log(data, "update table db");
             });
-          updateHandler(value, colName, patient, change, setDialog).then(
+          updateHandler(value, colName, patient, setActiveDoctorVisit, setDialog).then(
             (_, data) => {
               setLoading(false);
             }

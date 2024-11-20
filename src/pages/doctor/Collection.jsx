@@ -20,7 +20,7 @@ import { LoadingButton } from "@mui/lab";
 const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
 
   function Collection(props) {
-    const { value, index, patient, setDialog, change,complains,setShift, ...other } =
+    const { value, index, patient, ...other } =
       props;
 
       const containers = patient?.labrequests.map((req) => {

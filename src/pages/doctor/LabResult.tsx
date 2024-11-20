@@ -11,23 +11,27 @@ import {
 import { useEffect, useState } from "react";
 import { t } from "i18next";
 import ResultSection from "../Laboratory/ResultSection";
-function LabResults(props) {
+import { DoctorVisit, Labrequest } from "../../types/Patient";
+interface LabResultsProps {
+  value: number;
+  index: number;
+  patient: DoctorVisit;
+  setShift: (shift: any) => void;
+}
+function LabResults(props:LabResultsProps) {
   const {
     value,
     index,
     patient,
-    setDialog,
-    change,
-    complains,
     setShift,
     ...other
   } = props;
-  const [selectedTest, setSelectedTest] = useState(null);
+  const [selectedTest, setSelectedTest] = useState<Labrequest|null>(null);
 
   const [selectedReslult, setSelectedResult] = useState(null);
   useEffect(()=>{
-    if (patient.labrequests.length > 0) {
-      setSelectedTest(patient.labrequests[0]);
+    if (patient.patient.labrequests.length > 0) {
+      setSelectedTest(patient.patient.labrequests[0]);
     }
   },[])
   return (
@@ -45,10 +49,9 @@ function LabResults(props) {
         <Grid gap={1} container className="">
           <Grid   style={{ backgroundColor: "#ffffff73" }}  xs={2}>
             <Card   style={{ backgroundColor: "#ffffff73" }} sx={{ height: "80vh", overflow: "auto" }}>
-              {console.log(patient, "activve pateint")}
-              {patient && patient.labrequests.length > 0 && (
+              {patient && patient.patient.labrequests.length > 0 && (
                 <List sx={{ direction: "ltr" }}>
-                  {patient.labrequests.map((test) => {
+                  {patient.patient.labrequests.map((test) => {
                     return (
                       <ListItem
                         onClick={() => {
@@ -85,7 +88,7 @@ function LabResults(props) {
               sx={{ height: "80vh", overflow: "auto", p: 1 }}
               key={selectedTest?.id}
             >
-              {patient.result_auth ?  (
+              {patient.patient.result_auth ?  (
                 <ResultSection 
                 is_doctor={true}
                 disabled={true}

@@ -1,18 +1,26 @@
 import { Box, Divider, TextField, Typography } from "@mui/material";
 import axiosClient from "../../../axios-client";
+import { DoctorVisit } from "../../types/Patient";
+interface PatientMedicalHistoryProps {
+  value: any;
+  index: number;
+  patient: DoctorVisit
+  setDialog: any;
+  setActiveDoctorVisit:(data)=>void
 
-function PatientMedicalHistory(props) {
-  const { value, index, patient, setDialog, setShift, change, ...other } =
+}
+function PatientMedicalHistory(props:PatientMedicalHistoryProps) {
+  const { value, index, patient, setDialog,setActiveDoctorVisit, ...other } =
     props;
   const updateHandler = (e, colName) => {
     axiosClient
-      .patch(`patients/${patient.id}`, {
+      .patch(`patients/${patient.patient.id}`, {
         [colName]: e.target.value,
       })
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
-          change(data.patient);
+          setActiveDoctorVisit(data);
           setDialog((prev) => {
             return {
               ...prev,

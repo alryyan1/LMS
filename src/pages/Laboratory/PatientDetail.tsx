@@ -14,7 +14,7 @@ interface PatientDetailPros {
  
 }
 function PatientDetail({
-  patient:{patient},
+  patient,
   openedDoctors,
   activeShift,
   copyPatient = false,
@@ -37,7 +37,7 @@ function PatientDetail({
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <div  className="patientId">{patient.name}</div>
+        <div  className="patientId">{patient.patient.name}</div>
         <div className="form-control">
           <div>Patient Id</div>
           <div >{patient.id}</div>
@@ -45,7 +45,7 @@ function PatientDetail({
         <Divider />
         <div className="form-control">
           <div>{t("doctor")}</div>
-          <div>{patient?.doctor?.name}</div>
+          <div>{patient.patient?.doctor?.name}</div>
         </div>
         <Divider />
 
@@ -66,7 +66,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient.phone
+              patient.patient.phone
             }
           </div>
         </div>
@@ -88,7 +88,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient.user?.username
+              patient.patient.user?.username
             }
           </div>
         </div>
@@ -100,7 +100,7 @@ function PatientDetail({
             {
               //print iso date
              
-              t( patient.gender)
+              t( patient.patient.gender)
             }
           </div>
         </div>
@@ -111,7 +111,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient?.file_patient?.file_id
+              patient?.file.id
             }
           </div>
         </div>
@@ -122,12 +122,12 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              ` ${patient.age_year ?? 0} Y ${
-                patient.age_month == null
+              ` ${patient.patient.age_year ?? 0} Y ${
+                patient.patient.age_month == null
                   ? ""
-                  : " / " + patient.age_month + " M "
+                  : " / " + patient.patient.age_month + " M "
               } ${
-                patient.age_day == null ? "" : " / " + patient.age_day + " D "
+                patient.patient.age_day == null ? "" : " / " + patient.patient.age_day + " D "
               } `
             }
           </div>
@@ -139,7 +139,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient?.gov_id
+              patient.patient?.gov_id
             }
           </div>
         </div> : ''}
@@ -150,7 +150,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient?.address
+              patient.patient?.address
             }
           </div>
         </div>
@@ -161,11 +161,11 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient?.country?.name
+              patient.patient?.country?.name
             }
           </div>
         </div>: ''}
-        {patient.company_id && (
+        {patient.patient.company_id && (
           <div>
             <div className="form-control">
               <div>{t("company")}</div>
@@ -173,7 +173,7 @@ function PatientDetail({
               <div>
                 {
                   //print iso date
-                  patient.company.name
+                  patient.patient.company.name
                 }
               </div>
             </div>
@@ -183,20 +183,20 @@ function PatientDetail({
               <div>
                 {
                   //print iso date
-                  patient.insurance_no
+                  patient.patient.insurance_no
                 }
               </div>
             </div>
             {
               //print iso date
-              patient.subcompany_id && (
+              patient.patient.subcompany_id && (
                 <div className="form-control">
                   <div>{t("sub_company")}</div>
 
                   <div>
                     {
                       //print iso date
-                      patient?.subcompany?.name
+                      patient.patient?.subcompany?.name
                     }
                   </div>
                 </div>
@@ -204,14 +204,14 @@ function PatientDetail({
             }
             {
               //print iso date
-              patient.company_relation_id && (
+              patient.patient.company_relation_id && (
                 <div className="form-control">
                   <div>{t("relation_name")}</div>
 
                   <div>
                     {
                       //print iso date
-                      patient?.relation?.name
+                      patient.patient?.relation?.name
                     }
                   </div>
                 </div>
@@ -221,20 +221,20 @@ function PatientDetail({
         )}
         {
           //print iso date
-          patient.result_print_date && (
+          patient.patient.result_print_date && (
             <div className="form-control">
               <div>{t("print_time")}</div>
               <div>
                 {
                   //print iso date
-                  new Date(patient.result_print_date).toLocaleTimeString()
+                  new Date(patient.patient.result_print_date).toLocaleTimeString()
                 }
               </div>
             </div>
           )
         }
         <Divider sx={{ m: 1 }} />
-        {copyPatient && patient.doctor_id == activeShift.doctor.id && (
+        {copyPatient && patient.patient.doctor_id == activeShift.doctor.id && (
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
@@ -242,14 +242,14 @@ function PatientDetail({
                   
                 })
                 .then(({ data }) => {
-                  update(data);
+                 // update(data);
                   if (data.status) {
                     // alert('status')
                   }
                 });
             }}
             getOptionDisabled={(option) => {
-              return option.id == patient.doctor.id;
+              return option.id == patient.patient.doctor.id;
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.name}

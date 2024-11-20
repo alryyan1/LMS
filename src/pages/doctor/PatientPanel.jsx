@@ -15,7 +15,8 @@ import diet from "./../../assets/images/diet.png";
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import { useState } from "react";
-function PatientPanel({ value, setValue, change, setDialog, patient }) {
+
+function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
   const { user } = useStateContext();
   const [loading, setLoading] = useState();
   const handleChange = (event, newValue) => {
@@ -314,27 +315,13 @@ function PatientPanel({ value, setValue, change, setDialog, patient }) {
               .then(({ data }) => {
                 console.log(data);
                 if (data.status) {
-                  change(data.patient);
-                  setDialog((prev) => {
-                    return {
-                      ...prev,
-                      message: "Saved",
-                      open: true,
-                      color: "success",
-                    };
-                  });
+                  setActiveDoctorVisit(data);
+             
                 }
               })
               .catch(({ response: { data } }) => {
                 console.log(data);
-                setDialog((prev) => {
-                  return {
-                    ...prev,
-                    message: data.message,
-                    open: true,
-                    color: "error",
-                  };
-                });
+               
               })
               .finally(() => setLoading(false));
           }}

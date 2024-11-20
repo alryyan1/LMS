@@ -23,7 +23,12 @@ export interface DoctorVisit {
   total_discounted: number
   patient: Patient
   services: RequestedService[]
-  only_lab:number
+  only_lab:number;
+  file:number
+}
+export interface PatientFile {
+  id: number
+  patients:DoctorVisit[]
 }
 export interface Patient {
     id: number

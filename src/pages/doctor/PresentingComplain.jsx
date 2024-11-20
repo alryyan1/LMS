@@ -1,19 +1,7 @@
 import {
   Box,
   Divider,
-  List,
-  ListItem,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
 } from "@mui/material";
-import axiosClient from "../../../axios-client";
-import PatientEditSelect from "./PatientEditSelect";
-import { useState } from "react";
 import CodeEditor from "./CodeMirror";
 
 function PresentingComplain(props) {
@@ -22,10 +10,9 @@ function PresentingComplain(props) {
     index,
     patient,
     setDialog,
-    change,
     complains,
     setComplains,
-    setShift,
+    setActiveDoctorVisit,
     ...other
   } = props;
 
@@ -44,7 +31,7 @@ function PresentingComplain(props) {
       {value === index && (
         <Box sx={{ justifyContent: "space-around" }} className="">
           
-           <CodeEditor tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.present_complains} patient={patient} change={change} setDialog={setDialog} colName={'present_complains'}/>
+           <CodeEditor tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.present_complains} patient={patient} setActiveDoctorVisit={setActiveDoctorVisit} setDialog={setDialog} colName={'present_complains'}/>
         
         </Box>
       )}

@@ -13,10 +13,9 @@ function isNumeric(str) {
 
 interface AutocompleteSearchPatientPros{
   update: (patient: DoctorVisit) => void,
-  setDialog: (args) => void,
 }
 
-export default function AutocompleteSearchPatient({ update,setDialog}:AutocompleteSearchPatientPros) {
+export default function AutocompleteSearchPatient({ update}:AutocompleteSearchPatientPros) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<DoctorVisit[]>([]);
@@ -76,17 +75,6 @@ export default function AutocompleteSearchPatient({ update,setDialog}:Autocomple
                 if (data.data != null) {
                 update(data.data);
                     
-                }else{
-                   if (setDialog) {
-                    setDialog((prev)=>{
-                      return {
-                         ...prev,
-                          open: true,
-                          message: 'no data found',
-                          color: "error"
-                      }
-                  })
-                   }
                 }
                 console.log(data, "patients");
               });

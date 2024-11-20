@@ -5,7 +5,7 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
-function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setDialog,selectedTests,setSelectedTests,changeDoctorVisit,change,setShowLabTests,setShowTestPanel,isLabPage}) {
+function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,selectedTests,setSelectedTests,setActiveDoctorVisit,change,setShowLabTests,setShowTestPanel,isLabPage}) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
   console.log(actviePatient,'activePatient')
   console.log(setActivePatient,'setActviePatient component rendered successfully');
@@ -44,8 +44,8 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setD
 
           setActivePatient(data.patient);
         }
-        if (changeDoctorVisit) {
-          changeDoctorVisit(data.patient);
+        if (setActiveDoctorVisit) {
+          setActiveDoctorVisit(data);
         }
         if (change) {
      
@@ -57,9 +57,7 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,setD
         console.info(actviePatient, "active p");
       }else{
         setLoading(false);
-        setDialog((prev) => {
-          return {...prev,open:true, message: data.message,color:'error'};
-        });
+       
         setLoading(false);
       }
 

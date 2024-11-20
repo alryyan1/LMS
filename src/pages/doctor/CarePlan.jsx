@@ -1,9 +1,8 @@
-import { Box, Divider, List, ListItem, TextField } from "@mui/material";
+import { Box, Divider, TextField } from "@mui/material";
 import axiosClient from "../../../axios-client";
-import { useState } from "react";
 
 function CarePlan(props) {
-  const { value, index, patient, setDialog, setShift, change,diagnosis, ...other } =
+  const { value, index, patient, setDialog, setActiveDoctorVisit, ...other } =
     props;
   const updateHandler = (val) => {
     axiosClient
@@ -14,7 +13,7 @@ function CarePlan(props) {
         // console.log(data);
         if (data.status) {
     
-          change(data.patient);
+          setActiveDoctorVisit(data);
           setDialog((prev) => {
             return {
               ...prev,

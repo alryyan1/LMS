@@ -291,7 +291,7 @@ function Reception() {
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         {openedDoctors
-          .filter((shift) => shift.user_id == user?.id)
+          // .filter((shift) => shift.user_id == user?.id)
           .map((shift) => {
             // console.log(shift, "shift");
             return (

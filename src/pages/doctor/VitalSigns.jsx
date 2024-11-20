@@ -7,13 +7,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 
-function VitalSigns({ patient, setDialog, change,socket }) {
+function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
  
  
-  const updateHandler = (val, colName,patient,change,setDialog) => {
+  const updateHandler = (val, colName,patient,setActiveDoctorVisit,setDialog) => {
     console.log('called update handler')
     return new Promise((resolve,reject)=>{
       axiosClient
@@ -24,9 +23,9 @@ function VitalSigns({ patient, setDialog, change,socket }) {
         console.log(data);
         if (data.status) {
           socket.emit('patientUpdated',patient.id)
-          if (change) {
+          if (setActiveDoctorVisit) {
             
-            change(data.patient);
+            setActiveDoctorVisit(data);
           }
           resolve(data.patient,data);
           setDialog((prev) => {
@@ -39,6 +38,7 @@ function VitalSigns({ patient, setDialog, change,socket }) {
           });
         }
       })
+      
       .catch(({ response: { data } }) => {
         console.log(data);
         setDialog((prev) => {
@@ -58,6 +58,7 @@ function VitalSigns({ patient, setDialog, change,socket }) {
       <Typography textAlign={"center"} variant="h6">
         Vital Signs
       </Typography>
+      
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -77,8 +78,9 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                     minWidth: "66px",
                   },
                 }}
+                
                 onChange={(e) => {
-                  updateHandler(e.target.value, "bp",patient,change,setDialog);
+                  updateHandler(e.target.value, "bp",patient,setActiveDoctorVisit,setDialog);
                 }}
                 defaultValue={patient.bp}
               />
@@ -95,8 +97,9 @@ function VitalSigns({ patient, setDialog, change,socket }) {
 
                   },
                 }}
+                
                 onChange={(e) => {
-                updateHandler(e.target.value, "temp",patient,change,setDialog);
+                updateHandler(e.target.value, "temp",patient,setActiveDoctorVisit,setDialog);
                 }}
                 defaultValue={patient.temp}
               />
@@ -113,9 +116,10 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                     fontSize:'22px',
 
                   },
+                  
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value,'weight',patient,change,setDialog)
+                  updateHandler(e.target.value,'weight',patient,setActiveDoctorVisit,setDialog)
                 }}
                 defaultValue={patient.weight}
               />
@@ -131,10 +135,11 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                     padding: 0,
                     fontSize:'22px',
 
+                    
                   },
                 }}
                 onChange={(e) => {
-                    updateHandler(e.target.value, "height",patient,change,setDialog)
+                    updateHandler(e.target.value, "height",patient,setActiveDoctorVisit,setDialog)
                 }}
                 defaultValue={patient.height}
               />
@@ -152,7 +157,7 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "heart_rate",patient,change,setDialog)
+                  updateHandler(e.target.value, "heart_rate",patient,setActiveDoctorVisit,setDialog)
                 }}
                 defaultValue={patient.heart_rate}
               />
@@ -170,7 +175,7 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "spo2",patient,change,setDialog)
+                  updateHandler(e.target.value, "spo2",patient,setActiveDoctorVisit,setDialog)
                 }}
                 defaultValue={patient.spo2}
               />
@@ -188,7 +193,7 @@ function VitalSigns({ patient, setDialog, change,socket }) {
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "rbs",patient,change,setDialog)
+                  updateHandler(e.target.value, "rbs",patient,setActiveDoctorVisit,setDialog)
                 }}
                 defaultValue={patient.rbs}
               />
