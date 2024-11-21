@@ -70,33 +70,23 @@ export const updateHandler = (
   colName,
   patient,
   setActiveDoctorVisit,
-  setDialog,
   
 ) => {
   console.log("called update handler");
   return new Promise((resolve, reject) => {
     axiosClient
-      .patch(`patients/${patient.id}`, {
+      .patch(`patients/${patient.patient.id}`, {
         [colName]: val,
       })
       .then(({ data }) => {
         console.log(data);
         if (data.status) {
           if (setActiveDoctorVisit) {
-            setActiveDoctorVisit(data);
+            console.log(data,'data')
+            setActiveDoctorVisit(data.data);
           }
           resolve(data.data);
-          if (setDialog) {
-            console.log(setDialog,'setDialog');
-            setDialog((prev) => {
-              return {
-                ...prev,
-                message: "Saved",
-                open: true,
-                color: "success",
-              };
-            });
-          }
+       
        
         }
       })

@@ -1,6 +1,7 @@
 import { Box, Divider, TextField, Typography } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { DoctorVisit } from "../../types/Patient";
+import { updateHandler } from "../constants";
 interface PatientMedicalHistoryProps {
   value: any;
   index: number;
@@ -12,37 +13,7 @@ interface PatientMedicalHistoryProps {
 function PatientMedicalHistory(props:PatientMedicalHistoryProps) {
   const { value, index, patient, setDialog,setActiveDoctorVisit, ...other } =
     props;
-  const updateHandler = (e, colName) => {
-    axiosClient
-      .patch(`patients/${patient.patient.id}`, {
-        [colName]: e.target.value,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          setActiveDoctorVisit(data);
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
+
   return (
     <div
       role="tabpanel"
@@ -60,9 +31,9 @@ function PatientMedicalHistory(props:PatientMedicalHistoryProps) {
           <TextField 
           sx={{p:2}}
             onChange={(e) => {
-              updateHandler(e, "history_of_present_illness");
+              updateHandler(e.target.value, "history_of_present_illness",patient,setActiveDoctorVisit);
             }}
-            defaultValue={patient.history_of_present_illness}
+            defaultValue={patient.patient.history_of_present_illness}
             multiline
             fullWidth
             rows={3}
@@ -72,9 +43,9 @@ function PatientMedicalHistory(props:PatientMedicalHistoryProps) {
       </Typography>
           <TextField
             onChange={(e) => {
-              updateHandler(e, "family_history");
+              updateHandler(e.target.value, "family_history",patient,setActiveDoctorVisit);
             }}
-            defaultValue={patient.family_history}
+            defaultValue={patient.patient.family_history}
             multiline
             sx={{p:2}}
             fullWidth
@@ -84,10 +55,11 @@ function PatientMedicalHistory(props:PatientMedicalHistoryProps) {
         Drug History
       </Typography>
           <TextField
+            
             onChange={(e) => {
-              updateHandler(e, "drug_history");
+              updateHandler(e.target.value, "drug_history",patient,setActiveDoctorVisit);
             }}
-            defaultValue={patient.drug_history}
+            defaultValue={patient.patient.drug_history}
             multiline
             sx={{p:2}}
             fullWidth

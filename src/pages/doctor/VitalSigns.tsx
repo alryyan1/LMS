@@ -8,57 +8,57 @@ import {
   Typography,
 } from "@mui/material";
 import axiosClient from "../../../axios-client";
-
-function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
- 
- 
-  const updateHandler = (val, colName,patient,setActiveDoctorVisit,setDialog) => {
-    console.log('called update handler')
-    return new Promise((resolve,reject)=>{
+import { DoctorVisit } from "../../types/Patient";
+interface VitalSignsProps {
+  patient: DoctorVisit;
+  setActiveDoctorVisit: any;
+  socket: any;
+}
+function VitalSigns({
+  patient,
+  setActiveDoctorVisit,
+  socket,
+}: VitalSignsProps) {
+  const updateHandler = (
+    val,
+    colName,
+    patient: DoctorVisit,
+    setActiveDoctorVisit
+  ) => {
+    console.log("called update handler");
+    return new Promise((resolve, reject) => {
       axiosClient
-      .patch(`patients/${patient.id}`, {
-        [colName]: val,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          socket.emit('patientUpdated',patient.id)
-          if (setActiveDoctorVisit) {
-            
-            setActiveDoctorVisit(data);
+        .patch(`patients/${patient.patient.id}`, {
+          [colName]: val,
+        })
+        .then(({ data }) => {
+          console.log(data, "updated patient ");
+          if (data.status) {
+            socket.emit("patientUpdated", patient);
+            setActiveDoctorVisit(data.data);
+            resolve(data.data);
           }
-          resolve(data.patient,data);
-          setDialog((prev) => {
+        })
+
+        .catch(({ response: { data } }) => {
+          console.log(data);
+          (prev) => {
             return {
               ...prev,
-              message: "Saved",
+              message: data.message,
               open: true,
-              color: "success",
+              color: "error",
             };
-          });
-        }
-      })
-      
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
           };
         });
-      });
-    })
-  
+    });
   };
   return (
     <div style={{ padding: "5px" }}>
       <Typography textAlign={"center"} variant="h6">
         Vital Signs
       </Typography>
-      
+
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -70,19 +70,24 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
           <TableRow>
             <TableCell>B.Pressure</TableCell>
             <TableCell className="vital">
-              <TextField 
+              <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
-                    fontSize:'22px',
+                    fontSize: "22px",
                     padding: 0,
                     minWidth: "66px",
                   },
                 }}
-                
                 onChange={(e) => {
-                  updateHandler(e.target.value, "bp",patient,setActiveDoctorVisit,setDialog);
+                  updateHandler(
+                    e.target.value,
+                    "bp",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.bp}
+                defaultValue={patient.patient.bp}
               />
             </TableCell>
           </TableRow>
@@ -90,18 +95,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>Temperature</TableCell>
             <TableCell>
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
+                    fontSize: "22px",
                   },
                 }}
-                
                 onChange={(e) => {
-                updateHandler(e.target.value, "temp",patient,setActiveDoctorVisit,setDialog);
+                  updateHandler(
+                    e.target.value,
+                    "temp",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.temp}
+                defaultValue={patient.patient.temp}
               />
             </TableCell>
           </TableRow>
@@ -110,18 +119,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>
               {" "}
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
+                    fontSize: "22px",
                   },
-                  
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value,'weight',patient,setActiveDoctorVisit,setDialog)
+                  updateHandler(
+                    e.target.value,
+                    "weight",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.weight}
+                defaultValue={patient.patient.weight}
               />
             </TableCell>
           </TableRow>
@@ -130,18 +143,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>
               {" "}
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
-                    
+                    fontSize: "22px",
                   },
                 }}
                 onChange={(e) => {
-                    updateHandler(e.target.value, "height",patient,setActiveDoctorVisit,setDialog)
+                  updateHandler(
+                    e.target.value,
+                    "height",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.height}
+                defaultValue={patient.patient.height}
               />
             </TableCell>
           </TableRow>
@@ -149,17 +166,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>Pulse</TableCell>
             <TableCell>
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
+                    fontSize: "22px",
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "heart_rate",patient,setActiveDoctorVisit,setDialog)
+                  updateHandler(
+                    e.target.value,
+                    "heart_rate",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.heart_rate}
+                defaultValue={patient.patient.heart_rate}
               />
             </TableCell>
           </TableRow>
@@ -167,17 +189,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>Spo2</TableCell>
             <TableCell>
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
+                    fontSize: "22px",
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "spo2",patient,setActiveDoctorVisit,setDialog)
+                  updateHandler(
+                    e.target.value,
+                    "spo2",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.spo2}
+                defaultValue={patient.patient.spo2}
               />
             </TableCell>
           </TableRow>
@@ -185,17 +212,22 @@ function VitalSigns({ patient, setDialog, setActiveDoctorVisit,socket }) {
             <TableCell>RBS</TableCell>
             <TableCell>
               <TextField
+                autoComplete="off"
                 inputProps={{
                   style: {
                     padding: 0,
-                    fontSize:'22px',
-
+                    fontSize: "22px",
                   },
                 }}
                 onChange={(e) => {
-                  updateHandler(e.target.value, "rbs",patient,setActiveDoctorVisit,setDialog)
+                  updateHandler(
+                    e.target.value,
+                    "rbs",
+                    patient,
+                    setActiveDoctorVisit
+                  );
                 }}
-                defaultValue={patient.rbs}
+                defaultValue={patient.patient.rbs}
               />
             </TableCell>
           </TableRow>

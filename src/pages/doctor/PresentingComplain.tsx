@@ -3,13 +3,20 @@ import {
   Divider,
 } from "@mui/material";
 import CodeEditor from "./CodeMirror";
-
-function PresentingComplain(props) {
+import { DoctorVisit } from "../../types/Patient";
+interface PresentingComplainProps {
+  value: number;
+  index: number;
+  patient: DoctorVisit;
+  complains: any;
+  setComplains: any;
+  setActiveDoctorVisit: any;
+}
+function PresentingComplain(props:PresentingComplainProps) {
   const {
     value,
     index,
     patient,
-    setDialog,
     complains,
     setComplains,
     setActiveDoctorVisit,
@@ -31,7 +38,7 @@ function PresentingComplain(props) {
       {value === index && (
         <Box sx={{ justifyContent: "space-around" }} className="">
           
-           <CodeEditor tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.present_complains} patient={patient} setActiveDoctorVisit={setActiveDoctorVisit} setDialog={setDialog} colName={'present_complains'}/>
+           <CodeEditor tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.patient.present_complains} patient={patient} setActiveDoctorVisit={setActiveDoctorVisit}  colName={'present_complains'}/>
         
         </Box>
       )}

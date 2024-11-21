@@ -557,7 +557,6 @@ function Doctor() {
               key={activeDoctorVisit.updated_at}
               socket={socket}
               patient={activeDoctorVisit}
-              setDialog={setDialog}
             />
           )}
         </Card>
@@ -576,8 +575,8 @@ function Doctor() {
                 />
                 {/* <GeneralTab index={1} value={value}></GeneralTab> */}
                 <GeneralExaminationPanel
-                  setShift={setShift}
-                  setDialog={setDialog}
+
+                  setActiveDoctorVisit={setActiveDoctorVisit}
                   patient={activeDoctorVisit}
                   index={1}
                   value={value}
@@ -585,7 +584,7 @@ function Doctor() {
                 {!user?.is_nurse == 1 && (
                   <PresentingComplain
                     setComplains={setComplains}
-                    setShift={setShift}
+                  
                     complains={complains}
                     setDialog={setDialog}
                     patient={activeDoctorVisit}
@@ -610,9 +609,6 @@ function Doctor() {
                     items={items}
                     setActiveDoctorVisit={setActiveDoctorVisit}
                     user={user}
-                    setShift={setShift}
-                    complains={complains}
-                    setDialog={setDialog}
                     patient={activeDoctorVisit}
                     index={4}
                     value={value}
@@ -622,9 +618,6 @@ function Doctor() {
                   <ProvisionalDiagnosis
                     setDiagnosis={setDiagnosis}
                     diagnosis={diagnosis}
-                    setShift={setShift}
-                    complains={complains}
-                    setDialog={setDialog}
                     setActiveDoctorVisit={setActiveDoctorVisit}
                     patient={activeDoctorVisit}
                     index={5}
@@ -635,9 +628,7 @@ function Doctor() {
                 <AddLabTests
                   socket={socket}
                   setActiveDoctorVisit={setActiveDoctorVisit}
-                  setShift={setShift}
                   complains={complains}
-                  setDialog={setDialog}
                   patient={activeDoctorVisit}
                   index={6}
                   value={value}

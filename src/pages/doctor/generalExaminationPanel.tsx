@@ -11,9 +11,18 @@ import {
 } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import PatientEditSelect from "./PatientEditSelect";
+import { DoctorVisit } from "../../types/Patient";
+import { updateHandler } from "../constants";
+import React, { SetStateAction } from "react";
+interface GeneralExaminationProps {
+  value: number;
+  index: number;
+  patient: DoctorVisit;
+  setActiveDoctorVisit:React.Dispatch<SetStateAction<DoctorVisit|null>>;
+}
+function GeneralExaminationPanel(props:GeneralExaminationProps) {
 
-function GeneralExaminationPanel(props) {
-  const { value, index, patient, setDialog,change,setShift, ...other } = props;
+  const { value, index, patient,setActiveDoctorVisit, ...other } = props;
 
   return (
     <div
@@ -38,11 +47,11 @@ function GeneralExaminationPanel(props) {
            
                 <TableRow>
                   <TableCell>Juandice</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'juandice'} myVal={patient.juandice} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit} colName={'juandice'} myVal={patient.patient.juandice} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Pallor</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'pallor'} myVal={patient.pallor} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'pallor'} myVal={patient.patient.pallor} patient={patient} />
                 </TableRow>
               </TableBody>
             </Table>
@@ -56,35 +65,39 @@ function GeneralExaminationPanel(props) {
               <TableBody>
                 <TableRow>
                   <TableCell>Clubbing</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'clubbing'} myVal={patient.clubbing} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'clubbing'} myVal={patient.patient.clubbing} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Cyanosis</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'cyanosis'} myVal={patient.cyanosis} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'cyanosis'} myVal={patient.patient.cyanosis} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Edema Feet</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'edema_feet'} myVal={patient.edema_feet} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'edema_feet'} myVal={patient.patient.edema_feet} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Dehydration</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'dehydration'} myVal={patient.dehydration} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'dehydration'} myVal={patient.patient.dehydration} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Lymphadenopathy</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'lymphadenopathy'} myVal={patient.lymphadenopathy} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'lymphadenopathy'} myVal={patient.patient.lymphadenopathy} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Peripheral pulses</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'peripheral_pulses'} myVal={patient.peripheral_pulses} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'peripheral_pulses'} myVal={patient.patient.peripheral_pulses} patient={patient} />
                 </TableRow>
                 <TableRow>
                   <TableCell>Feet ulcer</TableCell>
-                  <PatientEditSelect change={change} setShift ={setShift} colName={'feet_ulcer'} myVal={patient.feet_ulcer} patient={patient} setDialog={setDialog}/>
+                  <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'feet_ulcer'} myVal={patient.patient.feet_ulcer} patient={patient} />
                 </TableRow>
               </TableBody>
             </Table>
+           
           </Stack>
+          <TextField defaultValue={patient.patient.general_examination_notes} label='Notes' rows={12} multiline onChange={(e)=>{
+              updateHandler(e.target.value,'general_examination_notes',patient,setActiveDoctorVisit)
+            }}></TextField>
         </Box>
       )}
     </div>

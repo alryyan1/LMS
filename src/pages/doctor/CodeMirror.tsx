@@ -1,9 +1,19 @@
-import React, {  useState } from "react";
+import React, {  Dispatch, SetStateAction, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { autocompletion } from "@codemirror/autocomplete";
 import axiosClient from "../../../axios-client";
 import { updateHandler } from "../constants";
 import { LoadingButton } from "@mui/lab";
+import { DoctorVisit } from "../../types/Patient";
+interface CodeEditorPrps {
+  options: string[];
+  setOptions: (options: string[]) => void;
+  init: string;
+  colName: string;
+  patient: DoctorVisit;
+  setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>
+  tableName: string;
+}
 function CodeEditor({
   options,
   setOptions,
@@ -11,9 +21,8 @@ function CodeEditor({
   colName,
   patient,
   setActiveDoctorVisit,
-  setDialog,
   tableName
-}) {
+}:CodeEditorPrps) {
   const [value, setValue] = React.useState(init);
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +69,7 @@ function CodeEditor({
 
               console.log(data, "update table db");
             });
-          updateHandler(value, colName, patient, setActiveDoctorVisit, setDialog).then(
+          updateHandler(value, colName, patient, setActiveDoctorVisit).then(
             (_, data) => {
               setLoading(false);
             }

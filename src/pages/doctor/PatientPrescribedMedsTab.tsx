@@ -2,8 +2,6 @@ import {
   Box,
   Button,
   Divider,
-  List,
-  ListItem,
   Table,
   TableBody,
   TableCell,
@@ -16,16 +14,23 @@ import AddPrescribedDrugAutocomplete from "./AddPrescribedDrugAutocomplete";
 import MyTableCell from "../inventory/MyTableCell";
 import { DeleteOutline } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { useEffect, useState } from "react";
-import { webUrl } from "../constants";
-import { useStateContext } from "../../appContext";
-import DrugCategoryAutocomplete from "../../components/DrugCategoryAutocomplete";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyCustomAutocompleteWithAdditionCababilty from "./MyCustomAutocompleteWithAdditionCababilty";
-import { ItemTypes } from "@minoru/react-dnd-treeview";
 import printJS from "print-js";
-function PatientPrescribedMedsTab(props) {
-
-  const { value, index, patient, setDialog, setActiveDoctorVisit,complains,setShift,activeDoctorVisit,user,items,userSettings, ...other } =
+import { DoctorVisit, User } from "../../types/Patient";
+import { DrugItem } from "../../types/pharmacy";
+interface PatientPrescribedMedsTabProbs {
+  value: number;
+  index: number;
+  patient: DoctorVisit;
+  setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>;
+  user: User;
+  items: DrugItem[];
+  userSettings: any;
+}
+function PatientPrescribedMedsTab(props:PatientPrescribedMedsTabProbs) {
+ 
+  const { value, index, patient, setActiveDoctorVisit,user,items,userSettings, ...other } =
     props;
   const [loading, setLoading] = useState();
   const [drugMedicalRoutes, setDrugMedicalRoutes] = useState([]);
@@ -50,7 +55,7 @@ function PatientPrescribedMedsTab(props) {
       <Button onClick={()=>{
          const form = new URLSearchParams();
          axiosClient
-           .get(`printPrescribedMedsReceipt?doctor_visit=${activeDoctorVisit.id}&user=${user.id}&base64=1`)
+           .get(`printPrescribedMedsReceipt?doctor_visit=${patient.id}&user=${user.id}&base64=1`)
            .then(({ data }) => {
              form.append("data", data);
              form.append("node_direct", userSettings.node_direct);
@@ -77,11 +82,10 @@ function PatientPrescribedMedsTab(props) {
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddPrescribedDrugAutocomplete
+
            items={items}
-          setShift={setShift}
-          change={change}
+           setActiveDoctorVisit={setActiveDoctorVisit}
             patient={patient}
-            setDialog={setDialog}
           />
           <Table sx={{ mt: 1 }} size="small">
             <TableHead>
@@ -95,7 +99,7 @@ function PatientPrescribedMedsTab(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {patient.prescriptions.map((medicine, i) => (
+              {patient.patient.prescriptions.map((medicine, i) => (
                 <TableRow key={i}>
                   <TableCell>{medicine.item.market_name}</TableCell>
                   <MyTableCell
@@ -135,15 +139,8 @@ function PatientPrescribedMedsTab(props) {
                           .then(({ data }) => {
                             console.log(data, "delete prescribed drugs data");
                             if (data.status) {
-                              setActiveDoctorVisit(data)
-                              setDialog((prev) => {
-                                return {
-                                  ...prev,
-                                  open: true,
-                                  color: "success",
-                                  message: "Medicine deleted successfully",
-                                };
-                              });
+                              setActiveDoctorVisit(data.patient)
+                          
                             }
                           })
                           .finally(() => setLoading(false));

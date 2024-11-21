@@ -107,6 +107,7 @@ export interface Patient {
     file_patient: FilePatient
     country: any
     sickleave: any
+    general_examination_notes:string
   }
   
   export interface Labrequest {

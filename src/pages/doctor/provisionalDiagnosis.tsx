@@ -2,9 +2,19 @@ import { Box, Divider, List, ListItem, TextField } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { useState } from "react";
 import CodeEditor from "./CodeMirror";
+import { DoctorVisit } from "../../types/Patient";
+interface ProvisionalDiagnosisProbs{
+  patient: DoctorVisit;
+  setActiveDoctorVisit: React.Dispatch<React.SetStateAction<DoctorVisit|null>>;
+  diagnosis: string[];
+  setDiagnosis: React.Dispatch<React.SetStateAction<any>>;
+  value: number;
+  index: number;
+  other: any;
+}
+function ProvisionalDiagnosis(props:ProvisionalDiagnosisProbs) {
 
-function ProvisionalDiagnosis(props) {
-  const { value, index, patient, setDialog, setShift, setActiveDoctorVisit,diagnosis,setDiagnosis, ...other } =
+  const { value, index, patient, setActiveDoctorVisit,diagnosis,setDiagnosis, ...other } =
     props;
   
   return (
@@ -22,7 +32,7 @@ function ProvisionalDiagnosis(props) {
         <Box sx={{ justifyContent: "space-around" }} className="">
        <Box sx={{ justifyContent: "space-around" }} className="">
           
-          <CodeEditor  tableName={'diagnosis'} setOptions={setDiagnosis} options={diagnosis} init={patient.provisional_diagnosis} patient={patient} setActiveDoctorVisit={setActiveDoctorVisit} setDialog={setDialog} colName={'provisional_diagnosis'}/>
+          <CodeEditor  tableName={'diagnosis'} setOptions={setDiagnosis} options={diagnosis} init={patient.patient.provisional_diagnosis} patient={patient} setActiveDoctorVisit={setActiveDoctorVisit}  colName={'provisional_diagnosis'}/>
        
        </Box>
             

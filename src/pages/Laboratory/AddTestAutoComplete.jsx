@@ -1,14 +1,9 @@
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { url } from "../constants";
-import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
-
-function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,selectedTests,setSelectedTests,setActiveDoctorVisit,change,setShowLabTests,setShowTestPanel,isLabPage}) {
+function AddTestAutoComplete({ actviePatient, setActiveDoctorVisit,selectedTests,setSelectedTests,setShowLabTests,setShowTestPanel,isLabPage}) {
   const [autoCompleteTests, setAutoCompleteTests] = useState([]);
-  console.log(actviePatient,'activePatient')
-  console.log(setActivePatient,'setActviePatient component rendered successfully');
   const [loading, setLoading] = useState(false);
   // console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
@@ -37,24 +32,13 @@ function AddTestAutoComplete({ setPatients ,actviePatient, setActivePatient,sele
         console.log(data,'data')
         setLoading(false);
         newActivePatient.active = true;
-        console.log(setActivePatient,'setActivePatient',data.patient,'data')
-        if (setActivePatient) {
-          // alert('dddddd')
-          console.log(data.patient,'new patient ');
-
-          setActivePatient(data.patient);
-        }
+        
         if (setActiveDoctorVisit) {
-          setActiveDoctorVisit(data);
+          console.log(newActivePatient)
+          setActiveDoctorVisit(newActivePatient);
         }
-        if (change) {
-     
-          change(data.patient);
-        }
-        //then update patients
+        
       
-        console.log(data.patient, "from db");
-        console.info(actviePatient, "active p");
       }else{
         setLoading(false);
        

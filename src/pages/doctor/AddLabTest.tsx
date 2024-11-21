@@ -22,28 +22,26 @@ import { DoctorVisit } from "../../types/Patient";
 interface AddLabTestsProbs{
   value: number;
   index: number;
-  patient: any;
+  patient: DoctorVisit;
   setActiveDoctorVisit: (data)=>void;
   complains: any;
-  setShift: any;
-  activeDoctorVisit: DoctorVisit;
   socket: any;
 
 }
 function AddLabTests(props:AddLabTestsProbs) {
 
 
-  const { value, index, patient, setActiveDoctorVisit,complains,setShift,activeDoctorVisit,socket, ...other } =
+  const { value, index, patient, setActiveDoctorVisit,complains,socket, ...other } =
     props;
   const [selectedTests, setSelectedTests] = useState([]);
     console.log(patient,'active patient in add lab')
   const deleteTest = (id) => {
     console.log(id);
-    axiosClient.delete(`labRequest/${id}/${activeDoctorVisit.id}`).then(({ data }) => {
+    axiosClient.delete(`labRequest/${id}/${patient.id}`).then(({ data }) => {
       console.log(data, "data");
       if (data.status) {
         console.log(data,'data')
-        setActiveDoctorVisit(data)
+        setActiveDoctorVisit(data.data)
       }
     });
   };
@@ -60,9 +58,9 @@ function AddLabTests(props:AddLabTestsProbs) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-       <Typography variant="h5" >Lab number is {patient.visit_number}</Typography>
+       <Typography variant="h5" >Lab number is {patient.patient.visit_number}</Typography>
 
-          <AddTestAutoComplete  setActiveDoctorVisit={setActiveDoctorVisit}  setShift={setShift}  actviePatient={activeDoctorVisit}    setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
+          <AddTestAutoComplete   setActiveDoctorVisit={setActiveDoctorVisit}   actviePatient={patient}    setSelectedTests={setSelectedTests} selectedTests={selectedTests} />
   
           <TableContainer >
             <Table sx={{mt:1}} size="small">
@@ -89,7 +87,7 @@ function AddLabTests(props:AddLabTestsProbs) {
                       </TableCell>
                       <TableCell sx={{ border: "none" }} align="right">
                         <IconButton
-                          disabled={patient?.is_lab_paid == 1}
+                          disabled={patient?.patient.is_lab_paid == 1}
                           aria-label="delete"
                           onClick={() => deleteTest(test.id)}
                         >
@@ -113,14 +111,14 @@ function AddLabTests(props:AddLabTestsProbs) {
       )}
        <Divider/>
         <Stack direction="row" justifyContent={'space-around'} gap={2}>
-            <LoadingButton disabled={patient.doctor_lab_request_confirm == 1 } onClick={()=>{
-              updateHandler(1,'doctor_lab_request_confirm',patient,setActiveDoctorVisit,setDialog).then((data)=>{
+            <LoadingButton disabled={patient.patient.doctor_lab_request_confirm == 1 } onClick={()=>{
+              updateHandler(1,'doctor_lab_request_confirm',patient,setActiveDoctorVisit).then((data)=>{
                 console.log(data,'data from handler')
                   socket.emit('lab_request_confirm',data.id)
               })
             }} variant="contained">Confirm</LoadingButton>
-            <LoadingButton disabled={patient.doctor_lab_urgent_confirm == 1} onClick={()=>{
-              updateHandler(1,'doctor_lab_urgent_confirm',patient,setActiveDoctorVisit,setDialog)
+            <LoadingButton disabled={patient.patient.doctor_lab_urgent_confirm == 1} onClick={()=>{
+              updateHandler(1,'doctor_lab_urgent_confirm',patient,setActiveDoctorVisit)
 
             }} variant="contained">Urgent</LoadingButton>
           </Stack>
