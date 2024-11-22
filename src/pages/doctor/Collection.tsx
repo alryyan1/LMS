@@ -17,13 +17,19 @@ import pic7 from "../../assets/images/7.png";
 import printJS from "print-js";
 import axiosClient from "../../../axios-client";
 import { LoadingButton } from "@mui/lab";
+import { DoctorVisit } from "../../types/Patient";
 const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
 
-  function Collection(props) {
+   interface CollectionProbs {
+    value: number;
+    index: number;
+    patient: DoctorVisit;
+   }
+  function Collection(props:CollectionProbs) {
     const { value, index, patient, ...other } =
       props;
 
-      const containers = patient?.labrequests.map((req) => {
+      const containers = patient?.patient.labrequests.map((req) => {
         return req.main_test.container;
       });
       const filteredContainers = containers?.filter(
@@ -45,9 +51,9 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
            
            
           
-          {patient && patient.labrequests.length > 0 && (
+          {patient && patient.patient.labrequests.length > 0 && (
             <List>
-              {patient.labrequests.map((test) => {
+              {patient.patient.labrequests.map((test) => {
                 return (
                   <ListItem
                     sx={{
@@ -79,12 +85,12 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
         </Paper>
         <LoadingButton
                 onClick={() => {
-                  axiosClient.get(`patient/barcode/${patient.id}`).then(({data})=>{
+                  axiosClient.get(`patient/barcode/${patient.patient.id}`).then(({data})=>{
                   console.log(data,'barcode')
                   })
 
                   axiosClient
-                    .get(`patient/sampleCollected/${patient.id}`)
+                    .get(`patient/sampleCollected/${patient.patient.id}`)
                     .then(({ data }) => {
                     //  setShift(data.shift);
                     });
@@ -95,10 +101,10 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
                         "Content-Type": "APPLICATION/JSON",
                       },
 
-                      body: JSON.stringify(patient),
+                      body: JSON.stringify(patient.patient),
                     }).then(() => {});
                   axiosClient
-                    .get(`printBarcode?pid=${patient.id}&base64=1`)
+                    .get(`printBarcode?pid=${patient.patient.id}&base64=1`)
                     .then(({ data }) => {
                       const form = new URLSearchParams();
 

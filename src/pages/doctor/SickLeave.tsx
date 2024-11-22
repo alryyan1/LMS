@@ -9,22 +9,23 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import MyDateField2 from "../../components/MyDateField2";
-import { webUrl } from "../constants";
+import { updateHandler, webUrl } from "../constants";
 import { DoctorVisit, User } from "../../types/Patient";
-interface  SickLeaveProps {
+interface SickLeaveProps {
   value: any;
   index: number;
   patient: DoctorVisit;
   user: User;
   setActiveDoctorVisit: any;
 }
-function SickLeave(props:SickLeaveProps) {
-  const { value, index, patient, user,setActiveDoctorVisit, ...other } = props;
+function SickLeave(props: SickLeaveProps) {
+  const { value, index, patient, user, setActiveDoctorVisit, ...other } = props;
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(patient.patient.sickleave != null);
 
@@ -35,9 +36,7 @@ function SickLeave(props:SickLeaveProps) {
       })
       .then(({ data }) => {
         console.log(data);
-      
-      })
- 
+      });
   };
 
   return (
@@ -53,24 +52,36 @@ function SickLeave(props:SickLeaveProps) {
       </Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
-          <Stack
-            direction={"row"}
+          <Stack 
+            direction={"column"}
             alignItems={"center"}
-            gap={2}
+            gap={1}
+            alignContent={'stretch'}
             justifyContent={"space-around"}
           >
+            <Typography variant="h3">Reports</Typography>
+            <TextField label='Refer' defaultValue={patient.patient.referred} variant="standard" onChange={(e)=>{
+              updateHandler(e.target.value,'referred',patient,setActiveDoctorVisit)
+            }}></TextField>
             <Button
               href={`${webUrl}file?doctor_visit=${patient.id}&user=${user?.id}`}
-            
-            variant="contained">File </Button>
-            <Button variant="contained">Lab </Button>
+              variant="contained"
+            >
+              Medical  File Record{" "}
+            </Button>
+            <Button
+              disabled={patient.patient.result_is_locked == 1}
+              href={`${webUrl}result?pid=${patient.patient.id}`}
+              variant="contained"
+            >
+              Lab Result
+            </Button>{" "}
             <Button
               variant="contained"
               href={`${webUrl}attendance?pid=${patient.patient.id}&user=${user?.id}`}
             >
               Attendance
             </Button>
-
             <LoadingButton
               loading={loading}
               disabled={patient?.patient.sickleave != null}
@@ -141,7 +152,9 @@ function SickLeave(props:SickLeaveProps) {
                         onChange={(e) => {
                           updateSickleave(e, "job_and_place_of_work");
                         }}
-                        defaultValue={patient.patient.sickleave.job_and_place_of_work}
+                        defaultValue={
+                          patient.patient.sickleave.job_and_place_of_work
+                        }
                       />
                     </TableCell>
                   </TableRow>

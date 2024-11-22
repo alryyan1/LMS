@@ -29,38 +29,28 @@ interface AddMedicalServiceProps {
   user: any;
   setActiveService: any;
 }
-function AddMedicalService(props:AddMedicalServiceProps) {
-  const {
-    value,
-    index,
-    patient,
-    setActiveDoctorVisit,
-    user,
-    ...other
-  } = props;
-  
-  
-  const [selectedService, setSelectedService] = useState<RequestedService|null>(null);
+function AddMedicalService(props: AddMedicalServiceProps) {
+  const { value, index, patient, setActiveDoctorVisit, user, ...other } = props;
+
+  // alert(user?.id)
+  const [selectedService, setSelectedService] =
+    useState<RequestedService | null>(null);
 
   const deleteService = (id) => {
     axiosClient
       .delete(`requestedService/${id}`)
       .then(({ data }) => {
-        
         if (data.status) {
           // change(data.patient);
           if (setActiveDoctorVisit) {
             setActiveDoctorVisit(data.patient);
           }
-         
         }
       })
-      .catch(({ response: { data } }) => {
-  
-      });
+      .catch(({ response: { data } }) => {});
   };
   const [selectedServices, setSelectedServices] = useState([]);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   return (
     <div
       role="tabpanel"
@@ -85,21 +75,20 @@ function AddMedicalService(props:AddMedicalServiceProps) {
               <Table sx={{ mt: 1 }} size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell> {t("name")}</TableCell>
+                    <TableCell> Name</TableCell>
                     <TableCell>Count</TableCell>
                     <TableCell>Doctor Note</TableCell>
 
-                 <TableCell width={"5%"} align="right">
-                      {t("other")}
+                    <TableCell width={"5%"} align="right">
+                      Other
                     </TableCell>
                     <TableCell>Status</TableCell>
-                    {user?.is_nurse == 1 &&    <TableCell>Nurse Note</TableCell>}
+                    {user?.is_nurse == 1 && <TableCell>Nurse Note</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {patient.services.map((service) => {
-                    
-                    // 
+                    //
 
                     return (
                       <TableRow
@@ -112,6 +101,7 @@ function AddMedicalService(props:AddMedicalServiceProps) {
                         <MyTableCell
                           sx={{ width: "40px" }}
                           table="editRequested"
+                          show
                           colName={"count"}
                           item={service}
                           change={setActiveDoctorVisit}
@@ -128,19 +118,16 @@ function AddMedicalService(props:AddMedicalServiceProps) {
                         >
                           {service.doctor_note}
                         </MyTableCell>
-                     <TableCell>
-                          
-                            <LoadingButton
-                              variant="contained"
-                              fullWidth
-                              aria-label="delete"
-                              onClick={() => deleteService(service.id)}
-                            >
-                              {t("delete")}
-                            </LoadingButton>
-                          
-                          
-                        </TableCell> 
+                        <TableCell>
+                          <LoadingButton
+                            variant="contained"
+                            fullWidth
+                            aria-label="delete"
+                            onClick={() => deleteService(service.id)}
+                          >
+                            {t("delete")}
+                          </LoadingButton>
+                        </TableCell>
                         <TableCell>
                           {service.done === 1 ? (
                             <img width={15} src={green} alt="green" />
@@ -148,15 +135,17 @@ function AddMedicalService(props:AddMedicalServiceProps) {
                             <img width={15} src={red} alt="red" />
                           )}
                         </TableCell>
-                        {user?.is_nurse == 1 &&  <TableCell>
-                          <Button
-                            onClick={() => {
-                              setSelectedService(service);
-                            }}
-                          >
-                            show
-                          </Button>
-                        </TableCell>}
+                        {user?.is_nurse == 1 && (
+                          <TableCell>
+                            <Button
+                              onClick={() => {
+                                setSelectedService(service);
+                              }}
+                            >
+                              show
+                            </Button>
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}
@@ -165,36 +154,51 @@ function AddMedicalService(props:AddMedicalServiceProps) {
               <Divider />
               {selectedService && (
                 <div>
-                  <Typography textAlign={'center'} variant="h4">{selectedService.service.name}</Typography>
+                  <Typography textAlign={"center"} variant="h4">
+                    {selectedService.service.name}
+                  </Typography>
                   <TextField
                     key={selectedService.id}
                     defaultValue={selectedService.nurse_note}
                     onChange={(e) => {
                       axiosClient
-                        .patch(`editRequested/${selectedService.id}`,{colName:'nurse_note',val:e.target.value})
+                        .patch(`editRequested/${selectedService.id}`, {
+                          colName: "nurse_note",
+                          val: e.target.value,
+                        })
                         .then(({ data }) => {
                           setActiveDoctorVisit(data.data);
                         });
                     }}
                     multiline
                     rows={5}
+                    sx={{p:1}}
                     fullWidth
-                    sx={{ p: 2 }}
                     label="Nurse Note"
                   ></TextField>
-                  <LoadingButton loading={loading} disabled={selectedService.done == 1} onClick={()=>{
-                    setLoading(true)
+                  <LoadingButton
+                    loading={loading}
+                    disabled={selectedService.done == 1}
+                    onClick={() => {
+                      setLoading(true);
                       axiosClient
-                      .patch(`editRequested/${selectedService.id}`,{colName:'done',val:1})
-                      .then(({ data }) => {
-                        setActiveDoctorVisit(data.data);
-                        setSelectedService(data.requestedService)
-                      }).finally(()=>{
-                        setLoading(false)
-                      });
-                  }} fullWidth  variant="contained" >
-                              Done
-                            </LoadingButton>
+                        .patch(`editRequested/${selectedService.id}`, {
+                          colName: "done",
+                          val: 1,
+                        })
+                        .then(({ data }) => {
+                          setActiveDoctorVisit(data.data);
+                          setSelectedService(data.requestedService);
+                        })
+                        .finally(() => {
+                          setLoading(false);
+                        });
+                    }}
+                    fullWidth
+                    variant="contained"
+                  >
+                    Done
+                  </LoadingButton>
                 </div>
               )}
             </TableContainer>

@@ -131,6 +131,7 @@ export interface Patient {
     neuropsychiatric_system:string;
     endocrine_system:string;
     peripheral_vascular_system:string;
+    referred:string
   }
   
   export interface Labrequest {

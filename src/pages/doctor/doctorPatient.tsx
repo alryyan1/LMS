@@ -41,7 +41,7 @@ const  DoctorPatient = ({
           onClick={() => {
          
             setActiveDoctorVisit(visit);
-            console.log(visit, "selected visit");
+            // console.log(visit, "selected visit");
             setLayout((prev) => {
               return {
                 ...prev,

@@ -34,7 +34,7 @@ function AddLabTests(props:AddLabTestsProbs) {
   const { value, index, patient, setActiveDoctorVisit,complains,socket, ...other } =
     props;
   const [selectedTests, setSelectedTests] = useState([]);
-    console.log(patient,'active patient in add lab')
+    // console.log(patient,'active patient in add lab')
   const deleteTest = (id) => {
     console.log(id);
     axiosClient.delete(`labRequest/${id}/${patient.id}`).then(({ data }) => {

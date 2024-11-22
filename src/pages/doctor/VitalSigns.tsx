@@ -34,7 +34,7 @@ function VitalSigns({
         .then(({ data }) => {
           console.log(data, "updated patient ");
           if (data.status) {
-            socket.emit("patientUpdated", patient);
+            socket.emit("patientUpdated", data.data);
             setActiveDoctorVisit(data.data);
             resolve(data.data);
           }
@@ -80,6 +80,7 @@ function VitalSigns({
                   },
                 }}
                 onChange={(e) => {
+                  console.log(patient.id,'active doctor visit id')
                   updateHandler(
                     e.target.value,
                     "bp",

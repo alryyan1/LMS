@@ -17,7 +17,7 @@ axiosClient.interceptors.request.use((config)=>{
 
 axiosClient.interceptors.response.use((res)=>{
     if (res.data.show) {
-        toast.success("تم العمليه بنجاح");
+        toast.success("Success");
       }
     return res
 },(err)=>{

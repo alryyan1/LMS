@@ -22,7 +22,7 @@ function App() {
   const { user,setUser,setToken } = useStateContext();
   useEffect(()=>{
    const timer =  setInterval(() => {
-      console.log('checking user is valid',user)
+      // console.log('checking user is valid',user)
       if (localStorage.getItem('ACCESS_TOKEN') == null) {
         console.log('user is invalid')
         nav('/login')

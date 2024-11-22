@@ -186,13 +186,14 @@ function Doctor() {
     });
     socket.on("newDoctorPatientFromServer", (doctorVisit) => {
       console.log("newDoctorPatientFromServer " + doctorVisit);
-      updateDoctorPatients(doctorVisit);
-      showDocPatients();
-      socketEventHandler(null, doctorVisit, " has just booked", newImage);
+      // alert('new patient')
+      update(doctorVisit);
+      // showDocPatients();
+      // socketEventHandler(null, doctorVisit, " has just booked", newImage);
     });
 
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
-      setActiveDoctorVisit(doctorVisit);
+      patientUpdatedFromServerHandler(doctorVisit)
     });
 
     return () => {
@@ -203,6 +204,18 @@ function Doctor() {
       socket.off("patientUpdatedFromServer");
     };
   }, []);
+
+  const patientUpdatedFromServerHandler = (doctorVisit)=>{
+ // alert('patient updated')
+ console.log(doctorVisit,'doc visit from server update','active docvisit id ',activeDoctorVisit?.id)
+ update(doctorVisit)
+ if (doctorVisit.id == activeDoctorVisit?.id) {
+  // alert('same')
+  console.log('saaaaaaaaaaame')
+   setActiveDoctorVisit(doctorVisit);
+ }
+  }
+
   const hideVisits = () => {
     setShowPreviousVisits(false);
     setLayout((prev) => {
@@ -293,6 +306,23 @@ function Doctor() {
     });
   };
 
+  const update = (patient:DoctorVisit)=>{
+    if(patient.id == activeDoctorVisit?.id){
+      // setActiveDoctorVisit(()=>{
+      //   return {...patient }
+      // })
+    }
+    setPatients((prev)=>{
+      
+      if(!prev.find((p)=>p.id == patient.id)) return [patient,...prev]
+      return prev.map((p)=>{
+        if(p.id === patient?.id){
+          return {...patient }
+        }
+        return p
+      })
+    })
+  }
   //update doctor visit whenever change is made to doctorVisit state variable
   useEffect(() => {
     if (activeDoctorVisit) {
@@ -301,26 +331,7 @@ function Doctor() {
           is_new: false,
         });
       }
-
-      setPatients((prev)=>{
-        return prev.map((p)=>{
-          if(p.id === activeDoctorVisit?.id){
-            return {...activeDoctorVisit }
-          }
-          return p
-        })
-      })
-      // setShift((prev) => {
-      //   return {
-      //     ...prev,
-      //     visits: prev.visits.map((v) => {
-      //       if (v.id === activeDoctorVisit?.id) {
-      //         return { ...activeDoctorVisit };
-      //       }
-      //       return v;
-      //     }),
-      //   };
-      // });
+      update(activeDoctorVisit)
     }
     //update patient when user click it to remove animation
   }, [activeDoctorVisit]);
@@ -567,9 +578,9 @@ function Doctor() {
         ) : (
           <div></div>
         )}
-        <Card style={{ backgroundColor: "#ffffff40" }}>
+        <Card key={activeDoctorVisit?.patient.updated_at} style={{ backgroundColor: "#ffffff40" }}>
           {activeDoctorVisit && (
-            <VitalSigns
+            <VitalSigns 
               setActiveDoctorVisit={setActiveDoctorVisit}
               key={activeDoctorVisit.updated_at}
               socket={socket}
