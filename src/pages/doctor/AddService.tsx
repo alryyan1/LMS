@@ -20,19 +20,27 @@ import { LoadingButton } from "@mui/lab";
 import MyTableCell from "../inventory/MyTableCell";
 import green from "./../../assets/images/green.png";
 import red from "./../../assets/images/red.png";
-function AddMedicalService(props) {
+import { DoctorVisit, RequestedService } from "../../types/Patient";
+interface AddMedicalServiceProps {
+  value: any;
+  index: number;
+  patient: DoctorVisit;
+  setActiveDoctorVisit: any;
+  user: any;
+  setActiveService: any;
+}
+function AddMedicalService(props:AddMedicalServiceProps) {
   const {
     value,
     index,
     patient,
-    setDialog,
     setActiveDoctorVisit,
     user,
     ...other
   } = props;
   
   
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState<RequestedService|null>(null);
 
   const deleteService = (id) => {
     axiosClient
@@ -44,29 +52,15 @@ function AddMedicalService(props) {
           if (setActiveDoctorVisit) {
             setActiveDoctorVisit(data.patient);
           }
-          setDialog((prev) => {
-            return {
-              ...prev,
-              open: true,
-              message: "Delete was successfull",
-              color: "success",
-            };
-          });
+         
         }
       })
       .catch(({ response: { data } }) => {
-        setDialog((prev) => {
-          return {
-            ...prev,
-            open: true,
-            message: data.message,
-            color: "error",
-          };
-        });
+  
       });
   };
   const [selectedServices, setSelectedServices] = useState([]);
-  const [loading,setLoading] = useState()
+  const [loading,setLoading] = useState(false)
   return (
     <div
       role="tabpanel"
@@ -82,11 +76,9 @@ function AddMedicalService(props) {
         <Box sx={{ justifyContent: "space-around", m: 1 }} className="">
           <AddServiceAutocomplete
             setActiveDoctorVisit={setActiveDoctorVisit}
-            activeDoctorVisit={patient}
+            patient={patient}
             selectedServices={selectedServices}
             setSelectedServices={setSelectedServices}
-            actviePatient={patient}
-            setDialog={setDialog}
           />
           {patient?.services?.length > 0 && (
             <TableContainer sx={{ border: "none", textAlign: "left" }}>
@@ -118,22 +110,20 @@ function AddMedicalService(props) {
                       >
                         <TableCell>{service.service.name}</TableCell>
                         <MyTableCell
-                          setDialog={setDialog}
                           sx={{ width: "40px" }}
                           table="editRequested"
                           colName={"count"}
                           item={service}
-                          setActiveDoctorVisit={setActiveDoctorVisit}
+                          change={setActiveDoctorVisit}
                         >
                           {service.count}
                         </MyTableCell>
                         <MyTableCell
-                          setDialog={setDialog}
                           multiline
                           table="editRequested"
                           colName={"doctor_note"}
                           item={service}
-                          setActiveDoctorVisit={setActiveDoctorVisit}
+                          change={setActiveDoctorVisit}
                           show
                         >
                           {service.doctor_note}

@@ -1,12 +1,10 @@
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { Controller } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
 
-function MyDateField2({ val, item ,setDialog,disabled, label='تاريخ الانتهاء',path='depositItems/update',colName="expire"}) {
+function MyDateField2({ val, item ,disabled, label='تاريخ الانتهاء',path='depositItems/update',colName="expire"}) {
   // console.log(item,'item in date field')
   // console.log(item , val,'date filed ')
   // console.log(dayjs(val), "date filed ", val, "val");
@@ -34,18 +32,7 @@ function MyDateField2({ val, item ,setDialog,disabled, label='تاريخ الا�
                 dayJsObj.month() + 1
               }/${dayJsObj.date()}`,
             })
-            .then(({ data }) => {
-              if (data.status) {
-                
-                setDialog((prev)=>{
-                  return {
-                     ...prev,
-                    open: true,
-                    message: "تم التعديل ",
-                  };
-                })
-              }
-            });
+          
         }}
         sx={{ mb: 1 }}
       />

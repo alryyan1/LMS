@@ -36,7 +36,7 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
       {value === index && (
         <Box sx={{ justifyContent: "space-around" }} className="group">
           <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
-            <Table size="small">
+            {/* <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
@@ -54,8 +54,8 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
                   <PatientEditSelect setActiveDoctorVisit={setActiveDoctorVisit}   colName={'pallor'} myVal={patient.patient.pallor} patient={patient} />
                 </TableRow>
               </TableBody>
-            </Table>
-            <Table size="small">
+            </Table> */}
+            {/* <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
@@ -93,9 +93,9 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
                 </TableRow>
               </TableBody>
             </Table>
-           
+            */}
           </Stack>
-          <TextField defaultValue={patient.patient.general_examination_notes} label='Notes' rows={12} multiline onChange={(e)=>{
+          <TextField fullWidth  defaultValue={patient.patient.general_examination_notes} label='Clinical Notes' rows={12} multiline onChange={(e)=>{
               updateHandler(e.target.value,'general_examination_notes',patient,setActiveDoctorVisit)
             }}></TextField>
         </Box>

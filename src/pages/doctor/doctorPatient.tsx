@@ -21,13 +21,10 @@ interface DoctorPatientProps {
 const  DoctorPatient = ({
   visit,
   activeDoctorVisit,
-
   delay,
   setActiveDoctorVisit,
   setLayout,
-  showPatients,
   setShowPatients,
-  changeDoctorVisit,
 }:DoctorPatientProps) => {
   // console.log(activePatient,'active patient')
   return (
@@ -35,7 +32,7 @@ const  DoctorPatient = ({
       <Badge
         color="secondary"
         badgeContent={
-          visit.patient.visit_count == 1 ? undefined : visit.patient.visit_count
+          visit.file?.patients?.length == 1 ? undefined : visit.file?.patients?.length
         }
         key={visit.patient.id}
       >

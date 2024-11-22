@@ -24,7 +24,9 @@ export interface DoctorVisit {
   patient: Patient
   services: RequestedService[]
   only_lab:number;
-  file:number
+  file:PatientFile;
+
+
 }
 export interface PatientFile {
   id: number
@@ -107,7 +109,28 @@ export interface Patient {
     file_patient: FilePatient
     country: any
     sickleave: any
-    general_examination_notes:string
+    general_examination_notes:string;
+    past_medical_history:string;
+    social_history:string;
+    allergies:string;
+    general:string;
+    skin:string;
+    head:string;
+    eyes:string;
+    ear:string;
+    nose:string;
+    mouth:string;
+    throat:string;
+    neck:string;
+    respiratory_system:string;
+    cardio_system:string;
+    git_system:string;
+    genitourinary_system:string;
+    nervous_system:string;
+    musculoskeletal_system:string;
+    neuropsychiatric_system:string;
+    endocrine_system:string;
+    peripheral_vascular_system:string;
   }
   
   export interface Labrequest {

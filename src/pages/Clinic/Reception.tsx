@@ -33,9 +33,9 @@ import { socket } from "../../socket";
 import { DoctorShift, DoctorVisit, Patient } from "../../types/Patient";
 import RequestedTestsLab from "../Laboratory/RequestedTestsLab";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
+import OpenDoctorTabs from "./OpenDoctorsTabs";
 
 function Reception() {
-  
   const {
     actviePatient,
     setActivePatient,
@@ -230,11 +230,11 @@ function Reception() {
   }, []);
   // console.log(actviePatient, "active patient");
   const update = (doctorVisit: DoctorVisit) => {
-    console.log(doctorVisit,'doctor visit in update function',doctorVisit.id)
+    console.log(doctorVisit, "doctor visit in update function", doctorVisit.id);
     setActivePatient(doctorVisit);
     setActiveShift((prev) => {
-      if (prev.visits.map((v) => v.id ).find((v)=>v  == doctorVisit.id)) {
-          // alert('patient found')
+      if (prev.visits.map((v) => v.id).find((v) => v == doctorVisit.id)) {
+        // alert('patient found')
         //existing
         //update patient
         const ActiveDoctorShiftUpdated = {
@@ -265,7 +265,7 @@ function Reception() {
         return ActiveDoctorShiftUpdated;
       } else {
         // alert('new patient')
-        console.log('new patient')
+        console.log("new patient");
         //new patietn added
         const ActiveDoctorShiftUpdated = {
           ...prev,
@@ -287,10 +287,33 @@ function Reception() {
       }
     });
   };
+  const selectDoctorHandler = (shift: DoctorShift) => {
+    setActiveShift(shift);
+    setFoundedPatients([]);
+    setActivePatient(null);
+    setShowPatientServices(false);
+    setShowServicePanel(false);
+    if (shift.visits.length == 0) {
+      showFormHandler();
+    } else {
+      hideForm();
+      setLayout((prev) => {
+        return {
+          ...prev,
+          patients: "minmax(270px,3.2fr)",
+        };
+      });
+    }
+  };
   return (
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
-        {openedDoctors
+        <OpenDoctorTabs
+          activeShift={activeShift}
+          openedDoctors={openedDoctors}
+          selectDoctorHandler={selectDoctorHandler}
+        />
+        {/* {openedDoctors
           // .filter((shift) => shift.user_id == user?.id)
           .map((shift) => {
             // console.log(shift, "shift");
@@ -306,32 +329,13 @@ function Reception() {
                       ? "activeDoctor doctor"
                       : "doctor"
                   }
-                  onClick={() => {
-                    // console.log('activeShift',doctor.id);
-
-                    setActiveShift(shift);
-                    setFoundedPatients([]);
-                    setActivePatient(null);
-                    setShowPatientServices(false);
-                    setShowServicePanel(false);
-                    if (shift.visits.length == 0) {
-                      showFormHandler();
-                    } else {
-                      hideForm();
-                      setLayout((prev) => {
-                        return {
-                          ...prev,
-                          patients: "minmax(270px,3.2fr)",
-                        };
-                      });
-                    }
-                  }}
+                  onClick={selectDoctorHandler}
                 >
                   {shift.doctor.name}
                 </Item>
               </Badge>
             );
-          })}
+          })} */}
       </Stack>
       <AddDoctorDialog />
 
@@ -446,12 +450,11 @@ function Reception() {
             showLabTests &&
             actviePatient.patient.labrequests.length > 0 && (
               <RequestedTestsLab
-              actviePatient={actviePatient}
-              companies={companies}
-              setDialog={setDialog}
-              update={update}
-              userSettings={userSettings}
-              
+                actviePatient={actviePatient}
+                companies={companies}
+                setDialog={setDialog}
+                update={update}
+                userSettings={userSettings}
               />
             )}
           {actviePatient && showTestPanel && <TestGroups />}
@@ -473,7 +476,8 @@ function Reception() {
             </Slide>
           )}
           {actviePatient && (
-            <TextField hidden
+            <TextField
+              hidden
               sx={{ mt: 1 }}
               defaultValue={actviePatient.patient.discount}
               onChange={(e) => {
@@ -490,7 +494,7 @@ function Reception() {
             height: "77vh",
           }}
         >
-          <div style={{ overflow: "auto",padding:'5px' }}>
+          <div style={{ overflow: "auto", padding: "5px" }}>
             <Stack
               flexDirection={"row"}
               flexWrap={"wrap"}

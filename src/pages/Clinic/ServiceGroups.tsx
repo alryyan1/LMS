@@ -12,6 +12,7 @@ import TestGroupChildren from "../TestGroupChildren";
 import { useOutletContext } from "react-router-dom";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import AddServiceAutocomplete from "./AddServiceAutocomplete";
+import { ReceptionLayoutProps } from "../../types/CutomTypes";
 function ServiceGroup() {
   const {
     serviceCategories,
@@ -22,9 +23,8 @@ function ServiceGroup() {
     activeShift,
     actviePatient,
     setActivePatient,
-    setDialog,
     settings,
-  } = useOutletContext();
+  } = useOutletContext<ReceptionLayoutProps>();
 
   const serviceAddHandler = (service) => {
     setSelectedServices((prev) => {
@@ -60,10 +60,9 @@ function ServiceGroup() {
         setShowServicePanel={setShowServicePanel}
         settings={settings}
         activeShift={activeShift}
-        actviePatient={actviePatient}
+        patient={actviePatient}
         selectedServices={selectedServices}
-        setActivePatient={setActivePatient}
-        setDialog={setDialog}
+        setActiveDoctorVisit={setActivePatient}
       />
       <Tabs
         textColor="secondary"

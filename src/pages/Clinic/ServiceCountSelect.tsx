@@ -28,7 +28,9 @@ const ServiceCountSelect = ({ id ,update,service,disabled}:ServiceCountSelectPro
   };
 
   return (
-    <Select  fullWidth sx={{
+<>
+<Select variant="standard" label='العدد'   fullWidth sx={{
+  color:'black',
    '& .MuiSelect-select': {
       paddingRight: 0.5,
       paddingLeft: 0.5,
@@ -53,6 +55,9 @@ const ServiceCountSelect = ({ id ,update,service,disabled}:ServiceCountSelectPro
       <MenuItem value={9}>9</MenuItem>
       <MenuItem value={10}>10</MenuItem>
     </Select>
+<label htmlFor="">العدد</label>
+
+</>
   );
 };
 

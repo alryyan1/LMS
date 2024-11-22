@@ -15,41 +15,29 @@ import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import MyDateField2 from "../../components/MyDateField2";
 import { webUrl } from "../constants";
-
-function SickLeave(props) {
-  const { value, index, patient, setDialog, change, user, ...other } = props;
+import { DoctorVisit, User } from "../../types/Patient";
+interface  SickLeaveProps {
+  value: any;
+  index: number;
+  patient: DoctorVisit;
+  user: User;
+  setActiveDoctorVisit: any;
+}
+function SickLeave(props:SickLeaveProps) {
+  const { value, index, patient, user,setActiveDoctorVisit, ...other } = props;
   const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(patient.sickleave != null);
+  const [show, setShow] = useState(patient.patient.sickleave != null);
 
   const updateSickleave = (e, colName) => {
     axiosClient
-      .patch(`sickleave/${patient.sickleave.id}`, {
+      .patch(`sickleave/${patient.patient.sickleave.id}`, {
         [colName]: e.target.value,
       })
       .then(({ data }) => {
         console.log(data);
-        if (data.status) {
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
+      
       })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
+ 
   };
 
   return (
@@ -71,18 +59,21 @@ function SickLeave(props) {
             gap={2}
             justifyContent={"space-around"}
           >
-            <Button variant="contained">File </Button>
+            <Button
+              href={`${webUrl}file?doctor_visit=${patient.id}&user=${user?.id}`}
+            
+            variant="contained">File </Button>
             <Button variant="contained">Lab </Button>
             <Button
               variant="contained"
-              href={`${webUrl}attendance?pid=${patient.id}&user=${user?.id}`}
+              href={`${webUrl}attendance?pid=${patient.patient.id}&user=${user?.id}`}
             >
               Attendance
             </Button>
 
             <LoadingButton
               loading={loading}
-              disabled={patient?.sickleave != null}
+              disabled={patient?.patient.sickleave != null}
               onClick={() => {
                 setLoading(true);
                 axiosClient
@@ -91,7 +82,7 @@ function SickLeave(props) {
                     console.log(data);
                     if (data.status) {
                       setShow(true);
-                      change(data.data);
+                      setActiveDoctorVisit(data.data);
                     }
                   })
                   .finally(() => setLoading(false));
@@ -116,12 +107,11 @@ function SickLeave(props) {
                     <TableCell>From</TableCell>
                     <TableCell>
                       <MyDateField2
-                        setDialog={setDialog}
                         colName="from"
                         label="from"
-                        item={patient.sickleave}
+                        item={patient.patient.sickleave}
                         path={`sickleave`}
-                        val={patient.sickleave.from}
+                        val={patient.patient.sickleave.from}
                       />
                     </TableCell>
                   </TableRow>
@@ -129,12 +119,11 @@ function SickLeave(props) {
                     <TableCell>To</TableCell>
                     <TableCell>
                       <MyDateField2
-                        setDialog={setDialog}
                         colName="to"
                         label="to"
-                        item={patient.sickleave}
+                        item={patient.patient.sickleave}
                         path={`sickleave`}
-                        val={patient.sickleave.to}
+                        val={patient.patient.sickleave.to}
                       />
                     </TableCell>
                   </TableRow>
@@ -152,7 +141,7 @@ function SickLeave(props) {
                         onChange={(e) => {
                           updateSickleave(e, "job_and_place_of_work");
                         }}
-                        defaultValue={patient.sickleave.job_and_place_of_work}
+                        defaultValue={patient.patient.sickleave.job_and_place_of_work}
                       />
                     </TableCell>
                   </TableRow>
@@ -169,7 +158,7 @@ function SickLeave(props) {
                         onChange={(e) => {
                           updateSickleave(e, "o_p_department");
                         }}
-                        defaultValue={patient.sickleave.o_p_department}
+                        defaultValue={patient.patient.sickleave.o_p_department}
                       />
                     </TableCell>
                   </TableRow>
@@ -186,7 +175,7 @@ function SickLeave(props) {
                         onChange={(e) => {
                           updateSickleave(e, "hospital_no");
                         }}
-                        defaultValue={patient.sickleave.hospital_no}
+                        defaultValue={patient.patient.sickleave.hospital_no}
                       />
                     </TableCell>
                   </TableRow>
@@ -195,7 +184,7 @@ function SickLeave(props) {
               <Button
                 sx={{ m: 1 }}
                 variant="contained"
-                href={`${webUrl}sickleave?pid=${patient.id}&user=${user?.id}`}
+                href={`${webUrl}sickleave?pid=${patient.patient.id}&user=${user?.id}`}
               >
                 PDF
               </Button>

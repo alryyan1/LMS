@@ -111,7 +111,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              patient?.file.id
+              patient?.file?.id
             }
           </div>
         </div>

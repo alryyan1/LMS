@@ -43,11 +43,11 @@ function CodeEditor({
       <CodeMirror
         width="100%"
         value={value}
-        height="200px"
+        // height="200px"
         extensions={[autocompletion({ override: [myCompletions] })]}
         onChange={onChange}
       />
-      ;
+      
       <LoadingButton
         loading={loading}
         fullWidth

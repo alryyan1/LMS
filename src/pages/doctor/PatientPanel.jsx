@@ -26,15 +26,12 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
 
   return (
     <Stack
-
       justifyContent={"space-around"}
       direction={"column"}
       component={Card}
-
-      sx={{ border: "1px solid black", p: 1 ,backgroundColor:'ffffff40'}}
+      sx={{ border: "1px solid black", p: 1, backgroundColor: "ffffff40" }}
     >
       <Tabs
-    
         indicatorColor=""
         sx={{ gap: 3 }}
         orientation="vertical"
@@ -42,7 +39,6 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         textColor=""
         value={value}
         onChange={handleChange}
-
       >
         <Stack
           className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3   font-extrabold  ${
@@ -62,7 +58,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             label=" Information"
           />
         </Stack>
-        
+
         {!user?.is_nurse && (
           <Stack
             className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
@@ -112,7 +108,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             )}
           </Stack>
         )}
-<Stack
+        <Stack
           className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
             value == 1 ? "bg-sky-500 hover:text-white font-extrabold " : ""
           }`}
@@ -128,6 +124,24 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             className={`opacity-1 ${value == 1 ? "header" : ""}`}
             value={1}
             label=" Examination"
+          />
+        </Stack>
+        <Stack
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
+            value == 12 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          }`}
+          onClick={() => {
+            setValue(12);
+          }}
+          sx={{ p: 1, color: "black" }}
+          direction={"row"}
+          gap={1}
+        >
+          <img style={{ marginRight: "5px" }} width={50} src={examination} />
+          <Tab
+            className={`opacity-1 ${value == 12 ? "header" : ""}`}
+            value={12}
+            label=" Review Of Systems"
           />
         </Stack>
         <Stack
@@ -273,7 +287,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             )}
           </Stack>
         )}
-         {!user?.is_nurse && (
+        {!user?.is_nurse && (
           <Stack
             className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
               value == 11 ? "bg-sky-500 hover:text-white font-extrabold " : ""
@@ -298,14 +312,13 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
       </Tabs>
       {!user?.is_nurse && (
         <LoadingButton
-          disabled={patient.doctor_finish == 1}
+          disabled={patient.patient.doctor_finish == 1}
           loading={loading}
           color={patient.doctor_finish ? "success" : "primary"}
           onClick={() => {
-
-            if (patient.present_complains == '') {
-               alert('please Fill Presenting complains field first')
-               return
+            if (patient.present_complains == "") {
+              alert("please Fill Presenting complains field first");
+              return;
             }
             setLoading(true);
             axiosClient
@@ -315,13 +328,11 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
               .then(({ data }) => {
                 console.log(data);
                 if (data.status) {
-                  setActiveDoctorVisit(data);
-             
+                  setActiveDoctorVisit(data.data);
                 }
               })
               .catch(({ response: { data } }) => {
                 console.log(data);
-               
               })
               .finally(() => setLoading(false));
           }}

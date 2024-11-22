@@ -1,5 +1,6 @@
 import axios from "axios";
 import { host, schema } from "./src/pages/constants";
+import { toast } from "react-toastify";
 
 const axiosClient =  axios.create({
     // baseURL : `https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api`
@@ -15,6 +16,9 @@ axiosClient.interceptors.request.use((config)=>{
 })
 
 axiosClient.interceptors.response.use((res)=>{
+    if (res.data.show) {
+        toast.success("تم العمليه بنجاح");
+      }
     return res
 },(err)=>{
     console.log(err,'error from client axios')
@@ -29,9 +33,15 @@ axiosClient.interceptors.response.use((res)=>{
         
     }
     if (response.status == 404) {
-        console.log('removing access token')
-      //  localStorage.removeItem('ACCESS_TOKEN')
-    }
+        toast.error(response?.data?.message ?? "هنالك خطا", {
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        //  localStorage.removeItem('ACCESS_TOKEN')
+      }
     
     throw err
 })
