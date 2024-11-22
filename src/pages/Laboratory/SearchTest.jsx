@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 import { useOutletContext} from 'react-router-dom'
 export default function MyAutoComplete() {
   const [val, setVal] = React.useState(null);
+  // console.log(tests,'tests')
   const {selectTestHandler ,tests,setActiveTestObj,loading,setShowAddTest} =  useOutletContext()
 
   return (

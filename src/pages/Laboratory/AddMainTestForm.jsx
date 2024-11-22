@@ -52,7 +52,7 @@ function AddMainTestForm() {
       <Grid item xs={4}>
         <Paper sx={{ p: 2, mt: 2 }}>
           <form onSubmit={handleSubmit(addTest)}>
-            <Stack direction={"column"} gap={5} className="Test-Details">
+            <Stack direction={"column"} gap={1} className="Test-Details">
               <Typography variant="h6" textAlign={"center"}>
                 add new test  
               </Typography>

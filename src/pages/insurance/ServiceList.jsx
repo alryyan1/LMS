@@ -66,6 +66,7 @@ function ServiceList() {
                   <TableCell>التحمل ثابت</TableCell>
                   <TableCell>نصيب الطبيب (مبلغ)</TableCell>
                   <TableCell>نصيب الطبيب (نسبه)</TableCell>
+                  <TableCell>استخدام التحمل الثابت</TableCell>
                 </TableRow>
               </thead>
               <tbody>
@@ -124,6 +125,14 @@ function ServiceList() {
                       >
                         {service?.pivot?.percentage_wage}
                       </MyTableCell>
+                      <MySelectTableCell
+                        item={activeCompany}
+                        test_id={service.id}
+
+                        myVal={service.pivot.use_static}
+                        table="company/service"
+                        colName={"use_static"}
+                      ></MySelectTableCell>
                     </TableRow>
                   ))}
               </tbody>

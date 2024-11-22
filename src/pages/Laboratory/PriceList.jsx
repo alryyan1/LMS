@@ -7,22 +7,34 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
 import { webUrl } from "../constants";
 
 function PriceList() {
-  const { tests ,setDialog} = useOutletContext();
+  let { tests ,setDialog} = useOutletContext();
+  console.log(tests,'tests')
+  const [search,setSearch] = useState('')
+  console.log(search,'search')
   const cut = Math.floor( tests.length/4);
    console.log(tests,'from tests')
 
+
+  tests =  tests.filter((test)=>{
+    return test.main_test_name.toLowerCase().includes(search.toLowerCase()) 
+   })
+   console.log(tests,'filtered')
   return (
     <>
-      <Stack direction={'row'} gap={2}>
+      <Stack  direction={'row'} sx={{mb:1}} gap={1}>
       <a href={`${webUrl}labPrices`}>PDF</a>
       <a href={`${webUrl}excel/labPrices`}>Excel</a>
+      <TextField onChange={(event)=>{
+        setSearch(event.target.value)
+      }} size="small" label='search'/>
       </Stack>
        <Grid spacing={2} container>
       <Grid item xs={3}>

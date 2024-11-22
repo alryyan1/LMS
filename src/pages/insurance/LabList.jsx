@@ -62,6 +62,7 @@ function LabList() {
                   <TableCell>التحمل ثابت</TableCell>
                   <TableCell>الموافقه</TableCell>
                   <TableCell>الحاله</TableCell>
+                  <TableCell>استخدام الثابت</TableCell>
                 </TableRow>
               </thead>
               <tbody>
@@ -70,7 +71,7 @@ function LabList() {
                     <TableRow key={test.id}>
                       <TableCell>{test.main_test_name}</TableCell>
                       <MyTableCell
-                        setDialog={setDialog}
+                        
                         show={true}
                         item={activeCompany}
                         test_id={test.id}
@@ -82,7 +83,7 @@ function LabList() {
                       <MyTableCell
                         show={true}
                         item={activeCompany}
-                        setDialog={setDialog}
+                        
 
                         test_id={test.id}
                         table="company/test"
@@ -102,7 +103,7 @@ function LabList() {
                       <MySelectTableCell
                         item={activeCompany}
                         myVal={test.pivot.approve}
-                        setDialog={setDialog}
+                        
 
                         test_id={test.id}
                         table="company/test"
@@ -110,12 +111,21 @@ function LabList() {
                       ></MySelectTableCell>
                       <MySelectTableCell
                         item={activeCompany}
-                        setDialog={setDialog}
+                        
 
                         myVal={test.pivot.status}
                         test_id={test.id}
                         table="company/test"
                         colName={"status"}
+                      ></MySelectTableCell>
+                        <MySelectTableCell
+                        item={activeCompany}
+                        
+
+                        myVal={test.pivot.use_static}
+                        test_id={test.id}
+                        table="company/test"
+                        colName={"use_static"}
                       ></MySelectTableCell>
                     </TableRow>
                   ))}

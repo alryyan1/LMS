@@ -2,6 +2,7 @@ import { MenuItem, Select, TableCell, TextField } from "@mui/material";
 import { useState } from "react";
 import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../../axios-client";
 
 function MySelectTableCell({
   myVal,
@@ -12,7 +13,6 @@ function MySelectTableCell({
   show = false,
 }) {
 
-  const { setDialog } = useOutletContext();
   const [edited, setEdited] = useState(show);
   const [iniVal, setInitVal] = useState(myVal);
   const clickHandler = () => {
@@ -32,18 +32,11 @@ function MySelectTableCell({
     console.log('val' ,val , 'init val',iniVal)
     if (val != iniVal ) {
       console.log('diffent value')
-    fetch(`${url}${table}/${item.id}`, {
-      headers: { "content-type": "application/json" },
-      method: "PATCH",
-      body: JSON.stringify({ colName: colName, val, test_id }),
-    })
-      .then((res) => res.json())
+    axiosClient.patch(`${table}/${item.id}`, 
+      { colName: colName, val, test_id ,service_id:test_id}
+    )
       .then((data) => {
-        if (data.status) {
-          setDialog((prev) => {
-            return { ...prev, open: true, msg: "Edit was successfull" };
-          });
-        }
+      
       });
     }
 

@@ -303,10 +303,11 @@ function Result() {
                     loading={loading}
                     onClick={() => {
                       //authentication event
-                      // setLoading(true);
-                      updateHandler(1, "result_auth", actviePatient,null,setDialog,update).then((data) => {
+                      setLoading(true);
+                      updateHandler(1, "result_auth", actviePatient,update).then((data) => {
                         console.log('after update', data);
                         update(data)
+                        setLoading(false)
                       });
                     }}
                     sx={{ mt: 1 }}

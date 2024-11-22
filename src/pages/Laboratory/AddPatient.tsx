@@ -320,7 +320,7 @@ function AddPatient() {
                   }
 
                   axiosClient
-                    .get(`printLab?pid=${actviePatient.patient.id}&base64=1`)
+                    .get(`printLab/${actviePatient.id}?base64=1`)
                     .then(({ data }) => {
                       form.append("data", data);
                       // console.log(data, "daa");

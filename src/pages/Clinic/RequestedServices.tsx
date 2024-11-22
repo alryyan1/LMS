@@ -195,7 +195,7 @@ function RequestedServices({
         
             }}
           >
-            <Table size="small">
+            <Table style={{direction:'rtl'}} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>

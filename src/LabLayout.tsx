@@ -144,15 +144,6 @@ function LabLayout() {
       // setPatientsLoading(false);
     });
   }, []);
-  // useEffect(() => {
-  //   console.log("start fetching units");
-
-  // }, []);
-
-  // useEffect(()=>{
-  //   setLoading(true)
-
-  // },[updateTests])
 
   function addChildTestHandler(id) {
     setLoading(true);
@@ -160,9 +151,7 @@ function LabLayout() {
       .post(`childTest/create/${id}`)
       .then(({ data }) => {
         console.log(data);
-        setActiveTestObj((prev) => {
-          return { ...prev, child_tests: [...prev.child_tests, data] };
-        });
+        setActiveTestObj(data.data)
       })
       .catch(() => {})
       .finally(() => {

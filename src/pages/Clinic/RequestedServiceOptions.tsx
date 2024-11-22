@@ -10,7 +10,7 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MyLoadingButton from "../../components/MyLoadingButton";
-import { Close, DeleteOutline } from "@mui/icons-material";
+import { Close, DeleteOutline, MenuBook } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { IconButton } from "@mui/material";
 import ServiceCountSelect from "./ServiceCountSelect";
@@ -91,12 +91,12 @@ export default function RequestedServiceOptions({
         aria-controls={open ? "demo-customized-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        variant="contained"
+        variant="outlined"
         disableElevation
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        Options
+        
       </Button>
       <StyledMenu
         id="demo-customized-menu"

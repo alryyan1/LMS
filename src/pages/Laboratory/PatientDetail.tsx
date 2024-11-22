@@ -39,7 +39,7 @@ function PatientDetail({
         {/** add card body   */}
         <div  className="patientId">{patient.patient.name}</div>
         <div className="form-control">
-          <div>Patient Id</div>
+          <div>Visit Id</div>
           <div >{patient.id}</div>
         </div>
         <Divider />

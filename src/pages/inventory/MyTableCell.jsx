@@ -16,14 +16,14 @@ function MyTableCell({
   multiline = false,
   child_id = null,
   stateUpdater = null,
-  update=null,
+  update = null,
   sx = null,
-  setData=null,
-  change=null,
+  setData = null,
+  change = null,
   isNum = false,
-  setDialog= null,
-  setDeposit=null,
-  changeDoctorVisit=null,
+  setDialog = null,
+  updateTests = null,
+  changeDoctorVisit = null,
   disabled = false,
 }) {
   const [edited, setEdited] = useState(show);
@@ -40,7 +40,6 @@ function MyTableCell({
     setInitVal(e.target.value);
   };
   useEffect(() => {
-
     // console.log("useeffect", iniVal);
     const timer = setTimeout(() => {
       updateItemName(iniVal);
@@ -66,72 +65,38 @@ function MyTableCell({
           if (data.status) {
             if (setData) {
               // console.log(data.data,'inside updater function')
-              setData(data.data.data)
-              
+              setData(data.data.data);
             }
             if (changeDoctorVisit) {
-              console.log(data,'data.changeDoctorVisit')
-              changeDoctorVisit(data.data.data)
+              console.log(data, "data.changeDoctorVisit");
+              changeDoctorVisit(data.data.data);
             }
             if (update) {
-               console.log(data.data.data,'datatat')
-              update(data.data.data)
+              console.log(data.data.data, "datatat");
+              update(data.data.data);
             }
             if (stateUpdater) {
-            stateUpdater((prev) => prev + 1);
-              
+              stateUpdater((prev) => prev + 1);
             }
             if (change) {
-              console.log(data.data.data,'data')
-              console.log(data.data.deposit,'deposit')
-              change(data.data.deposit,data.data.data)
-            stateUpdater((prev) => prev + 1);
-
+              console.log(data.data.data, "data");
+              console.log(data.data.deposit, "deposit");
+              change(data.data.deposit, data.data.data);
+              stateUpdater((prev) => prev + 1);
             }
-         
-            if(setDialog){
-              // alert('d')
-                setDialog((prev) => {
-              return {
-                ...prev,
-                open: true,
-                message: "Edit was successfull",
-                color: "success",
-              };
-            });
+            if (updateTests) {
+              const testData = data.data.data
+              console.log(testData, "test data");
+              updateTests((prev) => {
+               return prev.map((t) => {
+                  if (t.id === testData.id) {
+                    return testData;
+                  }
+                  return t;
+                });
+              });
             }
-          
           }
-        })
-        .catch(({ response: { data, status } }) => {
-          if (status == 406) {
-            if (setDialog) {
-               setDialog((prev) => {
-              return {
-                ...prev,
-                open: true,
-                color: "error",
-                message: data.message,
-              };
-            });
-            }
-           
-          }
-          if (status == 400) {
-            if (setDialog) {
-               setDialog((prev) => {
-              return {
-                ...prev,
-                open: true,
-                color: "error",
-                message: data.message,
-              };
-            });
-            }
-           
-          }
-          
-          // console.log(data, "err in axios", status);
         });
     }
   };
@@ -150,11 +115,9 @@ function MyTableCell({
     >
       {show || edited ? (
         <TextField
-        disabled={disabled}
+          disabled={disabled}
           multiline={multiline}
-         
-         sx={sx}
-          
+          sx={sx}
           inputProps={{
             style: {
               textAlign: "left",
@@ -169,16 +132,26 @@ function MyTableCell({
           type={type}
           autoComplete="false"
         ></TextField>
+      ) : isNum ? (
+        <span
+          style={{
+            color: "black",
+            fontSize: "large",
+            fontWeight: "bolder",
+          }}
+        >
+          {Number(iniVal).toFixed(3)}{" "}
+        </span>
       ) : (
-        isNum ? <span style={{    
-          color: "black",
-          fontSize: "large",
-          fontWeight: "bolder",
-        }}>{Number(iniVal).toFixed(3)} </span> : <span  style={{    
-          color: "black",
-          fontSize: "16px",
-          fontWeight: "bolder",
-        }}>{iniVal}</span>
+        <span
+          style={{
+            color: "black",
+            fontSize: "16px",
+            fontWeight: "bolder",
+          }}
+        >
+          {iniVal}
+        </span>
       )}
     </TableCell>
   );

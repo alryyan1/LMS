@@ -1,38 +1,31 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import Td from "./pages/Laboratory/Td";
-import TdSelect from "./pages/Laboratory/TdSelect";
-import TdTextArea from "./pages/Laboratory/TdTextArea";
 import Modal from "./Modal";
 import TestOptions from "./pages/Laboratory/TestOptions";
 import axiosClient from "../axios-client";
 import {
-  Box,
   Button,
+  IconButton,
   Paper,
   Stack,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import MyTableCell from "./pages/inventory/MyTableCell";
-import MyAutoCompeleteTableCell from "./pages/inventory/MyAutoCompeleteTableCell";
-import { LoadingButton } from "@mui/lab";
 import ChildGroupAutoComplete from "./pages/Laboratory/ChildGroupAutoComplete";
-import { Delete } from "@mui/icons-material";
 import UnitAutocomplete from "./components/UnitAutocomplete";
+import {  Plus, Trash } from "lucide-react";
 
 function MainTestChildren() {
   const {
     activeTestObj,
     addChildTestHandler,
     setActiveTestObj,
-    units,
     loading,
-    setUpdateTests,
-    setTests
+    setTests,
   } = useOutletContext();
   const [showModal, setShowModal] = useState(false);
   const [activeChild, setActiveChild] = useState();
@@ -40,7 +33,7 @@ function MainTestChildren() {
 
   const addTestOptionHandler = () => {
     axiosClient
-      .post(`childTestOption/${activeChild.id}`,{name:'new'})
+      .post(`childTestOption/${activeChild.id}`, { name: "new" })
       .then((data) => console.log(data))
       .finally(() => {
         setUpdate((prev) => prev + 1);
@@ -79,43 +72,46 @@ function MainTestChildren() {
     <div className="table-children">
       <h1 style={{ textAlign: "center" }}>Test Parameters</h1>
 
-      <Box sx={{ position: "relative" }}>
-      <LoadingButton
-      color="error"
-          variant={"contained"}
-          // sx={{ position: "absolute", top: "-40px", left: "0px" }}
+      <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
+      <Tooltip title="حذف">
+
+        <IconButton
+          size="small"
           loading={loading}
           onClick={() => {
-            const result =   confirm("هل انت متاكد من حذف هذا الفحص نهائيا سيتم حذفه من سجلات المرضي")
+            const result = confirm(
+              "هل انت متاكد من حذف هذا الفحص نهائيا سيتم حذفه من سجلات المرضي"
+            );
             if (result) {
-              axiosClient.delete(`maintest/${activeTestObj.id}`).then(({data}) => {
-            
-                if (data.status) {
-                   setActiveTestObj(null)
-                   setTests((prev)=>{
-                     return prev.filter((p)=>p.id!= activeTestObj.id)
-                   })
-                 }
-              });
+              axiosClient
+                .delete(`maintest/${activeTestObj.id}`)
+                .then(({ data }) => {
+                  if (data.status) {
+                    setActiveTestObj(null);
+                    setTests((prev) => {
+                      return prev.filter((p) => p.id != activeTestObj.id);
+                    });
+                  }
+                });
             }
-            
           }}
         >
-          <Delete/>
-        </LoadingButton>
-        <LoadingButton
-          variant={"contained"}
-          sx={{ position: "absolute", top: "-40px", right: "0px" }}
-          loading={loading}
-          onClick={() => {
-            
-            addChildTestHandler(activeTestObj.id);
-          
-          }}
-        >
-          +
-        </LoadingButton>
-        <Paper>
+          <Trash />
+        </IconButton>
+        </Tooltip>
+        <Tooltip title="اضافه">
+          <IconButton
+            size="small"
+            loading={loading}
+            onClick={() => {
+              addChildTestHandler(activeTestObj.id);
+            }}
+          >
+            <Plus />
+          </IconButton>
+        </Tooltip>
+      </Stack>
+      <Paper>
         <Table size="small">
           <thead>
             <TableRow>
@@ -132,7 +128,7 @@ function MainTestChildren() {
           </thead>
           <TableBody>
             {activeTestObj.child_tests.map((child) => {
-              console.log(child,'child inloop')
+              console.log(child, "child inloop");
               return (
                 <tr key={child.id}>
                   {/* <MyTableCell
@@ -148,20 +144,23 @@ function MainTestChildren() {
                     colName={"child_test_name"}
                     item={child}
                     child_id={child.id}
-                    stateUpdater={setUpdateTests}
+                    updateTests={setTests}
                   >
                     {child.child_test_name}
                   </MyTableCell>
                   <TableCell>
-                    <UnitAutocomplete child_id={child.id} unitObj={child.unit}  />
+                    <UnitAutocomplete
+                      child_id={child.id}
+                      unitObj={child.unit}
+                    />
                   </TableCell>
-                
+
                   <MyTableCell
                     table="child_tests"
                     colName={"defval"}
                     item={child}
                     child_id={child.id}
-                    stateUpdater={setUpdateTests}
+                    updateTests={setTests}
                   >
                     {child.defval}
                   </MyTableCell>
@@ -171,17 +170,17 @@ function MainTestChildren() {
                     colName={"normalRange"}
                     item={child}
                     child_id={child.id}
-                    stateUpdater={setUpdateTests}
+                    updateTests={setTests}
                   >
                     {child.normalRange}
                   </MyTableCell>
-                
+
                   <MyTableCell
                     table="child_tests"
                     colName={"lowest"}
                     item={child}
                     child_id={child.id}
-                    stateUpdater={setUpdateTests}
+                    updateTests={setTests}
                   >
                     {child.lowest}
                   </MyTableCell>
@@ -190,7 +189,7 @@ function MainTestChildren() {
                     colName={"max"}
                     item={child}
                     child_id={child.id}
-                    stateUpdater={setUpdateTests}
+                    updateTests={setTests}
                   >
                     {child.max}
                   </MyTableCell>
@@ -203,8 +202,8 @@ function MainTestChildren() {
                   <TableCell width={"13%"}>
                     <Stack
                       direction={"row"}
-                      justifyContent={"space-around"}
-                      spacing={2}
+                      flexWrap={true}
+                     gap={1}
                     >
                       <Button
                         size="small"
@@ -215,10 +214,10 @@ function MainTestChildren() {
                       </Button>
                       <Button
                         size="small"
-                        variant="contained"
+                        color="error"
                         onClick={() => deleteChild(child.id)}
                       >
-                        delete
+                        <Trash/>
                       </Button>
                     </Stack>
                   </TableCell>
@@ -227,9 +226,7 @@ function MainTestChildren() {
             })}
           </TableBody>
         </Table>
-        </Paper>
-        
-      </Box>
+      </Paper>
 
       {activeChild && (
         <Modal

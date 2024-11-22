@@ -9,47 +9,6 @@ import { DoctorVisit } from "../../types/Patient";
 export default function useResult():ResultProps {
   const audioRef = useRef();
 
-  //   const updateHandler = (val, colName) => {
-  //     setLoading(true)
-  //     axiosClient
-  //       .patch(`patients/${actviePatient.id}`, {
-  //         [colName]: val,
-  //       })
-  //       .then(({ data }) => {
-
-  //         if (data.status) {
-  //           setActivePatient(data.patient);
-  //           setShift((prev)=>{
-  //             return {...prev, patients:prev.patients.map((p)=>{
-  //               if(p.id === data.patient.id){
-  //                 return {...data.patient, active:true}
-  //               }
-  //               return p;
-  //             }) };
-  //           })
-  //           setDialog((prev) => {
-  //             return {
-  //               ...prev,
-  //               message: "Saved",
-  //               open: true,
-  //               color: "success",
-  //             };
-  //           });
-  //         }
-  //       })
-  //       .catch(({ response: { data } }) => {
-
-  //         setDialog((prev) => {
-  //           return {
-  //             ...prev,
-  //             message: data.message,
-  //             open: true,
-  //             color: "error",
-  //           };
-  //         });
-  //       }).finally(()=>setLoading(false));
-  //   };
-
   
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
