@@ -178,19 +178,12 @@ function ResultSidebar({
           onClick={() => {
             setLoading(true);
             axiosClient
-              .post(`populatePatientCbcData/${actviePatient?.patient.id}`, {
+              .post(`populatePatientCbcData/${actviePatient?.id}`, {
                 main_test_id: selectedTest?.main_test_id,
               })
               .then(({ data }) => {
                 if (data.status == false) {
-                  setDialog((prev) => {
-                    return {
-                      ...prev,
-                      open: true,
-                      color: "error",
-                      message: data.message,
-                    };
-                  });
+              
 
                   return;
                 }
@@ -213,7 +206,7 @@ function ResultSidebar({
           variant="contained"
         >
           <FormatListBulleted
-            color={actviePatient.patient.hasCbc ? "error" : "inherit"}
+            color={actviePatient.hasCbc ? "error" : "inherit"}
           />
         </LoadingButton>
       )}

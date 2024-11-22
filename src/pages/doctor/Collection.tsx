@@ -85,7 +85,7 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
         </Paper>
         <LoadingButton
                 onClick={() => {
-                  axiosClient.get(`patient/barcode/${patient.patient.id}`).then(({data})=>{
+                  axiosClient.get(`patient/barcode/${patient.id}`).then(({data})=>{
                   console.log(data,'barcode')
                   })
 
@@ -101,10 +101,10 @@ const images = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
                         "Content-Type": "APPLICATION/JSON",
                       },
 
-                      body: JSON.stringify(patient.patient),
+                      body: JSON.stringify(patient),
                     }).then(() => {});
                   axiosClient
-                    .get(`printBarcode?pid=${patient.patient.id}&base64=1`)
+                    .get(`printBarcode/${patient.id}&base64=1`)
                     .then(({ data }) => {
                       const form = new URLSearchParams();
 

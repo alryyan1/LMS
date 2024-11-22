@@ -291,7 +291,7 @@ function AddPatient() {
           {actviePatient && (
             <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
               <a
-                href={`${webUrl}printLabReceipt/${actviePatient.patient?.id}/${user?.id}`}
+                href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}
               >
                 Receipt
               </a>

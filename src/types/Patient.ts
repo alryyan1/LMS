@@ -12,6 +12,7 @@ export interface DoctorShift {
 }
 export interface DoctorVisit {
   id: number
+  hasCbc:boolean;
   patient_id: number
   doctor_shift_id: number
   created_at: string
