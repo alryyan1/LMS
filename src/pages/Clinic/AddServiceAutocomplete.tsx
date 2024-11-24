@@ -15,6 +15,7 @@ interface AddServiceAutocompleteProps {
   settings: any;
   patient: DoctorVisit|null;
   setActiveDoctorVisit: any;
+  socket: any;
 }
 function AddServiceAutocomplete({
   selectedServices,
@@ -25,6 +26,7 @@ function AddServiceAutocomplete({
   settings,
   patient,
   setActiveDoctorVisit,
+  socket
 }: AddServiceAutocompleteProps) {
   const [autoCompleteServices, setAutoComleteServices] = useState([]);
   // const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate,settings} = useOutletContext();
@@ -93,6 +95,8 @@ function AddServiceAutocomplete({
           setLoading(false);
 
           setActiveDoctorVisit(data.patient);
+          socket.emit("patientUpdated", data.patient);
+
         }
       } else {
         const { data: data } = await axiosClient.post(

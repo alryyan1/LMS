@@ -1,7 +1,7 @@
 import "./addPatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "./PatientDetail";
-import { Item, webUrl } from "../constants";
+import {  webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
@@ -40,6 +40,7 @@ import { socket } from "../../socket";
 
 function AddPatient() {
   const { user } = useStateContext();
+  const [showSearch, setShowSearch] = useState(false);
 
   const {
     actviePatient,
@@ -130,13 +131,23 @@ function AddPatient() {
     setActivePatient(null);
     setFoundedPatients([]);
     setLayout((prev) => {
-      return { ...prev, form: "1fr", hideForm: false, tests: "1fr" };
+      return { ...prev, form:'minmax(350px,1fr)' , hideForm: false, tests: "1fr" };
     });
   };
   useEffect(() => {
     document.title = "تسجيل مريض للمعمل";
-  }, []);
+    document.addEventListener("keydown", SearchHandler);
 
+    return () => {
+      document.removeEventListener("keydown", SearchHandler);
+    };
+  }, []);
+  const SearchHandler = (e) => {
+    console.log(e.key);
+    if (e.key == "F9") {
+      setShowSearch(true);
+    }
+  };
   const showShiftMoney = () => {
     setDialog((prev) => {
       return {
@@ -163,11 +174,11 @@ function AddPatient() {
           )}
         </Box>
         <Box>
-          <AutocompleteSearchPatient
+         {showSearch && <AutocompleteSearchPatient
             update={update}
             setDialog={setDialog}
             
-          />
+          />}
         </Box>
       </Stack>
 
@@ -191,12 +202,12 @@ function AddPatient() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
-            <Item>
+            <Box>
               <IconButton variant="contained" onClick={showFormHandler}>
                 <CreateOutlinedIcon />
               </IconButton>
-            </Item>
-            <Item>
+            </Box>
+            <Box>
               <IconButton
                 variant="contained"
                 onClick={() => {
@@ -205,17 +216,17 @@ function AddPatient() {
               >
                 <PersonAdd />
               </IconButton>
-            </Item>
-            <Item>
+            </Box>
+            <Box>
               <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
               </IconButton>
-            </Item>
-            <Item>
+            </Box>
+            <Box>
               <IconButton href={`${webUrl}lab/report`} variant="contained">
                 <Print />
               </IconButton>
-            </Item>
+            </Box>
           </Stack>
         </div>
         <div>
@@ -233,7 +244,13 @@ function AddPatient() {
             backgroundColor: "#ffffff73",
           }}
         >
+              <div className="shadow-lg" style={{maxWidth:'862px',  zIndex: "3",position:'absolute',overflow:'auto' }}>
+            {!actviePatient && dialog.showHistory && (
+              <SearchDialog hideForm={hideForm} update={update}  lab={true} />
+            )}
+          </div>
           <div className="patients">
+      
             {patientsLoading ? (
               <Skeleton
                 animation="wave"
@@ -273,11 +290,7 @@ function AddPatient() {
          
         </Card>
         <div>
-          <div style={{ position: "absolute", right: "0", zIndex: "3" }}>
-            {!actviePatient && dialog.showHistory && (
-              <SearchDialog update={update}  lab={true} />
-            )}
-          </div>
+     
 
           {/** add card using material   */}
           {actviePatient && (

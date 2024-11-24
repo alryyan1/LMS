@@ -34,7 +34,6 @@ import AddLabTests from "./AddLabTest";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import AddMedicalService from "./AddService";
 import { useStateContext } from "../../appContext";
-import Sample from "../Laboratory/Sample";
 import Collection from "./Collection";
 import LabResults from "./LabResult";
 import VitalSigns from "./VitalSigns";
@@ -48,8 +47,6 @@ import CodeEditor from "./CodeMirror";
 import {
   DoctorShift,
   DoctorVisit,
-  Patient,
-  PatientFile,
 } from "../../types/Patient";
 import ReviewOfSystems from "./ReviewOfSystems";
 
@@ -120,6 +117,7 @@ function Doctor() {
   useEffect(() => {
     if (id == undefined) {
       // alert("id is null");
+      setLoading(true)
       axiosClient
         .get("/user")
         .then(({ data }) => {
@@ -129,6 +127,7 @@ function Doctor() {
             setDoctor(data.doctor);
             setShift(data);
             setPatients(data.visits)
+            setLoading(false)
           });
         })
         .catch((err) => {});
@@ -138,6 +137,7 @@ function Doctor() {
         setDoctor(data.doctor);
         setShift(data);
         setPatients(data.visits)
+        setLoading(false)
 
       });
     }
@@ -192,18 +192,22 @@ function Doctor() {
       // socketEventHandler(null, doctorVisit, " has just booked", newImage);
     });
 
-    socket.on("patientUpdatedFromServer", (doctorVisit) => {
-      patientUpdatedFromServerHandler(doctorVisit)
-    });
-
+ 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("authenticatedResult");
       socket.off("newDoctorPatientFromServer");
-      socket.off("patientUpdatedFromServer");
     };
   }, []);
+    useEffect(()=>{
+      socket.on("patientUpdatedFromServer", (doctorVisit) => {
+        patientUpdatedFromServerHandler(doctorVisit)
+      });
+      return ()=>{
+        socket.off("patientUpdatedFromServer");
+      }
+    },[activeDoctorVisit])
 
   const patientUpdatedFromServerHandler = (doctorVisit)=>{
  // alert('patient updated')
@@ -300,11 +304,7 @@ function Doctor() {
     setShowPatients(true);
   };
 
-  const updateDoctorPatients = (docVisit: DoctorVisit) => {
-    setShift((prev) => {
-      return { ...prev, visits: [{ ...docVisit }, ...prev.visits] };
-    });
-  };
+
 
   const update = (patient:DoctorVisit)=>{
     if(patient.id == activeDoctorVisit?.id){
@@ -673,6 +673,7 @@ function Doctor() {
                   patient={activeDoctorVisit}
                   index={7}
                   value={value}
+                  socket={socket}
                 />
                 {user?.is_nurse == 1 && (
                   <Collection

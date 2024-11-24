@@ -28,9 +28,10 @@ interface AddMedicalServiceProps {
   setActiveDoctorVisit: any;
   user: any;
   setActiveService: any;
+  socket:any
 }
 function AddMedicalService(props: AddMedicalServiceProps) {
-  const { value, index, patient, setActiveDoctorVisit, user, ...other } = props;
+  const { value, index, patient, setActiveDoctorVisit, user,socket, ...other } = props;
 
   // alert(user?.id)
   const [selectedService, setSelectedService] =
@@ -69,6 +70,7 @@ function AddMedicalService(props: AddMedicalServiceProps) {
             patient={patient}
             selectedServices={selectedServices}
             setSelectedServices={setSelectedServices}
+            socket={socket}
           />
           {patient?.services?.length > 0 && (
             <TableContainer sx={{ border: "none", textAlign: "left" }}>

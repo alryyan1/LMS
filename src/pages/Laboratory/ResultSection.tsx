@@ -88,7 +88,7 @@ function ResultSection({
                   
                     return (
                       <TableRow key={req.id}>
-                        <TableCell sx={{ p: 0.5, textAlign: "right",backgroundColor:(theme)=> type =='error'? theme.palette.error.light : '' }}>
+                        <TableCell className="" sx={{ p: 0.5, textAlign: "right",backgroundColor:(theme)=> type =='error'? theme.palette.error.light : '' }}>
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>

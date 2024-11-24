@@ -13,7 +13,7 @@ import { useOutletContext } from "react-router-dom";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import AddServiceAutocomplete from "./AddServiceAutocomplete";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
-function ServiceGroup() {
+function ServiceGroup({socket}) {
   const {
     serviceCategories,
     selectedServices,
@@ -63,6 +63,7 @@ function ServiceGroup() {
         patient={actviePatient}
         selectedServices={selectedServices}
         setActiveDoctorVisit={setActivePatient}
+        socket={socket}
       />
       <Tabs
         textColor="secondary"

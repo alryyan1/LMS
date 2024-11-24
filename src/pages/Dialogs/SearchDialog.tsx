@@ -18,11 +18,11 @@ import MyAutocomepleteHistory from "../../components/MyAutocomepleteHistory.tsx"
 import MyAutocomepleteHistoryLab from "../../components/MyAutocompleteHistoryLab";
 import dayjs from "dayjs";
 import ComponyAutocompleteHistory from "./ComponyAutocompleteHistory";
-import { MessageCircleDashed } from "lucide-react";
+import { MessageCircleDashed, Plus } from "lucide-react";
 import { OutletContextType } from "../../types/CutomTypes";
-import { Company } from "../../types/Patient";
+import { Company, DoctorVisit } from "../../types/Patient";
 
-function SearchDialog({lab=false,user,update,isReception}) {
+function SearchDialog({lab=false,user,update,isReception,hideForm}) {
   const {foundedPatients, openedDoctors ,setDialog,doctors,companies,activeShift} =
     useOutletContext<OutletContextType>();
   const [doctor, setSelectedDoctor] = useState<Doctor|null>(null);
@@ -32,16 +32,17 @@ function SearchDialog({lab=false,user,update,isReception}) {
   const setDoctor = (d) => {
     setSelectedDoctor(d);
   };
-  const addPatientByHistory = (id) => {
-    if(doctor == undefined) {
-      alert('قم بتحديد الطبيب')
-      return;
-    }
+  const addPatientByHistory = (doctorvisit:DoctorVisit) => {
+    // if(do == undefined) {
+    //   alert('قم بتحديد الطبيب')
+    //   return;
+    // }
+    hideForm()
 
     setLoading(true);
   
     const onlyLab = isReception ? 0 : 1
-    const url =    `patients/add-patient-by-history/${doctor.id}/${id}?onlyLab=${onlyLab}`
+    const url =    `patients/add-patient-by-history/${doctor?.id ?? doctorvisit.patient.doctor_id}/${doctorvisit.patient.id}?onlyLab=${onlyLab}`
 
     axiosClient
       .post(
@@ -78,28 +79,30 @@ function SearchDialog({lab=false,user,update,isReception}) {
           <CloseIcon/>
         </IconButton>
     
-     <TableContainer component={Card} sx={{height:'70vh',overflow:'auto'}}>
+     <TableContainer className=" shadow-lg" component={Card} sx={{height:'70vh',overflow:'auto'}}>
         <Table style={{direction:'rtl'}} size="small" >
           <thead>
             <TableRow>
               <TableCell >الاسم</TableCell>
               <TableCell>التاريخ</TableCell>
-              <TableCell>  الطبيب السابق</TableCell>
+              {/* <TableCell>  الطبيب السابق</TableCell> */}
               <TableCell> الطبيب</TableCell>
               <TableCell> الشركه</TableCell>
               <TableCell> اضافه</TableCell>
             </TableRow>
           </thead>
           <TableBody>
-            {foundedPatients.map((item) => (
+            {foundedPatients.filter((d)=>{
+              return d.patient != null
+            }).map((item:DoctorVisit) => (
               <TableRow key={item.id}>
-                <TableCell  sx={{width:'20%',textWrap:'nowrap'}} >{item.name}</TableCell>
+                <TableCell  sx={{width:'20%',textWrap:'nowrap'}} >{item.patient.name}</TableCell>
                 <TableCell sx={{textWrap:'nowrap'}}>
                   {dayjs(new Date(Date.parse(item.created_at))).format('YYYY-MM-DD')}
                 </TableCell>
-                <TableCell sx={{textWrap:'nowrap'}}>{item?.doctor?.name}</TableCell>
+                {/* <TableCell sx={{textWrap:'nowrap'}}>{item?.doctor?.name}</TableCell> */}
                 <TableCell>
-                  {lab  ? <MyAutocomepleteHistoryLab   setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
+                  {lab  ? <MyAutocomepleteHistoryLab  val={item.patient.doctor}  setDoctor={setDoctor} options={doctors} />  :<MyAutocomepleteHistory
                   user={user}
                   patient={item}
                     setDoctor={setDoctor}
@@ -110,19 +113,20 @@ function SearchDialog({lab=false,user,update,isReception}) {
                 </TableCell>
                 <TableCell>
               
-               <ComponyAutocompleteHistory  patientCompany={item.company}  setSelectedCompany={setSelectedCompany} companies={companies} />
+               <ComponyAutocompleteHistory  patientCompany={item.patient.company}  setSelectedCompany={setSelectedCompany} companies={companies} />
           
                 </TableCell>
                 <TableCell>
                   <LoadingButton
+                  size="small"
+                  variant='outlined'
                     loading={loading}
                     onClick={() => {
-                      addPatientByHistory(item.id);
-                     
+                      addPatientByHistory(item);
+                    
                     }}
-                    variant="contained"
                   >
-                    <Add />
+                    <Plus />
                   </LoadingButton>
                 </TableCell>
               </TableRow>

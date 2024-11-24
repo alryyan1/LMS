@@ -83,11 +83,30 @@ function Reception() {
     socket.on("connect", (args) => {
       console.log("reception connected succfully with id" + socket.id, args);
     });
+    
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onConnect);
     };
   });
+  const patientUpdatedFromServerHandler = (doctorVisit)=>{
+    // alert('patient updated')
+    console.log(doctorVisit,'doc visit from server update','active docvisit id ',actviePatient?.id)
+    update(doctorVisit)
+    if (doctorVisit.id == actviePatient?.id) {
+     // alert('same')
+     console.log('saaaaaaaaaaame')
+      setActivePatient(doctorVisit);
+    }
+     }
+  useEffect(()=>{
+    socket.on("patientUpdatedFromServer", (doctorVisit) => {
+      patientUpdatedFromServerHandler(doctorVisit)
+    });
+    return ()=>{
+      socket.off("patientUpdatedFromServer");
+    }
+  },[actviePatient])
 
   const [layOut, setLayout] = useState({
     form: "minmax(350px, 1fr)",
@@ -433,7 +452,7 @@ function Reception() {
         </div>
 
         <Paper sx={{ p: 1, backgroundColor: "#ffffffbb!important" }}>
-          {actviePatient && showServicePanel && <ServiceGroup />}
+          {actviePatient && showServicePanel && <ServiceGroup socket={socket} />}
           {actviePatient && showTestPanel && (
             <AddTestAutoComplete
               setShowTestPanel={setShowTestPanel}

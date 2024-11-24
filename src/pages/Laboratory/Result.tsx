@@ -27,9 +27,12 @@ import urgentSound from "../../assets/sounds/urgent.mp3";
 import useResult from "./useResult";
 import { ResultProps } from "../../types/CutomTypes";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
-import { Shift } from "../../types/Shift";
+import { Shift } from '../../types/Shift';
 import { useOutletContext } from "react-router-dom";
+import ShiftNav from "./ShiftNav";
+import { useState } from "react";
 function Result() {
+
   const {
     shift,
     layOut,
@@ -48,7 +51,8 @@ function Result() {
     selectedReslult,
     setActivePatient,
     setSelectedResult,
-    update
+    update,
+    showSearch
   } = useResult();
   const {setDialog} = useOutletContext()
   const shiftDate = new Date(Date.parse(shift?.created_at));
@@ -66,11 +70,11 @@ function Result() {
         }}
       >
         <div></div>
-        <AutocompleteSearchPatient
+        {showSearch && <AutocompleteSearchPatient
           withTests={1}
           update={update}
           setActivePatientHandler={setActivePatientHandler}
-        />
+        />}
       </div>
       <audio hidden ref={audioRef} controls src={urgentSound}></audio>
       <div
@@ -106,44 +110,7 @@ function Result() {
                 })}
             </div>
           </Stack>
-          <Stack justifyContent={"space-around"} direction={"row"}>
-            <LoadingButton
-              loading={loading}
-              disabled={shift?.id == 1}
-              onClick={() => {
-                if (shift.id == 1) {
-                  return;
-                }
-                setLoading(true);
-                axiosClient
-                  .get(`shiftById/${shift.id - 1}`)
-                  .then(({ data }) => {
-                    setShift(data.data);
-                  })
-                  .finally(() => setLoading(false));
-              }}
-            >
-              <ArrowBack />
-            </LoadingButton>
-            <LoadingButton
-              loading={loading}
-              disabled={shift?.id == shift?.maxShiftId}
-              onClick={() => {
-                // if (shift.id == 1) {
-                //   return
-                // }
-                setLoading(true);
-                axiosClient
-                  .get(`shiftById/${shift.id + 1}`)
-                  .then(({ data }) => {
-                    setShift(data.data);
-                  })
-                  .finally(() => setLoading(false));
-              }}
-            >
-              <ArrowForward />
-            </LoadingButton>
-          </Stack>
+          <ShiftNav shift={shift} setShift={setShift}/>
           <Divider></Divider>
           <div className="patients">
             {patientsLoading ? (

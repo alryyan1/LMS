@@ -17,7 +17,6 @@
     
 }
 .testGroupItem{
-    width: 123px;
     cursor: pointer;
     text-overflow: ellipsis;
     text-wrap: nowrap;

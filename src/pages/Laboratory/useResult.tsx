@@ -51,9 +51,21 @@ export default function useResult():ResultProps {
     showTestPanel: false,
     patientDetails: "0.8fr",
   });
+  const [showSearch, setShowSearch] = useState(false);
 
+  const SearchHandler = (e) => {
+    console.log(e.key);
+    if (e.key == "F9") {
+      setShowSearch(true);
+    }
+  };
   useEffect(() => {
     document.title = "تنزيل النتائج";
+    document.addEventListener("keydown", SearchHandler);
+
+    return () => {
+      document.removeEventListener("keydown", SearchHandler);
+    };
   }, []);
   useEffect(() => {
     //  const socket =  io('ws://localhost:3000')
@@ -128,6 +140,6 @@ export default function useResult():ResultProps {
     setSelectedTest,
     actviePatient,
     selectedReslult,setActivePatient ,
-    setSelectedResult,update
+    setSelectedResult,update,showSearch
   };
 }

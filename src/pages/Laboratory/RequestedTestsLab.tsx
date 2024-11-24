@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 
 import DiscountSelect from "./DiscountSelect";
@@ -51,7 +52,7 @@ function RequestedTestsLab({
     if (!result) {
       return;
     }
-    axiosClient.get(`patient/barcode/${actviePatient.patient.id}`).then(({data})=>{
+    axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
       console.log(data,'barcode')
       })
     setLoading(true);
@@ -63,7 +64,7 @@ function RequestedTestsLab({
         console.log(data, "patient paid data");
         if (data.status) {
           update(data.data);
-          socket.emit("labPayment", actviePatient);
+          socket.emit("labPayment", data.data);
 
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {
@@ -155,7 +156,7 @@ function RequestedTestsLab({
                     <TableCell >Discount</TableCell>
                   )}
                
-                    <TableCell >{t("bank")}</TableCell>
+                    <TableCell >Bank</TableCell>
                   
                   {actviePatient.patient?.company ? (
                     <TableCell >التحمل</TableCell>
@@ -256,15 +257,15 @@ function RequestedTestsLab({
         <div  className="total-price mt-1">
           <div className="sub-price">
             <div className="title">Total</div>
-            <div>{actviePatient.patient?.total_lab_value_unpaid}</div>
+            <Typography variant="h4">{actviePatient.patient?.total_lab_value_unpaid}</Typography>
           </div>
           <div className="sub-price">
             <div className="title">Paid</div>
-            <div>
+            <Typography variant="h4">
               {actviePatient.patient.is_lab_paid
                 ? actviePatient.patient.paid
                 : 0}
-            </div>
+            </Typography>
           </div>
           <div className="requested-total">
           <div className="money-info">

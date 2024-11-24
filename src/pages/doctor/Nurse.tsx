@@ -167,9 +167,7 @@ function Doctor() {
     });
     socket.on("newDoctorPatientFromServer", (doctorVisit) => {
       console.log("newDoctorPatientFromServer " + doctorVisit);
-      updateDoctorPatients(doctorVisit);
-      showDocPatients();
-      socketEventHandler(null, doctorVisit, " has just booked", newImage);
+      update(doctorVisit);
     });
 
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
@@ -196,7 +194,23 @@ function Doctor() {
       return { ...prev, visits: "0.5fr" };
     });
   };
-
+  const update = (patient:DoctorVisit)=>{
+    if(patient.id == activeDoctorVisit?.id){
+      // setActiveDoctorVisit(()=>{
+      //   return {...patient }
+      // })
+    }
+    setPatients((prev)=>{
+      
+      if(!prev.find((p)=>p.id == patient.id)) return [patient,...prev]
+      return prev.map((p)=>{
+        if(p.id === patient?.id){
+          return {...patient }
+        }
+        return p
+      })
+    })
+  }
   const { id } = useParams();
 
   const [dialog, setDialog] = useState({
@@ -268,11 +282,7 @@ function Doctor() {
     setShowPatients(true);
   };
 
-  const updateDoctorPatients = (docVisit: DoctorVisit) => {
-    setShift((prev) => {
-      return { ...prev, visits: [{ ...docVisit }, ...prev.visits] };
-    });
-  };
+
 
   //update doctor visit whenever change is made to doctorVisit state variable
   useEffect(() => {

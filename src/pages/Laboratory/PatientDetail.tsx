@@ -1,4 +1,4 @@
-import { Autocomplete, Divider, Paper, Stack, TextField } from "@mui/material";
+import { Autocomplete, Divider, Paper, Stack, TextField, Typography } from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
@@ -22,7 +22,7 @@ function PatientDetail({
   user
 }:PatientDetailPros) {
   const { i18n } = useTranslation();
-
+console.log(patient,'patient in details')
   const date = new Date(patient.created_at);
 
   return (
@@ -37,7 +37,7 @@ function PatientDetail({
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <div  className="patientId">{patient.patient.name}</div>
+        <Typography variant="h5" sx={{border:'1px solid black'}}   className="text-nowrap shadow-md rounded-md   mb-1 text-center">{patient.patient.name}</Typography>
         <div className="form-control">
           <div>Visit Id</div>
           <div >{patient.id}</div>
