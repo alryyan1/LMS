@@ -530,6 +530,7 @@ function Doctor() {
                       key={visit.id}
                       hideForm={null}
                       visit={visit}
+                      focusPaitent={focusPaitent}
                     />
                   );
                 })}
