@@ -21,14 +21,24 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 16px;
 }
+.cost-grid {
+  display: grid;
+  grid-template-columns: 50px 1fr 1fr 1fr;
+  gap: 16px;
+}
+.cost-grid-mini {
+  display: grid;
+  grid-template-columns: 1fr   1fr;
+  gap: 16px;
+}
 .all-report{
   display: grid;
   grid-template-columns: 1fr 200px;
   grid-template-rows: 70px 1fr;
-  height: 90vh;
+  height: 80vh;
 }
 .gird-item{
-  border: 1px solid black!important;
+  /* border: 1px solid black!important; */
 }
 .grid-item-1{
   grid-row-start:1 ;

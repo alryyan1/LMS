@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  Card,
   Divider,
   Grid,
   IconButton,
@@ -25,11 +26,23 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
 import dayjs from "dayjs";
-import { formatNumber } from "./pages/constants";
-type Report = "Insurance Reclaim" | "Lab Statistics" | "Lab Income" | "Clinics";
+import { formatNumber, toFixed, webUrl } from "./pages/constants";
+import { Cost, Deduct } from "./types/Shift";
+import { format, setQuarter } from "date-fns";
+import { DeleteOutline } from "@mui/icons-material";
+type Report =
+  | "Insurance Reclaim"
+  | "Lab Statistics"
+  | "Lab Income"
+  | "Clinics"
+  | "Service Statistics"
+  | "Costs-1"
+  | "Costs-2"
+  | "Pharmacy Income";
 function AllReports() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  console.log(selectedUser, "selected user");
   const [firstDate, setFirstDate] = useState(dayjs(new Date()));
   const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   const [loading, setLoading] = useState(false);
@@ -37,7 +50,7 @@ function AllReports() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [doctors, setDoctors] = useState([]);
   const [tableElement, setTableElement] = useState<ReactElement | null>(null);
-  const [tableData, setTableData] = useState([]);
+  const [queryString, setqueryString] = useState("");
   useEffect(() => {
     axiosClient("users").then(({ data }) => {
       setUsers(data);
@@ -65,6 +78,19 @@ function AllReports() {
       case "Clinics":
         url = "clinics";
         break;
+      case "Service Statistics":
+        url = "service-statistics";
+        break;
+      case "Costs-1":
+        url = `costs-1${queryString}`;
+        break;
+      case "Costs-2":
+        url = "costs-2";
+        break;
+
+      case "Pharmacy Income":
+        url = "searchDeductsByDate";
+        break;
 
       default:
         url = "insurance-reclaim";
@@ -89,6 +115,18 @@ function AllReports() {
             break;
           case "Clinics":
             setClinics(data);
+            break;
+          case "Service Statistics":
+            setServiceStatistics(data);
+            break;
+          case "Costs-1":
+            setCosts1(data);
+            break;
+          case "Costs-2":
+            setCosts2(data);
+            break;
+          case "Pharmacy Income":
+            setPharmacyIncome(data);
             break;
           default:
           // setTableElement(setInsuranceReclaimTable());
@@ -367,7 +405,7 @@ function AllReports() {
       </>
     );
   };
-    const setClinics = (data) => {
+  const setClinics = (data) => {
     setTableElement(
       <>
         <Stack
@@ -386,7 +424,7 @@ function AllReports() {
           >
             <Typography variant="h5"> استحقاق الاطباء من التامين</Typography>
             <Typography variant="h5">
-              {formatNumber(data.total_insurance)}
+              {formatNumber(data.insurance_reclaim)}
             </Typography>
           </Stack>
           <Stack
@@ -411,12 +449,8 @@ function AllReports() {
             className="shadow-sm text-center items-center bg-red-100 p-2 rounded-sm "
           >
             <Typography variant="h5"> اجمالي النقدي</Typography>
-            <Typography variant="h5">
-              {formatNumber(data.total_cash)}
-            </Typography>
+            <Typography variant="h5">{formatNumber(data.total)}</Typography>
           </Stack>
-      
-       
         </Stack>
         <Divider />
         <Table style={{ direction: "rtl" }} size="small">
@@ -437,6 +471,333 @@ function AllReports() {
                 <TableCell>{formatNumber(item.company)}</TableCell>
               </TableRow>
             ))}
+          </TableBody>
+        </Table>
+      </>
+    );
+  };
+  const setServiceStatistics = (data: any[]) => {
+    let cut = data.length / 4;
+    setTableElement(
+      <>
+        <div className="tests-statistics">
+          <div>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Service</TableCell>
+                  <TableCell>Count</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.slice(0, data.length / 4).map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.serviceCount}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Service</TableCell>
+                  <TableCell>Count</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.slice(cut, cut * 2).map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.serviceCount}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Service</TableCell>
+                  <TableCell>Count</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.slice(cut * 2, cut * 3).map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.serviceCount}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Service</TableCell>
+                  <TableCell>Count</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.slice(cut * 3, cut * 4).map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.serviceCount}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const setCosts1 = (data: { data: Cost[] }) => {
+    setTableElement(
+      <>
+        <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
+          <Stack
+            key={selectedUser?.id}
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي المنصرف</Typography>
+            <Typography key={selectedUser?.id} variant="h5">
+              {data.data.reduce((prev, curr) => {
+                if (selectedUser) {
+                  //  alert('changed')
+                  console.log("changed");
+                  if (selectedUser.id != curr.user.id) {
+                    return 0;
+                  }
+                }
+                return prev + curr.amount;
+              }, 0)}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Table style={{ direction: "rtl" }} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>التاريخ</TableCell>
+              <TableCell> المبلغ</TableCell>
+              <TableCell> الوصف</TableCell>
+              <TableCell> المستخدم</TableCell>
+              <TableCell> الفئه</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.data.map((item: Cost, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {dayjs(Date.parse(new Date(item.created_at))).format(
+                    "YYYY-MM-DD H:m A"
+                  )}
+                </TableCell>
+                <TableCell>{formatNumber(item.amount)}</TableCell>
+                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.user.username}</TableCell>
+                <TableCell>{item?.cost_category?.name}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </>
+    );
+  };
+
+  const setCosts2 = (data) => {
+    setTableElement(
+      <>
+        <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
+          <Stack
+            key={selectedUser?.id}
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي المنصرف</Typography>
+            <Typography key={selectedUser?.id} variant="h5"></Typography>
+          </Stack>
+        </Stack>
+        <Table style={{ direction: "rtl" }} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>الوصف</TableCell>
+              <TableCell> المبلغ</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.data.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{formatNumber(item.amount)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </>
+    );
+  };
+  const setPharmacyIncome = (data: Deduct[]) => {
+    setTableElement(
+      <>
+        <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي المبيعات </Typography>
+            <Typography variant="h5">
+              {formatNumber(
+                data.reduce((prev, curr) => {
+                  return prev + curr.total_paid;
+                }, 0)
+              )}
+            </Typography>
+          </Stack>
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي الارباح </Typography>
+            <Typography variant="h5">
+              {formatNumber(
+               toFixed( data.reduce((prev, curr) => {
+                return prev + curr.profit;
+              }, 0),2)
+              )}{" "}
+            </Typography>
+          </Stack>{" "}
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي التكلفه </Typography>
+            <Typography variant="h5">
+              {formatNumber(
+                data.reduce((prev, curr) => {
+                  return prev + curr.cost;
+                }, 0)
+              )}{" "}
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell> No</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Payment</TableCell>
+              <TableCell>Items</TableCell>
+              <TableCell>profit</TableCell>
+              <TableCell>Invoice</TableCell>
+              <TableCell>client</TableCell>
+              <TableCell>Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.id}</TableCell>
+                <TableCell>{item.number}</TableCell>
+                <TableCell>
+                  {dayjs(new Date(Date.parse(item.created_at))).format(
+                    "YYYY/MM/DD H;m A"
+                  )}
+                </TableCell>
+                <TableCell>{formatNumber(item.total_price)}</TableCell>
+                <TableCell>{item.user.username}</TableCell>
+                <TableCell>{item.payment_type.name}</TableCell>
+                <TableCell>
+                  {item.deducted_items.map(
+                    (deducted) => `${deducted.item.market_name}-`
+                  )}
+                </TableCell>
+                <TableCell>{formatNumber(toFixed(item.profit,2))}</TableCell>
+                <TableCell>
+                  {" "}
+                  <a href={`${webUrl}deduct/invoice?id=${item.id}`}>
+                    Invoice PDF
+                  </a>
+                </TableCell>
+                <TableCell>{item?.client?.name}</TableCell>
+                <TableCell>
+                  <LoadingButton
+                    loading={loading}
+                    onClick={() => {
+                      setLoading(true);
+                      axiosClient
+                        .delete(`deduct/${item.id}`)
+                        .then(({ data }) => {
+                          console.log(data);
+                        })
+                        .finally(() => {
+                          setLoading(false);
+                        });
+                    }}
+                  >
+                    <DeleteOutline />
+                  </LoadingButton>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {data.length === 0 && !loading && (
+              <TableRow>
+                <TableCell colSpan={5}>No data found.</TableCell>
+              </TableRow>
+            )}
+            <TableRow>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>
+                {data.reduce((prev, curr) => {
+                  return prev + curr.total_price;
+                }, 0)}
+              </TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>
+                {data.reduce((prev, curr) => {
+                  return prev + curr.profit;
+                }, 0)}
+              </TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+              <TableCell>.</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </>
@@ -496,7 +857,15 @@ function AllReports() {
             value={selectedUser}
             options={users}
             onChange={(e, val) => {
-              setSelectedUser(val);
+              console.log(val, "val");
+              userSelectHandler(val);
+              if (val == null) {
+                setqueryString("");
+                return;
+              }
+              setqueryString((prev) => {
+                return `?user=${val?.id}`;
+              });
             }}
             getOptionLabel={(user) => user.username}
             renderInput={(params) => {
@@ -535,7 +904,8 @@ function AllReports() {
       <div className="gird-item grid-item-2">
         {loading ? <Skeleton width={"100%"} height={"100%"} /> : tableElement}
       </div>
-      <div className="gird-item grid-item-3">
+      <Card className="gird-item grid-item-3">
+        <Typography className="text-center" variant="h4">التقارير</Typography>
         <List>
           <ListItem
             sx={{
@@ -550,6 +920,8 @@ function AllReports() {
             <ListItemText
               onClick={() => {
                 selectReportHandler("Insurance Reclaim");
+                setTableElement(null)
+
               }}
             >
               استحقاق الطبيب{" "}
@@ -568,6 +940,8 @@ function AllReports() {
             <ListItemText
               onClick={() => {
                 selectReportHandler("Lab Statistics");
+                setTableElement(null)
+
               }}
             >
               احصاء المختبر{" "}
@@ -596,7 +970,26 @@ function AllReports() {
             sx={{
               cursor: "pointer",
               backgroundColor: (theme) => {
-                return report == "Clinics"
+                return report == "Clinics" ? theme.palette.primary.light : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Clinics");
+                setTableElement(null)
+
+              }}
+            >
+              العيادات{" "}
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Service Statistics"
                   ? theme.palette.primary.light
                   : "";
               },
@@ -605,14 +998,74 @@ function AllReports() {
             <ListItemText
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                selectReportHandler("Clinics");
+                selectReportHandler("Service Statistics");
+                setTableElement(null)
+
               }}
             >
-               العيادات{" "}
+              احصاء الخدمات{" "}
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Costs-1" ? theme.palette.primary.light : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Costs-1");
+                setTableElement(null)
+
+              }}
+            >
+              المصروفات - 1{" "}
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Costs-2" ? theme.palette.primary.light : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Costs-2");
+                setTableElement(null)
+              }}
+            >
+              المصروفات - 2{" "}
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Pharmacy Income"
+                  ? theme.palette.primary.light
+                  : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Pharmacy Income");
+                setTableElement(null)
+
+              }}
+            >
+              ايرادات الصيدليه
             </ListItemText>
           </ListItem>
         </List>
-      </div>
+      </Card>
     </div>
   );
 }

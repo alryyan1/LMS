@@ -40,9 +40,7 @@ function AddCostForm({setShift}) {
       };
   return (
     <Box elevation={2}>
-    <Typography textAlign={"center"} >
-      اضافه مصروف
-    </Typography>
+
     <Divider></Divider>
     <form
       onSubmit={handleSubmit(submitHandler)}

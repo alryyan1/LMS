@@ -47,6 +47,7 @@ export interface Deduct {
   deducted_items: any[];
   payment_type: Paymenttype;
   user: User;
+  cost:number;
   client: null;
 }
 

@@ -328,6 +328,7 @@ function Reception() {
     <>
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         <OpenDoctorTabs
+          user={user}
           activeShift={activeShift}
           openedDoctors={openedDoctors}
           selectDoctorHandler={selectDoctorHandler}

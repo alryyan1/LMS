@@ -157,6 +157,14 @@ export const router = createHashRouter([
         ),
       },
       {
+        path: "denos",
+        element: (
+          <ProtectedRoute>
+            <CashDenos />
+          </ProtectedRoute>
+        ),
+      },
+      {
         element: (
           <ProtectedRoute>
             <Dashboard />
@@ -389,14 +397,7 @@ export const router = createHashRouter([
               </ProtectedRoute>
             ),
           },
-          {
-            path: "denos",
-            element: (
-              <ProtectedRoute>
-                <CashDenos />
-              </ProtectedRoute>
-            ),
-          },
+        
         ],
       },
 
@@ -461,14 +462,7 @@ export const router = createHashRouter([
               </ProtectedRoute>
             ),
           },
-          {
-            path: "denos",
-            element: (
-              <ProtectedRoute>
-                <CashDenos />
-              </ProtectedRoute>
-            ),
-          },
+         
         ],
       },
       {

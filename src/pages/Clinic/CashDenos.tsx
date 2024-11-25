@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
   Divider,
-  Grid,
+  div,
   Stack,
   Table,
   TableBody,
@@ -15,12 +15,17 @@ import {
   TableRow,
   TextField,
   Typography,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import AddCostForm from "../../components/AddCostForm";
-import { webUrl } from "../constants";
+import { formatNumber, webUrl } from "../constants";
 import { Deno, Shift } from "../../types/Shift";
 import { ShiftDetails } from "../../types/CutomTypes";
+import CostDialog from "../Dialogs/CostDialog";
+import { Money } from "@mui/icons-material";
+import { Plus } from "lucide-react";
 
 const options = {
   weekday: "long",
@@ -34,6 +39,7 @@ function CashDenos() {
   }, []);
   const [shift, setShift] = useState<Shift | null>(null);
   const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
+  const [show, setShow] = useState(false);
   useEffect(() => {
     axiosClient.get("shift/last").then(({ data: { data } }) => {
       setShift(data);
@@ -55,23 +61,20 @@ function CashDenos() {
       setUserDenos(data.data);
     });
   }, []);
-  useEffect(() => {
+  useEffect(() => {}, []);
 
-  },[])
-
-  const updateHandler = (colName,denoId,val,add = false) => {
-       axiosClient
-        .patch("deno/user", {
-          deno_id:denoId,
-          val,
-          colName,
-          add
-        })
-        .then(({ data }) => {
-          setUserDenos(data.data);
-        });
-    
-  }
+  const updateHandler = (colName, denoId, val, add = false) => {
+    axiosClient
+      .patch("deno/user", {
+        deno_id: denoId,
+        val,
+        colName,
+        add,
+      })
+      .then(({ data }) => {
+        setUserDenos(data.data);
+      });
+  };
   return (
     <>
       {shift && (
@@ -101,118 +104,21 @@ function CashDenos() {
           </CardContent>
         </Card>
       )}
-      <Grid container spacing={2}>
-        <Grid item lg={3} xs={12}>
-          <Box sx={{ p: 1 }}>
-            <Table size="small" style={{ direction: "rtl" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>الفئة</TableCell>
-                  <TableCell>المضاف</TableCell>
-                  <TableCell>العدد</TableCell>
-                  <TableCell>الاجمالي</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {userDenos.map((deno) => {
-                  return (
-                    <TableRow key={deno.id}>
-                      <TableCell>{deno.name}</TableCell>
-                      <TableCell>
-                        <TextField
-                          variant="standard"
-                          type="number"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              updateHandler('deno', deno.id,e.target.value,true);
+      <div className="cost-grid">
+        <Card>
+          <Stack direction={'column'}>
+          <Tooltip title='اضافه منصرف'>
+          <IconButton onClick={()=>{
+            setShow(true);
+          }}>
+              <Plus/>
+            </IconButton>
+          </Tooltip>
+          </Stack>
+        </Card>
 
-                            }
-                          }}
-                     
-                        />
-                      </TableCell>
-                      
-                      <TableCell>   <TextField
-                      defaultValue={deno.pivot.amount}
-                          variant="standard"
-                          type="number"
-                         
-                          onChange={(e) => {
-                            updateHandler('amount', deno.id,e.target.value);
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>{deno.pivot.amount * deno.name}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Box>
-        </Grid>
-        <Grid item lg={3} xs={12}>
-          <AddCostForm setShift={setShift} />
-        </Grid>
-        <Grid item lg={3} xs={12}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>القيمه</TableCell>
-                <TableCell>الاسم</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>{shiftSummary?.total}</TableCell>
-                <TableCell>اجمالي العيادات</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{shiftSummary?.bank}</TableCell>
-                <TableCell>اجمالي بنكك</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{shiftSummary?.expenses}</TableCell>
-                <TableCell>اجمالي المصروفات</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{shiftSummary?.cash}</TableCell>
-                <TableCell>صافي الكاش</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{shiftSummary?.safi}</TableCell>
-                <TableCell>(بنك + كاش)الصافي</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <Divider>حساب الموظف -الفئات</Divider>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>القيمه</TableCell>
-                <TableCell>الاسم</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>{userDenos.reduce((curr,red)=>{
-                  return curr + red.pivot.amount * red.name
-                },0)}</TableCell>
-                <TableCell>اجمالي الفئات</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{shiftSummary?.cash}</TableCell>
-                <TableCell>صافي الكاش</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{(shiftSummary?.cash  == undefined ?0:shiftSummary.cash) - userDenos.reduce((curr,red)=>{
-                  return curr + red.pivot.amount * red.name
-                },0)}</TableCell>
-                <TableCell>المتبقي </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Grid>
-        <Grid item lg={3} xs={12}>
+        <div className="">
+          {" "}
           <Box sx={{ p: 1 }}>
             <Typography variant="h6" textAlign={"center"}>
               مصروفات الورديه
@@ -253,21 +159,181 @@ function CashDenos() {
               </TableBody>
             </Table>
           </Box>
-        </Grid>
-        {/* <Grid  item  lg={3} xs={12}>
-           <form  action={`${webUrl}previewLabel`} method="POST" >
-            <Stack gap={2} justifyContent={'space-around'} sx={{mb:1}} direction={'row'}>
-            <TextField name='orientation' label='orientation' ></TextField>
-            <TextField type="number" label='height' name='height'></TextField>
-            <TextField type="number" label='width' name='width'></TextField>
-            </Stack>
-            
-           <TextField name="data" multiline rows={16} fullWidth></TextField>
-           <Button fullWidth sx={{mt:1}} type="submit" variant="contained">Preview</Button>
-           </form>
-          
-        </Grid> */}
-      </Grid>
+          <CostDialog setShift={setShift} setShow={setShow} show={show} />
+        </div>
+        <Card className="grid-item-2 p-4 ">
+          <Table size="small" style={{ direction: "rtl" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>الفئة</TableCell>
+                <TableCell>المضاف</TableCell>
+                <TableCell>العدد</TableCell>
+                <TableCell>الاجمالي</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {userDenos.map((deno) => {
+                return (
+                  <TableRow key={deno.id}>
+                    <TableCell>
+                      <Typography variant="h5">{deno.name}</Typography>{" "}
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        variant="standard"
+                        type="number"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            updateHandler(
+                              "deno",
+                              deno.id,
+                              e.target.value,
+                              true
+                            );
+                          }
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      {" "}
+                      <TextField
+                        defaultValue={deno.pivot.amount}
+                        variant="standard"
+                        type="number"
+                        onChange={(e) => {
+                          updateHandler("amount", deno.id, e.target.value);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{deno.pivot.amount * deno.name}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <Box>
+            <Divider>حساب الموظف -الفئات</Divider>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>القيمه</TableCell>
+                  <TableCell>الاسم</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h5">
+                      {formatNumber(
+                        userDenos.reduce((curr, red) => {
+                          return curr + red.pivot.amount * red.name;
+                        }, 0)
+                      )}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    <Typography variant="h5">اجمالي الفئات</Typography>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h5">
+                      {formatNumber(shiftSummary?.cash)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">صافي الكاش</Typography>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h5">
+                      {formatNumber(
+                        (shiftSummary?.cash == undefined
+                          ? 0
+                          : shiftSummary.cash) -
+                          userDenos.reduce((curr, red) => {
+                            return curr + red.pivot.amount * red.name;
+                          }, 0)
+                      )}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">المتبقي</Typography>{" "}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Box>
+        </Card>
+
+        <div className="grid-item-3">
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>القيمه</TableCell>
+                <TableCell>الاسم</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {formatNumber(shiftSummary?.total)}
+                  </Typography>{" "}
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">اجمالي العيادات </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {" "}
+                    {formatNumber(shiftSummary?.bank)}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5"> اجمالي بنكك</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {" "}
+                    {formatNumber(shiftSummary?.expenses)}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5"> اجمالي المصروفات</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {formatNumber(shiftSummary?.cash)}{" "}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">صافي الكاش </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {formatNumber(shiftSummary?.safi)}{" "}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">(بنك + كاش)الصافي </Typography>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </>
   );
 }

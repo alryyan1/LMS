@@ -11,7 +11,9 @@ i18next
     resources: {
       ar: {
         translation: {
+          salesTable:'المبيعات والارباح',
           reports:'التقارير',
+          allReports:'التقارير',
           finance: "الحسابات",
           print_time: "زمن الطباعه",
           register_lab_patient: "التسجيل  ",
@@ -121,6 +123,9 @@ i18next
           zipCode:'الرمز البريدي',
           accountNumber:'رقم الحساب',
           bankName:'ا��م البنك',
+          denos :'الحاسبه',
+
+          
 
         },
 
@@ -144,9 +149,11 @@ i18next
             clients: "clients ",
           suppliers: "suppliers ",
           supplierInvoices: "Puchases ",
+          allReports:'System Reports',
+          salesTable:'Sales &  Profit',
 
           quantities: "quantities",
-
+          denos :'Money Calculator',
           moneyIncome: "Money Income",
           MoneyExpenses: "Money Expenses",
           cash_count: "Cash count",

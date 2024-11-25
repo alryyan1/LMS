@@ -3,7 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { Badge } from "@mui/material";
-import { DoctorShift } from "../../types/Patient";
+import { DoctorShift, User } from "../../types/Patient";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,10 +38,11 @@ interface openDoctorTabsProps {
     openedDoctors: DoctorShift[];
     selectDoctorHandler: (shift: DoctorShift) => void;
     activeShift: DoctorShift|null;
+    user : User
   
 
 }
-export default function OpenDoctorTabs({ openedDoctors,selectDoctorHandler ,activeShift}:openDoctorTabsProps) {
+export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler ,activeShift}:openDoctorTabsProps) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -60,7 +61,7 @@ export default function OpenDoctorTabs({ openedDoctors,selectDoctorHandler ,acti
           aria-label="basic tabs example"
         >
           {openedDoctors
-            // .filter((shift) => shift.user_id == user?.id)
+            .filter((shift) => shift.user_id == user?.id)
             .map((shift,index) => {
               // console.log(shift, "shift");
               return (

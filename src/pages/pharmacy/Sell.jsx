@@ -481,7 +481,8 @@ function SellDrug() {
                         </TableCell>
 
                          <TableCell>
-                          <MyDateField2
+                          <MyDateField2 
+
                           
                             val={deductedItem?.item.lastDepositItem?.expire}
                             item={deductedItem?.item.lastDepositItem}
@@ -530,7 +531,7 @@ function SellDrug() {
                 )}
 
               </Typography> */}
-              <MyDateField2 label="تاريخ البيع" path="deduct" colName="created_at" disabled={false}
+              <MyDateField2  label="تاريخ البيع" path="deduct" colName="created_at" disabled={true}
                           val={activeSell.created_at}
                           item={activeSell}
                         />
