@@ -13,9 +13,10 @@ function isNumeric(str) {
 
 interface AutocompleteSearchPatientPros{
   update: (patient: DoctorVisit) => void,
+  focusPaitent:(patient:DoctorVisit)=>void
 }
 
-export default function AutocompleteSearchPatient({ update}:AutocompleteSearchPatientPros) {
+export default function AutocompleteSearchPatient({ update,focusPaitent}:AutocompleteSearchPatientPros) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<DoctorVisit[]>([]);
@@ -50,7 +51,12 @@ export default function AutocompleteSearchPatient({ update}:AutocompleteSearchPa
         if (newVal) {
           console.log(newVal)
             update(newVal)
+            if(focusPaitent){
+
+              focusPaitent(newVal);
+            }
         }
+
       }}
       sx={{ width: 300, display: "inline-block" }}
       open={open}

@@ -304,6 +304,19 @@ function Doctor() {
     setShowPatients(true);
   };
 
+  const focusPaitent = (visit)=>{
+    setActiveDoctorVisit(visit);
+    // console.log(visit, "selected visit");
+    setLayout((prev) => {
+      return {
+        ...prev,
+        patients: "0fr",
+        vitals: "0.7fr",
+        visits: "0fr",
+      };
+    });
+    setShowPatients(false);
+  }
 
 
   const update = (patient:DoctorVisit)=>{
@@ -407,7 +420,7 @@ function Doctor() {
 
         {showSearch && (
           <Stack gap={1} direction={'row'} flexWrap={'wrap'}>
-            <AutocompleteSearchPatient update={setActiveDoctorVisit} />
+            <AutocompleteSearchPatient focusPaitent={focusPaitent} update={setActiveDoctorVisit} />
             <input  className="bg-transparent" onChange={(e)=>{
               axiosClient.post('patient/search/date',{date:e.target.value}).then(({data})=>{
                 console.log(data,'search by date ')
@@ -531,7 +544,10 @@ function Doctor() {
                       activeDoctorVisit={activeDoctorVisit}
                       key={visit.id}
                       hideForm={null}
+                      useIndex={showSearch}
+                      index={i+1}
                       visit={visit}
+                      focusPaitent={focusPaitent}
                     />
                   );
                 })}

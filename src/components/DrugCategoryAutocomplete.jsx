@@ -88,6 +88,7 @@ export default function DrugCategoryAutocomplete({Controller,control,errors,setV
     
               return filtered;
             }}
+            
             options={drugCategory}
             getOptionLabel={(option) => {
               // console.log('option',option)

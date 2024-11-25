@@ -21,6 +21,7 @@ import MyTableCell from "../inventory/MyTableCell";
 import green from "./../../assets/images/green.png";
 import red from "./../../assets/images/red.png";
 import { DoctorVisit, RequestedService } from "../../types/Patient";
+import CodeEditor from "./CodeMirror";
 interface AddMedicalServiceProps {
   value: any;
   index: number;
@@ -28,10 +29,22 @@ interface AddMedicalServiceProps {
   setActiveDoctorVisit: any;
   user: any;
   setActiveService: any;
-  socket:any
+  socket: any;
+  setNurseNotes: () => void;
+  nurseNotes: any[];
 }
 function AddMedicalService(props: AddMedicalServiceProps) {
-  const { value, index, patient, setActiveDoctorVisit, user,socket, ...other } = props;
+  const {
+    value,
+    index,
+    patient,
+    setActiveDoctorVisit,
+    user,
+    socket,
+    setNurseNotes,
+    nurseNotes,
+    ...other
+  } = props;
 
   // alert(user?.id)
   const [selectedService, setSelectedService] =
@@ -73,7 +86,7 @@ function AddMedicalService(props: AddMedicalServiceProps) {
             socket={socket}
           />
           {patient?.services?.length > 0 && (
-            <TableContainer sx={{ border: "none", textAlign: "left" }}>
+            <TableContainer >
               <Table sx={{ mt: 1 }} size="small">
                 <TableHead>
                   <TableRow>
@@ -106,7 +119,7 @@ function AddMedicalService(props: AddMedicalServiceProps) {
                           show
                           colName={"count"}
                           item={service}
-                          change={setActiveDoctorVisit}
+                          changeDoctorVisit={setActiveDoctorVisit}
                         >
                           {service.count}
                         </MyTableCell>
@@ -115,7 +128,7 @@ function AddMedicalService(props: AddMedicalServiceProps) {
                           table="editRequested"
                           colName={"doctor_note"}
                           item={service}
-                          change={setActiveDoctorVisit}
+                          changeDoctorVisit={setActiveDoctorVisit}
                           show
                         >
                           {service.doctor_note}
@@ -155,30 +168,26 @@ function AddMedicalService(props: AddMedicalServiceProps) {
               </Table>
               <Divider />
               {selectedService && (
-                <div>
+                <div style={{direction:'ltr'}}>
                   <Typography textAlign={"center"} variant="h4">
                     {selectedService.service.name}
                   </Typography>
-                  <TextField
-                    key={selectedService.id}
-                    defaultValue={selectedService.nurse_note}
-                    onChange={(e) => {
-                      axiosClient
-                        .patch(`editRequested/${selectedService.id}`, {
-                          colName: "nurse_note",
-                          val: e.target.value,
-                        })
-                        .then(({ data }) => {
-                          setActiveDoctorVisit(data.data);
-                        });
-                    }}
-                    multiline
-                    rows={5}
-                    sx={{p:1}}
-                    fullWidth
-                    label="Nurse Note"
-                  ></TextField>
+                 
+
+                  <CodeEditor
+                   key={selectedService.id}
+                    colName="nurse_note"
+                    setOptions={setNurseNotes}
+                    tableName="nurse_notes"
+                    init={selectedService.nurse_note}
+                    options={nurseNotes}
+                    patient={patient}
+                    setActiveDoctorVisit={setActiveDoctorVisit}
+                    api={`editRquestedServiceForNurseNote/${selectedService.id}`}
+                  />
+
                   <LoadingButton
+                  sx={{mt:1}}
                     loading={loading}
                     disabled={selectedService.done == 1}
                     onClick={() => {

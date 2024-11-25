@@ -15,6 +15,9 @@ interface DoctorPatientProps {
   showPatients: boolean;
   setShowPatients: (show: boolean) => void;
   changeDoctorVisit: (visit: DoctorVisit) => void;
+  useIndex:boolean;
+  index:number;
+  focusPaitent: (visit: DoctorVisit) => void;
 }
 //add type inference to DoctorPatient
 
@@ -25,6 +28,9 @@ const  DoctorPatient = ({
   setActiveDoctorVisit,
   setLayout,
   setShowPatients,
+  useIndex,
+  index,
+  focusPaitent,
 }:DoctorPatientProps) => {
   // console.log(activePatient,'active patient')
   return (
@@ -34,23 +40,12 @@ const  DoctorPatient = ({
         badgeContent={
           visit.file?.patients?.length == 1 ? undefined : visit.file?.patients?.length
         }
-        key={visit.patient.id}
+        key={visit.id}
       >
         <Stack
           sx={{ cursor: "pointer", gap: 1 }}
           onClick={() => {
-         
-            setActiveDoctorVisit(visit);
-            // console.log(visit, "selected visit");
-            setLayout((prev) => {
-              return {
-                ...prev,
-                patients: "0fr",
-                vitals: "0.7fr",
-                visits: "0fr",
-              };
-            });
-            setShowPatients(false);
+          focusPaitent(visit);
           }}
           direction={"row"}
         >
@@ -62,7 +57,7 @@ const  DoctorPatient = ({
             }
             className="patient-no2 text-white"
           >
-            {visit.number}
+            {useIndex ? index : visit.number}
           </Item>
 
           <Item

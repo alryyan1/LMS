@@ -133,6 +133,7 @@ export interface Patient {
     endocrine_system:string;
     peripheral_vascular_system:string;
     referred:string
+    nurse_note:string;
   }
   
   export interface Labrequest {

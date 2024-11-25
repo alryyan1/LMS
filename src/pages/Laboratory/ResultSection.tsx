@@ -62,7 +62,7 @@ function ResultSection({
                 <TableRow>
                   <TableCell>Name</TableCell>
                   <TableCell width="70%">Result</TableCell>
-                  <TableCell>Normal Range</TableCell>
+                  {/* <TableCell>Normal Range</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -105,9 +105,9 @@ function ResultSection({
                             child_test={req.child_test}
                           />}
                         </TableCell>
-                        <TableCell sx={{ p: 0.5 }}>
-                          {req.normal_range}
-                        </TableCell>
+                        {/* <TableCell sx={{ p: 0.5 }}> */}
+                          {/* {req.normal_range} */}
+                        {/* </TableCell> */}
                       </TableRow>
                     );
                   })}

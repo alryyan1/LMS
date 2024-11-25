@@ -16,6 +16,26 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 16px;
 }
+.tests-statistics{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+.all-report{
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  grid-template-rows: 70px 1fr;
+  height: 90vh;
+}
+.gird-item{
+  border: 1px solid black!important;
+}
+.grid-item-1{
+  grid-row-start:1 ;
+  grid-row-end:1 ;
+  grid-column-start:1 ;
+  grid-column-end:3 ;
+}
 .test{
   border-radius: 5px!important;
     text-align: center;

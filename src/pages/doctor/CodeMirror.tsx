@@ -13,6 +13,7 @@ interface CodeEditorPrps {
   patient: DoctorVisit;
   setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>
   tableName: string;
+  api:string
 }
 function CodeEditor({
   options,
@@ -21,7 +22,8 @@ function CodeEditor({
   colName,
   patient,
   setActiveDoctorVisit,
-  tableName
+  tableName,
+  api
 }:CodeEditorPrps) {
   const [value, setValue] = React.useState(init);
   const [loading, setLoading] = useState(false);
@@ -42,6 +44,7 @@ function CodeEditor({
     <>
       <CodeMirror
         width="100%"
+        dir="ltr"
         value={value}
         // height="200px"
         extensions={[autocompletion({ override: [myCompletions] })]}
@@ -49,6 +52,7 @@ function CodeEditor({
       />
       
       <LoadingButton
+      sx={{mt:1}}
         loading={loading}
         fullWidth
         variant="contained"
@@ -69,7 +73,7 @@ function CodeEditor({
 
               console.log(data, "update table db");
             });
-          updateHandler(value, colName, patient, setActiveDoctorVisit).then(
+          updateHandler(value, colName, patient, setActiveDoctorVisit,api != '',api).then(
             (_, data) => {
               setLoading(false);
             }

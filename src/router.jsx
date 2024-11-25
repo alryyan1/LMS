@@ -82,6 +82,7 @@ import Patients from "./pages/Patients";
 import Reclaim from "./pages/insurance/Reclaim";
 import ToothChart from "./pages/Dentist/ToothChart";
 import SalesTable from "./pages/inventory/SalesTable";
+import AllReports from "./AllReports";
 
 export const router = createHashRouter([
   {
@@ -146,6 +147,14 @@ export const router = createHashRouter([
             element: <PaperConfig />,
           },
         ],
+      },
+      {
+        path: "allReports",
+        element: (
+          <ProtectedRoute>
+            <AllReports />
+          </ProtectedRoute>
+        ),
       },
       {
         element: (

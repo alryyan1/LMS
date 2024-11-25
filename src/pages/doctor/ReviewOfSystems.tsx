@@ -255,6 +255,7 @@ function ReviewOfSystems(props: ReviewOfSystemsProps) {
                 options={complains}
                 patient={patient}
                 setActiveDoctorVisit={setActiveDoctorVisit}
+                api='editRequested'
               />
             </Box>
             <Box>

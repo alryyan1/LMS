@@ -1,18 +1,32 @@
 import { Print } from "@mui/icons-material";
 import {
+  Badge,
   Box,
   Button,
+  Chip,
+  Icon,
   IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Stack,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import { webUrl } from "./constants";
 import PatientDetail from "./Laboratory/PatientDetail";
-
+import { DoctorShift, DoctorVisit } from "../types/Patient";
+import { Shift, Specialist } from "../types/Shift";
+import { Heart, HeartIcon } from "lucide-react";
+interface AuditClincsProps {
+  selectedShift: Shift;
+  selectedDoctorShift: any;
+  setSelectedVisit: any;
+  setSelectedDoctorShift: any;
+  selectedVisit: DoctorVisit;
+  setShowServices: any;
+}
 function AuditClinics({
   selectedShift,
   selectedDoctorShift,
@@ -20,8 +34,9 @@ function AuditClinics({
   setSelectedDoctorShift,
   selectedVisit,
   setShowServices,
-}) {
-  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
+}: AuditClincsProps) {
+  const [selectedSpecialist, setSelectedSpecialist] =
+    useState<Specialist | null>(null);
 
   return (
     <div
@@ -36,7 +51,9 @@ function AuditClinics({
       }}
     >
       <Box>
-        <Typography textAlign={'center'} variant="h4">التخصصات الطبيه</Typography>
+        <Typography textAlign={"center"} variant="h4">
+          التخصصات الطبيه
+        </Typography>
         <List dense>
           {selectedShift.specialists.map((specialist) => {
             return (
@@ -52,6 +69,7 @@ function AuditClinics({
                 <ListItemButton
                   onClick={() => {
                     setSelectedVisit(null);
+                    setSelectedDoctorShift(null);
                     setSelectedSpecialist(specialist);
                   }}
                   style={{
@@ -65,10 +83,12 @@ function AuditClinics({
           })}
         </List>
       </Box>
-      
+
       {selectedSpecialist && (
         <Box>
-        <Typography textAlign={'center'} variant="h4">العيادات</Typography>
+          <Typography textAlign={"center"} variant="h4">
+            العيادات
+          </Typography>
 
           <List dense>
             {selectedShift.doctor_shifts
@@ -79,7 +99,6 @@ function AuditClinics({
               .map((doctorShift) => {
                 return (
                   <ListItem
-                
                     sx={{
                       backgroundColor: (theme) =>
                         selectedDoctorShift?.id == doctorShift.id
@@ -130,15 +149,17 @@ function AuditClinics({
                   }}
                   secondaryAction={
                     visit.services.length > 0 && (
-                      <Button
-                        onClick={() => {
-                          setSelectedVisit(visit);
-                          setShowServices(true);
-                        }}
-                        variant="contained"
-                      >
-                        الخدمات
-                      </Button>
+                      <Badge color="secondary" content={visit.services.length}>
+                        <Button
+                          onClick={() => {
+                            setSelectedVisit(visit);
+                            setShowServices(true);
+                          }}
+                          variant="contained"
+                        >
+                          الخدمات
+                        </Button>
+                      </Badge>
                     )
                   }
                   key={visit.id}
@@ -152,7 +173,20 @@ function AuditClinics({
                       marginBottom: "2px",
                     }}
                   >
-                    <ListItemText>{visit.patient.name}</ListItemText>
+                    <ListItemText>
+                      <Stack
+                        direction={"row"}
+                        justifyContent={"space-between"}
+                      >
+
+                        <div>
+                        {visit.patient.name}
+                        </div>
+                        {
+                          visit.patient.company && <Chip>تامين</Chip>
+                        }
+                      </Stack>
+                    </ListItemText>
                   </ListItemButton>
                 </ListItem>
               );
@@ -164,7 +198,7 @@ function AuditClinics({
         {selectedVisit && (
           <PatientDetail
             activeShift={selectedDoctorShift}
-            patient={selectedVisit.patient}
+            patient={selectedVisit}
             isLab={true}
           />
         )}

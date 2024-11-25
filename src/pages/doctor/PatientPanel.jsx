@@ -322,7 +322,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             }
             setLoading(true);
             axiosClient
-              .patch(`patients/${patient.id}`, {
+              .patch(`patients/${patient.patient.id}`, {
                 doctor_finish: 1,
               })
               .then(({ data }) => {

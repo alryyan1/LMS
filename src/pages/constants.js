@@ -70,12 +70,15 @@ export const updateHandler = (
   colName,
   patient,
   setActiveDoctorVisit,
+  changeURl = false,
+  otherUrl
   
 ) => {
   console.log("called update handler");
+  let api = changeURl ?  `${otherUrl}`  : `patients/${patient.patient.id}`
   return new Promise((resolve, reject) => {
     axiosClient
-      .patch(`patients/${patient.patient.id}`, {
+      .patch(api, {
         [colName]: val,
       })
       .then(({ data }) => {

@@ -1,4 +1,7 @@
-import { DoctorVisit, Patient, User } from "./Patient";
+import { DoctorShift, DoctorVisit, Patient, User } from "./Patient";
+
+
+//////////////
 
 export interface Shift {
   id: number;
@@ -6,17 +9,18 @@ export interface Shift {
   bank: number;
   expenses: number;
   touched: number;
-  closed_at: null;
+  closed_at: string;
   is_closed: number;
   created_at: string;
   updated_at: string;
   maxShiftId: number;
   specialists: Specialist[];
   cost: Cost[];
-  deducts: Deduct[];
   patients: DoctorVisit[];
+  doctor_shifts: DoctorShift[];
 }
 
+// //////////////////
 export interface Deduct {
   id: number;
   shift_id: number;

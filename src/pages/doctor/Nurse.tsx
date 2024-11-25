@@ -64,6 +64,7 @@ function Doctor() {
 
   const [value, setValue] = useState(0);
   const [complains, setComplains] = useState([]);
+  const [nurseNotes, setNurseNotes] = useState([]);
   const [diagnosis, setDiagnosis] = useState([]);
   const [patients, setPatients] = useState([]);
   const [currentDate, setCurrentDate] = useState(null);
@@ -98,6 +99,10 @@ function Doctor() {
     axiosClient.get("complains").then(({ data }) => {
       // console.log(data);
       setComplains(data.map((c) => ({ label: c.name, type: c.name })));
+    });
+    axiosClient.get("nurse-notes").then(({ data }) => {
+      // console.log(data);
+      setNurseNotes(data.map((c) => ({ label: c.name, type: c.name })));
     });
   }, []);
   useEffect(() => {
@@ -224,18 +229,20 @@ function Doctor() {
   });
   //   alert(id)
 
-  const getDoctorShift = (id: number, currentShiftId: number) => {
-    return new Promise((resolve, reject) => {
-      axiosClient
-        .get(`doctorShift/find?id=${id}&currentShiftId=${currentShiftId}`)
-        .then(({ data }) => {
-          resolve(data);
-        })
-        .catch((err) => {
-          reject(err);
-        });
+  const focusPaitent = (visit)=>{
+    setActiveDoctorVisit(visit);
+    // console.log(visit, "selected visit");
+    setLayout((prev) => {
+      return {
+        ...prev,
+        patients: "0fr",
+        vitals: "0.7fr",
+        visits: "0fr",
+      };
     });
-  };
+    setShowPatients(false);
+  }
+
 
   const focusPatientafterLabResultAuthAction = (doctorVisit: DoctorVisit) => {
     setLayout((prev) => {
@@ -391,7 +398,7 @@ function Doctor() {
 
         {showSearch && (
           <Stack gap={1} direction={"row"} flexWrap={"wrap"}>
-            <AutocompleteSearchPatient update={setActiveDoctorVisit} />
+            <AutocompleteSearchPatient focusPaitent={focusPaitent} update={setActiveDoctorVisit} />
             <input
               className="bg-transparent"
               onChange={(e) => {
@@ -517,6 +524,8 @@ function Doctor() {
                       setLayout={setLayout}
                       setActiveDoctorVisit={setActiveDoctorVisit}
                       delay={i * 100}
+                      useIndex={true}
+                      index={i+1}
                       activeDoctorVisit={activeDoctorVisit}
                       key={visit.id}
                       hideForm={null}
@@ -627,6 +636,8 @@ function Doctor() {
                   index={7}
                   value={value}
                   user={user}
+                  setNurseNotes ={setNurseNotes}
+                  nurseNotes ={nurseNotes}
 
                 />
                 {user?.is_nurse == 1 && (
