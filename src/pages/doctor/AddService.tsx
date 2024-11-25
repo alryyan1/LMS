@@ -182,8 +182,10 @@ function AddMedicalService(props: AddMedicalServiceProps) {
                     init={selectedService.nurse_note}
                     options={nurseNotes}
                     patient={patient}
+
+                    changeUrl={true}
                     setActiveDoctorVisit={setActiveDoctorVisit}
-                    api={`editRquestedServiceForNurseNote/${selectedService.id}`}
+                    apiUrl={`editRquestedServiceForNurseNote/${selectedService.id}`}
                   />
 
                   <LoadingButton

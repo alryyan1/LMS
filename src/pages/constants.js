@@ -71,7 +71,7 @@ export const updateHandler = (
   patient,
   setActiveDoctorVisit,
   changeURl = false,
-  otherUrl
+  otherUrl = null
   
 ) => {
   console.log("called update handler");

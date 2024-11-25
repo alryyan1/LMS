@@ -13,7 +13,9 @@ interface CodeEditorPrps {
   patient: DoctorVisit;
   setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>
   tableName: string;
-  api:string
+  api:string;
+  changeUrl?: boolean;
+  apiUrl: string;
 }
 function CodeEditor({
   options,
@@ -23,7 +25,8 @@ function CodeEditor({
   patient,
   setActiveDoctorVisit,
   tableName,
-  api
+  changeUrl = false,
+  apiUrl,
 }:CodeEditorPrps) {
   const [value, setValue] = React.useState(init);
   const [loading, setLoading] = useState(false);
@@ -73,7 +76,7 @@ function CodeEditor({
 
               console.log(data, "update table db");
             });
-          updateHandler(value, colName, patient, setActiveDoctorVisit,api != '',api).then(
+          updateHandler(value, colName, patient, setActiveDoctorVisit,changeUrl,apiUrl).then(
             (_, data) => {
               setLoading(false);
             }
