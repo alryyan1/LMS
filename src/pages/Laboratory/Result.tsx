@@ -51,14 +51,10 @@ function Result() {
     selectedReslult,
     setActivePatient,
     setSelectedResult,
-    update,
+    patients,
     showSearch
   } = useResult();
-  const {setDialog} = useOutletContext()
   const shiftDate = new Date(Date.parse(shift?.created_at));
-  
-  console.log(shift, "shift");
-
   return (
     <>
       <div
@@ -72,7 +68,7 @@ function Result() {
         <div></div>
         {showSearch && <AutocompleteSearchPatient
           withTests={1}
-          update={update}
+          setActivePatient={setActivePatient}
           setActivePatientHandler={setActivePatientHandler}
         />}
       </div>
@@ -101,6 +97,10 @@ function Result() {
                 })}
             </div>
             <div>
+              {   shift?.patients
+                ?.filter((patient) => patient.patient.labrequests.length > 0).length}
+            </div>
+            <div>
               {shift &&
                 shiftDate.toLocaleDateString("en-Eg", {
                   weekday: "long",
@@ -121,7 +121,7 @@ function Result() {
                 height={400}
               />
             ) : (
-              shift?.patients
+              patients
                 ?.filter((patient) => patient.patient.labrequests.length > 0)
                 .map((p, i) => {
                   let unfinshed_count = 0;
@@ -138,6 +138,7 @@ function Result() {
                       key={p.id}
                       patient={p}
                       onClick={() => {
+                        // setActivePatient(p);
                         setActivePatientHandler(p);
                       }}
                     />
@@ -146,12 +147,13 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card sx={{ height: "80vh", overflow: "auto" }}>
-          {actviePatient && actviePatient.patient.labrequests.length > 0 && (
-            <List sx={{ direction: "ltr" }}>
-              {actviePatient.patient.labrequests.map((test) => {
+        <Card  sx={{ height: "80vh", overflow: "auto" }}>
+          
+            <List >
+              {actviePatient?.patient.labrequests.map((test) => {
                 return (
                   <ListItem
+                  
                      
                     onClick={() => {
                       setSelectedTest(test);
@@ -172,20 +174,19 @@ function Result() {
                       },
                     }}
                     secondaryAction={
-                      <MyCheckBoxLab update={update} id={test.id} hideTest={test.hidden} />
+                      <MyCheckBoxLab setActivePatient={setActivePatient} id={test.id} hideTest={test.hidden} />
                     }
-                    key={test.updated_at}
+                    key={test.id}
                   >
                     <ListItemText primary={test.main_test.main_test_name} />
                   </ListItem>
                 );
               })}
             </List>
-          )}
+          
         </Card>
-        <Card
+        <Card 
           sx={{ height: "80vh", overflow: "auto", p: 1 }}
-          key={selectedTest?.id + resultUpdated}
         >
           {actviePatient && (
             <ResultSection
@@ -193,8 +194,7 @@ function Result() {
               selectedTest={selectedTest}
               setActivePatient={setActivePatient}
               setSelectedResult={setSelectedResult}
-              setShift={setShift}
-              update={update}
+              resultUpdated={resultUpdated}
             />
           )}
         </Card>
@@ -207,7 +207,6 @@ function Result() {
               <PatientDetail
                 key={actviePatient.id}
                 patient={actviePatient}
-                setShift={setShift}
               />
               <Stack>
                 <Button
@@ -271,9 +270,9 @@ function Result() {
                     onClick={() => {
                       //authentication event
                       setLoading(true);
-                      updateHandler(1, "result_auth", actviePatient,update).then((data) => {
+                      updateHandler(1, "result_auth", actviePatient,setActivePatient).then((data) => {
                         console.log('after update', data);
-                        update(data)
+                        setActivePatient(data)
                         setLoading(false)
                       });
                     }}
@@ -301,7 +300,6 @@ function Result() {
           setLoading={setLoading}
           setResultUpdated={setResultUpdated}
           setSelectedTest={setSelectedTest}
-          update={update}
         />
       </div>
     </>

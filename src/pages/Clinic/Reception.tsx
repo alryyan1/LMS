@@ -101,7 +101,7 @@ function Reception() {
      }
   useEffect(()=>{
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
-      patientUpdatedFromServerHandler(doctorVisit)
+      //patientUpdatedFromServerHandler(doctorVisit)
     });
     return ()=>{
       socket.off("patientUpdatedFromServer");

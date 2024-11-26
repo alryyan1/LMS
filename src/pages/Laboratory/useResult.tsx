@@ -4,20 +4,20 @@ import { newImage, notifyMe } from "../constants";
 import { socket } from "../../socket";
 import { Shift } from "../../types/Shift";
 import { ResultProps } from "../../types/CutomTypes";
-import { DoctorVisit } from "../../types/Patient";
+import { DoctorVisit, Labrequest, RequestedResult } from "../../types/Patient";
 
-export default function useResult():ResultProps {
+export default function useResult(): ResultProps {
   const audioRef = useRef();
 
-  
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [resultUpdated, setResultUpdated] = useState(0);
-  const [shift, setShift] = useState<Shift|null>(null);
-  const [selectedTest, setSelectedTest] = useState(null);
-  const [selectedReslult, setSelectedResult] = useState(null);
+  const [shift, setShift] = useState<Shift | null>(null);
+  const [patients, setPatients] = useState<DoctorVisit[]>([]);
+  const [selectedTest, setSelectedTest] = useState<Labrequest|null>(null);
+  const [selectedReslult, setSelectedResult] = useState<RequestedResult|null>(null);
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [actviePatient, setActivePatient] = useState<DoctorVisit|null>(null);
+  const [actviePatient, setActivePatient] = useState<DoctorVisit | null>(null);
   function onConnect() {
     setIsConnected(true);
     console.log("connected succfully");
@@ -26,23 +26,36 @@ export default function useResult():ResultProps {
   function onDisconnect() {
     setIsConnected(false);
   }
-  const update = (doctorVisit: DoctorVisit,setCurrent = true) => {
-    if (setCurrent) {
-        
-        setActivePatient(doctorVisit);
+
+  const update = (actviePatient:DoctorVisit)=>{
+    setPatients((prev)=>{
+      
+      if(!prev.find((p)=>p.id == actviePatient.id)) return [actviePatient,...prev]
+      return prev.map((p)=>{
+        if(p.id === actviePatient?.id){
+          return {...actviePatient }
+        }
+        return p
+      })
+    })
+  }
+  useEffect(() => {
+    if (actviePatient) {
+      // setShift((prev) => {
+      //   return {
+      //     ...prev,
+      //     patients: prev.patients.map((p) => {
+      //       if (p.id === actviePatient?.id) {
+      //         return { ...actviePatient };
+      //       }
+      //       return p;
+      //     }),
+      //   };
+      // });
+             
+      update(actviePatient)
     }
-    setShift((prev) => {
-      return {
-        ...prev,
-        patients: prev.patients.map((p) => {
-          if (p.id === doctorVisit.id) {
-            return { ...doctorVisit };
-          }
-          return p;
-        }),
-      };
-    });
-  };
+  }, [actviePatient]);
   const [layOut, setLayout] = useState({
     form: "1fr",
     tests: "1fr",
@@ -100,28 +113,21 @@ export default function useResult():ResultProps {
     setPatientsLoading(true);
     axiosClient.get(`shiftWith?with=patients`).then(({ data: data }) => {
       setShift(data);
+      setPatients(data.patients);
       setPatientsLoading(false);
     });
   }, []);
 
   const setActivePatientHandler = (pat) => {
     setSelectedResult(null);
-    // if (pat.shift_id == shift.maxShiftId) {
-    //   axiosClient.get(`shift/last`).then(({ data: data }) => {
-    //     setShift(data.data);
-    //     setPatientsLoading(false);
-    //   });
-    // }
     setActivePatient({ ...pat });
     setSelectedTest(pat.patient.labrequests[0]);
   };
 
   const patientsUpdateSocketHandler = (doctorVisit) => {
-    
-      
-       console.log(doctorVisit,'doctorVisit from socket handler')
-       update(doctorVisit,false)
-    
+    console.log(doctorVisit, "doctorVisit from socket handler");
+    //  setActivePatient(doctorVisit,false)
+    update(doctorVisit)
   };
 
   return {
@@ -139,7 +145,11 @@ export default function useResult():ResultProps {
     setResultUpdated,
     setSelectedTest,
     actviePatient,
-    selectedReslult,setActivePatient ,
-    setSelectedResult,update,showSearch
+    selectedReslult,
+    setActivePatient,
+    setSelectedResult,
+    patients,
+    
+    showSearch,
   };
 }

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Company, DoctorShift, DoctorVisit } from "./Patient";
+import { Company, DoctorShift, DoctorVisit } from './Patient';
 import { Shift } from "./Shift";
 
 
@@ -59,5 +59,6 @@ export interface ResultProps {
   shift:Shift;
   actviePatient:DoctorVisit;
   selectedReslult:Requestedresult;
+  patients:DoctorVisit[]
   
 }

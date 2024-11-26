@@ -15,11 +15,14 @@ import React from "react";
 import AutocompleteResultOptions from "../../components/AutocompleteResultOptions";
 import OrganismPanel from "./OrganismPanel";
 import axiosClient from "../../../axios-client";
+import { DoctorVisit, Labrequest, RequestedResult } from "../../types/Patient";
 interface ResultSectionProps {
-  selectedTest: any;
+  selectedTest: Labrequest;
   setSelectedResult: (prev: any) => void;
-  selectedReslult: any;
+  selectedReslult: RequestedResult;
   disabled: boolean;
+  resultUpdated:number;
+  setActivePatient:(patient:DoctorVisit)=>void
   is_doctor: boolean; // true for doctor, false for patient
 }
 function ResultSection({
@@ -28,7 +31,8 @@ function ResultSection({
   selectedReslult,
   disabled = false,
   is_doctor = false,
-  update
+  setActivePatient,
+  resultUpdated
 }:ResultSectionProps) {
   const [value, setValue] = React.useState(0);
 
@@ -57,7 +61,7 @@ function ResultSection({
       >
         {value === 0 && (
           <>
-            <Table size="small">
+            <Table  key={resultUpdated + selectedTest?.id} size="small">
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
@@ -87,14 +91,14 @@ function ResultSection({
                     }
                   
                     return (
-                      <TableRow key={req.id}>
+                      <TableRow >
                         <TableCell className="" sx={{ p: 0.5, textAlign: "right",backgroundColor:(theme)=> type =='error'? theme.palette.error.light : '' }}>
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
                           {is_doctor ? <Typography textAlign={'center'}>{req.result}</Typography> :
                           <AutocompleteResultOptions 
-                           update={update}
+                          setActivePatient={setActivePatient}
                           disabled={disabled}
                           type={type}
                             index={i}
@@ -160,7 +164,7 @@ function ResultSection({
             {" "}
             {selectedTest && (
               <div>
-                <OrganismPanel setShift={setShift} selectedTest={selectedTest}></OrganismPanel>
+                <OrganismPanel setActivePatient={setActivePatient} selectedTest={selectedTest}></OrganismPanel>
               </div>
             )}
           </>

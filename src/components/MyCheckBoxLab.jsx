@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../axios-client";
 
-function MyCheckBoxLab({ id, hideTest,update }) {
+function MyCheckBoxLab({ id, hideTest,setActivePatient }) {
   const [isChecked, setIsChecked] = useState(hideTest  == 1);
-  const { setActivePatient} = useOutletContext();
   const hideTestHandler = (val) => {
     console.log(val.target.checked, "checked handler");
     setIsChecked(val.target.checked);
@@ -13,7 +12,7 @@ function MyCheckBoxLab({ id, hideTest,update }) {
       .patch(`hidetest/${id}`, {
         val: val.target.checked,
       }).then(({data})=>{
-        update(data.data)
+        setActivePatient(data.data)
       })
       
   };

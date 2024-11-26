@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@mui/material";
 import React from "react";
 import OrganismChildPanel from "./OrganismChildPanel";
 
-function OrganismPanel({ selectedTest,setShift }) {
+function OrganismPanel({ selectedTest,setActivePatient }) {
   const [value, setValue] = React.useState(0);
     
   const handleChange = (event, newValue) => {
@@ -22,7 +22,7 @@ function OrganismPanel({ selectedTest,setShift }) {
 
       {selectedTest.requested_organisms.map((o,index) => {
         return (
-            <OrganismChildPanel  setShift={setShift} value={value} index={index} organism={o} key={o.id }/>
+            <OrganismChildPanel  setActivePatient={setActivePatient} value={value} index={index} organism={o} key={o.id }/>
         )
       })}
     </>

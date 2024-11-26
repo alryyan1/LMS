@@ -290,7 +290,7 @@ function Doctor() {
       setShowSearch(true);
     }
   };
-
+  let patientCount = patients.length
   const showDocPatients = () => {
     setActiveDoctorVisit(null);
     setLayout((prev) => {
@@ -545,7 +545,7 @@ function Doctor() {
                       key={visit.id}
                       hideForm={null}
                       useIndex={showSearch}
-                      index={i+1}
+                      index={patientCount--}
                       visit={visit}
                       focusPaitent={focusPaitent}
                     />

@@ -9,6 +9,7 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../axios-client";
 import { useOutletContext } from "react-router-dom";
+import { DoctorVisit, RequestedResult } from "../types/Patient";
 function isNumeric(str) {
   if (str.includes('-')) {
     return true
@@ -19,8 +20,24 @@ function isNumeric(str) {
 }
 const filter = createFilterOptions();
 
-export default function AutocompleteResultOptions({ update, setSelectedResult, child_test,id ,result,req,index,setDialog,disabled=false}) {
+
+
+interface AutocompleteResultOptionsProbs {
+  setActivePatient:DoctorVisit;
+
+  setSelectedResult: ()=>void;
+ child_test :number;
+ id :number ;
+ result:string;
+ req:RequestedResult;
+  index:number;
+  setDialog:()=>void;
+  disabled:boolean
+}
+export default function AutocompleteResultOptions(
+  { setActivePatient, setSelectedResult, child_test,id ,result,req,index,setDialog,disabled=false}:AutocompleteResultOptionsProbs) {
     // console.log('inside table option result rebuilt with result',result)
+    
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -143,6 +160,7 @@ export default function AutocompleteResultOptions({ update, setSelectedResult, c
         freeSolo
         renderInput={(params) => (
           <TextField
+           key={req.updated_at}
           autoFocus={index == 0}
           onClick={()=>{
             setSelectedResult(req)
@@ -152,7 +170,7 @@ export default function AutocompleteResultOptions({ update, setSelectedResult, c
             setValue(val.target.value)
             axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
               if (data.status) {
-                 update(data.data)
+                 setActivePatient(data.data)
                   setDialog((prev)=>{
                     return {...prev, open: true, message:'تم الحفظ' };
                   })

@@ -57,7 +57,7 @@ const  DoctorPatient = ({
             }
             className="patient-no2 text-white"
           >
-            {useIndex ? index : visit.number}
+            {index }
           </Item>
 
           <Item

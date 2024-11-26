@@ -29,7 +29,6 @@ interface ResultSideBarPros {
   setShift: Function;
   socket: any;
   isConnected: boolean;
-  update: Function;
 }
 function ResultSidebar({
   actviePatient,
@@ -57,9 +56,10 @@ function ResultSidebar({
       <LoadingButton
         sx={{ mt: 1 }}
         color="inherit"
-        title="show patient list"
+        title="Sync"
         size="small"
         onClick={() => {
+
           isConnected ? socket.disconnect() : socket.connect();
         }}
         variant="contained"
@@ -78,17 +78,7 @@ function ResultSidebar({
                   .post(`addOrganism/${selectedTest.id}`)
                   .then(({ data }) => {
                     setActivePatient(data.patient);
-                    setShift((prev) => {
-                      return {
-                        ...prev,
-                        patients: prev.patients.map((p) => {
-                          if (p.id === data.patient.id) {
-                            return { ...data.patient, active: true };
-                          }
-                          return p;
-                        }),
-                      };
-                    });
+                   
                   });
               }
             }}
@@ -116,7 +106,7 @@ function ResultSidebar({
           onClick={() => {
             setLoading(true);
             axiosClient
-              .get(`printLock/${actviePatient.id}`)
+              .get(`printLock/${actviePatient.patient.id}`)
               .then(({ data }) => {
                 console.log(data, "labrequest data");
                 setSelectedTest((prev) => {
@@ -126,7 +116,7 @@ function ResultSidebar({
                   );
                 });
                
-               update(data.data)
+                setActivePatient(data.data)
               })
               .finally(() => setLoading(false));
           }}
@@ -157,10 +147,11 @@ function ResultSidebar({
                     (labr) => labr.id == prev.id
                   );
                 });
+               
+                setActivePatient(data.data)
                 setResultUpdated((prev) => {
                   return prev + 1;
                 });
-                update(data.data)
               })
               .finally(() => setLoading(false));
           }}
@@ -189,16 +180,17 @@ function ResultSidebar({
                 }
                 if (data.status) {
                   console.log(data, "patient cbc");
-                  setSelectedTest((prev) => {
-                    console.log(prev, "previous selected test");
-                    return data.data.patient.labrequests.find(
-                      (labr) => labr.id == prev.id
-                    );
-                  });
-                  setResultUpdated((prev) => {
-                    return prev + 1;
-                  });
-                 update(data.data)
+             
+                 setActivePatient(data.data)
+                 setSelectedTest((prev) => {
+                  console.log(prev, "previous selected test");
+                  return data.data.patient.labrequests.find(
+                    (labr) => labr.id == prev.id
+                  );
+                });
+                setResultUpdated((prev) => {
+                  return prev + 1;
+                });
                 }
               })
               .finally(() => setLoading(false));
@@ -247,17 +239,7 @@ function ResultSidebar({
                   setResultUpdated((prev) => {
                     return prev + 1;
                   });
-                  setActivePatient(data.patient)?.map((prev) => {
-                    return prev.map((patient) => {
-                      if (patient.id === actviePatient.id) {
-                        return {
-                          ...data.patient,
-                          active: true,
-                        };
-                      }
-                      return patient;
-                    });
-                  });
+                  setActivePatient(data.data)
                 }
               })
               .finally(() => setLoading(false));
@@ -305,17 +287,7 @@ function ResultSidebar({
                   setResultUpdated((prev) => {
                     return prev + 1;
                   });
-                  setActivePatient(data.patient)?.map((prev) => {
-                    return prev.map((patient) => {
-                      if (patient.id === actviePatient.id) {
-                        return {
-                          ...data.patient,
-                          active: true,
-                        };
-                      }
-                      return patient;
-                    });
-                  });
+                  setActivePatient(data.patient)
                 }
               })
               .finally(() => setLoading(false));
