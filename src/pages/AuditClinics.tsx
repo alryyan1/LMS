@@ -148,7 +148,7 @@ function AuditClinics({
                         : "",
                   }}
                   secondaryAction={
-                    visit.services.length > 0 && (
+             
                       <Badge color="secondary" content={visit.services.length}>
                         <Button
                           onClick={() => {
@@ -160,8 +160,8 @@ function AuditClinics({
                           الخدمات
                         </Button>
                       </Badge>
-                    )
-                  }
+                    
+                        }
                   key={visit.id}
                 >
                   <ListItemButton

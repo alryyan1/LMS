@@ -8,7 +8,7 @@ function TdLoader({api}) {
    useEffect(()=>{
      setLoading(true)
      axiosClient.get(api).then(({data})=>{
-        setVal(data.val)
+        setVal(data)
         setLoading(false)
      })
    },[])

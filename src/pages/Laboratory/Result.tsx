@@ -52,6 +52,7 @@ function Result() {
     setActivePatient,
     setSelectedResult,
     patients,
+    setPatients,
     showSearch
   } = useResult();
   const shiftDate = new Date(Date.parse(shift?.created_at));
@@ -110,7 +111,7 @@ function Result() {
                 })}
             </div>
           </Stack>
-          <ShiftNav shift={shift} setShift={setShift}/>
+          <ShiftNav setPatients={setPatients} shift={shift} setShift={setShift}/>
           <Divider></Divider>
           <div className="patients">
             {patientsLoading ? (

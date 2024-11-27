@@ -37,7 +37,9 @@ function SearchDialog({lab=false,user,update,isReception,hideForm}) {
     //   alert('قم بتحديد الطبيب')
     //   return;
     // }
-    hideForm()
+    if(hideForm){
+      hideForm()
+    }
 
     setLoading(true);
   

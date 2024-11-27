@@ -26,6 +26,7 @@ import { ShiftDetails } from "../../types/CutomTypes";
 import CostDialog from "../Dialogs/CostDialog";
 import { Money } from "@mui/icons-material";
 import { Plus } from "lucide-react";
+import { useStateContext } from "../../appContext";
 
 const options = {
   weekday: "long",
@@ -37,6 +38,7 @@ function CashDenos() {
   useEffect(() => {
     document.title = "الفئات -";
   }, []);
+   const {user} = useStateContext()
   const [shift, setShift] = useState<Shift | null>(null);
   const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
   const [show, setShow] = useState(false);
@@ -133,7 +135,7 @@ function CashDenos() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {shift?.cost.map((cost) => {
+                {shift?.cost.filter((c)=>c.user_cost == user.id).map((cost) => {
                   return (
                     <TableRow key={cost.id}>
                       <TableCell>{cost.description}</TableCell>
@@ -237,6 +239,7 @@ function CashDenos() {
                     <Typography variant="h5">اجمالي الفئات</Typography>
                   </TableCell>
                 </TableRow>
+                
                 <TableRow>
                   <TableCell>
                     <Typography variant="h5">
@@ -286,6 +289,16 @@ function CashDenos() {
                 </TableCell>
                 <TableCell>
                   <Typography variant="h5">اجمالي العيادات </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h5">
+                    {formatNumber(shiftSummary?.lab)}
+                  </Typography>{" "}
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h5">اجمالي المختبر </Typography>
                 </TableCell>
               </TableRow>
               <TableRow>

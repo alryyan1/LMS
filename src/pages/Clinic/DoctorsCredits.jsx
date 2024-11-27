@@ -17,9 +17,9 @@ function DoctorsCredits() {
             console.log(data)
         })
     },[update])
-    const addCost = (id,amount,name,setIsLoading)=>{
+    const addCost = (id,setIsLoading)=>{
         setIsLoading(true)
-        axiosClient.post('cost',{id,amount,name}).then(({data})=>{
+        axiosClient.post(`costForDoctor/${id}`,{shiftId:id}).then(({data})=>{
             console.log(data)
         }).catch((err)=>console.log(err)).finally(()=>{
             setUpdate((prev)=>prev+1)
@@ -51,7 +51,7 @@ function DoctorsCredits() {
                             <TableCell>{dayjs(Date.parse(shift.created_at)).format('H:m A')}</TableCell>
                             <TableCell><MyCustomLoadingButton disabled={shift.cost} onClick={(setIsLoading)=>{
                                 
-                                addCost(shift.id,shift.doctor_credit_cash+ shift.doctor_credit_company,shift.doctor.name,setIsLoading)
+                                addCost(shift.id,setIsLoading)
                             }} variant='contained'>خصم</MyCustomLoadingButton></TableCell>
                         </TableRow>
                     )

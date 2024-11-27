@@ -9,7 +9,7 @@ import { LoadingButton } from "@mui/lab";
 import urgentSound from "../../assets/sounds/urgent.mp3";
 import { useState } from "react";
 import { Shift } from '../../types/Shift';
-function ShiftNav({shift,setShift}) {
+function ShiftNav({shift,setShift,setPatients}) {
     const [loading ,setLoading] = useState(false)
   return (
     <Stack justifyContent={"space-around"} direction={"row"}>
@@ -25,6 +25,7 @@ function ShiftNav({shift,setShift}) {
             .get(`shiftById/${shift.id - 1}`)
             .then(({ data }) => {
               setShift(data.data);
+              setPatients(data.data.patients)
             })
             .finally(() => setLoading(false));
         }}
@@ -43,6 +44,8 @@ function ShiftNav({shift,setShift}) {
             .get(`shiftById/${shift.id + 1}`)
             .then(({ data }) => {
               setShift(data.data);
+              setPatients(data.data.patients)
+
             })
             .finally(() => setLoading(false));
         }}

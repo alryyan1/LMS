@@ -34,6 +34,7 @@ import { DoctorShift, DoctorVisit, Patient } from "../../types/Patient";
 import RequestedTestsLab from "../Laboratory/RequestedTestsLab";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
 import OpenDoctorTabs from "./OpenDoctorsTabs";
+import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 
 function Reception() {
   const {
@@ -76,7 +77,14 @@ function Reception() {
     setIsConnected(false);
   }
 
+  const SearchHandler = (e) => {
+    console.log(e.key);
+    if (e.key == "F9") {
+      setShowSearch(true);
+    }
+  };
   useEffect(() => {
+    
     socket.on("disconnect", onDisconnect);
     socket.on("connect", onConnect);
 
@@ -229,6 +237,11 @@ function Reception() {
   };
   useEffect(() => {
     document.title = "الاستقبال";
+    document.addEventListener("keydown", SearchHandler);
+
+    return () => {
+      document.removeEventListener("keydown", SearchHandler);
+    };
   }, []);
   //get opened doctors
   useEffect(() => {
@@ -324,8 +337,16 @@ function Reception() {
       });
     }
   };
+  const [showSearch, setShowSearch] = useState(false);
+
   return (
     <>
+      {showSearch && <AutocompleteSearchPatient
+          withTests={1}
+          setActivePatient={setActivePatient}
+          setActivePatientHandler={setActivePatient}
+          update={setActivePatient}
+        />}
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         <OpenDoctorTabs
           user={user}

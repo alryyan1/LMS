@@ -149,7 +149,8 @@ export default function useResult(): ResultProps {
     setActivePatient,
     setSelectedResult,
     patients,
-    
+    setPatients
+    ,
     showSearch,
   };
 }

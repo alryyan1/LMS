@@ -234,7 +234,7 @@ console.log(patient,'patient in details')
           )
         }
         <Divider sx={{ m: 1 }} />
-        {copyPatient && patient.patient.doctor_id == activeShift.doctor.id && (
+        {copyPatient && patient.patient.doctor_id == activeShift?.doctor.id && (
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
