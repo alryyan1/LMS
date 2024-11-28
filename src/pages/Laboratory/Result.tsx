@@ -69,8 +69,8 @@ function Result() {
         <div></div>
         {showSearch && <AutocompleteSearchPatient
           withTests={1}
+          update={setActivePatient}
           setActivePatient={setActivePatient}
-          setActivePatientHandler={setActivePatientHandler}
         />}
       </div>
       <audio hidden ref={audioRef} controls src={urgentSound}></audio>
@@ -213,7 +213,7 @@ function Result() {
                 <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
-                  href={`${webUrl}result?pid=${actviePatient.patient.id}`}
+                  href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
