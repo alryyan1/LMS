@@ -14,15 +14,19 @@ import PatientEditSelect from "./PatientEditSelect";
 import { DoctorVisit } from "../../types/Patient";
 import { updateHandler } from "../constants";
 import React, { SetStateAction } from "react";
+import CodeEditor from "./CodeMirror";
 interface GeneralExaminationProps {
   value: number;
   index: number;
   patient: DoctorVisit;
+  complains: string[];
+  setComplains: (value: string) =>void;
   setActiveDoctorVisit:React.Dispatch<SetStateAction<DoctorVisit|null>>;
 }
 function GeneralExaminationPanel(props:GeneralExaminationProps) {
 
-  const { value, index, patient,setActiveDoctorVisit, ...other } = props;
+  const { value, index, patient,setActiveDoctorVisit,  complains,
+    setComplains, ...other } = props;
 
   return (
     <div
@@ -34,7 +38,7 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
     >
         <Divider sx={{mb:1}} variant="middle">General Examination</Divider>
       {value === index && (
-        <Box sx={{ justifyContent: "space-around" }} className="group">
+        <Box sx={{ justifyContent: "space-around" }} className="">
           <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
             {/* <Table size="small">
               <TableHead>
@@ -95,9 +99,10 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
             </Table>
             */}
           </Stack>
-          <TextField fullWidth  defaultValue={patient.patient.general_examination_notes} label='Clinical Notes' rows={12} multiline onChange={(e)=>{
+          <CodeEditor colName="general_examination_notes" setActiveDoctorVisit={setActiveDoctorVisit}  init={patient.patient.general_examination_notes} options={complains} setOptions={setComplains} patient={patient} tableName="chief_complain"/>
+          {/* <TextField fullWidth  defaultValue={patient.patient.general_examination_notes} label='Clinical Notes' rows={12} multiline onChange={(e)=>{
               updateHandler(e.target.value,'general_examination_notes',patient,setActiveDoctorVisit)
-            }}></TextField>
+            }}></TextField> */}
         </Box>
       )}
     </div>

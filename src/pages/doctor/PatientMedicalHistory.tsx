@@ -52,12 +52,12 @@ function PatientMedicalHistory(props: PatientMedicalHistoryProps) {
                 onChange={(e) => {
                   updateHandler(
                     e.target.value,
-                    "past_medical_history",
+                    "patient_medical_history",
                     patient,
                     setActiveDoctorVisit
                   );
                 }}
-                defaultValue={patient.patient.past_medical_history}
+                defaultValue={patient.patient.patient_medical_history}
                 multiline
                 sx={{ p: 1 }}
                 fullWidth

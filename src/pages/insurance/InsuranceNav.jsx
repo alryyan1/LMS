@@ -129,19 +129,7 @@ function InsuranceNav() {
             </CardContent>
           </Card>
         </NavLink>
-        <NavLink to={"inventory/balance"}>
-          <Card>
-            <CardHeader>
-              <CardTitle> التقارير </CardTitle>
-            </CardHeader>
-            <CardContent
-              className="flex justify-center items-center text-center"
-              style={{ justifyContent: "center" }}
-            >
-              <img src={report} width={30} height={30} />
-            </CardContent>
-          </Card>
-        </NavLink>
+    
       </ul>
 
       <Outlet context={{ dialog, setDialog, companies }} />

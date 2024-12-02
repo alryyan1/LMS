@@ -134,6 +134,7 @@ export interface Patient {
     peripheral_vascular_system:string;
     referred:string
     nurse_note:string;
+    patient_medical_history:string;
   }
   
   export interface Labrequest {
