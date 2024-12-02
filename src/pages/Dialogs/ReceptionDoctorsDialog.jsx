@@ -58,13 +58,7 @@ function ReceptionDoctorsDialog() {
            }
          })
         })
-      }else{
-      setDialog((prev)=>({...prev,openError:true,message:data.message}))
       }
-    }).catch(({response:{data}})=>{
-      console.log(data)
-      setDialog((prev)=>({...prev,openError:true,message:data.message}))
-
     }).finally(()=>{
       setLoading(false)
     });

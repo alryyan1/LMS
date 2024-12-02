@@ -1,9 +1,18 @@
-import { Lock } from "@mui/icons-material";
-import { Badge, Box, Grow,  } from "@mui/material";
+import { FavoriteBorder, Lock } from "@mui/icons-material";
+import { Badge, Box, Grow, Icon,  } from "@mui/material";
 import 'animate.css';
 import axiosClient from "../../../axios-client";
-
-function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update }) {
+import { Deduct } from "../../types/Shift";
+interface SellboxProbs {
+  onClick: (sell: any) => void;
+  sell: any;
+  index: number;
+  activeSell: Deduct;
+  setActiveSell: (sell: any) => void;
+  setShift: (shift: any) => void;
+  update: (sell: any) => void;
+}
+function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update }:SellboxProbs) {
   
   
 
@@ -44,6 +53,19 @@ function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update 
               }}   
           >
             {sell.number}
+            {sell?.doctorvisit && <span
+            style={{
+              position: "absolute",
+              top: "-6px",
+              right: "3px",
+              width: "10px",
+            }}
+          >
+            {" "}
+            <Icon>
+              <FavoriteBorder />
+            </Icon>
+          </span>}
           
           </Box>
         </Badge>
@@ -73,7 +95,19 @@ function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update 
             
           }}        >
           {sell.number}
-        
+          {sell.doctorvisit && <span
+            style={{
+              position: "absolute",
+              top: "-6px",
+              right: "3px",
+              width: "10px",
+            }}
+          >
+            {" "}
+            <Icon>
+              <FavoriteBorder />
+            </Icon>
+          </span>}
         </Box>
       )}
     </Grow>

@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { toFixed } from "../constants";
+import { formatNumber, toFixed } from "../constants";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 
@@ -64,7 +64,7 @@ function SellsMoneyDialog() {
                   Total Income
                 </Typography>
                 <Typography variant="h4" textAlign={"center"}>
-                  {deductsSummary && toFixed(deductsSummary.totalDeductsPaid, 3)}
+                  {deductsSummary && formatNumber(toFixed(deductsSummary.totalDeductsPaid, 3))}
                 </Typography>
               </Stack>
               <Divider></Divider>
@@ -103,7 +103,7 @@ function SellsMoneyDialog() {
                   Cash
                 </Typography>
                 <Typography variant="h4" textAlign={"center"}>
-                  {deductsSummary && toFixed(deductsSummary.totalDeductsPriceCash, 3)}
+                  {deductsSummary && formatNumber(toFixed(deductsSummary.totalDeductsPriceCash, 3))}
                 </Typography>
               </Stack>
               <Divider></Divider>

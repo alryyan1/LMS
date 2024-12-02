@@ -18,6 +18,7 @@ export interface Shift {
   cost: Cost[];
   patients: DoctorVisit[];
   doctor_shifts: DoctorShift[];
+
 }
 
 // //////////////////
@@ -49,6 +50,9 @@ export interface Deduct {
   user: User;
   cost:number;
   client: null;
+  doctorvisit_id:number;
+  doctorvisit:DoctorVisit;
+  itemsConcatenated:string;
 }
 
 

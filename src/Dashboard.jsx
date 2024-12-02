@@ -21,6 +21,8 @@ import axiosClient from "../axios-client";
 import { webUrl } from "./pages/constants";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
+import { socket } from "./socket";
+import { toast } from "react-toastify";
 function toFixed(num, fixed) {
   if (num == undefined) return 0;
   var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
@@ -36,6 +38,35 @@ function Dashboard() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [shift, setShift] = useState(null);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  function onConnect() {
+    setIsConnected(true);
+
+  }
+
+  function onDisconnect() {
+    setIsConnected(false);
+  }
+
+  useEffect(() => {
+    
+    socket.on("disconnect", onDisconnect);
+    socket.on("connect", onConnect);
+
+
+    socket.on("connect", (args) => {
+      // alert('connected')
+      console.log("reception connected succfully with id" + socket.id, args);
+      toast.success("Socket connected successfully");
+
+    });
+    
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onConnect);
+    };
+  });
   useEffect(() => {
     setLoading(true);
 
@@ -346,6 +377,9 @@ function Dashboard() {
                           const result = confirm(msg);
                           if (result) {
                           setLoading(true);
+                          if(shift?.is_closed){
+                            socket.emit('newShift');
+                          }
 
                             axiosClient
                               .post(`shift/status/${shift?.id}`, {

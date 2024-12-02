@@ -83,6 +83,7 @@ import Reclaim from "./pages/insurance/Reclaim";
 import ToothChart from "./pages/Dentist/ToothChart";
 import SalesTable from "./pages/inventory/SalesTable";
 import AllReports from "./AllReports";
+import PhramacyReclaim from "./PhramacyReclaim";
 
 export const router = createHashRouter([
   {
@@ -427,6 +428,14 @@ export const router = createHashRouter([
             element: (
               <ProtectedRoute>
                 <SalesTable />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "reclaim",
+            element: (
+              <ProtectedRoute>
+                <PhramacyReclaim />
               </ProtectedRoute>
             ),
           },

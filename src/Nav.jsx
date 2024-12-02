@@ -9,8 +9,9 @@ import {
   Drawer,
   Box,
   List,
+  Tooltip,
 } from "@mui/material";
-import { ArrowRight, ElectricBolt, Language } from "@mui/icons-material";
+import { ArrowRight, ElectricBolt, Language, Logout } from "@mui/icons-material";
 import { NavLink, Link, Navigate, useNavigate } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import axiosClient from "../axios-client";
@@ -318,15 +319,16 @@ const Nav = () => {
             <Brightness4Icon />
           </IconButton>
           {user && (
-            <LoadingButton
+            <Tooltip title='تسجيل خروج'>
+              <LoadingButton
               color="error"
-              variant="contained"
               loading={loading}
-              endIcon={loading ? "" : <ExitToAppIcon />}
               onClick={logoutHandler}
             >
-              {loading ? "..." : "Logout"}
+              {loading ? "..." : <Logout/>}
             </LoadingButton>
+            </Tooltip>
+            
           )}
         </Stack>
       </AppBar>

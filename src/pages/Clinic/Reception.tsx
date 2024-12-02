@@ -10,6 +10,7 @@ import {
   Badge,
   Button,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
@@ -35,8 +36,18 @@ import RequestedTestsLab from "../Laboratory/RequestedTestsLab";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
 import OpenDoctorTabs from "./OpenDoctorsTabs";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
+import  warningLottie from './../../lotties/warning.json'
+import Lottie from "react-lottie";
 
 function Reception() {
+  const boxesOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: warningLottie,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
   const {
     actviePatient,
     setActivePatient,
@@ -68,6 +79,7 @@ function Reception() {
   } = useOutletContext<ReceptionLayoutProps>();
 
   const { user } = useStateContext();
+  const [showNewShiftWarning,setShowNewShiftWarning] =useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   function onConnect() {
     setIsConnected(true);
@@ -111,8 +123,13 @@ function Reception() {
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
       //patientUpdatedFromServerHandler(doctorVisit)
     });
+    socket.on("newShiftOpenedFromServer", (doctorVisit) => {
+      //patientUpdatedFromServerHandler(doctorVisit)
+      setShowNewShiftWarning(true)
+    });
     return ()=>{
       socket.off("patientUpdatedFromServer");
+      socket.off("newShiftOpenedFromServer");
     }
   },[actviePatient])
 
@@ -348,6 +365,13 @@ function Reception() {
           update={setActivePatient}
         />}
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
+     {showNewShiftWarning &&  <Stack sx={{position:'absolute'}} direction={'column'} gap={1}>
+      <Typography variant="h6">تم فتح ورديه ماليه جديده</Typography>
+      <Lottie
+                          options={boxesOptions}
+                          height={100}
+                          width={100}
+                        /></Stack>}
         <OpenDoctorTabs
           user={user}
           activeShift={activeShift}

@@ -14,7 +14,7 @@ import {
 import DiscountSelect from "./DiscountSelect";
 import { act, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { url } from "../constants";
+import { formatNumber, url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
@@ -70,7 +70,7 @@ function RequestedTestsLab({
           if (r) {
             const form = new URLSearchParams();
             axiosClient
-              .get(`printLab?pid=${actviePatient.patient.id}&base64=1`)
+              .get(`printLab/${actviePatient.id}?base64=1`)
               .then(({ data }) => {
                 form.append("data", data);
                 form.append("node_direct", userSettings.node_direct);
@@ -198,7 +198,7 @@ function RequestedTestsLab({
                       </TableCell>
 
                       <TableCell >
-                        {price}
+                        {formatNumber(price)}
                       </TableCell>
                       {actviePatient.patient.company ? (
                         ""
@@ -257,7 +257,11 @@ function RequestedTestsLab({
         <div  className="total-price mt-1">
           <div className="sub-price">
             <div className="title">Total</div>
-            <Typography variant="h4">{actviePatient.patient?.total_lab_value_unpaid}</Typography>
+            <Typography variant="h4">{formatNumber(actviePatient.patient?.total_lab_value_unpaid)}</Typography>
+          </div>
+          <div className="sub-price">
+            <div className="title">Discount</div>
+            <Typography variant="h4">{formatNumber(actviePatient.patient?.discountAmount)}</Typography>
           </div>
           <div className="sub-price">
             <div className="title">Paid</div>

@@ -124,6 +124,7 @@ i18next
           accountNumber:'رقم الحساب',
           bankName:'ا��م البنك',
           denos :'الحاسبه',
+          pharmacyReclaim:'المطالبه'
 
           
 
@@ -241,6 +242,8 @@ i18next
           settings: "settings",
           dashboard: "dashboard",
           billNumber: "bill number",
+          pharmacyReclaim:'Insurance Reclaim'
+
         },
       },
       ch: {

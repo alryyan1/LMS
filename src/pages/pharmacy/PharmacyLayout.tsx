@@ -6,6 +6,7 @@ import axiosClient from "../../../axios-client";
 import { CacheProvider } from "@emotion/react";
 import { cacheRtl } from "../constants";
 import { Deposit, DepositItem } from "../../types/pharmacy";
+import { Deduct } from "../../types/Shift";
 
 function PharmacyLayout() {
 
@@ -26,7 +27,7 @@ function PharmacyLayout() {
   const [showSummery, setShowSummery] = useState(false);
   const [shiftIsLoading, setShiftIsLoading] = useState();
   const [itemsIsLoading, setItemsIsLoading] = useState(false);
-  const [activeSell, setActiveSell] = useState();
+  const [activeSell, setActiveSell] = useState<Deduct|null>(null);
   const [suppliers, setSuppliers] = useState([]);
   const [itemsTobeAddedToChache, setItemsTobeAddedToChache] = useState([]);
   const [depositItemsLinks, setDepositItemsLinks] = useState([]);
@@ -36,7 +37,7 @@ function PharmacyLayout() {
   const [drugCategory, setDrugCategory] = useState([]);
   const [pharmacyTypes, setPharmacyTypes] = useState([]);
   const [items, setItems] = useState([]);
-  const [deduct, setDeduct] = useState(null);
+  const [deduct, setDeduct] = useState<Deduct|null>(null);
   const [depositLoading, setDepositLoading] = useState(false);
   const [invoices, setInvoices] = useState<Deposit[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState(null);

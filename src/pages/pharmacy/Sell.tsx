@@ -30,6 +30,7 @@ import {
   Menu,
   MenuItem,
   Select,
+  Tooltip,
 } from "@mui/material";
 import {
   Calculate,
@@ -38,6 +39,7 @@ import {
   LockOpen,
   PersonAdd,
   Print,
+  ReportOutlined,
 } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
@@ -58,6 +60,10 @@ import SaleDiscountSelect from "../../components/SaleDiscountSelect";
 import MyCheckbox from "../../components/MyCheckBox";
 import CalculateInventory from "./CalculateInventory";
 import MyDateField2 from "../../components/MyDateField2";
+import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
+import AutocompleteSearchPatientInsurance from "../../components/AutocompleteSearchInsurancePaitents";
+import { PharmacyLayoutPros } from "../../types/pharmacy";
+import { Plus, Printer } from "lucide-react";
 // import Calculator from "../../components/calculator/Calculator";
 
 function SellDrug() {
@@ -88,7 +94,7 @@ function SellDrug() {
     setItems,
     items,
     showDialogMoney,
-  } = useOutletContext();
+  } = useOutletContext<PharmacyLayoutPros>();
   // console.log(shift, "shift");
   // console.log(activeSell, "active sell");
   useEffect(() => {
@@ -249,19 +255,27 @@ function SellDrug() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
-            <Item>
+            <Tooltip title='الايرادات'>
               <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
               </IconButton>
-            </Item>
-            <Item>
+            </Tooltip>
+            <Tooltip title='التقرير'>
               <IconButton
                 href={`${webUrl}pharmacy/sellsReport?shift_id=${shift?.id}`}
                 variant="contained"
               >
                 <DescriptionIcon />
               </IconButton>
-            </Item>
+            </Tooltip>
+            <Tooltip title='طباعه تقرير تامين الورديه'>
+              <IconButton
+                href={`${webUrl}pharmacy/sellsReportIndurance?shift_id=${shift?.id}`}
+                variant="contained"
+              >
+                <ReportOutlined />
+              </IconButton>
+            </Tooltip>
           </Stack>
         </div>
 
@@ -361,6 +375,11 @@ function SellDrug() {
                     ></FormControlLabel>
                   </FormGroup>
                 )}
+                <AutocompleteSearchPatientInsurance setActiveSell={setActiveSell} selectedDeduct={activeSell}/>
+                <Box sx={{flex:1,textAlign:'center'}}>
+
+                {activeSell.doctorvisit && <Typography variant="h4">{activeSell.doctorvisit.patient.company.name}</Typography>}
+                </Box>
               </Stack>
 
               {shiftIsLoading ? (
@@ -407,7 +426,7 @@ function SellDrug() {
                         <TableCell>{index+1}</TableCell>
                         <TableCell><Link to={`/pharmacy/items/${deductedItem.item.id}`}>{deductedItem.item?.market_name}</Link></TableCell>
                         {activeSell.complete ? (
-                          <TableCell>{toFixed(deductedItem.price, 1)}</TableCell>
+                          <TableCell>{formatNumber(toFixed(deductedItem.price, 1))}</TableCell>
                         ) : (
                           <MyTableCell
                            
@@ -455,11 +474,11 @@ function SellDrug() {
                           </MyTableCell>
                         )}
                         <TableCell>
-                          {toFixed(
+                          {formatNumber(toFixed(
                             (deductedItem.price / deductedItem.item?.strips) *
                               deductedItem.strips,
                             3
-                          )}
+                          ))}
                         </TableCell>
                         <TableCell>
                           <LoadingButton
@@ -536,7 +555,16 @@ function SellDrug() {
                           item={activeSell}
                         />
               <Divider />
-              {activeSell && <PayOptions update={update} key={activeSell.id} />}
+              {activeSell.doctorvisit  ?   <TextField defaultValue={activeSell.endurance_percentage} onChange={(e) => {
+                    axiosClient
+                      .patch(`deduct/${activeSell.id}`, {
+                        colName: "endurance_percentage",
+                        val: e.target.value,
+                      })
+                      .then(({ data }) => {
+                        setActiveSell(data.data);
+                      });
+                  }} size="small"  label='نسبه التحمل' color="error" /> :<PayOptions update={update} key={activeSell.id} /> }
               <Divider />
               <Table size="small">
                 <TableHead>
@@ -556,28 +584,28 @@ function SellDrug() {
                       Sub Total
                     </TableCell>
                     <TableCell>
-                      {Number(activeSell?.total_price_unpaid).toFixed(1)}
+                      {formatNumber(Number(activeSell?.total_price_unpaid).toFixed(1))}
                     </TableCell>
                   </TableRow>
 
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" }}>
                       Tax
                     </TableCell>
                     <TableCell>
                       {Number(activeSell?.calculateTax).toFixed(1)}
                     </TableCell>
-                  </TableRow>
+                  </TableRow> */}
 
                   <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
                       {" "}
-                      TOTAL
+                      Total
                     </TableCell>
                     <TableCell sx={{fontSize:'27px'}}>
                       {
-                       toFixed( activeSell?.total_price_unpaid +
-                        activeSell?.calculateTax,1)
+                       formatNumber(toFixed( activeSell?.total_price_unpaid +
+                        activeSell?.calculateTax,1))
                      }
                     </TableCell>
                   </TableRow>
@@ -600,7 +628,7 @@ function SellDrug() {
                     <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
                        Paid
                     </TableCell>
-                    <TableCell sx={{fontSize:'27px'}}>{Number(activeSell?.paid).toFixed(1)}</TableCell>
+                    <TableCell sx={{fontSize:'27px'}}>{formatNumber(Number(activeSell?.paid).toFixed(1))}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -714,7 +742,8 @@ function SellDrug() {
         </Card>
         <Box>
           <Stack direction={"column"} gap={2}>
-            <LoadingButton
+           <Tooltip title="عمليه جديده">
+           <LoadingButton
               sx={{ mt: 2 }}
               fullWidth
               loading={loading}
@@ -746,10 +775,10 @@ function SellDrug() {
                     setLoading(false);
                   });
               }}
-              variant="contained"
             >
-              <AddIcon />
+              <Plus />
             </LoadingButton>
+           </Tooltip>
             <Divider />
             {activeSell?.complete == 1 && (
               <IconButton

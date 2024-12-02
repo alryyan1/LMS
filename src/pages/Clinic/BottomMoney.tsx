@@ -20,7 +20,7 @@ function BottomMoney({actviePatient,activeShift,total_endurance}:BottomMoneyProb
           <div className="title">Total</div>
 
           <Typography variant="h3">
-            {actviePatient.total_services}
+            {formatNumber(actviePatient.total_services)}
           </Typography>
         </div>
         <div className="sub-price">

@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { webUrl } from "./constants";
+import { formatNumber, webUrl } from "./constants";
 import { useStateContext } from "../appContext";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -136,6 +136,7 @@ function Patients() {
               <TableCell>Name</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Doctor</TableCell>
+              <TableCell>Paid</TableCell>
               <TableCell>User</TableCell>
               <TableCell>Lab</TableCell>
               <TableCell>Services</TableCell>
@@ -159,6 +160,7 @@ function Patients() {
                     )}
                   </TableCell>
                   <TableCell>{visit.patient?.doctor?.name}</TableCell>
+                  <TableCell>{formatNumber(visit.total_paid_services + visit.patient.paid)}</TableCell>
                   <TableCell>{visit.patient?.user.username}</TableCell>
                   <TableCell>
                     {visit.patient.labrequests.map((l) => l.name).join("")}
