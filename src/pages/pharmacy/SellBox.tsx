@@ -9,10 +9,9 @@ interface SellboxProbs {
   index: number;
   activeSell: Deduct;
   setActiveSell: (sell: any) => void;
-  setShift: (shift: any) => void;
   update: (sell: any) => void;
 }
-function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update }:SellboxProbs) {
+function SellBox({ onClick, sell,index,activeSell,setActiveSell,update }:SellboxProbs) {
   
   
 
@@ -76,14 +75,7 @@ function SellBox({ onClick, sell,index,activeSell,setActiveSell,setShift,update 
             onClick(sell);
             axiosClient(`sells/find/${sell.id}`).then(({ data }) => {
               setActiveSell(data)
-               setShift((prev)=>{
-                 return {...prev, deducts : prev.deducts.map((d)=>{
-                   if(d.id == sell.id){
-                     return {...data}
-                   }
-                   return d;
-                 })}
-               })
+               
              });
           }}
           sx={ activeSell?.id == sell.id ? {

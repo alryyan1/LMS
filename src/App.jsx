@@ -17,22 +17,9 @@ import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 function App() {
   const { i18n } = useTranslation();
-  const nav =  useNavigate()
 
   const { user,setUser,setToken } = useStateContext();
-  useEffect(()=>{
-   const timer =  setInterval(() => {
-      // console.log('checking user is valid',user)
-      if (localStorage.getItem('ACCESS_TOKEN') == null) {
-        console.log('user is invalid')
-        nav('/login')
-      }
-  
-    }, 10000);
-    return ()=>{
-      clearInterval(timer);
-    }
-  },[])
+
   let  image = ''
   if (user?.is_nurse) {
      image = `url("${nurse}")`;

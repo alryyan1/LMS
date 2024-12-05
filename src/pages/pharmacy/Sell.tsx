@@ -535,7 +535,7 @@ function SellDrug() {
               <Typography textAlign={"right"}>
                 Transaction No <input key={activeSell?.id} onKeyDown={(e)=>{
                   if(e.key === 'Enter'){
-                    axiosClient.get(`sells/find/${e.currentTarget.value}`).then(({data})=>{
+                    axiosClient.get(` ind/${e.currentTarget.value}`).then(({data})=>{
                       console.log('find deduct',data)
                       setActiveSell(data);
                     })

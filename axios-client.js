@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const axiosClient =  axios.create({
     // baseURL : `https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api`
-    baseURL : `${schema}://${host}/laravel-react-app/public/api`
+    baseURL : `${schema}://${host}/laravel-react-app2/public/api`
     //  baseURL : `http://192.168.1.5/laravel-react-app/public/api`
     // baseURL : `https://om-pharmacy.com/laravel-react-app/public/api`
 })
@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use((res)=>{
     const {response} = err
     console.log(response.data)
     console.log(response.status)
-    if (response.status == 401) {
+    if (response.status == 411) {
       toast.error(response?.data?.message ?? "هنالك خطا", {
         autoClose: 2000,
         hideProgressBar: false,
