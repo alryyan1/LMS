@@ -32,7 +32,7 @@ function App() {
 
   return (
     <>
-      <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat',minHeight:'99vh'} } className="app-container">
+      <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container">
         <div className="app-container2">
         <ToastContainer />
 

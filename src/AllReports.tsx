@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Card,
+  Chip,
   Divider,
   Grid,
   IconButton,
@@ -13,6 +14,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -20,8 +22,8 @@ import {
 } from "@mui/material";
 import React, { ReactElement, useEffect, useState } from "react";
 import axiosClient from "../axios-client";
-import { User } from "./types/Patient";
-import { UserIcon } from "lucide-react";
+import { DoctorVisit, User } from "./types/Patient";
+import { FileIcon, Info, UserIcon } from "lucide-react";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
@@ -30,6 +32,7 @@ import { formatNumber, toFixed, webUrl } from "./pages/constants";
 import { Cost, Deduct } from "./types/Shift";
 import { format, setQuarter } from "date-fns";
 import { DeleteOutline } from "@mui/icons-material";
+import PatientDetailsDialog from "./pages/Dialogs/PatientDetailsDialog";
 type Report =
   | "Insurance Reclaim"
   | "Lab Statistics"
@@ -38,9 +41,14 @@ type Report =
   | "Service Statistics"
   | "Costs-1"
   | "Costs-2"
-  | "Pharmacy Income";
+  | "Pharmacy Income"
+  | "Pharmacy Income 2"
+  | "Patients"
+  | "Discount";
 function AllReports() {
   const [users, setUsers] = useState<User[]>([]);
+  const [bankFilter, setBankFilter] = useState(false);
+  const [discountFilter, setDiscountFilter] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   console.log(selectedUser, "selected user");
   const [firstDate, setFirstDate] = useState(dayjs(new Date()));
@@ -50,8 +58,15 @@ function AllReports() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [doctors, setDoctors] = useState([]);
   const [tableElement, setTableElement] = useState<ReactElement | null>(null);
+  const [show, setShow] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<DoctorVisit | null>(
+    null
+  );
+  console.log(bankFilter,'bankfilter')
   const [queryString, setqueryString] = useState("");
   useEffect(() => {
+    document.title = "التقارير";
+
     axiosClient("users").then(({ data }) => {
       setUsers(data);
     });
@@ -91,6 +106,15 @@ function AllReports() {
       case "Pharmacy Income":
         url = "searchDeductsByDate";
         break;
+        case "Pharmacy Income 2":
+          url = "searchDeductsByDate2";
+          break;
+      case "Patients":
+        url = "patients-all";
+        break;
+      case "Discount":
+        url = "discount";
+        break;
 
       default:
         url = "insurance-reclaim";
@@ -127,6 +151,15 @@ function AllReports() {
             break;
           case "Pharmacy Income":
             setPharmacyIncome(data);
+            break;
+            case "Pharmacy Income 2":
+              setPharmacyIncome2(data);
+              break;
+          case "Patients":
+            setPatients(data);
+            break;
+          case "Discount":
+            setDiscount(data);
             break;
           default:
           // setTableElement(setInsuranceReclaimTable());
@@ -684,9 +717,12 @@ function AllReports() {
             <Typography variant="h5"> اجمالي الارباح </Typography>
             <Typography variant="h5">
               {formatNumber(
-               toFixed( data.reduce((prev, curr) => {
-                return prev + curr.profit;
-              }, 0),2)
+                toFixed(
+                  data.reduce((prev, curr) => {
+                    return prev + curr.profit;
+                  }, 0),
+                  2
+                )
               )}{" "}
             </Typography>
           </Stack>{" "}
@@ -703,7 +739,7 @@ function AllReports() {
               {formatNumber(
                 data.reduce((prev, curr) => {
                   return prev + curr.cost;
-                }, 0)
+                }, 0).toFixed(1)
               )}{" "}
             </Typography>
           </Stack>
@@ -743,7 +779,7 @@ function AllReports() {
                     (deducted) => `${deducted.item.market_name}-`
                   )}
                 </TableCell>
-                <TableCell>{formatNumber(toFixed(item.profit,2))}</TableCell>
+                <TableCell>{formatNumber(toFixed(item.profit, 2))}</TableCell>
                 <TableCell>
                   {" "}
                   <a href={`${webUrl}deduct/invoice?id=${item.id}`}>
@@ -803,14 +839,363 @@ function AllReports() {
       </>
     );
   };
+  const setPharmacyIncome2 = (data) => {
+    setTableElement(
+      <>
+        <Stack direction={"row"} gap={2} justifyContent={"space-around"}>
+       
+         
+        </Stack>
+
+        <Table style={{direction:'rtl'}} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>التاريخ</TableCell>
+              <TableCell>المدفوع</TableCell>
+              <TableCell>العدد</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item) => (
+              <TableRow key={item.id}>
+               
+                <TableCell>{item.date}</TableCell>
+                <TableCell>{formatNumber(item.totalPaid)}</TableCell>
+                <TableCell>{item.count}</TableCell>
+              </TableRow>
+            ))}
+
+            {data.length === 0 && !loading && (
+              <TableRow>
+                <TableCell colSpan={5}>No data found.</TableCell>
+              </TableRow>
+            )}
+           
+          </TableBody>
+        </Table>
+      </>
+    );
+  };
   const userSelectHandler = (user: User) => {
     setSelectedUser(user);
   };
   const selectReportHandler = (report) => {
     setReport(report);
   };
+  const setPatients = (data:DoctorVisit[]) => {
+    // console.log(data,'data')
+
+    let filteredData = data.filter((d)=>{
+      if (bankFilter) {
+        return d.patient.totalLabBank > 0 || d.totalservicebank > 0
+      }else{
+        return d
+      }
+    })
+    
+     filteredData = filteredData.filter((d)=>{
+      if (discountFilter) {
+       return   d.total_discounted > 0 || d.patient.discountAmount > 0
+      }else{
+        return d
+      }
+    })
+    filteredData = filteredData.filter((d)=>{
+      if (selectedUser) {
+       return  d.patient.user_id == selectedUser.id
+      }else{
+        return d
+      }
+    })
+    filteredData = filteredData.filter((d)=>{
+      if (selectedDoctor) {
+       return    d.patient.doctor_id == selectedDoctor.id
+      }else{
+        return d
+      }
+    })
+    setTableElement(
+      <Box key={bankFilter}>
+        <Stack
+          justifyContent={"space-around"}
+          direction={"row"}
+          gap={1}
+          sx={{ mb: 1 }}
+        >
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5">اجمالي المرضى</Typography>
+            <Typography variant="h5">{filteredData.length}</Typography>
+          </Stack>
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5">اجمالي البنك</Typography>
+            <Typography variant="h5">{filteredData.reduce((prev,curr)=>{
+              return prev + curr.totalservicebank + curr.patient.totalLabBank 
+            },0)}</Typography>
+          </Stack>
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5">اجمالي التخفيض</Typography>
+            <Typography variant="h5">{filteredData.reduce((prev,curr)=>{
+              return prev + curr.total_discounted + curr.patient.discountAmount 
+            },0)}</Typography>          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+          >
+            <Chip
+             variant={bankFilter ? 'filled' :'outlined'}
+              color={bankFilter ? 'primary':'default'}
+              onClick={() => {
+                setBankFilter(!bankFilter);
+              }}
+              label="Bank"
+            ></Chip>
+            <Chip 
+             variant={discountFilter ? 'filled' :'outlined'}
+              color={discountFilter ? 'primary':'default'}
+
+
+              onClick={() => {
+                setDiscountFilter(!discountFilter);
+              }}
+            label="Discount"></Chip>
+          </Stack>
+        </Stack>
+        <Divider />
+        <TableContainer component={Card}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Doctor</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Bank</TableCell>
+                <TableCell>Discount</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Lab</TableCell>
+                <TableCell>Services</TableCell>
+                <TableCell>Reciet</TableCell>
+                <TableCell>File</TableCell>
+                <TableCell>Info</TableCell>
+              </TableRow>
+
+              {/* Add more table headers here */}
+            </TableHead>
+            <TableBody>
+              {filteredData.map((visit: DoctorVisit, i) => {
+                console.log(visit, "doctor ");
+
+                return (
+                  <TableRow key={visit.id}>
+                    <TableCell>{++i}</TableCell>
+                    <TableCell>{visit.patient.name}</TableCell>
+                    <TableCell>
+                      {dayjs(new Date(visit.patient.created_at)).format(
+                        "DD/MM/YYYY H:m A"
+                      )}
+                    </TableCell>
+                    <TableCell>{visit.patient?.doctor?.name}</TableCell>
+                    <TableCell>
+                      {formatNumber(
+                        visit.total_paid_services + visit.patient.paid
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {formatNumber(
+                        visit.totalservicebank + visit.patient.totalLabBank
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {formatNumber(
+                        visit.total_discounted + visit.patient.discountAmount
+                      )}
+                    </TableCell>
+                    <TableCell>{visit.patient?.user.username}</TableCell>
+                    <TableCell>
+                      {visit.patient.labrequests.map((l) => l.name).join("")}
+                    </TableCell>
+                    <TableCell>
+                      {visit.services.reduce(
+                        (prev, curr) => `${prev} - ${curr.service.name}`,
+                        ""
+                      )}
+                    </TableCell>
+
+                    <TableCell>
+                      {" "}
+                      <a
+                        href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${visit.id}`}
+                      >
+                        Receipt
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        href={`${webUrl}file?doctor_visit=${visit.id}`}
+                        variant="outlined"
+                      >
+                        <FileIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => {
+                          setShow(true);
+                          setSelectedPatient(visit);
+                        }}
+                        size="small"
+                        variant="outlined"
+                      >
+                        <Info />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    );
+  };
+  const setDiscount = (data) => {
+    setTableElement(
+      <>
+        <Stack
+          justifyContent={"space-around"}
+          direction={"row"}
+          gap={1}
+          sx={{ mb: 1 }}
+        >
+          <Stack
+            direction={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            alignContent={"center"}
+            gap={1}
+            className="shadow-sm text-center items-center  bg-red-100 p-2 rounded-sm "
+          >
+            <Typography variant="h5"> اجمالي البنك </Typography>
+            <Typography variant="h5">
+              {/* {formatNumber(data.insurance_reclaim)} */}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Divider />
+        <TableContainer component={Card}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Doctor</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Lab</TableCell>
+                <TableCell>Services</TableCell>
+                <TableCell>Reciet</TableCell>
+                <TableCell>File</TableCell>
+                <TableCell>Info</TableCell>
+              </TableRow>
+
+              {/* Add more table headers here */}
+            </TableHead>
+            <TableBody>
+              {data.map((visit: DoctorVisit, i) => {
+                console.log(visit, "doctor ");
+                return (
+                  <TableRow key={visit.id}>
+                    <TableCell>{++i}</TableCell>
+                    <TableCell>{visit.patient.name}</TableCell>
+                    <TableCell>
+                      {dayjs(new Date(visit.patient.created_at)).format(
+                        "DD/MM/YYYY H:m A"
+                      )}
+                    </TableCell>
+                    <TableCell>{visit.patient?.doctor?.name}</TableCell>
+                    <TableCell>
+                      {formatNumber(
+                        visit.total_paid_services + visit.patient.paid
+                      )}
+                    </TableCell>
+                    <TableCell>{visit.patient?.user.username}</TableCell>
+                    <TableCell>
+                      {visit.patient.labrequests.map((l) => l.name).join("")}
+                    </TableCell>
+                    <TableCell>
+                      {visit.services.reduce(
+                        (prev, curr) => `${prev} - ${curr.service.name}`,
+                        ""
+                      )}
+                    </TableCell>
+
+                    <TableCell>
+                      {" "}
+                      <a
+                        href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${visit.id}&user=${user?.id}`}
+                      >
+                        Receipt
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        href={`${webUrl}file?doctor_visit=${visit.id}&user=${user?.id}`}
+                        variant="outlined"
+                      >
+                        <FileIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => {
+                          setShow(true);
+                          setSelectedPatient(visit);
+                        }}
+                        size="small"
+                        variant="outlined"
+                      >
+                        <Info />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  };
   return (
-    <div className="all-report">
+    <div style={{ overflow: "auto" }} className="all-report">
       <div className="gird-item grid-item-1">
         <Stack
           direction={"row"}
@@ -901,12 +1286,14 @@ function AllReports() {
           />
         </Stack>
       </div>
-      <div className="gird-item grid-item-2">
+      <div className="gird-item grid-item-2 p-2">
         {loading ? <Skeleton width={"100%"} height={"100%"} /> : tableElement}
       </div>
       <Card className="gird-item grid-item-3">
-        <Typography className="text-center" variant="h4">التقارير</Typography>
-        <List>
+        <Typography className="text-center" variant="h4">
+          التقارير
+        </Typography>
+        <List sx={{ overflow: "auto", height: "70vh" }}>
           <ListItem
             sx={{
               cursor: "pointer",
@@ -920,8 +1307,7 @@ function AllReports() {
             <ListItemText
               onClick={() => {
                 selectReportHandler("Insurance Reclaim");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               استحقاق الطبيب{" "}
@@ -940,8 +1326,7 @@ function AllReports() {
             <ListItemText
               onClick={() => {
                 selectReportHandler("Lab Statistics");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               احصاء المختبر{" "}
@@ -978,8 +1363,7 @@ function AllReports() {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 selectReportHandler("Clinics");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               العيادات{" "}
@@ -999,8 +1383,7 @@ function AllReports() {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 selectReportHandler("Service Statistics");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               احصاء الخدمات{" "}
@@ -1018,8 +1401,7 @@ function AllReports() {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 selectReportHandler("Costs-1");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               المصروفات - 1{" "}
@@ -1037,7 +1419,7 @@ function AllReports() {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 selectReportHandler("Costs-2");
-                setTableElement(null)
+                setTableElement(null);
               }}
             >
               المصروفات - 2{" "}
@@ -1057,15 +1439,59 @@ function AllReports() {
               sx={{ cursor: "pointer" }}
               onClick={() => {
                 selectReportHandler("Pharmacy Income");
-                setTableElement(null)
-
+                setTableElement(null);
               }}
             >
               ايرادات الصيدليه
             </ListItemText>
           </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Pharmacy Income 2"
+                  ? theme.palette.primary.light
+                  : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Pharmacy Income 2");
+                setTableElement(null);
+              }}
+            >
+              2 - ايرادات الصيدليه
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
+                return report == "Patients" ? theme.palette.primary.light : "";
+              },
+            }}
+          >
+            <ListItemText
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                selectReportHandler("Patients");
+                setTableElement(null);
+              }}
+            >
+              المرضي
+            </ListItemText>
+          </ListItem>
         </List>
       </Card>
+      {selectedPatient && (
+        <PatientDetailsDialog
+          setShow={setShow}
+          show={show}
+          patient={selectedPatient}
+        />
+      )}
     </div>
   );
 }

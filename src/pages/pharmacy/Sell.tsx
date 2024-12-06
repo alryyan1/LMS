@@ -39,6 +39,7 @@ import {
   LockOpen,
   PersonAdd,
   Print,
+  QrCode,
   ReportOutlined,
 } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
@@ -63,7 +64,8 @@ import MyDateField2 from "../../components/MyDateField2";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import AutocompleteSearchPatientInsurance from "../../components/AutocompleteSearchInsurancePaitents";
 import { PharmacyLayoutPros } from "../../types/pharmacy";
-import { Plus, Printer } from "lucide-react";
+import { Barcode, Plus, Printer } from "lucide-react";
+import { useStateContext } from "../../appContext";
 // import Calculator from "../../components/calculator/Calculator";
 
 function SellDrug() {
@@ -76,9 +78,10 @@ function SellDrug() {
   const [loading, setLoading] = useState();
   const [userSettings, setUserSettings] = useState(null);
   const [clients, setClients] = useState([]);
+  const [barcodeVal, setBarcodeVal] = useState(null);
 
   const [updater, setUpdater] = useState(0);
-  const [searchOption, setSearchOption] = useState('market_name');
+  const [searchOption, setSearchOption] = useState("market_name");
   const [recieved, setRecieved] = useState(0);
   const {
     setDialog,
@@ -95,6 +98,7 @@ function SellDrug() {
     items,
     showDialogMoney,
   } = useOutletContext<PharmacyLayoutPros>();
+  const { user } = useStateContext();
   // console.log(shift, "shift");
   // console.log(activeSell, "active sell");
   useEffect(() => {
@@ -176,66 +180,85 @@ function SellDrug() {
     });
   };
 
-  const printHandler = ()=>{
-    
-      const form = new URLSearchParams();
-      axiosClient
-        .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
-        .then(({ data }) => {
-          form.append("data", data);
-          form.append("node_direct", userSettings.node_direct);
-          // console.log(data, "daa");
-          if (userSettings?.web_dialog) {
-            printJS({
-              printable: data.slice(data.indexOf("JVB")),
-              base64: true,
-              type: "pdf",
-            });
-          }
-          if (userSettings?.node_dialog) {
-            fetch("http://127.0.0.1:4000/", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
+  const printHandler = () => {
+    const form = new URLSearchParams();
+    axiosClient
+      .get(`printSale?deduct_id=${activeSell.id}&base64=1`)
+      .then(({ data }) => {
+        form.append("data", data);
+        form.append("node_direct", userSettings.node_direct);
+        // console.log(data, "daa");
+        if (userSettings?.web_dialog) {
+          printJS({
+            printable: data.slice(data.indexOf("JVB")),
+            base64: true,
+            type: "pdf",
+          });
+        }
+        if (userSettings?.node_dialog) {
+          fetch("http://127.0.0.1:4000/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
 
-              body: form,
-            }).then(() => {});
-          }
-        });
-    
-  }
+            body: form,
+          }).then(() => {});
+        }
+      });
+  };
   return (
     <>
-      <Stack direction={'row'} gap={1}>
-        <div style={{ marginRight: "65px" }}>
+      <Stack direction={"row"} gap={1}>
+        <div style={{ marginRight: "65px" }}></div>
+        <Select
+          onChange={(e) => {
+            setSearchOption(e.target.value);
+          }}
+          value={searchOption}
+          variant="standard"
+        >
+          <MenuItem value="market_name">Market Name</MenuItem>
+          <MenuItem value="sc_name">Active</MenuItem>
+        </Select>
+        <Stack direction={'row'} gap={1} style={{ flexGrow: "1" }}>
+          <Stack direction={'row'} gap={1}>
+          <TextField
+           size="small"
+            label="بحث برقم العمليه"
+            sx={{ width: "300px" }}
+            onChange={(e) => {
+              setBarcodeVal(e.target.value);
+            }}
+            fullWidth
+            key={activeSell?.id}
+            onKeyDown={(e) => {
+              //get the value when key down
 
-        </div>
-       <Select onChange={(e)=>{
-        setSearchOption(e.target.value)
-       }} value={searchOption} variant="standard">
-         <MenuItem value='market_name' >
-           Market Name
-          </MenuItem>
-         <MenuItem value='sc_name'>
-         Active 
-          </MenuItem>
-      
+              if (e.key === "Enter") {
+                axiosClient.get(`sells/find/${barcodeVal}`).then(({ data }) => {
+                  console.log("find deduct", data);
+                  setActiveSell(data);
+                });
+              }
+            }}
+          />
+          <QrCode fontSize="large" />
+          </Stack>
+
          
-       </Select>
-       <div style={{flexGrow:'1'}}>
-       {activeSell && (
-          <AddDrugAutocomplete
+        {activeSell && !user?.isAccountant ? (
+            <Box sx={{flex:1}}>
+              <AddDrugAutocomplete 
             searchOption={searchOption}
             update={update}
             key={activeSell?.id}
             setLoading={setLoading}
             loading={loading}
             setUpdater={setUpdater}
-          />
-        )}
-       </div>
-      
+          /></Box> 
+          ):''}
+        </Stack>
       </Stack>
       <div
         style={{
@@ -255,12 +278,12 @@ function SellDrug() {
             divider={<Divider orientation="vertical" flexItem />}
             direction={"column"}
           >
-            <Tooltip title='الايرادات'>
+            <Tooltip title="الايرادات">
               <IconButton variant="contained" onClick={showShiftMoney}>
                 <Calculate />
               </IconButton>
             </Tooltip>
-            <Tooltip title='التقرير'>
+            <Tooltip title="التقرير">
               <IconButton
                 href={`${webUrl}pharmacy/sellsReport?shift_id=${shift?.id}`}
                 variant="contained"
@@ -268,7 +291,7 @@ function SellDrug() {
                 <DescriptionIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title='طباعه تقرير تامين الورديه'>
+            <Tooltip title="طباعه تقرير تامين الورديه">
               <IconButton
                 href={`${webUrl}pharmacy/sellsReportIndurance?shift_id=${shift?.id}`}
                 variant="contained"
@@ -298,6 +321,13 @@ function SellDrug() {
             ) : (
               shift?.deducts
                 .filter((d) => d.is_sell != 0)
+                .filter((d) => {
+                  if (user?.isAdmin) {
+                    return true;
+                  } else {
+                    return d.user_id == user?.id || user?.id == d.user_paid;
+                  }
+                })
                 .map((p, i) => (
                   <SellBox
                     setActiveSell={setActiveSell}
@@ -375,10 +405,16 @@ function SellDrug() {
                     ></FormControlLabel>
                   </FormGroup>
                 )}
-                <AutocompleteSearchPatientInsurance setActiveSell={setActiveSell} selectedDeduct={activeSell}/>
-                <Box sx={{flex:1,textAlign:'center'}}>
-
-                {activeSell.doctorvisit && <Typography variant="h4">{activeSell.doctorvisit.patient.company.name}</Typography>}
+                <AutocompleteSearchPatientInsurance
+                  setActiveSell={setActiveSell}
+                  selectedDeduct={activeSell}
+                />
+                <Box sx={{ flex: 1, textAlign: "center" }}>
+                  {activeSell.doctorvisit && (
+                    <Typography variant="h4">
+                      {activeSell.doctorvisit.patient.company.name}
+                    </Typography>
+                  )}
                 </Box>
               </Stack>
 
@@ -409,7 +445,7 @@ function SellDrug() {
                     </TableRow>
                   </thead>
                   <TableBody>
-                    {activeSell?.deducted_items?.map((deductedItem,index) => (
+                    {activeSell?.deducted_items?.map((deductedItem, index) => (
                       <TableRow
                         sx={{
                           background: (theme) => {
@@ -423,13 +459,18 @@ function SellDrug() {
                         }}
                         key={deductedItem.id}
                       >
-                        <TableCell>{index+1}</TableCell>
-                        <TableCell><Link to={`/pharmacy/items/${deductedItem.item.id}`}>{deductedItem.item?.market_name}</Link></TableCell>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>
+                          <Link to={`/pharmacy/items/${deductedItem.item.id}`}>
+                            {deductedItem.item?.market_name}
+                          </Link>
+                        </TableCell>
                         {activeSell.complete ? (
-                          <TableCell>{formatNumber(toFixed(deductedItem.price, 1))}</TableCell>
+                          <TableCell>
+                            {formatNumber(toFixed(deductedItem.price, 1))}
+                          </TableCell>
                         ) : (
                           <MyTableCell
-                           
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}
@@ -461,7 +502,7 @@ function SellDrug() {
                           <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                         ) : (
                           <MyTableCell
-                           show
+                            show
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}
@@ -474,11 +515,13 @@ function SellDrug() {
                           </MyTableCell>
                         )}
                         <TableCell>
-                          {formatNumber(toFixed(
-                            (deductedItem.price / deductedItem.item?.strips) *
-                              deductedItem.strips,
-                            3
-                          ))}
+                          {formatNumber(
+                            toFixed(
+                              (deductedItem.price / deductedItem.item?.strips) *
+                                deductedItem.strips,
+                              3
+                            )
+                          )}
                         </TableCell>
                         <TableCell>
                           <LoadingButton
@@ -499,14 +542,12 @@ function SellDrug() {
                           </LoadingButton>
                         </TableCell>
 
-                         <TableCell>
-                          <MyDateField2 
-
-                          
+                        <TableCell>
+                          <MyDateField2
                             val={deductedItem?.item.lastDepositItem?.expire}
                             item={deductedItem?.item.lastDepositItem}
                           />
-                        </TableCell> 
+                        </TableCell>
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
@@ -532,17 +573,10 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Typography textAlign={"right"}>
-                Transaction No <input key={activeSell?.id} onKeyDown={(e)=>{
-                  if(e.key === 'Enter'){
-                    axiosClient.get(` ind/${e.currentTarget.value}`).then(({data})=>{
-                      console.log('find deduct',data)
-                      setActiveSell(data);
-                    })
-                  }
-                 
-                }} style={{width:'70px'}} defaultValue={activeSell?.id}/>
+              <Typography variant="h6" textAlign={"right"}>
+                Transaction No {activeSell?.id}
               </Typography>
+
               {/* <Typography className="text-gray-500" textAlign={"right"}>
                 Date{" "}
                 {dayjs(new Date(activeSell?.created_at)).format(
@@ -550,12 +584,19 @@ function SellDrug() {
                 )}
 
               </Typography> */}
-              <MyDateField2  label="تاريخ البيع" path="deduct" colName="created_at" disabled={true}
-                          val={activeSell.created_at}
-                          item={activeSell}
-                        />
+              <MyDateField2
+                label="تاريخ البيع"
+                path="deduct"
+                colName="created_at"
+                disabled={true}
+                val={activeSell.created_at}
+                item={activeSell}
+              />
               <Divider />
-              {activeSell.doctorvisit  ?   <TextField defaultValue={activeSell.endurance_percentage} onChange={(e) => {
+              {activeSell.doctorvisit ? (
+                <TextField
+                  defaultValue={activeSell.endurance_percentage}
+                  onChange={(e) => {
                     axiosClient
                       .patch(`deduct/${activeSell.id}`, {
                         colName: "endurance_percentage",
@@ -564,7 +605,14 @@ function SellDrug() {
                       .then(({ data }) => {
                         setActiveSell(data.data);
                       });
-                  }} size="small"  label='نسبه التحمل' color="error" /> :<PayOptions update={update} key={activeSell.id} /> }
+                  }}
+                  size="small"
+                  label="نسبه التحمل"
+                  color="error"
+                />
+              ) : (
+                <PayOptions update={update} key={activeSell.id} />
+              )}
               <Divider />
               <Table size="small">
                 <TableHead>
@@ -584,7 +632,9 @@ function SellDrug() {
                       Sub Total
                     </TableCell>
                     <TableCell>
-                      {formatNumber(Number(activeSell?.total_price_unpaid).toFixed(1))}
+                      {formatNumber(
+                        Number(activeSell?.total_price_unpaid).toFixed(1)
+                      )}
                     </TableCell>
                   </TableRow>
 
@@ -598,15 +648,21 @@ function SellDrug() {
                   </TableRow> */}
 
                   <TableRow>
-                    <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
+                    <TableCell
+                      align="right"
+                      sx={{ textAlign: "right", fontSize: "27px" }}
+                    >
                       {" "}
                       Total
                     </TableCell>
-                    <TableCell sx={{fontSize:'27px'}}>
-                      {
-                       formatNumber(toFixed( activeSell?.total_price_unpaid +
-                        activeSell?.calculateTax,1))
-                     }
+                    <TableCell sx={{ fontSize: "27px" }}>
+                      {formatNumber(
+                        toFixed(
+                          activeSell?.total_price_unpaid +
+                            activeSell?.calculateTax,
+                          1
+                        )
+                      )}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -625,10 +681,15 @@ function SellDrug() {
                   </TableRow>
 
                   <TableRow>
-                    <TableCell align="right" sx={{ textAlign: "right" ,fontSize:'27px'}}>
-                       Paid
+                    <TableCell
+                      align="right"
+                      sx={{ textAlign: "right", fontSize: "27px" }}
+                    >
+                      Paid
                     </TableCell>
-                    <TableCell sx={{fontSize:'27px'}}>{formatNumber(Number(activeSell?.paid).toFixed(1))}</TableCell>
+                    <TableCell sx={{ fontSize: "27px" }}>
+                      {formatNumber(Number(activeSell?.paid).toFixed(0))}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -676,14 +737,14 @@ function SellDrug() {
                     fullWidth
                     loading={loading}
                     onClick={() => {
-                   //   printHandler()
+                      //   printHandler()
                       setLoading(true);
                       axiosClient
                         .get(
                           `inventory/deduct/complete/${activeSell.id}?is_sell=1`
                         )
                         .then(({ data }) => {
-                          printHandler()
+                          printHandler();
                           try {
                             setDialog((prev) => {
                               return {
@@ -695,17 +756,16 @@ function SellDrug() {
                             });
                             setRecieved(0);
                             setShift((prev) => {
-                                return {
-                                  ...prev,
-                                  deducts: prev.deducts.map((d) => {
-                                    if (d.id == activeSell.id) {
-                                      return { ...activeSell,complete:1 };
-                                    } else {
-                                      return d;
-                                    }
-                                  }),
-                                };
-                              
+                              return {
+                                ...prev,
+                                deducts: prev.deducts.map((d) => {
+                                  if (d.id == activeSell.id) {
+                                    return { ...activeSell, complete: 1 };
+                                  } else {
+                                    return d;
+                                  }
+                                }),
+                              };
                             });
                             // console.log(data.data, "new active sell");
                             update(data.data);
@@ -742,50 +802,46 @@ function SellDrug() {
         </Card>
         <Box>
           <Stack direction={"column"} gap={2}>
-           <Tooltip title="عمليه جديده">
-           <LoadingButton
-              sx={{ mt: 2 }}
-              fullWidth
-              loading={loading}
-              onClick={() => {
-                setLoading(true);
-                axiosClient
-                  .get(`inventory/deduct/new?is_sell=1`)
-                  .then(({ data }) => {
-                    try {
-                      setRecieved(0);
-                      update(data.data);
-                    } catch (error) {
-                      // console.log(error);
-                    }
-                  })
-                  .catch(({ response: { data } }) => {
-                    // console.log({ data });
-                    setDialog((prev) => {
-                      return {
-                        ...prev,
-                        color: "error",
+            <Tooltip title="عمليه جديده">
+              <LoadingButton
+                sx={{ mt: 2 }}
+                fullWidth
+                loading={loading}
+                onClick={() => {
+                  setLoading(true);
+                  axiosClient
+                    .get(`inventory/deduct/new?is_sell=1`)
+                    .then(({ data }) => {
+                      try {
+                        setRecieved(0);
+                        update(data.data);
+                      } catch (error) {
+                        // console.log(error);
+                      }
+                    })
+                    .catch(({ response: { data } }) => {
+                      // console.log({ data });
+                      setDialog((prev) => {
+                        return {
+                          ...prev,
+                          color: "error",
 
-                        open: true,
-                        message: data?.message || "An error occured",
-                      };
+                          open: true,
+                          message: data?.message || "An error occured",
+                        };
+                      });
+                    })
+                    .finally(() => {
+                      setLoading(false);
                     });
-                  })
-                  .finally(() => {
-                    setLoading(false);
-                  });
-              }}
-            >
-              <Plus />
-            </LoadingButton>
-           </Tooltip>
+                }}
+              >
+                <Plus />
+              </LoadingButton>
+            </Tooltip>
             <Divider />
             {activeSell?.complete == 1 && (
-              <IconButton
-                onClick={
-                  printHandler
-                }
-              >
+              <IconButton onClick={printHandler}>
                 <Print />
               </IconButton>
             )}

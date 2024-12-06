@@ -56,9 +56,9 @@ function App() {
       <Stack justifyContent={'center'} alignItems={'center'} direction={'column'}>
         {/* <img height='300px'  src={logo2}/> */}
 
-        <Card className="w-[450px]  rtl text-right col-span-3 mt-4 ">
+        <Card  className=" min-w-[400px]  rtl text-right col-span-3 mt-4 ">
           <CardHeader>
-            <CardTitle>  Register login data
+            <CardTitle>  {t('login')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -67,8 +67,7 @@ function App() {
               <div className="grid w-full items-center gap-4">
                 {/** User Name  */}
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="name"> Username </Label>
-                  <Input
+                  <TextField
 
                     className="text-right"
                     error={errors.username != null}
@@ -96,8 +95,7 @@ function App() {
                 {errors.username && errors.username.message}
 
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="cash_percentage">  Password</Label>
-                  <Input
+                  <TextField
 
                     className="text-right"
                     error={errors.password != null}
@@ -122,7 +120,7 @@ function App() {
                 </div>
 
               </div>
-
+              <div className="flex justify-center ">
               <LoadingButton
               sx={{mt:1}}
                 loading={loading}
@@ -132,6 +130,9 @@ function App() {
               >
                 {t('login')}
               </LoadingButton>
+              </div>
+
+          
             </form>
           </CardContent>
           <CardFooter className="flex justify-between">

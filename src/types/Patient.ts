@@ -26,6 +26,7 @@ export interface DoctorVisit {
   services: RequestedService[]
   only_lab:number;
   file:PatientFile;
+  totalservicebank:number;
 
 
 }
@@ -135,6 +136,7 @@ export interface Patient {
     referred:string
     nurse_note:string;
     patient_medical_history:string;
+    totalLabBank:number
   }
   
   export interface Labrequest {

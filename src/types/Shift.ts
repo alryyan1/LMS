@@ -18,6 +18,7 @@ export interface Shift {
   cost: Cost[];
   patients: DoctorVisit[];
   doctor_shifts: DoctorShift[];
+  deducts:Deduct[]
 
 }
 
@@ -48,11 +49,13 @@ export interface Deduct {
   deducted_items: any[];
   payment_type: Paymenttype;
   user: User;
+  user_paid: number;
   cost:number;
   client: null;
   doctorvisit_id:number;
   doctorvisit:DoctorVisit;
   itemsConcatenated:string;
+
 }
 
 

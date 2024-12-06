@@ -35,7 +35,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 200px;
   grid-template-rows: 70px 1fr;
-  height: 80vh;
+  /* height: 80vh; */
+  /* overflow: auto; */
 }
 .gird-item{
   /* border: 1px solid black!important; */

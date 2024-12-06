@@ -113,6 +113,7 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
 
               return (
                 <TextField
+                fullWidth
                 autoFocus
                    {...params}
                   onChange={(e)=>{
