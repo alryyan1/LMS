@@ -198,7 +198,7 @@ function DrugItems() {
                   {/* <TableCell>Active 2 </TableCell> */}
                   <TableCell> Cost</TableCell>
                   <TableCell> Retail </TableCell>
-                  <TableCell> Strips </TableCell>
+                  {/* <TableCell> Strips </TableCell> */}
                   <TableCell> Unit </TableCell>
                   <TableCell> Category </TableCell>
                   <TableCell style={{ width: "10%" }}> Expire </TableCell>
@@ -222,7 +222,7 @@ function DrugItems() {
                   }
                   // console.log(drug, "drug ");
                   return (
-                    <TableRow sx={{backgroundColor:(theme)=> drug?.lastDepositItem == null ? theme.palette.warning.light : ''}} key={drug.id}>
+                    <TableRow  key={drug.id}>
                       <TableCell>{drug.id}</TableCell>
 
                       <MyTableCell
@@ -277,9 +277,9 @@ function DrugItems() {
                       >
                         {drug.lastDepositItem?.finalSellPrice ?? 0}
                       </MyTableCell>
-                      <MyTableCell colName={"strips"} item={drug} table="items">
+                      {/* <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
-                      </MyTableCell>
+                      </MyTableCell> */}
 
                    
           <TableCell>

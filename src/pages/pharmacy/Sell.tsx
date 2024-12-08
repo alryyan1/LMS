@@ -405,10 +405,10 @@ function SellDrug() {
                     ></FormControlLabel>
                   </FormGroup>
                 )}
-                <AutocompleteSearchPatientInsurance
+                {/* <AutocompleteSearchPatientInsurance
                   setActiveSell={setActiveSell}
                   selectedDeduct={activeSell}
-                />
+                /> */}
                 <Box sx={{ flex: 1, textAlign: "center" }}>
                   {activeSell.doctorvisit && (
                     <Typography variant="h4">
@@ -436,7 +436,7 @@ function SellDrug() {
                       <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
+                      {/* <TableCell>Strips</TableCell> */}
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
@@ -447,16 +447,16 @@ function SellDrug() {
                   <TableBody>
                     {activeSell?.deducted_items?.map((deductedItem, index) => (
                       <TableRow
-                        sx={{
-                          background: (theme) => {
-                            return !dayjs(
-                              deductedItem?.item?.lastDepositItem?.expire
-                            ).isAfter(dayjs())
-                              ? "#ef535087"
-                              : "theme.palette.background.defaultLight";
-                          },
-                          fontWeight: "500",
-                        }}
+                        // sx={{
+                        //   background: (theme) => {
+                        //     return !dayjs(
+                        //       deductedItem?.item?.lastDepositItem?.expire
+                        //     ).isAfter(dayjs())
+                        //       ? "#ef535087"
+                        //       : "theme.palette.background.defaultLight";
+                        //   },
+                        //   fontWeight: "500",
+                        // }}
                         key={deductedItem.id}
                       >
                         <TableCell>{index + 1}</TableCell>
@@ -483,7 +483,7 @@ function SellDrug() {
                           </MyTableCell>
                         )}
 
-                        {activeSell.complete ? (
+                        {/* {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -497,7 +497,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )}
+                        )} */}
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                         ) : (
@@ -739,6 +739,7 @@ function SellDrug() {
                     onClick={() => {
                       //   printHandler()
                       setLoading(true);
+                      printHandler();
                       axiosClient
                         .get(
                           `inventory/deduct/complete/${activeSell.id}?is_sell=1`

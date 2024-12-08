@@ -236,7 +236,7 @@ const SignUp = ({ setUsers, doctors }) => {
             {/** choose the doctor */}
             {errors.confirm && errors.confirm.message}
 
-            <Controller
+            {/* <Controller
               name="doctor"
               // rules={{
               //   required: {
@@ -267,7 +267,7 @@ const SignUp = ({ setUsers, doctors }) => {
                   ></Autocomplete>
                 );
               }}
-            />
+            /> */}
           </div>
 
           <LoadingButton

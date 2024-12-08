@@ -78,8 +78,8 @@ function Users() {
           <Table size="small">
             <TableRow>
               <TableCell>Username</TableCell>
-              <TableCell>is Nurse</TableCell>
-              <TableCell>is Doctor</TableCell>
+              {/* <TableCell>is Nurse</TableCell> */}
+              {/* <TableCell>is Doctor</TableCell> */}
             </TableRow>
             <TableBody>
               {users.map((user) => {
@@ -93,7 +93,7 @@ function Users() {
                     setSelectedUser(user);
                   }} key={user.id}>
                     <TableCell>{user.username}</TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {" "}
                       <MyCheckbox
                       evalToZeroOrOne
@@ -103,7 +103,7 @@ function Users() {
                         path={`update/${user.id}`}
                       />
                     </TableCell>
-                    <TableCell><DoctorsAutocomplete  setDialog={setDialog} user={user} doctors={doctors} val={user?.doctor}/></TableCell>
+                    <TableCell><DoctorsAutocomplete  setDialog={setDialog} user={user} doctors={doctors} val={user?.doctor}/></TableCell> */}
                   </TableRow>
                 );
               })}

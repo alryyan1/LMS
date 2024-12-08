@@ -120,9 +120,9 @@ function AddDrug() {
               <thead>
                 <TableRow>
                   <TableCell>No </TableCell>
-                  <TableCell>Scientific Name</TableCell>
+                  {/* <TableCell>Scientific Name</TableCell> */}
                   <TableCell>Market Name</TableCell>
-                  <TableCell> Strips </TableCell>
+                  {/* <TableCell> Strips </TableCell> */}
                   <TableCell> Inventory </TableCell>
                   {/* <TableCell> Expire</TableCell> */}
                 </TableRow>
@@ -133,13 +133,13 @@ function AddDrug() {
                   return (
                     <TableRow key={drug.id}>
                       <TableCell>{drug.id}</TableCell>
-                      <MyTableCell
+                      {/* <MyTableCell
                         colName={"sc_name"}
                         item={drug}
                         table="items"
                       >
                         {drug.sc_name}
-                      </MyTableCell>
+                      </MyTableCell> */}
                       <MyTableCell
                         colName={"market_name"}
                         item={drug}
@@ -148,9 +148,9 @@ function AddDrug() {
                         {drug.market_name}
                       </MyTableCell>
 
-                      <MyTableCell colName={"strips"} item={drug} table="items">
+                      {/* <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
-                      </MyTableCell>
+                      </MyTableCell> */}
                       <TableCell>
                         {" "}
                         <IconButton

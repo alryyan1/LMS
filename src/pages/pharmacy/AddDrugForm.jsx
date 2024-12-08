@@ -105,7 +105,7 @@ function AddDrugForm({setUpdate}) {
           drug_category_id: formData.drugCategory?.id,
           barcode: formData.barcode,
           strips: formData.strips,
-          sc_name: formData.sc_name,
+          sc_name: '-',
           market_name: formData.market_name,
           batch: formData?.batch ?? '0',
           deposit:formData.deposit?.id
@@ -177,7 +177,7 @@ function AddDrugForm({setUpdate}) {
     </Typography>
     <form noValidate  onSubmit={handleSubmit(submitHandler)}>
       <Stack direction={"column"} spacing={3}>
-          <TextField
+          {/* <TextField
       
             size="small"
             fullWidth
@@ -191,7 +191,7 @@ function AddDrugForm({setUpdate}) {
             label="الماده الفعاله"
             variant="outlined"
             helperText={errors.sc_name && errors.sc_name.message}
-          />
+          /> */}
           <TextField
             size="small"
             fullWidth
@@ -204,7 +204,7 @@ function AddDrugForm({setUpdate}) {
               },
             })}
             defaultValue={market}
-            label="الاسم التجاري"
+            label="اسم الصنف "
             variant="outlined"
             helperText={errors.market_name && errors.market_name.message}
           />
@@ -260,7 +260,7 @@ function AddDrugForm({setUpdate}) {
             label="سعر الشريط"
             variant="standard"
           /> */}
-          <TextField
+          {/* <TextField
             size="small"
             type="number"
             defaultValue={1}
@@ -280,7 +280,7 @@ function AddDrugForm({setUpdate}) {
             label="عدد الشرائط"
             variant="outlined"
             helperText={errors.strips && errors.strips.message}
-          />
+          /> */}
         </Stack>
         <TextField
             size="small"

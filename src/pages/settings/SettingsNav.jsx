@@ -59,7 +59,7 @@ function SettingsNav() {
   return (
     <>
       <ul className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-4 rtl text-center my-12">
-        <NavLink to={"doctors"}>
+        {/* <NavLink to={"doctors"}>
           <Card>
             <CardHeader>
               <CardTitle>{t("doctors")} </CardTitle>
@@ -71,9 +71,9 @@ function SettingsNav() {
               <img src={doctor_icon} width={60} height={60} />
             </CardContent>
           </Card>
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink to={"specialists"}>
+        {/* <NavLink to={"specialists"}>
           <Card>
             <CardHeader>
               <CardTitle>{t("Specialists")} </CardTitle>
@@ -85,7 +85,7 @@ function SettingsNav() {
               <img src={specialists_icon} width={60} height={60} />
             </CardContent>
           </Card>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink to={"users"}>
           <Card>
