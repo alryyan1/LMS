@@ -186,35 +186,7 @@ function Dashboard() {
           </Card>
 
           <Grid spacing={2} container>
-            <Grid item xs={12} md={6} lg={3}>
-              <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"space-around"}>
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography>Patients</Typography>
-                      <Divider />
-                      {shift && (
-                        <Typography variant="h4">{shift?.totalPaid}</Typography>
-                      )}
-                    </Stack>
-                    <Stack direction={"column"} justifyContent={"center"}>
-                      <IconButton
-                        href={`${webUrl}clinics/all?shift=${shift?.id}`}
-                      >
-                        <Lottie
-                          options={peopleOptions}
-                          height={100}
-                          width={100}
-                        />
-                      </IconButton>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
+          
             <Grid item xs={12} md={6} lg={3}>
               <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
                 <CardContent>
@@ -304,37 +276,7 @@ function Dashboard() {
               </Card>
             </Grid> */}
               <Grid item xs={12} md={6} lg={3}>
-              <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
-                <CardContent>
-                  <Stack
-                    direction={"row"}
-                    justifyContent={"space-evenly"}
-                    gap={2}
-                  >
-                    <Stack
-                      justifyContent={"space-between"}
-                      direction={"column"}
-                    >
-                      <Typography>المختبر</Typography>
-                      <Divider />
-                      <Typography variant="h4">
-                        {shift &&
-                          toFixed(shift?.totalDeductsPrice, 1) -
-                            shift?.cost?.reduce((p, c) => p + c.amount, 0)}
-                      </Typography>
-                    </Stack>
-                    <Stack direction={"column"} justifyContent={"center"}>
-                      <IconButton>
-                        <Lottie
-                          options={defaultOptions}
-                          height={100}
-                          width={100}
-                        />
-                      </IconButton>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
+           
             </Grid> 
             
           </Grid>

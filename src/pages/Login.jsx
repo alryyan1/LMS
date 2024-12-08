@@ -76,11 +76,7 @@ function App() {
                         value: true,
                         message: t('usernameValidation'),
                       },
-                      minLength: {
-                        value: 6,
-                        message:
-                          t('usernameValidationMessage'),
-                      },
+                    
                     })}
                     sx={{ mb: 1 }}
                     variant="standard"
@@ -105,10 +101,7 @@ function App() {
                         value: true,
                         message: t('passwordValidationMessage'),
                       },
-                      minLength: {
-                        value: 8,
-                        message: t('passwordValidationMessageLength'),
-                      },
+                     
                     })}
                     variant="standard"
                     label={t("password")}
