@@ -323,8 +323,19 @@ function AddPatient() {
                 size="small"
                 sx={{ flexGrow: 1 }}
                 onClick={() => {
+
                   const form = new URLSearchParams();
-                  if (settings?.barcode) {
+
+
+                  fetch("http://127.0.0.1:5000/", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "APPLICATION/JSON",
+                    },
+
+                    body: JSON.stringify(actviePatient),
+                  }).then(() => {});
+                  if (settings?.barcode) {               
                     axiosClient
                       .get(`patient/barcode/${actviePatient.id}`)
                       .then(({ data }) => {

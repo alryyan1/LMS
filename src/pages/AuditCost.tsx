@@ -17,7 +17,7 @@ function AuditCost({selectedShift,setSelectedShift}) {
       gridTemplateColumns: `1fr  1fr  1fr   1fr     `,
     }}
   >
-       <AddCostForm />
+       <AddCostForm  setShift={setSelectedShift} selectedShift={selectedShift}/>
         <Typography
          textAlign={"center"}>مصروفات الورديه</Typography>
   

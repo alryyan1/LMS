@@ -290,7 +290,7 @@ function Doctor() {
       setShowSearch(true);
     }
   };
-  let patientCount = patients.length
+  let patientCount = patients.filter((d:DoctorVisit)=>d.patient.doctor.id == id).length
   const showDocPatients = () => {
     setActiveDoctorVisit(null);
     setLayout((prev) => {
@@ -380,8 +380,23 @@ function Doctor() {
               {activeDoctorVisit?.patient.name}
             </Typography>
             </Stack>
-           
+            <Stack direction={"column"} gap={1}>
+                <Typography variant="h6">
+                  <Box sx={{ display: "inline-block", ml: 1 }}>
+                    Doctor :{" "}
+                    {
+                      activeDoctorVisit.patient.doctor.name
+                    }
+                  </Box>
+                </Typography>
+                <Typography variant="h6">
+                  <Box sx={{ display: "inline-block" }}>
+                    Gender : {activeDoctorVisit.patient?.gender}
+                  </Box>
+                </Typography>
+              </Stack>
             <div>
+              
               <Stack direction={"row"} gap={1}>
                 <Typography variant="h6">
                   <Box sx={{ display: "inline-block", ml: 1 }}>
@@ -410,7 +425,7 @@ function Doctor() {
               <Typography variant="h6">
                 <Box sx={{ display: "inline-block" }}>
                   Date :{" "}
-                  {new Date(activeDoctorVisit.created_at).toLocaleString()}
+                  {dayjs(Date.parse(activeDoctorVisit.created_at)).format('YYYY-MM-DD')}
                 </Box>
               </Typography>
             
@@ -532,7 +547,9 @@ function Doctor() {
                 alignItems={"center"}
                 style={{ padding: "15px" }}
               >
-                {patients.map((visit, i) => {
+                {patients.filter((p:DoctorVisit)=>{
+                  return p.patient.doctor.id == id
+                }).map((visit, i) => {
                   // console.log(visit, "visit in doctor page");
                   return (
                     <DoctorPatient
@@ -558,7 +575,7 @@ function Doctor() {
           <div></div>
         )}
         {activeDoctorVisit ? (
-          <Card style={{ backgroundColor: "ffffff40" }}>
+          <Card style={{ backgroundColor: "ffffff40" ,overflow:'auto'}}>
             {/* file visits */}
             <List>
               {
@@ -650,6 +667,8 @@ function Doctor() {
                     setDialog={setDialog}
                     patient={activeDoctorVisit}
                     index={3}
+                    complains={complains}
+                    setComplains={setComplains}
                     value={value}
                   />
                 )}

@@ -36,7 +36,7 @@ function GeneralExaminationPanel(props:GeneralExaminationProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-        <Divider sx={{mb:1}} variant="middle">General Examination</Divider>
+        <Divider sx={{mb:1}} variant="middle"> Examination</Divider>
       {value === index && (
         <Box sx={{ justifyContent: "space-around" }} className="">
           <Stack direction={"row"} gap={2} justifyContent={"space-around"}>

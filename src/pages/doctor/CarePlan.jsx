@@ -1,8 +1,9 @@
 import { Box, Divider, TextField } from "@mui/material";
 import axiosClient from "../../../axios-client";
+import CodeEditor from "./CodeMirror";
 
 function CarePlan(props) {
-  const { value, index, patient, setDialog, setActiveDoctorVisit, ...other } =
+  const { value, index, patient, setDialog, setActiveDoctorVisit,complains,setComplains, ...other } =
     props;
   const updateHandler = (val) => {
     axiosClient
@@ -48,8 +49,8 @@ function CarePlan(props) {
         Care Plan
       </Divider>
       {value === index && (
-        <Box sx={{ justifyContent: "space-around" }} className="group">
-       <TextField sx={{mb:1}}
+        <Box sx={{ justifyContent: "space-around" }} className="">
+       {/* <TextField sx={{mb:1}}
 
             onChange={(e) => {
 
@@ -59,7 +60,16 @@ function CarePlan(props) {
             multiline
             fullWidth
             rows={13}
-          ></TextField>
+          ></TextField> */}
+            <CodeEditor
+                tableName={"chief_complain"}
+                setOptions={setComplains}
+                options={complains}
+                colName="care_plan"
+                init={patient.patient.care_plan}
+                patient={patient}
+                setActiveDoctorVisit={setActiveDoctorVisit}
+              />
             
         </Box>
       )}
