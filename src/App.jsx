@@ -3,22 +3,18 @@ import "./index.css";
 import "./pages/inventory/inventory.css";
 import "./pages/Laboratory/tests.css";
 import Nav from "./Nav";
-import { Navigate, Outlet, redirect } from "react-router-dom";
-import { t } from "i18next";
-import { useTranslation } from "react-i18next";
-import NewNavbar from "./NewNavbar";
+import {  Outlet, } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import nurse from "./assets/images/nurse.jpg";
 import heart from "./assets/images/heart.jpg";
-import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
-import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import SidebarNav from "./Sidebar";
 function App() {
-  const { i18n } = useTranslation();
+ 
 
-  const { user,setUser,setToken } = useStateContext();
+  const { user } = useStateContext();
 
   let  image = ''
   if (user?.is_nurse) {
@@ -32,15 +28,28 @@ function App() {
 
   return (
     <>
-      <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container">
-        <div className="app-container2">
+      {/* <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container"> */}
+        {/* <div className="app-container2"> */}
+
+        {/* <Outlet key={i18n.language} /> */}
+
+        {/* </div> */}
+      {/* </div> */}
+      <div style={{ display: 'flex', height: '100vh'}}>
+      {/* Sidebar */}
+     {user&& <SidebarNav/>}
+
+      {/* Main Content */}
+      <div style={{  padding: '5px',margin:'15px auto',width:'95%' }}>
+     
         <ToastContainer />
 
         <Nav />
-        {/* <Outlet key={i18n.language} /> */}
+
         <Outlet  />
-        </div>
+
       </div>
+    </div>
     </>
   );
 }

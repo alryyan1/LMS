@@ -3,15 +3,17 @@ import axiosClient from "../../../axios-client";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
-interface PatientDetailPros {
+import i18n from "i18next";
+
+
+interface PatientDetailProps {
   patient: DoctorVisit,
   openedDoctors: DoctorShift[],
   activeShift: DoctorShift,
   copyPatient?: boolean,
   settings: any,
-  user: any,  
-  update:(patient:DoctorVisit)=>void
- 
+  user: any,
+  update: (patient: DoctorVisit) => void
 }
 function PatientDetail({
   patient,
@@ -19,10 +21,11 @@ function PatientDetail({
   activeShift,
   copyPatient = false,
   settings,
-  user
-}:PatientDetailPros) {
-  const { i18n } = useTranslation();
-console.log(patient,'patient in details')
+  user,
+  update
+}: PatientDetailProps) {
+  const { t } = useTranslation('PatientDetails');
+  console.log(patient, 'patient in details')
   const date = new Date(patient.created_at);
 
   return (
@@ -31,13 +34,13 @@ console.log(patient,'patient in details')
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
         elevation={3}
         className="bolder"
-        sx={{p:1,minWidth:'300px'}}
+        sx={{ p: 1, minWidth: '300px' }}
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <Typography variant="h5" sx={{border:'1px solid black'}}   className="text-nowrap shadow-md rounded-md   mb-1 text-center">{patient.patient.name}</Typography>
+        <Typography variant="h5" sx={{ border: '1px solid black' }} className="text-nowrap shadow-md rounded-md   mb-1 text-center">{patient.patient.name}</Typography>
         <div className="form-control">
           <div>Visit Id</div>
           <div >{patient.id}</div>
@@ -99,8 +102,8 @@ console.log(patient,'patient in details')
           <div>
             {
               //print iso date
-             
-              t( patient.patient.gender)
+
+              t(patient.patient.gender)
             }
           </div>
         </div>
@@ -123,18 +126,18 @@ console.log(patient,'patient in details')
             {
               //print iso date
               ` ${patient.patient.age_year ?? 0} Y ${
-                patient.patient.age_month == null
-                  ? ""
-                  : " / " + patient.patient.age_month + " M "
+              patient.patient.age_month == null
+                ? ""
+                : " / " + patient.patient.age_month + " M "
               } ${
-                patient.patient.age_day == null ? "" : " / " + patient.patient.age_day + " D "
+              patient.patient.age_day == null ? "" : " / " + patient.patient.age_day + " D "
               } `
             }
           </div>
         </div>
         <Divider />
         {settings?.gov ? <div className="form-control">
-          <div>{t('govId')}</div>
+          <div>{t('govermentId')}</div>
 
           <div>
             {
@@ -155,7 +158,7 @@ console.log(patient,'patient in details')
           </div>
         </div>
         <Divider />
-        {settings?.country ?  <div className="form-control">
+        {settings?.country ? <div className="form-control">
           <div>{t('country')}</div>
 
           <div>
@@ -164,7 +167,7 @@ console.log(patient,'patient in details')
               patient.patient?.country?.name
             }
           </div>
-        </div>: ''}
+        </div> : ''}
         {patient.patient.company_id && (
           <div>
             <div className="form-control">
@@ -238,11 +241,11 @@ console.log(patient,'patient in details')
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
-                .post(`patient/copy/${data.id}?patient_id=${patient.id}`,{
-                  
+                .post(`patient/copy/${data.id}?patient_id=${patient.id}`, {
+
                 })
                 .then(({ data }) => {
-                 // update(data);
+                  // update(data);
                   if (data.status) {
                     // alert('status')
                   }
@@ -253,7 +256,7 @@ console.log(patient,'patient in details')
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.name}
-            options={openedDoctors.filter((shift)=>shift.user_id == user?.id).map((shift) => {
+            options={openedDoctors.filter((shift) => shift.user_id == user?.id).map((shift) => {
               return shift.doctor;
             })}
             //fill isOptionEqualToValue

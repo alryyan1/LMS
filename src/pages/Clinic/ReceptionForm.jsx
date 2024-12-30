@@ -16,16 +16,17 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { Item } from "../constants";
-import { t } from "i18next";
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
-function ReceptionForm({ hideForm, lab, settings, socket,update }) {
+function ReceptionForm({ hideForm, lab, settings, socket, update }) {
+  const { t } = useTranslation('receptionForm'); // Initialize translation hook
+
   const [loading, setIsLoading] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedSubCompany, setSelectedSubCompany] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
-  // console.log(selectedCompany, "selected company");
-  // console.log(selectedSubCompany, "selected sub company");
+
 
   const {
     setDialog,
@@ -42,7 +43,7 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
     btn = activeShift ? false : true;
   }
 
-  // console.log(appData.doctors,'doctors')
+
   const {
     watch,
     control,
@@ -68,16 +69,14 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
             console.log(data, "founded patients");
             setFoundedPatients(data);
             if (data.length > 0) {
-              setDialog((prev)=>{
-                return {...prev,showHistory:true}
-              })
-            }else{
-              
-              setDialog((prev)=>{
-                return {...prev,showHistory:false}
-              })
+              setDialog((prev) => {
+                return { ...prev, showHistory: true };
+              });
+            } else {
+              setDialog((prev) => {
+                return { ...prev, showHistory: false };
+              });
             }
-            
           });
       }, 300);
       return () => {
@@ -95,14 +94,13 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
           console.log(data, "founded patients");
           setFoundedPatients(data);
           if (data.length > 0) {
-            setDialog((prev)=>{
-              return {...prev,showHistory:true}
-            })
-          }else{
-            
-            setDialog((prev)=>{
-              return {...prev,showHistory:false}
-            })
+            setDialog((prev) => {
+              return { ...prev, showHistory: true };
+            });
+          } else {
+            setDialog((prev) => {
+              return { ...prev, showHistory: false };
+            });
           }
         });
       }, 300);
@@ -113,11 +111,11 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
   }, [phone]);
 
   const sumbitHandler = async (formData) => {
-    setDialog((prev)=>{
-      return {...prev,showHistory:false}
-    })
-   const doc = activeShift?.doctor.id ?? formData.doctor?.id
-      const url = `patients/reception/add/${doc}`;
+    setDialog((prev) => {
+      return { ...prev, showHistory: false };
+    });
+    const doc = activeShift?.doctor.id ?? formData.doctor?.id;
+    const url = `patients/reception/add/${doc}`;
     setIsLoading(true);
     console.log(formData, "form data");
     axiosClient
@@ -128,7 +126,7 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
         subcompany_id: selectedSubCompany?.id,
         company_relation_id: selectedRelation?.id,
         country_id: formData.country?.id ?? null,
-        onlyLab: lab ? 1 : 0
+        onlyLab: lab ? 1 : 0,
       })
       .then((data) => {
         console.log(data, "reception added");
@@ -146,7 +144,7 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
           setIsLoading(false);
           setDialog((prev) => ({
             ...prev,
-            message: "Addition was successfull",
+            message: t("addition_successfull"),
             color: "success",
             open: true,
           }));
@@ -155,8 +153,8 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
           hideForm();
           setFoundedPatients([]);
           //this update patient list
-          console.log(data.data.patient,'data data')
-          update(data.data.patient)
+          console.log(data.data.patient, "data data");
+          update(data.data.patient);
         }
       })
       .catch(({ response: { data } }) => {
@@ -171,7 +169,7 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
   return (
     <Item elevation={2} sx={{ padding: "10px" }}>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-        {t("register")}{" "}
+        {t("register")}
       </Typography>
       <form onSubmit={handleSubmit(sumbitHandler)} noValidate>
         <Stack direction={"column"} spacing={2}>
@@ -204,8 +202,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                   getOptionLabel={(option) => option.name}
                   options={selectedCompany.sub_companies}
                   renderInput={(params) => {
-                    // console.log(params)
-
                     return <TextField {...params} label={t("sub_company")} />;
                   }}
                 />
@@ -219,8 +215,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                   getOptionLabel={(option) => option.name}
                   options={selectedCompany.relations}
                   renderInput={(params) => {
-                    // console.log(params)
-
                     return <TextField {...params} label={t("relation_name")} />;
                   }}
                 />
@@ -230,31 +224,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                 gap={2}
                 divider={<Divider orientation="vertical" flexItem />}
               ></Stack>
-
-              {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">
-                النوع
-              </InputLabel>
-              <Controller
-                name="gender"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <Select
-                    
-                        onChange={(data) => {
-                        console.log(data.target.value);
-                        return field.onChange(data.target.value);
-                      }}
-                      label="النوع"
-                    >
-                      <MenuItem value={"ذكر"}>ذكر</MenuItem>
-                      <MenuItem value={"انثي"}>انثي</MenuItem>
-                    </Select>
-                  );
-                }}
-              />
-            </FormControl> */}
             </Stack>
           </Slide>
           <Slide unmountOnExit in={selectedCompany == null} mountOnEnter>
@@ -268,14 +237,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                     value: true,
                     message: t("phoneValidation"),
                   },
-                  // minLength: {
-                  //   value: 10,
-                  //   message: t('phoneLengthValidation'),
-                  // },
-                  // maxLength: {
-                  //   value: 10,
-                  //   message:  t('phoneLengthValidation'),
-                  // },
                 })}
                 label={t("phone")}
                 helperText={errors?.phone && errors.phone.message}
@@ -297,7 +258,7 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                   rules={{
                     required: {
                       value: true,
-                      message: "يجب اختيار اسم الطبيب",
+                      message: t("doctorValidation"),
                     },
                   }}
                   control={control}
@@ -309,8 +270,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                         getOptionLabel={(option) => option.name}
                         options={doctors}
                         renderInput={(params) => {
-                          // console.log(params)
-
                           return (
                             <TextField
                               inputRef={field.ref}
@@ -336,7 +295,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                     onKeyDown={(event) => {
                       if (event.key == "Enter") {
                         console.log("event");
-                        // setFocus('age_month')
                       }
                     }}
                     error={errors?.age_year}
@@ -356,7 +314,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                     onKeyDown={(event) => {
                       if (event.key == "Enter") {
                         console.log("event");
-                        //   setFocus('age_day')
                       }
                     }}
                     {...register("age_month")}
@@ -371,7 +328,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                     onKeyDown={(event) => {
                       if (event.key == "Enter") {
                         console.log("event");
-                        //setFocus('doctor')
                       }
                     }}
                     {...register("age_day")}
@@ -380,20 +336,20 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                   />
                 </Item>
               </Stack>
-              {settings?.gov ? (
-                <TextField
-                  size="small"
-                  error={errors?.gov_id}
-                  {...register("gov_id", {
-                    required: {
-                      value: true,
-                      message: t("govIdValidation"),
-                    },
-                  })}
-                  label={t("govId")}
-                  helperText={errors?.gov_id && errors.gov_id.message}
-                />
-              ):''}
+                {settings?.gov ? (
+                  <TextField
+                    size="small"
+                    error={errors?.gov_id}
+                    {...register("gov_id", {
+                      required: {
+                        value: true,
+                        message: t("govIdValidation"),
+                      },
+                    })}
+                    label={t("govId")}
+                    helperText={errors?.gov_id && errors.gov_id.message}
+                  />
+                ):''}
               {settings?.country ? (
                 <CountryAutocomplete
                   control={control}
@@ -447,8 +403,6 @@ function ReceptionForm({ hideForm, lab, settings, socket,update }) {
                   getOptionLabel={(option) => option.name}
                   options={companies}
                   renderInput={(params) => {
-                    // console.log(params)
-
                     return (
                       <TextField
                         inputRef={field.ref}

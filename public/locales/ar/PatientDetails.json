@@ -1,0 +1,21 @@
+{
+    "doctor": "الطبيب",
+    "date": "التاريخ",
+    "phone": "الهاتف",
+    "time": "الوقت",
+    "registered_by": "مسجل بواسطة",
+    "gender": "النوع",
+    "male": "ذكر",
+    "female": "انثى",
+    "fileId": "رقم الملف",
+    "age": "العمر",
+      "govermentId":"رقم الهوية",
+    "address": "العنوان",
+      "country":"الدولة",
+    "company": "الشركة",
+    "cardNo": "رقم البطاقة",
+      "sub_company":"الشركة الفرعية",
+    "relation_name": "اسم العلاقة",
+    "print_time": "وقت الطباعة",
+      "copy_patient":"نسخ إلى طبيب أخر"
+  }

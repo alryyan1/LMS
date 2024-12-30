@@ -161,7 +161,7 @@ function CashDenos() {
               </TableBody>
             </Table>
           </Box>
-          <CostDialog setShift={setShift} setShow={setShow} show={show} />
+          <CostDialog  setShift={setShift} setShow={setShow} show={show} />
         </div>
         <Card className="grid-item-2 p-4 ">
           <Table size="small" style={{ direction: "rtl" }}>

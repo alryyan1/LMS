@@ -32,7 +32,7 @@ function AddService() {
   const [loading, setLoading] = useState(false);
   const [services, setservices] = useState([]);
   const [links, setLinks] = useState([]);
-  const [page, setPage] = useState(5);
+  const [page, setPage] = useState(50);
   const [updated,setUpdated] = useState(0)
   const { dialog, setDialog, serviceGroups } = useOutletContext();
    const {register:register2,handleSubmit:handleSubmit2,formState:{errors:errors2}} = useForm()

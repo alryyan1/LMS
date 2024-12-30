@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@200..1000&family=Playpen+Sans:wght@100..800&display=swap');
 body {
-  font-family: 'Cairo',sans-serif ;
-  /* font-family: "Almarai", sans-serif; */
+  /* font-family: 'Cairo',sans-serif ; */
+  font-family: "Cairo", sans-serif;
   /* font-family: "Playwrite CU", sans-serif,'Almarai'; */
   font-optical-sizing: auto;
   font-weight: 400;
@@ -9,7 +9,16 @@ body {
   font-variation-settings:
     "wdth" 100;
     unicode-range: U+00-FF, U+980-9FF;
-
+  background-color:  '#f0f2f5';
+}
+button,
+h1,
+h2,
+h3,
+table,
+td,
+th,span {
+  font-family: "Cairo" !important;
 }
 .grid-container {
   display: grid;
@@ -261,3 +270,10 @@ body {
 /* .muirtl-1cnhgfl-MuiAutocomplete-root .MuiAutocomplete-tag {
   background-color: aliceblue
 } */
+
+/* Highlight the active menu item */
+.active-menu-item {
+  background-color: #808d99; /* Highlight color */
+  color: white; /* Text color */
+}
+

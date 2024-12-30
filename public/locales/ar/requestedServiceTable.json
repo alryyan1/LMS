@@ -1,0 +1,14 @@
+{
+    "name": "اسم الخدمة",
+    "price": "السعر",
+    "discount": "الخصم",
+    "endurance": "التحمل",
+    "paid": "مدفوع",
+    "bank": "بنك",
+    "pay": "ادفع",
+    "other": "اخرى",
+    "paymentSuccess": "تم السداد بنجاح",
+    "cancelPaymentSuccess": "تم الغاء السداد بنجاح",
+    "deleteSuccess": "تم الحذف بنجاح",
+      "receipt":"ايصال"
+  }

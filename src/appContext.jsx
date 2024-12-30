@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import axiosClient from "../axios-client";
 
 const StateContext =  createContext({
     user : null,
@@ -29,6 +30,15 @@ export const UserContextProvider = ({children})=>{
     const [pharmcyDrawer, setPharmacyDrawer] = useState(false);
     const [mode, setMode] = useState('dark');
     const { i18n } = useTranslation();
+  useEffect(() => {
+    axiosClient.get("/user").then(({ data }) => {
+      setUser(data);
+    }).catch((err)=>{
+    console.log('error')
+    setUser(null);
+    setToken(null)
+  });
+  }, [])
 
     const setToken = (token)=>{
         _setToken(token)

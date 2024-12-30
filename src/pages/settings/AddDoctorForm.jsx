@@ -75,7 +75,6 @@ function AddDoctorForm() {
       <Card className="w-[450px]  rtl text-right col-span-3 ">
           <CardHeader>
             <CardTitle>  تسجيل بيانات الطبيب</CardTitle>
-            <CardDescription>الرجاء ادخال  بيانات الطبيب</CardDescription>
           </CardHeader>
           <CardContent>
             <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
@@ -84,8 +83,7 @@ function AddDoctorForm() {
               <div className="grid w-full items-center gap-4">
                 {/** Name  */}
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="name"> اسم الطبيب</Label>
-                  <Input
+                  <TextField
                     
                     className="text-right"
                     error={errors.name != null}
@@ -101,8 +99,8 @@ function AddDoctorForm() {
                 </div>
                 {/** Cash Precentage */}
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="cash_percentage">نسبة الطبيب</Label>
-                  <Input
+                  <TextField
+                   
                     
                     className="text-right"
                     type="number"
@@ -120,8 +118,7 @@ function AddDoctorForm() {
                 </div>
                 {/**Insurance precentage of the doctor */}
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="company_percentage">نسبة الطبيب من التأمين</Label>
-                  <Input
+                  <TextField
                     
                     className="text-right"
                     type="number"
@@ -136,42 +133,11 @@ function AddDoctorForm() {
                     helperText={errors.company_percentage?.message}
                   />
                 </div>
-                {/**Salary */}
-                <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="static_wage"> المرتب</Label>
-                  <Input
-                    
-                    className="text-right"
-                    type="number"
-                    error={errors.static_wage != null}
-                    {...register("static_wage", {
-                      required: { value: true, message: "يجب ادخال  الثابت " },
-                    })}
-                    id="outlined-basic"
-                    label="الثابت"
-                    variant="filled"
-                    helperText={errors.static_wage?.message}
-                  />
-                </div>
-                {/**lab_percentage */}
-                <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="lab_percentage"> نسبة الطبيب من المختبر</Label>
-                  <Input
-                    
-                    className="text-right"
-                    type="number"
-                    error={errors.lab_percentage != null}
-                    {...register("lab_percentage")}
-                    id="outlined-basic"
-                    label="الرجاء ادخال نسبة الطبيب من المختبر"
-                    variant="filled"
-                    helperText={errors.lab_percentage?.message}
-                  />
-                </div>
+          
+           
                 {/**phone */}
                 <div className="flex flex-col space-y-1.5 text-right">
-                  <Label htmlFor="lab_percentage"> رقم الهاتف </Label>
-                  <Input
+                  <TextField
                     
                     className="text-right"
                     type="number"

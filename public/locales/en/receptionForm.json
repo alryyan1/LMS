@@ -1,0 +1,29 @@
+{
+    "register": "Register Patient",
+    "cardNo": "Card Number",
+    "cardNoValidation":"Card number is required",
+    "guarantor_name": "Guarantor Name",
+    "sub_company": "Sub Company",
+    "relation_name": "Relation Name",
+    "phone": "Phone Number",
+    "phoneValidation":"Phone number is required",
+    "patient_name": "Patient Name",
+    "patientNameValidation":"Patient name is required",
+    "doctor_name": "Doctor Name",
+    "doctorValidation":"Doctor name is required",
+    "ageInYear": "Age (Years)",
+    "ageInMonth": "Age (Months)",
+    "ageInDays": "Age (Days)",
+    "ageValidation":"Age is required",
+     "govId":"Government ID",
+     "govIdValidation":"Government ID is required",
+    "address":"Address",
+    "gender":"Gender",
+    "male": "Male",
+    "female": "Female",
+    "company": "Company",
+    "save": "Save",
+    "addition_successfull": "Addition was successful"
+
+
+}

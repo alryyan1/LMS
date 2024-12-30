@@ -1,0 +1,21 @@
+{
+  "doctor": "Doctor",
+  "date": "Date",
+  "phone": "Phone",
+  "time": "Time",
+  "registered_by": "Registered by",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+    "fileId":"File Id",
+  "age": "Age",
+    "govermentId":"Goverment ID",
+  "address": "Address",
+    "country":"Country",
+  "company": "Company",
+  "cardNo": "Card No",
+    "sub_company":"Sub Company",
+  "relation_name": "Relation Name",
+    "print_time": "Print Time",
+    "copy_patient":"Copy to another doctor"
+}

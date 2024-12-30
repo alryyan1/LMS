@@ -13,21 +13,22 @@ import {
   import { formatNumber } from "../constants";
 import AddCostForm from "../../components/AddCostForm";
   
-interface CostDialogProbs {
+interface EmptyDialogProbs {
     show: boolean;
-    setShow: (show: boolean) => void;
-    setShift: ()=>VoidFunctionComponent
+    setShow: (p:boolean)=>void;
+    children: JSX.Element;
+    title:string
   
 }
-  function CostDialog({show,setShow,setShift}:CostDialogProbs) {
+  function EmptyDialog({show,setShow,children,title}:EmptyDialogProbs) {
 
   
     return (
       <div>
         <Dialog open={show}>
-          <DialogTitle> اضافه منصرف</DialogTitle>
+          <DialogTitle> {title} </DialogTitle>
           <DialogContent>
-            <AddCostForm  setShift={setShift}/>
+          {children}
           </DialogContent>
           <DialogActions>
             <Button
@@ -43,5 +44,5 @@ interface CostDialogProbs {
     );
   }
   
-  export default CostDialog;
+  export default EmptyDialog;
   

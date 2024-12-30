@@ -18,11 +18,30 @@ import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import { useOutletContext } from "react-router-dom";
+import { useStateContext } from "../../appContext";
 
 function AddServiceGroup() {
   const [loading, setLoading] = useState(false);
-  const { dialog, setDialog, serviceGroups, setUpdateServiceGroup } =
-    useOutletContext();
+  const [updateServiceGroup, setUpdateServiceGroup] = useState(0);
+  const [serviceGroups, setServiceGroups] = useState([]);
+
+  const [dialog, setDialog] = useState({
+    showMoneyDialog: false,
+    title: "",
+    color: "success",
+    open: false,
+    openError: false,
+    openLabReport: false,
+    msg: "Addition was successfull",
+  });
+
+  useEffect(() => {
+    axiosClient.get("serviceGroup/all").then(({ data }) => {
+      console.log(data, "service groups");
+      setServiceGroups(data);
+    });
+  }, [updateServiceGroup]);
+  
   //create state variable to store all Items
   const submitHandler = (data) => {
     setLoading(true);

@@ -1,3 +1,5 @@
+import { Deduct } from "./Shift";
+
 interface RootObject {
   id: number;
   patient_id: number;
@@ -99,7 +101,26 @@ interface Filepatient {
   file_id: number;
   patient_id: number;
 }
-
+export interface Client {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  payments:ClientPayment[]
+  paymentAmount:number;
+  deducts:Deduct[]
+}
+export interface ClientPayment {
+  id: number;
+  amount: string;
+  client_id: number;
+  created_at: string;
+  updated_at: string;
+  payment_date: string;
+}
 interface Labrequest {
   id: number;
   main_test_id: number;

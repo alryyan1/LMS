@@ -3,15 +3,18 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -21,21 +24,26 @@ import { useOutletContext } from "react-router-dom";
 import CustomCheckBoxUser from "../../components/CustomCheckBoxUser";
 import SignUp from "../Singeup";
 import CustomCheckboxUserRoute from "../../components/CustomCheckboxUserRoute";
-import { t, use } from "i18next";
+import {  use } from "i18next";
 import {
   Card,
 } from "/src/components/ui/card";
 import MyCheckbox from "../../components/MyCheckBox";
 import DoctorsAutocomplete from "../../components/DoctorsAutocomplete";
+import { Plus } from "lucide-react";
+import EmptyDialog from "../Dialogs/EmptyDialog";
+import { useTranslation } from "react-i18next";
 
 function Users() {
   const { setDialog, doctors } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(null);
+  const {t} = useTranslation('sidebar')
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
   const [routes, setRoutes] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState(null);
+  const [open,setOpen] = useState(false)
   console.log(selectedRoute, "selected Route");
   useEffect(() => {
     document.title = "المستخدمين";
@@ -70,28 +78,38 @@ function Users() {
   }, []);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={3}>
+      <Grid item xs={6}>
         <Box sx={{ p: 1 }}>
-          <Typography textAlign={"center"} variant="h4">
+          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Tooltip title='add user'>
+          <IconButton onClick={()=>setOpen(true)}>
+              <Plus/>
+            </IconButton>
+          </Tooltip>
+            <Typography textAlign={"center"} variant="h4">
             Users
           </Typography>
+          </Stack>
+    
           <Table size="small">
             <TableRow>
+              <TableCell>No</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>is Nurse</TableCell>
-              <TableCell>is Doctor</TableCell>
+              <TableCell>Doctor Link</TableCell>
             </TableRow>
             <TableBody>
-              {users.map((user) => {
+              {users.map((user,i) => {
                 return (
                   <TableRow   className={
                     selectedUser?.id == user.id
-                      ? "p-4 mb-2 bg-slate-700 text-white"
-                      : "p-4 mb-2 bg-slate-100 hover:bg-slate-700 hover:text-gray-100 hover:cursor-pointer"
+                      ? "p-4 mb-2 bg-purple-200 text-white"
+                      : "p-4 mb-2 bg-slate-100  hover:text-gray-100 hover:cursor-pointer"
                   }
                   onClick={() => {
                     setSelectedUser(user);
                   }} key={user.id}>
+                    <TableCell>{i+1}</TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>
                       {" "}
@@ -253,9 +271,10 @@ function Users() {
           </Box>
         )}
       </Grid>
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <SignUp doctors={doctors} setUsers={setUsers} />
-      </Grid>
+      </Grid> */}
+      <EmptyDialog title="add user" setShow={setOpen} show={open}><SignUp/></EmptyDialog>
     </Grid>
   );
 }

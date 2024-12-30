@@ -1,16 +1,9 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { Alert, Box, Paper, Stack, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { Link } from "react-router-dom";
+import { Alert, Box, Stack, TextField } from "@mui/material";
 import { useStateContext } from "../appContext";
-import { useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
-import logo from "../assets/images/pharmaStar.png";
-import logo2 from "../assets/images/hitech.png";
-import sahara from "../assets/images/sahara.png";
-import { t } from 'i18next'
 import {
   Card,
   CardContent,
@@ -18,9 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "/src/components/ui/card"
-import { Input } from "/src/components/ui/input"
 import { Label } from "/src/components/ui/label"
-import ToothChart from "./Dentist/ToothChart";
+import { Button } from "../components/ui/button";
 
 function App() {
   console.log("login page");
@@ -29,16 +21,14 @@ function App() {
   const { setToken, setUser } = useStateContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const {
-    handleSubmit,
-    formState: { errors, isSubmitted },
-    register,
-  } = useForm();
-  const sumbitHamdler = (data) => {
+ 
+  const sumbitHamdler = () => {
     setLoading(true);
-    console.log(data);
     axiosClient
-      .post("login", data)
+      .post("login",  {
+        username,
+        password
+      })
       .then(({ data }) => {
         console.log(data, "success data");
         if (data.status) {
@@ -52,96 +42,78 @@ function App() {
       .finally(() => setLoading(false));
   };
   return (
-    <Box sx={{ display: 'flex', height: '90vh', justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-      <Stack justifyContent={'center'} alignItems={'center'} direction={'column'}>
-        {/* <img height='300px'  src={logo2}/> */}
-
-        <Card  className=" min-w-[400px]  rtl text-right col-span-3 mt-4 ">
+    <Box
+      sx={{
+        display: "flex",
+        height: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Stack justifyContent="center" className="  rounded-md bg-white" alignItems="center" sx={{borderRadius:'10px'}} direction="column">
+        <Card style={{borderRadius:'10px'}} className="rtl text-right rounded-md shadow-md  p-6 text-gray-800">
           <CardHeader>
-            <CardTitle>  {t('login')}
+            <CardTitle className="text-center text-2xl ">
+              نظام جوده الطبي
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form noValidate dir="rtl" onSubmit={handleSubmit(sumbitHamdler)} >
+            <form noValidate dir="rtl" onSubmit={sumbitHamdler}>
+              <Stack direction="column" gap={3}>
+                <div className="grid w-full items-center gap-4">
+                  <div className="flex flex-col space-y-1.5 text-right">
+                    <Label htmlFor="username">اسم الدخول</Label>
+                    <TextField
+                      id="username"
+                    
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                 
+                  </div>
 
-              <div className="grid w-full items-center gap-4">
-                {/** User Name  */}
-                <div className="flex flex-col space-y-1.5 text-right">
-                  <TextField
-
-                    className="text-right"
-                    error={errors.username != null}
-                    {...register("username", {
-                      required: {
-                        value: true,
-                        message: t('usernameValidation'),
-                      },
-                      minLength: {
-                        value: 6,
-                        message:
-                          t('usernameValidationMessage'),
-                      },
-                    })}
-                    sx={{ mb: 1 }}
-                    variant="standard"
-                    label={t('username')}
-                    helperText={errors?.username?.message}
-                    value={username}
-                    onChange={(value) => setUsername(value.target.value)}
-                  />
-
-                </div>
-                {/** password */}
-                {errors.username && errors.username.message}
-
-                <div className="flex flex-col space-y-1.5 text-right">
-                  <TextField
-
-                    className="text-right"
-                    error={errors.password != null}
-                    sx={{ mb: 1 }}
-                    {...register("password", {
-                      required: {
-                        value: true,
-                        message: t('passwordValidationMessage'),
-                      },
-                      minLength: {
-                        value: 8,
-                        message: t('passwordValidationMessageLength'),
-                      },
-                    })}
-                    variant="standard"
-                    label={t("password")}
-                    type="password"
-                    helperText={errors?.password?.message}
-                    value={password}
-                    onChange={(value) => setPassword(value.target.value)}
-                  />
+                  <div className="flex flex-col space-y-1.5 text-right">
+                    <Label htmlFor="password">كلمه السر</Label>
+                    <TextField
+                      id="password"
+                      
+               
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                
+                  </div>
                 </div>
 
-              </div>
-              <div className="flex justify-center ">
-              <LoadingButton
-              sx={{mt:1}}
-                loading={loading}
-                type="submit"
-                variant="contained"
-                className="flex flex-col"
-              >
-                {t('login')}
-              </LoadingButton>
-              </div>
-
-          
+                <Button
+                  type="submit"
+                  className="bg-blue-800 hover:bg-blue-900"
+                  style={{
+                    borderRadius: "5px",
+                    padding: "10px",
+                    fontWeight: "bold",
+                    color: "white",
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? 'جاري التحميل . . . ' : 'تسجيل الدخول'}
+                </Button>
+              </Stack>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            {error.val && <Alert severity="error">{error.msg}</Alert>}
-
+          <CardFooter className="flex justify-center mt-2 text-white">
+            {error.val && (
+              <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
+                {error.msg}
+              </Alert>
+            )}
           </CardFooter>
         </Card>
       </Stack>
-
+      
     </Box>
   );
 }

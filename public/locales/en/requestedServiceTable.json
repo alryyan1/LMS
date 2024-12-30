@@ -1,0 +1,14 @@
+{
+    "name": "Name",
+    "price": "Price",
+    "discount": "Discount",
+    "endurance": "Endurance",
+    "paid": "Paid",
+    "bank": "Bank",
+    "pay": "Pay",
+      "receipt":"Receipt",
+    "other": "Other",
+    "paymentSuccess": "Payment was successful",
+    "cancelPaymentSuccess": "Payment was successfully canceled",
+    "deleteSuccess": "Delete was successful"
+  }

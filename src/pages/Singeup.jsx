@@ -183,8 +183,8 @@ const SignUp = ({ setUsers, doctors }) => {
                     message: "username is required",
                   },
                   minLength: {
-                    value: 6,
-                    message: "username must be at least 6 characters",
+                    value: 4,
+                    message: "username must be at least 4 characters",
                   },
                 })}
                 sx={{ mb: 1 }}
@@ -204,8 +204,8 @@ const SignUp = ({ setUsers, doctors }) => {
                 {...register("password", {
                   required: { value: true, message: "password is required" },
                   minLength: {
-                    value: 8,
-                    message: "at least 8 chracters must be entered",
+                    value: 4,
+                    message: "at least 4 chracters must be entered",
                   },
                 })}
                 variant="standard"
@@ -226,7 +226,7 @@ const SignUp = ({ setUsers, doctors }) => {
                     value: true,
                     message: "confirm password is required",
                   },
-                  minLength: 8,
+                  minLength: 4,
                 })}
                 variant="standard"
                 label="confirm password"
