@@ -71,20 +71,13 @@ function PatientReception(props:PatientReceptinPros) {
       >
         <Item
           className={
-            actviePatient && actviePatient.id === props.patient.id ? "active" : ""
+          actviePatient?.id === props.patient.id ? "active" : ""
           }
-          style={
-            actviePatient && actviePatient.id === props.patient.id
-              ? {
-                  borderBottom: "4px solid blue",
-                  fontWeight: "bolder",
-                }
-              : null
-          }
+        
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            minWidth: "215px",
+            minWidth: "230px",
             cursor: "pointer",
           }}
         >

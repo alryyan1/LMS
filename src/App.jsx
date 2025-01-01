@@ -35,7 +35,7 @@ function App() {
 
         {/* </div> */}
       {/* </div> */}
-      <div style={{ display: 'flex', height: '100vh'}}>
+      <div style={{ display: 'flex', height: '100vh',userSelect:'none'}}>
       {/* Sidebar */}
      {user&& <SidebarNav/>}
 

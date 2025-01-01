@@ -82,7 +82,7 @@ function SearchDialog({lab=false,user,update,isReception,hideForm}) {
         </IconButton>
     
      <TableContainer className=" shadow-lg" component={Card} sx={{height:'70vh',overflow:'auto'}}>
-        <Table style={{direction:'rtl'}} size="small" >
+        <Table className="table-small" style={{direction:'rtl'}} size="small" >
           <thead>
             <TableRow>
               <TableCell >الاسم</TableCell>

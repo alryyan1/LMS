@@ -57,15 +57,17 @@ const Nav = () => {
       })
       .finally(() => setLoading(false));
   };
-  // useEffect(() => {
-  //   axiosClient.get("/user").then(({ data }) => {
-  //     setUser(data);
-  //   }).catch((err)=>{
-  //   console.log('error')
-  //   setUser(null);
-  //   setToken(null)
-  // });
-  // }, [])
+  useEffect(() => {
+    axiosClient.get("/user").then(({ data }) => {
+      setUser(data);
+    }).catch((err)=>{
+    console.log('error')
+    setUser(null);
+    setToken(null)
+    localStorage.removeItem('ACCESS_TOKEN')
+    navigate('/login')
+  });
+  }, [])
 
   // console.log(user);
   const changeLang = () => {

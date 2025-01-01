@@ -11,6 +11,9 @@ import {
   Button,
   TextField,
   Typography,
+  Tooltip,
+  IconButton,
+  Card,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
@@ -36,8 +39,10 @@ import RequestedTestsLab from "../Laboratory/RequestedTestsLab";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
 import OpenDoctorTabs from "./OpenDoctorsTabs";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
-import  warningLottie from './../../lotties/warning.json'
+import warningLottie from "./../../lotties/warning.json";
 import Lottie from "react-lottie";
+import { PanelBottom } from "lucide-react";
+import bloodTest from "../../assets/images/blood-test.png";
 
 function Reception() {
   const boxesOptions = {
@@ -79,7 +84,7 @@ function Reception() {
   } = useOutletContext<ReceptionLayoutProps>();
 
   const { user } = useStateContext();
-  const [showNewShiftWarning,setShowNewShiftWarning] =useState(false);
+  const [showNewShiftWarning, setShowNewShiftWarning] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   function onConnect() {
     setIsConnected(true);
@@ -96,42 +101,46 @@ function Reception() {
     }
   };
   useEffect(() => {
-    
     socket.on("disconnect", onDisconnect);
     socket.on("connect", onConnect);
 
     socket.on("connect", (args) => {
       console.log("reception connected succfully with id" + socket.id, args);
     });
-    
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onConnect);
     };
   });
-  const patientUpdatedFromServerHandler = (doctorVisit)=>{
+  const patientUpdatedFromServerHandler = (doctorVisit) => {
     // alert('patient updated')
-    console.log(doctorVisit,'doc visit from server update','active docvisit id ',actviePatient?.id)
-    update(doctorVisit)
+    console.log(
+      doctorVisit,
+      "doc visit from server update",
+      "active docvisit id ",
+      actviePatient?.id
+    );
+    update(doctorVisit);
     if (doctorVisit.id == actviePatient?.id) {
-     // alert('same')
-     console.log('saaaaaaaaaaame')
+      // alert('same')
+      console.log("saaaaaaaaaaame");
       setActivePatient(doctorVisit);
     }
-     }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
       //patientUpdatedFromServerHandler(doctorVisit)
     });
     socket.on("newShiftOpenedFromServer", (doctorVisit) => {
       //patientUpdatedFromServerHandler(doctorVisit)
-      setShowNewShiftWarning(true)
+      setShowNewShiftWarning(true);
     });
-    return ()=>{
+    return () => {
       socket.off("patientUpdatedFromServer");
       socket.off("newShiftOpenedFromServer");
-    }
-  },[actviePatient])
+    };
+  }, [actviePatient]);
 
   const [layOut, setLayout] = useState({
     form: "minmax(350px, 1fr)",
@@ -358,20 +367,21 @@ function Reception() {
 
   return (
     <>
-      {showSearch && <AutocompleteSearchPatient
+      {showSearch && (
+        <AutocompleteSearchPatient
           withTests={1}
           setActivePatient={setActivePatient}
           setActivePatientHandler={setActivePatient}
           update={setActivePatient}
-        />}
+        />
+      )}
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
-     {showNewShiftWarning &&  <Stack sx={{position:'absolute'}} direction={'column'} gap={1}>
-      <Typography variant="h6">تم فتح ورديه ماليه جديده</Typography>
-      <Lottie
-                          options={boxesOptions}
-                          height={100}
-                          width={100}
-                        /></Stack>}
+        {showNewShiftWarning && (
+          <Stack sx={{ position: "absolute" }} direction={"column"} gap={1}>
+            <Typography variant="h6">تم فتح ورديه ماليه جديده</Typography>
+            <Lottie options={boxesOptions} height={100} width={100} />
+          </Stack>
+        )}
         <OpenDoctorTabs
           user={user}
           activeShift={activeShift}
@@ -498,15 +508,62 @@ function Reception() {
         </div>
 
         <Paper sx={{ p: 1, backgroundColor: "#ffffffbb!important" }}>
-          {actviePatient && showServicePanel && <ServiceGroup socket={socket} />}
+          {actviePatient && (
+            <>
+              <Stack sx={{mb:1}} direction={"row"} gap={1}>
+                <Stack  component={Card} direction={'row'} gap={1}>
+
+                <Tooltip title="الخدمات">
+                
+                  <IconButton
+                    sx={{ m: 1 }}
+                    onClick={() => {
+                      setShowPatientServices(false);
+                      setShowTestPanel(false);
+
+                      setShowServicePanel(true);
+                    }}
+                  >
+                    <PanelBottom />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="التحاليل">
+                  <IconButton
+                    onClick={() => {
+                      setShowLabTests(false);
+                      setShowPatientServices(false);
+                      // showServicePanel(false);
+                      setShowServicePanel(false);
+                      setShowTestPanel(true);
+                    }}
+                    color="info"
+                    title="Lab tests"
+                    variant="contained"
+                  >
+                    <img width={25} src={bloodTest} />
+                  </IconButton>
+                </Tooltip>
+                </Stack>
+
+                <a
+                  href={`${webUrl}printReceptionReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
+                >
+                  ايصال
+                </a>
+              </Stack>
+            </>
+          )}
+          {actviePatient && showServicePanel && (
+            <ServiceGroup socket={socket} />
+          )}
           {actviePatient && showTestPanel && (
             <AddTestAutoComplete
               setShowTestPanel={setShowTestPanel}
               setShowLabTests={setShowLabTests}
-              change={change}
+              setActiveDoctorVisit={change}
               actviePatient={actviePatient}
               selectedTests={selectedTests}
-              setActivePatient={setActivePatient}
+            
               setDialog={setDialog}
               setSelectedTests={setSelectedTests}
             />

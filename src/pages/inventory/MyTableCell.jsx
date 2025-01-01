@@ -115,6 +115,7 @@ function MyTableCell({
     >
       {show || edited ? (
         <TextField
+         
           disabled={disabled}
           multiline={multiline}
           sx={sx}
@@ -130,7 +131,7 @@ function MyTableCell({
           onChange={changeHandler}
           value={iniVal}
           type={type}
-          autoComplete="false"
+          autoComplete="off"
         ></TextField>
       ) : isNum ? (
         <span

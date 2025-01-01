@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import axiosClient from "../axios-client";
+import { useNavigate } from "react-router-dom";
 
 const StateContext =  createContext({
     user : null,
@@ -22,6 +23,7 @@ const StateContext =  createContext({
 export const UserContextProvider = ({children})=>{
 
     const [token , _setToken] =  useState(localStorage.getItem('ACCESS_TOKEN'))
+    // const navigate =  useNavigate()
     const [user , setUser] =  useState()
     const [settings , setSettings] =  useState()
     const [theme , setTheme] = useState(localStorage.getItem('theme'))
@@ -30,15 +32,7 @@ export const UserContextProvider = ({children})=>{
     const [pharmcyDrawer, setPharmacyDrawer] = useState(false);
     const [mode, setMode] = useState('dark');
     const { i18n } = useTranslation();
-  useEffect(() => {
-    axiosClient.get("/user").then(({ data }) => {
-      setUser(data);
-    }).catch((err)=>{
-    console.log('error')
-    setUser(null);
-    setToken(null)
-  });
-  }, [])
+
 
     const setToken = (token)=>{
         _setToken(token)

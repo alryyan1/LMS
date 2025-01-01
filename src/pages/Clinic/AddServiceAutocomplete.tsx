@@ -119,7 +119,9 @@ function AddServiceAutocomplete({
           setActiveDoctorVisit(data.patient);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+    }
 
     setSelectedServices([]);
   };

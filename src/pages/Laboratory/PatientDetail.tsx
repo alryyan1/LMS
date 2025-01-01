@@ -34,13 +34,13 @@ function PatientDetail({
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
         elevation={3}
         className="bolder"
-        sx={{ p: 1, minWidth: '300px' }}
+        sx={{ p: 1, maxWidth: '300px' }}
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <Typography variant="h5" sx={{ border: '1px solid black' }} className="text-nowrap shadow-md rounded-md   mb-1 text-center">{patient.patient.name}</Typography>
+        <Typography className="text-center p-name mb-1"  variant="h6">{patient.patient.name}</Typography>
         <div className="form-control">
           <div>Visit Id</div>
           <div >{patient.id}</div>

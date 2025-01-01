@@ -8,6 +8,7 @@ function ComponyAutocompleteHistory({companies,setSelectedCompany,patientCompany
 
   return (
     <Autocomplete
+    
     onInputChange={(e,s,r)=>{
         if (r =='clear') {
             setVal(null)
@@ -31,6 +32,7 @@ function ComponyAutocompleteHistory({companies,setSelectedCompany,patientCompany
 
        return (
          <TextField
+         variant='standard'
            {...params}
            label={t("company")}
          />

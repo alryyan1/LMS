@@ -143,6 +143,7 @@ interface Labrequest {
   main_test: Maintest;
   unfinished_results_count: Requestedresult[];
   requested_organisms: any[];
+  is_paid: boolean;
 }
 
 interface Maintest {
