@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-import { Alert, Box, Stack, TextField } from "@mui/material";
+import { Alert, Box, Stack, TextField, Typography } from "@mui/material";
 import { useStateContext } from "../appContext";
 import axiosClient from "../../axios-client";
 import {
@@ -52,12 +52,12 @@ function App() {
         backgroundPosition: "center",
       }}
     >
-      <Stack justifyContent="center" className="  rounded-md bg-white" alignItems="center" sx={{borderRadius:'10px'}} direction="column">
-        <Card style={{borderRadius:'10px'}} className="rtl text-right rounded-md shadow-md  p-6 text-gray-800">
+      <Stack  justifyContent="center" className="  rounded-md bg-white" alignItems="center" sx={{borderRadius:'10px',minWidth:'400px'}} direction="column">
+        <Card style={{borderRadius:'10px',minWidth:'400px' }} className="rtl text-right rounded-md shadow-md  p-6 text-gray-800">
           <CardHeader>
-            <CardTitle className="text-center text-2xl ">
+            <Typography variant="h5" className="text-center  ">
               نظام جوده الطبي
-            </CardTitle>
+            </Typography>
           </CardHeader>
           <CardContent>
             <form noValidate dir="rtl" onSubmit={sumbitHamdler}>
