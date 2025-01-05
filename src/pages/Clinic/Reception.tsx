@@ -227,7 +227,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "minmax(267px,1.2fr)",
+        patients: "minmax(297px,1.2fr)",
       };
     });
   };
@@ -367,14 +367,13 @@ function Reception() {
 
   return (
     <>
-      {showSearch && (
-        <AutocompleteSearchPatient
-          withTests={1}
-          setActivePatient={setActivePatient}
-          setActivePatientHandler={setActivePatient}
-          update={setActivePatient}
-        />
-      )}
+      <AutocompleteSearchPatient
+        withTests={1}
+        setActivePatient={setActivePatient}
+        setActivePatientHandler={setActivePatient}
+        update={setActivePatient}
+      />
+
       <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
         {showNewShiftWarning && (
           <Stack sx={{ position: "absolute" }} direction={"column"} gap={1}>
@@ -388,33 +387,9 @@ function Reception() {
           openedDoctors={openedDoctors}
           selectDoctorHandler={selectDoctorHandler}
         />
-        {/* {openedDoctors
-          // .filter((shift) => shift.user_id == user?.id)
-          .map((shift) => {
-            // console.log(shift, "shift");
-            return (
-              <Badge
-                color="secondary"
-                badgeContent={shift.visits.length}
-                key={shift.id}
-              >
-                <Item
-                  className={
-                    activeShift && activeShift.id === shift.id
-                      ? "activeDoctor doctor"
-                      : "doctor"
-                  }
-                  onClick={selectDoctorHandler}
-                >
-                  {shift.doctor.name}
-                </Item>
-              </Badge>
-            );
-          })} */}
       </Stack>
       <AddDoctorDialog />
 
-      {/* <Drawer open={openDrawer}>{DrawerList}</Drawer> */}
       <div
         style={{
           gap: "15px",
@@ -434,7 +409,13 @@ function Reception() {
                 overflow: "auto",
               }}
             >
-              <SearchDialog isReception={true} update={update} user={user} />
+              <SearchDialog
+                openedDoctors={openedDoctors}
+                setActiveShift={setActiveShift}
+                isReception={true}
+                update={update}
+                user={user}
+              />
             </div>
           )}
           {actviePatient && (
@@ -507,42 +488,49 @@ function Reception() {
           )}
         </div>
 
-        <Paper sx={{ p: 1, backgroundColor: "#ffffffbb!important" }}>
+        <Paper sx={{ p: 2 }}>
           {actviePatient && (
             <>
-              <Stack sx={{mb:1}} direction={"row"} gap={1}>
-                <Stack  component={Card} direction={'row'} gap={1}>
+              <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
+                <Stack sx={{p:2}} direction={"row"} gap={1}>
+                  <Tooltip title="الخدمات">
+                    <Badge color={
+                      actviePatient.services.every((s)=>s.is_paid) ? 'success' :'error'
+                    } badgeContent={actviePatient.services.length} >
+                      <IconButton
+                        sx={{ m: 1 }}
+                        onClick={() => {
+                          setShowPatientServices(false);
+                          setShowTestPanel(false);
 
-                <Tooltip title="الخدمات">
-                
-                  <IconButton
-                    sx={{ m: 1 }}
-                    onClick={() => {
-                      setShowPatientServices(false);
-                      setShowTestPanel(false);
+                          setShowServicePanel(true);
+                        }}
+                      >
+                        <PanelBottom />
+                      </IconButton>
+                    </Badge>
+                  </Tooltip>
+                  <Tooltip title="التحاليل">
+                                      <Badge color={
+                                        actviePatient.patient.labrequests.every((t)=>t.is_paid) ?'success' :'error'
+                                      } badgeContent={actviePatient.patient.labrequests.length} >
 
-                      setShowServicePanel(true);
-                    }}
-                  >
-                    <PanelBottom />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="التحاليل">
-                  <IconButton
-                    onClick={() => {
-                      setShowLabTests(false);
-                      setShowPatientServices(false);
-                      // showServicePanel(false);
-                      setShowServicePanel(false);
-                      setShowTestPanel(true);
-                    }}
-                    color="info"
-                    title="Lab tests"
-                    variant="contained"
-                  >
-                    <img width={25} src={bloodTest} />
-                  </IconButton>
-                </Tooltip>
+                    <IconButton
+                      onClick={() => {
+                        setShowLabTests(false);
+                        setShowPatientServices(false);
+                        // showServicePanel(false);
+                        setShowServicePanel(false);
+                        setShowTestPanel(true);
+                      }}
+                      color="info"
+                      title="Lab tests"
+                      variant="contained"
+                    >
+                      <img width={25} src={bloodTest} />
+                    </IconButton>
+                    </Badge>
+                  </Tooltip>
                 </Stack>
 
                 <a
@@ -563,7 +551,6 @@ function Reception() {
               setActiveDoctorVisit={change}
               actviePatient={actviePatient}
               selectedTests={selectedTests}
-            
               setDialog={setDialog}
               setSelectedTests={setSelectedTests}
             />
@@ -611,7 +598,6 @@ function Reception() {
         </Paper>
         <Paper
           sx={{
-            backgroundColor: "#ffffffbb!important",
             overflow: "auto",
             height: "77vh",
           }}
@@ -622,7 +608,11 @@ function Reception() {
               flexWrap={"wrap"}
               gap={2}
               justifyContent={"center"}
-              style={{ padding: "5px", display: "flex" }}
+              style={{
+                padding: "5px",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
             >
               {activeShift &&
                 activeShift.visits

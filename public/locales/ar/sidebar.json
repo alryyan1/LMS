@@ -1,7 +1,7 @@
 {
     "Clinic": "عيادة",
     "booking": "حجز",
-    "doctorsReclaim": "استرجاع الاطباء",
+    "doctorsReclaim": "استحقاق الاطباء",
     "Lab": "مختبر",
     "test_management": "ادارة الفحوصات",
       "price_list":"قائمة الاسعار",
@@ -41,7 +41,7 @@
     "doctor": "الطبيب",
       "audit":"تدقيق",
        "allReports":"كل التقارير",
-    "moneyIncome":"دخل المال",
+    "moneyIncome":" الايرادات",
      "finance":"المالية",
     "denos":"سندات",
     "salesTable":"المبيعات والارباح"

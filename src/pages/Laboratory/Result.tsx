@@ -166,7 +166,7 @@ function Result() {
           <List>
             {actviePatient?.patient.labrequests.map((test) => {
               return (
-                <ListItem
+                <ListItem title={test.is_paid ? '': "غير مدفوع"}
                   onClick={() => {
                     setSelectedTest(test);
                     setSelectedResult(null);
@@ -180,16 +180,18 @@ function Result() {
                   }
                   sx={{
                     cursor: "pointer",
+                    border:!test.is_paid ? '1px dashed red':'',
                     "&:hover": {
                       backgroundColor: "lightblue",
                       color: "white",
                     },
                   }}
                   secondaryAction={
-                    <MyCheckBoxLab
+                    <MyCheckBoxLab 
+                     disabled={!test.is_paid}
                       setActivePatient={setActivePatient}
                       id={test.id}
-                      hideTest={test.hidden}
+                      hideTest={!test.is_paid ? true : test.hidden}
                     />
                   }
                   key={test.id}
@@ -220,14 +222,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                {/* <Button
+                <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button> */}
+                </Button>
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}

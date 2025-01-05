@@ -85,7 +85,6 @@ function SidebarNav() {
         </IconButton>
       </div>
       <Menu >
-        
         <SubMenu style={{justifyContent: 'center'}} icon={<People />} label={t("Clinic")}>
           {user?.sub_routes
             ?.filter((s) => {
@@ -103,7 +102,6 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-       
         
         <SubMenu style={{justifyContent: 'center'}} icon={<BiotechIcon />} label={t("Lab")}>
           {user?.sub_routes
@@ -122,7 +120,7 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-        <SubMenu style={{justifyContent: 'center'}} icon={<Pill />} label={t("Pharmacy")}>
+         <SubMenu style={{justifyContent: 'center'}} icon={<Pill />} label={t("Pharmacy")}>
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 2;
@@ -138,7 +136,7 @@ function SidebarNav() {
                 </MenuItem>
               );
             })}
-        </SubMenu>
+        </SubMenu> 
 
         <SubMenu style={{justifyContent: 'center'}} icon={<Settings />} label={t("Settings")}>
           {user?.sub_routes

@@ -83,9 +83,9 @@ export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyP
               console.log("enter pressed");
               //get test from tests using find
               const enteredId = e.target.value;
-              axiosClient.get(`patients?name=${enteredId}`).then(({ data }) => {
-                if (data.data != null) {
-                update(data.data);
+              axiosClient.post(`patients?name=${enteredId}`).then(({ data }) => {
+                if (data != null) {
+                update(data);
                     
                 }
                 console.log(data, "patients");
