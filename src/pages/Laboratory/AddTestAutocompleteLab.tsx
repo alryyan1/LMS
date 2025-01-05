@@ -22,10 +22,7 @@ function AddTestAutocompleteLab({ update,patients ,actviePatient,setDialog,selec
   // console.log(autoCompleteTests, "auto complete tests");
   const addTestHanlder = async () => {
 
-    if (actviePatient.patient.is_lab_paid) {
-      alert('يجب الغاء السداد')
-      return;
-    }
+ 
     setLoading(true);
     try {
       const payload = selectedTests.map((test) => test.id);
@@ -124,6 +121,7 @@ function AddTestAutocompleteLab({ update,patients ,actviePatient,setDialog,selec
 
               return (
                 <TextField
+                 autoFocus={true}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       console.log("enter pressed");

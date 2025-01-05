@@ -73,7 +73,7 @@ function SearchDialog({lab=false,user,update,isReception,hideForm}) {
   };
   return (
     <>
-        <IconButton variant="contained" size="small" sx={{position:'absolute'}} color="warning" onClick={()=>{
+        <IconButton  size="small" sx={{position:'absolute'}}  onClick={()=>{
           setDialog((prev)=>{
             return {...prev,showHistory:false}
           })
@@ -81,16 +81,17 @@ function SearchDialog({lab=false,user,update,isReception,hideForm}) {
           <CloseIcon/>
         </IconButton>
     
-     <TableContainer className=" shadow-lg" component={Card} sx={{height:'70vh',overflow:'auto'}}>
-        <Table className="table-small" style={{direction:'rtl'}} size="small" >
-          <thead>
+     <TableContainer className=" shadow-lg " component={Card} sx={{height:'70vh',overflow:'auto'}}>
+        <Table className="table-sm  table-small " style={{direction:'rtl'}} size="small" >
+          <thead className='thead'>
             <TableRow>
               <TableCell >الاسم</TableCell>
+              <TableCell >الرقم</TableCell>
               <TableCell>التاريخ</TableCell>
               {/* <TableCell>  الطبيب السابق</TableCell> */}
               <TableCell> الطبيب</TableCell>
               <TableCell> الشركه</TableCell>
-              <TableCell> اضافه</TableCell>
+              <TableCell> </TableCell>
             </TableRow>
           </thead>
           <TableBody>
@@ -99,6 +100,7 @@ function SearchDialog({lab=false,user,update,isReception,hideForm}) {
             }).map((item:DoctorVisit) => (
               <TableRow key={item.id}>
                 <TableCell  sx={{width:'20%',textWrap:'nowrap'}} >{item.patient.name}</TableCell>
+                <TableCell  sx={{width:'20%',textWrap:'nowrap'}} >{item.patient.phone}</TableCell>
                 <TableCell sx={{textWrap:'nowrap'}}>
                   {dayjs(new Date(Date.parse(item.created_at))).format('YYYY-MM-DD')}
                 </TableCell>

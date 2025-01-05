@@ -16,6 +16,7 @@ function OrganismChildPanel(props) {
 
   const [sensitive, setSensitive] = useState(organism.sensitive);
   const [resistant, setResistant] = useState(organism.resistant);
+  console.log(sensitive,resistant,'sensitive resistant')
   const [name, Setname] = useState(organism.organism);
 
   return (

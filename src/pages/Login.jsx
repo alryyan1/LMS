@@ -22,7 +22,8 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
  
-  const sumbitHamdler = () => {
+  const sumbitHamdler = (e) => {
+    e.preventDefault();
     setLoading(true);
     axiosClient
       .post("login",  {
@@ -32,6 +33,7 @@ function App() {
       .then(({ data }) => {
         console.log(data, "success data");
         if (data.status) {
+          // alert('s')
           setUser(data.user);
           setToken(data.token);
         }

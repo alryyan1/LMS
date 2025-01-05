@@ -12,11 +12,13 @@ function isNumeric(str) {
 }
 
 interface AutocompleteSearchPatientPros{
-  update: (patient: DoctorVisit) => void,
-  focusPaitent:(patient:DoctorVisit)=>void
+  update: (patient: DoctorVisit) => void;
+  focusPaitent:(patient:DoctorVisit)=>void;
+  labOnlyPatients:boolean;
+  setSelectedResult:()=>void;
 }
 
-export default function AutocompleteSearchPatient({ update,focusPaitent}:AutocompleteSearchPatientPros) {
+export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyPatients}:AutocompleteSearchPatientPros) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<DoctorVisit[]>([]);
@@ -26,7 +28,9 @@ export default function AutocompleteSearchPatient({ update,focusPaitent}:Autocom
     if (search != '') {
        const timer = setTimeout(() => {
       axiosClient
-        .get(`patients?name=${search}`)
+        .post(`patients?name=${search}`,{
+          labOnlyPatients
+        })
         .then(({ data }) => {
           console.log(data,'doctor visit data')
           setOptions(data);
@@ -51,6 +55,7 @@ export default function AutocompleteSearchPatient({ update,focusPaitent}:Autocom
         if (newVal) {
           console.log(newVal)
             update(newVal)
+            
             if(focusPaitent){
 
               focusPaitent(newVal);
@@ -60,6 +65,7 @@ export default function AutocompleteSearchPatient({ update,focusPaitent}:Autocom
       }}
       sx={{ width: 300, display: "inline-block" }}
       open={open}
+      
       onOpen={() => {
         setOpen(true);
       }}

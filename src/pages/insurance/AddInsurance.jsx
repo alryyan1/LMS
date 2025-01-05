@@ -249,7 +249,7 @@ function AddInsurance() {
       )}
       <div >
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
-          <Typography variant="h3" fontFamily={"Tajwal-Regular"}>
+          <Typography variant="h6" fontFamily={"Tajwal-Regular"}>
             اضافه تعاقد جديد
           </Typography>
         </Stack>

@@ -244,11 +244,9 @@ function AddPatient() {
             backgroundColor: "#ffffff73",
           }}
         >
-              <div className="shadow-lg" style={{maxWidth:'862px',  zIndex: "3",position:'absolute',overflow:'auto' }}>
-            {!actviePatient && dialog.showHistory && (
-              <SearchDialog hideForm={hideForm} update={update}  lab={true} />
-            )}
-          </div>
+              {/* <div className="shadow-lg" style={{maxWidth:'862px',  zIndex: "3",position:'absolute',overflow:'auto' }}> */}
+           
+          {/* </div> */}
           <div className="patients">
       
             {patientsLoading ? (
@@ -392,6 +390,12 @@ function AddPatient() {
           />
         )}
       </div>
+      <div style={{position:'absolute',top:'18px',zIndex:'3',right:'0px',maxWidth:'60vw'}}>
+          {!actviePatient && dialog.showHistory && (
+              <SearchDialog hideForm={hideForm} update={update}  lab={true} />
+            )}
+      </div>
+    
     </>
   );
 }

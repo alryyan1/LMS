@@ -4,6 +4,7 @@ import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import i18n from "i18next";
+import dayjs from "dayjs";
 
 
 interface PatientDetailProps {
@@ -34,7 +35,7 @@ function PatientDetail({
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
         elevation={3}
         className="bolder"
-        sx={{ p: 1, maxWidth: '300px' }}
+        sx={{ p: 1, width: '300px' }}
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
@@ -58,7 +59,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              date.toLocaleDateString()
+              dayjs(patient.created_at).format('YYYY-MM-DD')
             }
           </div>
         </div>

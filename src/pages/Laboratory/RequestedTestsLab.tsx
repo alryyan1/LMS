@@ -29,8 +29,8 @@ import { LabLayoutPros } from "../../LabLayout";
 import { Company, DoctorVisit, MainTest } from "../../types/Patient";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
-import { Download } from "lucide-react";
-import { Cancel } from "@mui/icons-material";
+import { DollarSignIcon, Download, Group } from "lucide-react";
+import { Cancel, CancelOutlined, CurrencyExchange, KeyboardDoubleArrowDown, Money } from "@mui/icons-material";
 interface RequestedTestsLab {
   setDialog: (dialog: any) => void;
   actviePatient: DoctorVisit;
@@ -294,11 +294,10 @@ function RequestedTestsLab({
                     cancelPaySingleTestHandler(test)
                   }}
                   sx={{ textAlign: "center" }}
-                  variant="contained"
                 >
                 <Cancel/> 
                 </LoadingButton> :
-                        <MyLoadingButton
+                        <MyLoadingButton 
                           active={test.is_paid}
                           disabled={test.is_paid === 1}
                           loading={loading}
@@ -352,9 +351,8 @@ function RequestedTestsLab({
                   color="error"
                   onClick={cancelPayHandler}
                   sx={{ textAlign: "center" }}
-                  variant="contained"
                 >
-                   الغاء الكل
+                 <CancelOutlined/>
                 </LoadingButton>
               ) : (
                 <LoadingButton
@@ -365,9 +363,8 @@ function RequestedTestsLab({
                   }
                   onClick={payHandler}
                   sx={{ textAlign: "center" }}
-                  variant="contained"
                 >
-                  {t("pay")}
+                  <KeyboardDoubleArrowDown/>
                 </LoadingButton>
               )}
             </div>

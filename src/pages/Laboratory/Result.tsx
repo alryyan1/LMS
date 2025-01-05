@@ -12,6 +12,7 @@ import {
   Skeleton,
   Button,
   Card,
+  Typography,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
@@ -27,12 +28,13 @@ import urgentSound from "../../assets/sounds/urgent.mp3";
 import useResult from "./useResult";
 import { ResultProps } from "../../types/CutomTypes";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
-import { Shift } from '../../types/Shift';
+import { Shift } from "../../types/Shift";
 import { useOutletContext } from "react-router-dom";
 import ShiftNav from "./ShiftNav";
 import { useState } from "react";
+import dayjs from "dayjs";
+import LabHistory from "./LabHistory";
 function Result() {
-
   const {
     shift,
     layOut,
@@ -53,26 +55,31 @@ function Result() {
     setSelectedResult,
     patients,
     setPatients,
-    showSearch
+    showSearch,
   } = useResult();
+  console.log(selectedTest,'selected Test')
   const shiftDate = new Date(Date.parse(shift?.created_at));
   return (
     <>
-      <div
-        style={{
-          gap: "15px",
-          transition: "0.3s all ease-in-out",
-          display: "inline-grid",
-          gridTemplateColumns: `  ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.1fr  `,
-        }}
-      >
-        <div></div>
-        {showSearch && <AutocompleteSearchPatient
-          withTests={1}
-          update={setActivePatient}
-          setActivePatient={setActivePatient}
-        />}
-      </div>
+      <Stack className="mb-4" direction={"row"} gap={1}>
+        <div>
+          {actviePatient && (
+            <Card style={{ backgroundColor: "ffffff40", overflow: "auto" }}>
+              {/* file visits */}
+              <LabHistory
+                setActiveDoctorVisit={setActivePatientHandler}
+                doctorVisit={actviePatient}
+              />
+            </Card>
+          )}
+        </div>
+        {
+          <AutocompleteSearchPatient
+            labOnlyPatients={true}
+            update={setActivePatientHandler}
+          />
+        }
+      </Stack>
       <audio hidden ref={audioRef} controls src={urgentSound}></audio>
       <div
         style={{
@@ -98,8 +105,11 @@ function Result() {
                 })}
             </div>
             <div>
-              {   shift?.patients
-                ?.filter((patient) => patient.patient.labrequests.length > 0).length}
+              {
+                shift?.patients?.filter(
+                  (patient) => patient.patient.labrequests.length > 0
+                ).length
+              }
             </div>
             <div>
               {shift &&
@@ -111,7 +121,11 @@ function Result() {
                 })}
             </div>
           </Stack>
-          <ShiftNav setPatients={setPatients} shift={shift} setShift={setShift}/>
+          <ShiftNav
+            setPatients={setPatients}
+            shift={shift}
+            setShift={setShift}
+          />
           <Divider></Divider>
           <div className="patients">
             {patientsLoading ? (
@@ -148,49 +162,48 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card  sx={{ height: "80vh", overflow: "auto" }}>
-          
-            <List >
-              {actviePatient?.patient.labrequests.map((test) => {
-                return (
-                  <ListItem
-                  
-                     
-                    onClick={() => {
-                      setSelectedTest(test);
-                      setSelectedResult(null);
-                    }}
-                    style={
-                      selectedTest && selectedTest.id == test.id
-                        ? {
-                            backgroundColor: "lightblue",
-                          }
-                        : null
-                    }
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "lightblue",
-                        color: "white",
-                      },
-                    }}
-                    secondaryAction={
-                      <MyCheckBoxLab setActivePatient={setActivePatient} id={test.id} hideTest={test.hidden} />
-                    }
-                    key={test.id}
-                  >
-                    <ListItemText primary={test.main_test.main_test_name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          
+        <Card sx={{ height: "80vh", overflow: "auto" }}>
+          <List>
+            {actviePatient?.patient.labrequests.map((test) => {
+              return (
+                <ListItem
+                  onClick={() => {
+                    setSelectedTest(test);
+                    setSelectedResult(null);
+                  }}
+                  style={
+                    selectedTest && selectedTest.id == test.id
+                      ? {
+                          backgroundColor: "lightblue",
+                        }
+                      : null
+                  }
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                      color: "white",
+                    },
+                  }}
+                  secondaryAction={
+                    <MyCheckBoxLab
+                      setActivePatient={setActivePatient}
+                      id={test.id}
+                      hideTest={test.hidden}
+                    />
+                  }
+                  key={test.id}
+                >
+                  <ListItemText primary={test.main_test.main_test_name} />
+                </ListItem>
+              );
+            })}
+          </List>
         </Card>
-        <Card 
-          sx={{ height: "80vh", overflow: "auto", p: 1 }}
-        >
-          {actviePatient && (
+        <Card key={actviePatient?.id} sx={{ height: "80vh", overflow: "auto", p: 1 }}>
+          {actviePatient &&(
             <ResultSection
+              patient={actviePatient}
               selectedReslult={selectedReslult}
               selectedTest={selectedTest}
               setActivePatient={setActivePatient}
@@ -205,19 +218,16 @@ function Result() {
           {actviePatient && (
             <div>
               {" "}
-              <PatientDetail
-                key={actviePatient.id}
-                patient={actviePatient}
-              />
+              <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                <Button
+                {/* <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button>
+                </Button> */}
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}
@@ -271,10 +281,15 @@ function Result() {
                     onClick={() => {
                       //authentication event
                       setLoading(true);
-                      updateHandler(1, "result_auth", actviePatient,setActivePatient).then((data) => {
-                        console.log('after update', data);
-                        setActivePatient(data)
-                        setLoading(false)
+                      updateHandler(
+                        1,
+                        "result_auth",
+                        actviePatient,
+                        setActivePatient
+                      ).then((data) => {
+                        console.log("after update", data);
+                        setActivePatient(data);
+                        setLoading(false);
                       });
                     }}
                     sx={{ mt: 1 }}
@@ -289,8 +304,7 @@ function Result() {
           )}
         </div>
         <ResultSidebar
-        socket={socket}
-
+          socket={socket}
           //  key={actviePatient?.id}
           isConnected={isConnected}
           setShift={setShift}

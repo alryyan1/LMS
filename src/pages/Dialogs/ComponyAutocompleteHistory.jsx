@@ -32,7 +32,7 @@ function ComponyAutocompleteHistory({companies,setSelectedCompany,patientCompany
 
        return (
          <TextField
-         variant='standard'
+        //  variant='standard'
            {...params}
            label={t("company")}
          />

@@ -5,6 +5,7 @@ import axiosClient from "../axios-client";
 
 function GuestLayout() {
   const { user,token,setUser,setToken } = useStateContext();
+  console.log(user,'guestlayout user')
   // useEffect(() => {
   //   axiosClient.get("/user").then(({ data }) => {
   //     setUser(data);

@@ -17,21 +17,28 @@ import axiosClient from "../../../axios-client";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid/components';
 import { DoctorVisit } from "../../types/Patient";
+import { webUrl } from "../constants";
 
-function CustomToolbar() {
+function CustomToolbar({selectedCompany}) {
   useEffect(()=>{
     document.title = 'المطالبات'
   },[])
   return (
+    <>
     <GridToolbarContainer>
       <GridToolbarExport
         csvOptions={{ utf8WithBom: true }} // Ensures UTF-8 encoding with BOM
       />
     </GridToolbarContainer>
+    </>
+    
   );
 }
 function Reclaim() {
   const [rows, setRows] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [firstDate, setFirstDate] = useState(null);
+  const [secondDate, setSecondDate] = useState(null);
   const [loading, setLoading] = useState(null);
   const { companies } = useOutletContext();
   const {
@@ -69,7 +76,7 @@ function Reclaim() {
       align:'center',
 
       valueGetter: (value, row) =>
-        dayjs(new Date(Date.parse(row.patient.created_at))).format("YYYY/MM/DD H;m A"),
+        dayjs(new Date(Date.parse(row.patient.created_at))).format("YYYY/MM/DD"),
     },
  
     
@@ -195,6 +202,7 @@ function Reclaim() {
     <Grid container spacing={1}>
       
       <Grid item xs={10}>
+    <Button disabled={selectedCompany == null} href={`${webUrl}reclaim?company=${selectedCompany?.id}&first=${firstDate?.format('YYYY-MM-DD')}&${secondDate?.format('YYYY-MM-DD')}`}>EXCEL</Button>
         
       <DataGrid
         
@@ -237,6 +245,7 @@ function Reclaim() {
                     size="small"
                     onChange={(e, newVal) => {
                       field.onChange(newVal);
+                      setSelectedCompany(newVal);
                     }}
                     getOptionKey={(op) => op.id}
                     getOptionLabel={(option) => option.name}
@@ -269,6 +278,7 @@ function Reclaim() {
                       format="YYYY-MM-DD"
                       onChange={(val) => {
                         field.onChange(val)
+                         setFirstDate(val)
                       }}
                       defaultValue={dayjs(new Date())}
                       label="من"
@@ -290,6 +300,7 @@ function Reclaim() {
                       format="YYYY-MM-DD"
                       onChange={(val) => {
                         field.onChange(val);
+                         setSecondDate(val)
                       }}
                       defaultValue={dayjs(new Date())}
                       label="الي"

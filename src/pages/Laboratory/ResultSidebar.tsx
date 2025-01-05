@@ -92,7 +92,15 @@ function ResultSidebar({
       <IconButton
         target="_blank"
         href={`http://${host}/server/classes/server.php`}
-        title="LIS"
+        title="Chemistry LIS"
+        color="inherit"
+      >
+        <CableIcon />
+      </IconButton>
+      <IconButton
+        target="_blank"
+        href={`http://${host}/server/classes/client.php`}
+        title="CBC LIS"
         color="inherit"
       >
         <CableIcon />

@@ -29,8 +29,11 @@ export default function useResult(): ResultProps {
 
   const update = (actviePatient:DoctorVisit)=>{
     setPatients((prev)=>{
-      
-      if(!prev.find((p)=>p.id == actviePatient.id)) return [actviePatient,...prev]
+      if(actviePatient.patient.shift_id == shift?.id){
+        //هنا اذا كان البشين في نفس الورديه بنضاف عن طريق socket 
+        //المشكله كانت لما كان يعمل سيرش لبيشن قديم كان بنضاف في الورديه الاسي
+        if(!prev.find((p)=>p.id == actviePatient.id)) return [actviePatient,...prev]
+      }
       return prev.map((p)=>{
         if(p.id === actviePatient?.id){
           return {...actviePatient }

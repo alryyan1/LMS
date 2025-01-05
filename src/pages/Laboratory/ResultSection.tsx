@@ -21,8 +21,8 @@ interface ResultSectionProps {
   setSelectedResult: (prev: any) => void;
   selectedReslult: RequestedResult;
   disabled: boolean;
-  resultUpdated:number;
-  setActivePatient:(patient:DoctorVisit)=>void
+  resultUpdated: number;
+  setActivePatient: (patient: DoctorVisit) => void;
   is_doctor: boolean; // true for doctor, false for patient
 }
 function ResultSection({
@@ -32,8 +32,9 @@ function ResultSection({
   disabled = false,
   is_doctor = false,
   setActivePatient,
-  resultUpdated
-}:ResultSectionProps) {
+  resultUpdated,
+  patient,
+}: ResultSectionProps) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -43,7 +44,7 @@ function ResultSection({
   return (
     <>
       <Tabs
-      sx={{mb:1}}
+        sx={{ mb: 1 }}
         textColor="secondary"
         indicatorColor="secondary"
         value={value}
@@ -54,6 +55,7 @@ function ResultSection({
         <Tab label="Other"></Tab>
       </Tabs>
       <div
+        key={patient.id}
         role="tabpanel"
         hidden={value !== 0}
         id={`simple-tabpanel-${0}`}
@@ -61,7 +63,12 @@ function ResultSection({
       >
         {value === 0 && (
           <>
-            <Table  key={resultUpdated + selectedTest?.id} size="small">
+            <Table
+              style={{ direction: "ltr" }}
+              className="table-small"
+              key={resultUpdated + selectedTest?.id}
+              size="small"
+            >
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
@@ -72,45 +79,56 @@ function ResultSection({
               <TableBody>
                 {selectedTest &&
                   selectedTest.requested_results.map((req, i) => {
-                  
-                   
                     if (req.child_test == null) {
                       return;
                     }
-                    const low = Number( req.child_test.lowest)
-                    const max =  Number(req.child_test.max)
-                    const result =  Number(req.result)
-                    let type = ''
-                    if (result !='') {
-                        if (low > 0 && max > 0) {
-                       if (result < low || result > max) {
-                        // alert('err')
-                         type='error'
-                       }
+                    const low = Number(req.child_test.lowest);
+                    const max = Number(req.child_test.max);
+                    const result = Number(req.result);
+                    let type = "";
+                    if (result != "") {
+                      if (low > 0 && max > 0) {
+                        if (result < low || result > max) {
+                          // alert('err')
+                          type = "error";
+                        }
+                      }
                     }
-                    }
-                  
+
                     return (
-                      <TableRow >
-                        <TableCell className="" sx={{ p: 0.5, textAlign: "right",backgroundColor:(theme)=> type =='error'? theme.palette.error.light : '' }}>
+                      <TableRow>
+                        <TableCell
+                          className=""
+                          sx={{
+                            p: 0.5,
+                            textAlign: "right",
+                            backgroundColor: (theme) =>
+                              type == "error" ? theme.palette.error.light : "",
+                          }}
+                        >
                           {req.child_test?.child_test_name}
                         </TableCell>
                         <TableCell sx={{ p: 0.5 }}>
-                          {is_doctor ? <Typography textAlign={'center'}>{req.result}</Typography> :
-                          <AutocompleteResultOptions 
-                          setActivePatient={setActivePatient}
-                          disabled={disabled}
-                          type={type}
-                            index={i}
-                            setSelectedResult={setSelectedResult}
-                            result={req.result}
-                            id={req.id}
-                            req={req}
-                            child_test={req.child_test}
-                          />}
+                          {is_doctor ? (
+                            <Typography textAlign={"center"}>
+                              {req.result}
+                            </Typography>
+                          ) : (
+                            <AutocompleteResultOptions
+                              setActivePatient={setActivePatient}
+                              disabled={disabled}
+                              type={type}
+                              index={i}
+                              setSelectedResult={setSelectedResult}
+                              result={req.result}
+                              id={req.id}
+                              req={req}
+                              child_test={req.child_test}
+                            />
+                          )}
                         </TableCell>
                         {/* <TableCell sx={{ p: 0.5 }}> */}
-                          {/* {req.normal_range} */}
+                        {/* {req.normal_range} */}
                         {/* </TableCell> */}
                       </TableRow>
                     );
@@ -164,7 +182,10 @@ function ResultSection({
             {" "}
             {selectedTest && (
               <div>
-                <OrganismPanel setActivePatient={setActivePatient} selectedTest={selectedTest}></OrganismPanel>
+                <OrganismPanel
+                  setActivePatient={setActivePatient}
+                  selectedTest={selectedTest}
+                ></OrganismPanel>
               </div>
             )}
           </>

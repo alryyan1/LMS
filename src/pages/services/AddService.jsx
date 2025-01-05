@@ -23,7 +23,6 @@ import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
-import { useOutletContext } from "react-router-dom";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 
 function AddService() {
@@ -34,7 +33,13 @@ function AddService() {
   const [links, setLinks] = useState([]);
   const [page, setPage] = useState(50);
   const [updated,setUpdated] = useState(0)
-  const { dialog, setDialog, serviceGroups } = useOutletContext();
+  const [serviceGroups, setServiceGroups] = useState([]);
+  useEffect(() => {
+    axiosClient.get("serviceGroup/all").then(({ data }) => {
+      console.log(data, "service groups");
+      setServiceGroups(data);
+    });
+  }, []);
    const {register:register2,handleSubmit:handleSubmit2,formState:{errors:errors2}} = useForm()
   const searchHandler = (word) => {
     setSearch(word);
@@ -78,14 +83,7 @@ function AddService() {
       console.log(data)
       if (data.status) {
         setSelectedService(data.service)
-        setDialog((prev) => {
-          return {
-            ...prev,
-            open: true,
-            color: "success",
-            msg: "Addition was successfull",
-          };
-        });
+     
         reset();
       }
     }).finally(() => setLoading(false));
@@ -98,14 +96,7 @@ function AddService() {
       console.log(data)
       if (data.status) {
         setSelectedService(data.service)
-        setDialog((prev) => {
-          return {
-            ...prev,
-            open: true,
-            color: "success",
-            msg: "Addition was successfull",
-          };
-        });
+      
         reset();
      
       }
