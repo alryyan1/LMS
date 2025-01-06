@@ -13,9 +13,12 @@ import {
 } from "/src/components/ui/card"
 import { Label } from "/src/components/ui/label"
 import { Button } from "../components/ui/button";
+import { useAuthStore } from "../AuthStore";
 
-function App() {
+function Login() {
   console.log("login page");
+  const {setCloseLoginDialog,startSession} = useAuthStore((state)=>state)
+
   const [error, setError] = useState({ val: false, msg: "" });
   const [loading, setLoading] = useState(false);
   const { setToken, setUser } = useStateContext();
@@ -36,6 +39,9 @@ function App() {
           // alert('s')
           setUser(data.user);
           setToken(data.token);
+          setCloseLoginDialog()
+          startSession(data.token,data.user)
+
         }
       })
       .catch((error) => {
@@ -120,4 +126,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;

@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
@@ -30,7 +31,13 @@ import { Company, DoctorVisit, MainTest } from "../../types/Patient";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import { DollarSignIcon, Download, Group } from "lucide-react";
-import { Cancel, CancelOutlined, CurrencyExchange, KeyboardDoubleArrowDown, Money } from "@mui/icons-material";
+import {
+  Cancel,
+  CancelOutlined,
+  CurrencyExchange,
+  KeyboardDoubleArrowDown,
+  Money,
+} from "@mui/icons-material";
 interface RequestedTestsLab {
   setDialog: (dialog: any) => void;
   actviePatient: DoctorVisit;
@@ -44,13 +51,14 @@ function RequestedTestsLab({
   companies,
   userSettings,
   update,
+  setAllMoneyUpdatedLab
 }: RequestedTestsLab) {
   console.log(actviePatient, "activePatient from");
   const { user } = useStateContext();
   const [loading, setLoading] = useState(false);
   const payHandler = () => {
     const result = confirm(
-      `${t("هل تؤكد استلامك مبلغ قدره")} ${actviePatient?.patient.labrequests.filter((l)=>l.is_paid== 0).reduce((prev,curr)=>prev+curr.price,0)}`
+      `${t("هل تؤكد استلامك مبلغ قدره")} ${actviePatient?.patient.labrequests.filter((l) => l.is_paid == 0).reduce((prev, curr) => prev + curr.price, 0)}`
     );
     if (!result) {
       return;
@@ -77,7 +85,7 @@ function RequestedTestsLab({
         if (data.status) {
           update(data.data);
           socket.emit("labPayment", data.data);
-
+          setAllMoneyUpdatedLab((prev)=>prev+1)
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {
             const form = new URLSearchParams();
@@ -130,6 +138,8 @@ function RequestedTestsLab({
         test_id,
       })
       .then(({ data: data }) => {
+        setAllMoneyUpdatedLab((prev)=>prev+1)
+
         console.log(data, "patient paid data");
         if (data.status) {
           update(data.data);
@@ -147,6 +157,8 @@ function RequestedTestsLab({
     axiosClient
       .patch(`cancelPayment/${actviePatient.id}`)
       .then(({ data }) => {
+        setAllMoneyUpdatedLab((prev)=>prev+1)
+
         console.log(data, "data from cancel");
         if (data.status) {
           setLoading(false);
@@ -167,20 +179,26 @@ function RequestedTestsLab({
   const cancelPaySingleTestHandler = (test) => {
     setLoading(true);
     axiosClient
-      .patch(`cancelPaymentSingleTest/${actviePatient.id}`,{test_id:test.id})
+      .patch(`cancelPaymentSingleTest/${actviePatient.id}`, {
+        test_id: test.id,
+      })
       .then(({ data }) => {
+        setAllMoneyUpdatedLab((prev)=>prev+1)
+
         if (data.status) {
           setLoading(false);
           update(data.data);
         }
       })
-      
+
       .finally(() => setLoading(false));
   };
   const deleteTest = (id: number, doctorVisit: DoctorVisit) => {
     axiosClient
       .delete(`labRequest/${id}/${doctorVisit.id}`)
       .then(({ data }) => {
+        setAllMoneyUpdatedLab((prev)=>prev+1)
+
         console.log(data, "data deleted");
         update(data.data);
       });
@@ -236,7 +254,11 @@ function RequestedTestsLab({
 
                   return (
                     <TableRow key={test.id}>
-                      <TableCell sx={{width:'200px'}}>{test.main_test.main_test_name}</TableCell>
+                      <TableCell sx={{ width: "200px" }}>
+                        <Tooltip title={`added by ${test.user_requested?.username}`}>
+                          {test.main_test.main_test_name}
+                        </Tooltip>{" "}
+                      </TableCell>
 
                       <TableCell>{formatNumber(price)}</TableCell>
                       {actviePatient.patient.company ? (
@@ -249,15 +271,22 @@ function RequestedTestsLab({
                           table="labRequest"
                           colName={"discount_per"}
                           item={test}
-                          
                         >
                           {test.discount_per}
                         </MyTableCell>
                       )}
-                      <TableCell>{test.amount_paid}</TableCell>
+                      <TableCell sx={{ width: "200px" }}>
+                        <Tooltip title={`paid by ${test?.user_deposited?.username}`}>
+                          {test.amount_paid}
+                        </Tooltip>{" "}
+                      </TableCell>
+
+                      {/* <TableCell>{test.amount_paid}</TableCell> */}
 
                       <TableCell>
                         <MyCheckBoxLab
+                        disabled={!test.is_paid}
+                         setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
                           activePatient={actviePatient}
                           update={update}
                           key={actviePatient.id}
@@ -286,27 +315,30 @@ function RequestedTestsLab({
                         {test.user_requested.username}
                       </TableCell> */}
                       <TableCell>
-                        {test.is_paid ?      <LoadingButton
-                  // disabled={actviePatient.patient.result_print_date}
-                  loading={loading}
-                  color="error"
-                  onClick={()=>{
-                    cancelPaySingleTestHandler(test)
-                  }}
-                  sx={{ textAlign: "center" }}
-                >
-                <Cancel/> 
-                </LoadingButton> :
-                        <MyLoadingButton 
-                          active={test.is_paid}
-                          disabled={test.is_paid === 1}
-                          loading={loading}
-                          onClick={(setLoading) => {
-                            payHandlerSingleTest(test.id, setLoading);
-                          }}
-                        >
-                          <Download />
-                        </MyLoadingButton>}
+                        {test.is_paid ? (
+                          <LoadingButton
+                            // disabled={actviePatient.patient.result_print_date}
+                            loading={loading}
+                            color="error"
+                            onClick={() => {
+                              cancelPaySingleTestHandler(test);
+                            }}
+                            sx={{ textAlign: "center" }}
+                          >
+                            <Cancel />
+                          </LoadingButton>
+                        ) : (
+                          <MyLoadingButton
+                            active={test.is_paid}
+                            disabled={test.is_paid === 1}
+                            loading={loading}
+                            onClick={(setLoading) => {
+                              payHandlerSingleTest(test.id, setLoading);
+                            }}
+                          >
+                            <Download />
+                          </MyLoadingButton>
+                        )}
                       </TableCell>
                       <TableCell>
                         <IconButton
@@ -340,7 +372,9 @@ function RequestedTestsLab({
           </div>
           <div className="sub-price">
             <div className="title">Paid</div>
-            <Typography variant="h5">{actviePatient.patient.paid}</Typography>
+            <Typography variant="h5">
+              {formatNumber(actviePatient.patient.paid)}
+            </Typography>
           </div>
           <div className="requested-total">
             <div className="money-info">
@@ -352,7 +386,7 @@ function RequestedTestsLab({
                   onClick={cancelPayHandler}
                   sx={{ textAlign: "center" }}
                 >
-                 <CancelOutlined/>
+                  <CancelOutlined />
                 </LoadingButton>
               ) : (
                 <LoadingButton
@@ -364,7 +398,7 @@ function RequestedTestsLab({
                   onClick={payHandler}
                   sx={{ textAlign: "center" }}
                 >
-                  <KeyboardDoubleArrowDown/>
+                  <KeyboardDoubleArrowDown />
                 </LoadingButton>
               )}
             </div>

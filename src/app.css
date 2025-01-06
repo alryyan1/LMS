@@ -60,11 +60,14 @@ th,span {
 .test{
   border-radius: 5px!important;
     text-align: center;
+    color: black;
     font-weight: bold;
 }
 .mygrid {
   display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  height: 50vh;
+  overflow: auto;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 5px!important;
 }
 
@@ -312,3 +315,15 @@ body {
 .requested-total ,.total-price{
   max-width: 300px;
 }
+
+.muirtl-17jr764-MuiPaper-root-MuiDialog-paper{
+  max-width: fit-content!important;
+}
+.muirtl-t3xolk{
+  height: unset!important;
+  width: unset!important;
+  }
+  .muirtl-1goaqxd{
+    max-width :auto !important;
+  }
+  

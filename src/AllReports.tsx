@@ -873,6 +873,8 @@ function AllReports() {
            
           </TableBody>
         </Table>
+        <Divider/>
+   
       </>
     );
   };

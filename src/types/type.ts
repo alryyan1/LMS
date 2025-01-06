@@ -1,3 +1,4 @@
+import { Patient, User } from "./Patient";
 import { Deduct } from "./Shift";
 
 interface RootObject {
@@ -17,84 +18,7 @@ interface RootObject {
   services: any[];
 }
 
-interface Patient {
-  id: number;
-  name: string;
-  shift_id: number;
-  user_id: number;
-  doctor_id: number;
-  phone: string;
-  gender: string;
-  age_day: null;
-  age_month: null;
-  age_year: number;
-  company_id: null;
-  subcompany_id: null;
-  company_relation_id: null;
-  paper_fees: null;
-  guarantor: null;
-  expire_date: null;
-  insurance_no: null;
-  is_lab_paid: number;
-  lab_paid: number;
-  result_is_locked: number;
-  sample_collected: number;
-  sample_collect_time: null;
-  result_print_date: null;
-  sample_print_date: null;
-  visit_number: number;
-  result_auth: number;
-  auth_date: string;
-  created_at: string;
-  updated_at: string;
-  present_complains: string;
-  history_of_present_illness: string;
-  procedures: string;
-  provisional_diagnosis: string;
-  bp: string;
-  temp: number;
-  weight: number;
-  height: number;
-  juandice: null;
-  pallor: null;
-  clubbing: null;
-  cyanosis: null;
-  edema_feet: null;
-  dehydration: null;
-  lymphadenopathy: null;
-  peripheral_pulses: null;
-  feet_ulcer: null;
-  country_id: null;
-  gov_id: null;
-  prescription_notes: null;
-  address: null;
-  heart_rate: null;
-  spo2: null;
-  discount: number;
-  drug_history: string;
-  family_history: string;
-  rbs: string;
-  doctor_finish: number;
-  care_plan: string;
-  doctor_lab_request_confirm: number;
-  doctor_lab_urgent_confirm: number;
-  paid: number;
-  hasCbc: boolean;
-  visit_count: number;
-  total_lab_value_unpaid: number;
-  total_lab_value_will_pay: number;
-  discountAmount: number;
-  labrequests: Labrequest[];
-  doctor: Doctor;
-  company: null;
-  subcompany: null;
-  relation: null;
-  user: Userrequested;
-  prescriptions: any[];
-  file_patient: Filepatient;
-  country: null;
-  sickleave: null;
-}
+
 
 interface Filepatient {
   id: number;
@@ -135,7 +59,7 @@ interface Labrequest {
   is_bankak: number;
   comment: null;
   user_requested: Userrequested;
-  user_deposited: null;
+  user_deposited: User;
   approve: number;
   endurance: number;
   name: string;

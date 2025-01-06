@@ -136,7 +136,8 @@ export interface Patient {
     referred:string
     nurse_note:string;
     patient_medical_history:string;
-    totalLabBank:number
+    totalLabBank:number;
+    lastShift:number;
   }
   
   export interface Labrequest {
@@ -299,7 +300,8 @@ export interface Patient {
     roles: Role[]
     routes: Route[]
     sub_routes: SubRoute[]
-    doctor: any
+    doctor: any;
+    isAccountant:boolean
   }
 
   

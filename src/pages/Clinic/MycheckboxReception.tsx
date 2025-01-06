@@ -7,10 +7,11 @@ interface MyCheckboxReceptionProps {
   id: number;
   disabled: boolean;
   checked: boolean;
+  setAllMoneyUpdated:()=>void;
   update: (prev:DoctorVisit) => void;
  
 }
-function MyCheckboxReception({ id,disabled ,checked,update}:MyCheckboxReceptionProps) {
+function MyCheckboxReception({ id,disabled ,checked,update,setAllMoneyUpdated}:MyCheckboxReceptionProps) {
   const [isChecked, setIsChecked] = useState(checked);
   console.log(isChecked, "checked after");
   const changeHandler = (val) => {
@@ -18,6 +19,7 @@ function MyCheckboxReception({ id,disabled ,checked,update}:MyCheckboxReceptionP
     axiosClient.patch(`requestedService/bank/${id}?val=${Number(val.target.checked)}`).then(({data}) => {
       console.log(data,'data')
         update(data.patient)
+        setAllMoneyUpdated((prev)=>prev+1)
     });
  
   };

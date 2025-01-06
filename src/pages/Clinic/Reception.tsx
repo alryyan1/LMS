@@ -41,8 +41,11 @@ import OpenDoctorTabs from "./OpenDoctorsTabs";
 import AutocompleteSearchPatient from "../../components/AutocompleteSearchPatient";
 import warningLottie from "./../../lotties/warning.json";
 import Lottie from "react-lottie";
-import { PanelBottom } from "lucide-react";
+import { PanelBottom, PrinterIcon, Settings } from "lucide-react";
 import bloodTest from "../../assets/images/blood-test.png";
+import services from "../../assets/images/medical-report.png";
+import AllMoneyDetails from "../Dialogs/AllMoneyDetails";
+import { Print } from "@mui/icons-material";
 
 function Reception() {
   const boxesOptions = {
@@ -85,6 +88,9 @@ function Reception() {
 
   const { user } = useStateContext();
   const [showNewShiftWarning, setShowNewShiftWarning] = useState(false);
+  const [allMoneyUpdated, setAllMoneyUpdated] = useState(0);
+  const [allMoneyUpdatedLab, setAllMoneyUpdatedLab] = useState(0);
+  const [showDetails, setShowDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   function onConnect() {
     setIsConnected(true);
@@ -188,6 +194,7 @@ function Reception() {
   // console.log(openDrawer, "open drawer");
 
   const change = (doctorVisit: DoctorVisit) => {
+    hideForm();
     setActivePatient(doctorVisit);
     setActiveShift((prevShift: DoctorShift) => {
       return {
@@ -286,10 +293,10 @@ function Reception() {
       // console.log(data, "opened doctors");
     });
   }, []);
-  // console.log(actviePatient, "active patient");
   const update = (doctorVisit: DoctorVisit) => {
     console.log(doctorVisit, "doctor visit in update function", doctorVisit.id);
     setActivePatient(doctorVisit);
+    // hideForm()
     setActiveShift((prev) => {
       if (prev.visits.map((v) => v.id).find((v) => v == doctorVisit.id)) {
         // alert('patient found')
@@ -324,7 +331,10 @@ function Reception() {
       } else {
         // alert('new patient')
         console.log("new patient");
+        if (doctorVisit.patient.shift_id != doctorVisit.patient.lastShift)
+          return prev;
         //new patietn added
+        setShowServicePanel(true);
         const ActiveDoctorShiftUpdated = {
           ...prev,
           visits: [{ ...doctorVisit }, ...prev.visits],
@@ -367,26 +377,33 @@ function Reception() {
 
   return (
     <>
-      <AutocompleteSearchPatient
-        withTests={1}
-        setActivePatient={setActivePatient}
-        setActivePatientHandler={setActivePatient}
-        update={setActivePatient}
-      />
-
-      <Stack sx={{ m: 1 }} direction={"row"} gap={5}>
+      <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
         {showNewShiftWarning && (
-          <Stack sx={{ position: "absolute" }} direction={"column"} gap={1}>
+          <Stack sx={{ position: "absolute" }} direction={"column"} gap={2}>
             <Typography variant="h6">تم فتح ورديه ماليه جديده</Typography>
             <Lottie options={boxesOptions} height={100} width={100} />
           </Stack>
         )}
-        <OpenDoctorTabs
-          user={user}
-          activeShift={activeShift}
-          openedDoctors={openedDoctors}
-          selectDoctorHandler={selectDoctorHandler}
-        />
+        <div >
+          <AutocompleteSearchPatient
+            autofocus={user?.isAcountant}
+            width={250}
+            hideForm={hideForm}
+            withTests={1}
+            setActivePatient={update}
+            setActivePatientHandler={setActivePatient}
+            update={setActivePatient}
+          />
+        </div>
+
+        <div style={{ width: `${window.innerWidth - 360}px` }}>
+          <OpenDoctorTabs
+            user={user}
+            activeShift={activeShift}
+            openedDoctors={openedDoctors}
+            selectDoctorHandler={selectDoctorHandler}
+          />
+        </div>
       </Stack>
       <AddDoctorDialog />
 
@@ -399,7 +416,7 @@ function Reception() {
           gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
       >
-        <div>
+        <Paper sx={{p:1}}>
           {!actviePatient && dialog.showHistory > 0 && (
             <div
               style={{
@@ -421,7 +438,7 @@ function Reception() {
           {actviePatient && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
-                <PatientDetail
+               {showDetails ?   <PatientDetail
                   user={user}
                   settings={settings}
                   openedDoctors={openedDoctors}
@@ -429,14 +446,98 @@ function Reception() {
                   key={actviePatient.id}
                   patient={actviePatient}
                   copyPatient={true}
-                />
-                <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
-                  <a
-                    href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
-                  >
-                    Receipt
-                  </a>
-                  <Button
+                />:<div style={{width:'300px'}}>
+                  
+                  <AllMoneyDetails allMoneyUpdated={allMoneyUpdated} allMoneyUpdatedLab={allMoneyUpdatedLab}/>
+                  </div>}
+                
+              </div>
+            </Slide>
+          )}
+        </Paper>
+
+        <Paper key={actviePatient?.id} sx={{ p: 2 }}>
+          {actviePatient && (
+            <>
+              <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
+                <Stack sx={{ p: 2 }} direction={"row"} gap={1}>
+                  <Tooltip title="الخدمات">
+                    <Badge
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "bottom",
+                      }}
+                      color={
+                        actviePatient.services.every((s) => s.is_paid)
+                          ? "success"
+                          : "error"
+                      }
+                      badgeContent={actviePatient.services.length}
+                    >
+                      <Button
+                        className={showPatientServices ? "active" : ""}
+                        sx={{ m: 1 }}
+                        onDoubleClick={() => {
+                          setShowTestPanel(false);
+                          setShowLabTests(false);
+
+                          setShowServicePanel(true);
+                          setShowPatientServices(false);
+                        }}
+                        onClick={() => {
+                          setShowTestPanel(false);
+                          setShowLabTests(false);
+
+                          setShowPatientServices(true);
+
+                          setShowServicePanel(false);
+                        }}
+                      >
+                        <img width={25} src={services} />
+                      </Button>
+                    </Badge>
+                  </Tooltip>
+                  <Tooltip title="التحاليل">
+                    <Badge
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "bottom",
+                      }}
+                      color={
+                        actviePatient.patient.labrequests.every(
+                          (t) => t.is_paid
+                        )
+                          ? "success"
+                          : "error"
+                      }
+                      badgeContent={actviePatient.patient.labrequests.length ==  0 ? undefined : actviePatient.patient.labrequests.length}
+                    >
+                      <Button
+                        //  sx={{border:'1px solid lightblue'}}
+                        className={showLabTests ? "active" : ""}
+                        onDoubleClick={() => {
+                          setShowTestPanel(true);
+                          setShowLabTests(false);
+                        }}
+                        onClick={() => {
+                          setShowLabTests(true);
+                          setShowTestPanel(false);
+
+                          setShowPatientServices(false);
+                          // showServicePanel(false);
+                          setShowServicePanel(false);
+                        }}
+                        color="info"
+                        title="Lab tests"
+                        // variant="contained"
+                      >
+                        <img width={25} src={bloodTest} />
+                      </Button>
+                    </Badge>
+                  </Tooltip>
+                  <IconButton 
+                   disabled={user?.isAccountant}
+                   title="تعديل بيانات المريض"
                     size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
@@ -444,93 +545,105 @@ function Reception() {
                     }}
                     variant="contained"
                   >
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    sx={{ flexGrow: 1 }}
-                    onClick={() => {
-                      const form = new URLSearchParams();
-
-                      axiosClient
-                        .get(
-                          `printReception?doctor_visit=${actviePatient.id}&base64=1`
-                        )
-                        .then(({ data }) => {
-                          form.append("data", data);
-                          console.log(data, "daa");
-                          printJS({
-                            printable: data.slice(data.indexOf("JVB")),
-                            base64: true,
-                            type: "pdf",
-                          });
-
-                          // fetch("http://127.0.0.1:4000/", {
-                          //   method: "POST",
-                          //   headers: {
-                          //     "Content-Type":
-                          //       "application/x-www-form-urlencoded",
-                          //   },
-
-                          //   body: form,
-                          // }).then(() => {});
-                        });
-                    }}
-                    color="warning"
-                    variant="contained"
-                    target="myframe"
-                  >
-                    Print
-                  </Button>
-                </Stack>
-              </div>
-            </Slide>
-          )}
-        </div>
-
-        <Paper sx={{ p: 2 }}>
-          {actviePatient && (
-            <>
-              <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
-                <Stack sx={{p:2}} direction={"row"} gap={1}>
-                  <Tooltip title="الخدمات">
-                    <Badge color={
-                      actviePatient.services.every((s)=>s.is_paid) ? 'success' :'error'
-                    } badgeContent={actviePatient.services.length} >
-                      <IconButton
-                        sx={{ m: 1 }}
-                        onClick={() => {
-                          setShowPatientServices(false);
-                          setShowTestPanel(false);
-
-                          setShowServicePanel(true);
-                        }}
-                      >
-                        <PanelBottom />
-                      </IconButton>
-                    </Badge>
-                  </Tooltip>
-                  <Tooltip title="التحاليل">
-                                      <Badge color={
-                                        actviePatient.patient.labrequests.every((t)=>t.is_paid) ?'success' :'error'
-                                      } badgeContent={actviePatient.patient.labrequests.length} >
-
+                    <Settings/>
+                  </IconButton>
+                  {showPatientServices && (
                     <IconButton
+                      size="small"
+                      sx={{ flexGrow: 1 }}
                       onClick={() => {
-                        setShowLabTests(false);
-                        setShowPatientServices(false);
-                        // showServicePanel(false);
-                        setShowServicePanel(false);
-                        setShowTestPanel(true);
+                        const form = new URLSearchParams();
+
+                        axiosClient
+                          .get(
+                            `printReception?doctor_visit=${actviePatient.id}&base64=1`
+                          )
+                          .then(({ data }) => {
+                            form.append("data", data);
+                            console.log(data, "daa");
+                            printJS({
+                              printable: data.slice(data.indexOf("JVB")),
+                              base64: true,
+                              type: "pdf",
+                            });
+
+                            // fetch("http://127.0.0.1:4000/", {
+                            //   method: "POST",
+                            //   headers: {
+                            //     "Content-Type":
+                            //       "application/x-www-form-urlencoded",
+                            //   },
+
+                            //   body: form,
+                            // }).then(() => {});
+                          });
                       }}
-                      color="info"
-                      title="Lab tests"
+                      color="warning"
                       variant="contained"
+                      target="myframe"
                     >
-                      <img width={25} src={bloodTest} />
+                      <PrinterIcon />
                     </IconButton>
-                    </Badge>
-                  </Tooltip>
+                  )}
+                  {showLabTests && (
+                    <IconButton
+                      size="small"
+                      sx={{ flexGrow: 1 }}
+                      onClick={() => {
+                        const form = new URLSearchParams();
+
+                        fetch("http://127.0.0.1:5000/", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "APPLICATION/JSON",
+                          },
+
+                          body: JSON.stringify(actviePatient),
+                        }).then(() => {});
+                        if (settings?.barcode) {
+                          axiosClient
+                            .get(`patient/barcode/${actviePatient.id}`)
+                            .then(({ data }) => {
+                              console.log(data, "barcode");
+                            });
+                        }
+
+                        axiosClient
+                          .get(`printLab/${actviePatient.id}?base64=1`)
+                          .then(({ data }) => {
+                            form.append("data", data);
+                            // console.log(data, "daa");
+                            if (userSettings?.web_dialog) {
+                              printJS({
+                                printable: data.slice(data.indexOf("JVB")),
+                                base64: true,
+                                type: "pdf",
+                              });
+                            }
+                            if (userSettings?.node_dialog) {
+                              fetch("http://127.0.0.1:4000/", {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type":
+                                    "application/x-www-form-urlencoded",
+                                },
+
+                                body: form,
+                              }).then(() => {});
+                            }
+                          });
+                      }}
+                      color="warning"
+                      variant="contained"
+                      target="myframe"
+                    >
+                      <PrinterIcon/>
+                    </IconButton>
+                  )}
+                 
+                  <IconButton title=" A5  فاتوره" href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`} >
+                    <Print/>
+                  </IconButton>
                 </Stack>
 
                 <a
@@ -555,22 +668,22 @@ function Reception() {
               setSelectedTests={setSelectedTests}
             />
           )}
-          {actviePatient &&
-            showLabTests &&
-            actviePatient.patient.labrequests.length > 0 && (
-              <RequestedTestsLab
-                actviePatient={actviePatient}
-                companies={companies}
-                setDialog={setDialog}
-                update={update}
-                userSettings={userSettings}
-              />
-            )}
+          {showLabTests && actviePatient &&(
+            <RequestedTestsLab
+            setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
+              actviePatient={actviePatient}
+              companies={companies}
+              setDialog={setDialog}
+              update={update}
+              userSettings={userSettings}
+            />
+          )}
           {actviePatient && showTestPanel && <TestGroups />}
-          {showPatientServices && actviePatient.services.length > 0 && (
+          {actviePatient &&  showPatientServices && actviePatient.services.length > 0 && (
             <Slide direction="up" in mountOnEnter unmountOnExit>
               <div>
                 <RequestedServices
+                    setAllMoneyUpdated={setAllMoneyUpdated}
                   update={update}
                   user={user}
                   activeShift={activeShift}
@@ -620,6 +733,8 @@ function Reception() {
                   .map((visit) => {
                     return (
                       <PatientReception
+                      showDetails={showDetails}
+                      setShowDetails={setShowDetails}
                         change={change}
                         key={visit.id}
                         hideForm={hideForm}
@@ -630,8 +745,8 @@ function Reception() {
             </Stack>
           </div>
         </Paper>
-        <div>
-          {layOut.hideForm || actviePatient ? (
+        {!user?.isAccountant ?     <div>
+          { layOut.hideForm || actviePatient ? (
             ""
           ) : (
             <ReceptionForm
@@ -641,7 +756,7 @@ function Reception() {
               update={update}
             />
           )}
-        </div>
+        </div>:<div></div>}
         <CustumSideBar
           activePatient={actviePatient}
           setOpen={setOpen}

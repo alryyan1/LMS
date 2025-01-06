@@ -1,10 +1,11 @@
 import React from "react";
-import { Tabs, Tab, Box, Card } from "@mui/material";
+import { Tabs, Tab, Box, Card, Button } from "@mui/material";
 import TestGroupChildren from "./src/pages/TestGroupChildren";
 import { url } from "./src/pages/constants";
 import { useOutletContext } from "react-router-dom";
+import { LabLayoutPros } from "./src/LabLayout";
 function TestGroups() {
-const {packageData,actviePatient,setError,setOpen, selectedTests, setSelectedTests} =  useOutletContext()
+const {packageData,actviePatient,setError,setOpen, selectedTests, setSelectedTests} =  useOutletContext<LabLayoutPros>()
 console.log(packageData,'packages in groups')
 
   const handleTestAdd = (p,t) => {
@@ -50,21 +51,23 @@ console.log(packageData,'packages in groups')
             {p.tests.map((t) =>{ 
              const founded =  selectedTests.find((ts)=>ts.id == t.id)
 
-              return <Card
-              variant="elevation"
+              return <Button 
+              // variant="text"
+              variant="contained"
+              color="inherit"
               square
                 onClick={()=>handleTestAdd(p,t)}
-                className="testGroupItem test"
+                className={`testGroupItem test card p-1 shadow-sm  ${actviePatient?.patient.labrequests.map((t)=>t.main_test.id).includes(t.id) ? 'active' :''}` }
                 
                 // sx={{ p: 1, minWidth: "80px" ,cursor:'pointer' }}
                 style={  founded ? {
                   borderBottom:"4px solid blue",
-                  fontWeight:"bolder",
                 }:null}
+                 
                 key={t.id}
               >
               <span title= {t.main_test_name}> {t.main_test_name}</span> 
-              </Card>}
+              </Button>}
             )}
           </TestGroupChildren>
         );

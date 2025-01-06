@@ -1,5 +1,5 @@
 import { Divider, IconButton, Stack } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Item, webUrl } from "../pages/constants";
 import { Calculate, Group, PersonAdd, Print } from "@mui/icons-material";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
@@ -7,7 +7,21 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import bloodTest from "./../assets/images/blood-test.png";
 import { useOutletContext } from "react-router-dom";
-
+import { useStateContext } from "../appContext";
+import { ReceptionLayoutProps } from "../types/CutomTypes";
+import { User } from "../types/Patient";
+import EmptyDialog from "../pages/Dialogs/EmptyDialog";
+import CashDenos from "../pages/Clinic/CashDenos";
+import DoctorsCredits from "../pages/Clinic/DoctorsCredits";
+interface CustomSideBarProbs {
+  showFormHandler: () => void;
+  showDoctorsDialog: () => void;
+  setOpen: (value: boolean) => void;
+  showShiftMoney: () => void;
+  activeShift: string;
+  user: User;
+  activePatient: any;
+}
 function CustumSideBar({
   showFormHandler,
   showDoctorsDialog,
@@ -16,9 +30,10 @@ function CustumSideBar({
   activeShift,
   user,
   activePatient,
-}) {
+}:CustomSideBarProbs) {
   const { setShowPatientServices, setShowServicePanel ,setShowTestPanel,setShowLabTests} =
-    useOutletContext();
+    useOutletContext<ReceptionLayoutProps>();
+    const [showDoctorCredit,setShowDoctorCredit] = useState(false)
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -26,7 +41,7 @@ function CustumSideBar({
       divider={<Divider orientation="vertical" flexItem />}
       direction={"column"}
     >
-      <Item>
+     {!user?.isAccountant && <Item>
         <IconButton
           title="فورمه التسجيل"
           variant="contained"
@@ -34,8 +49,8 @@ function CustumSideBar({
         >
           <CreateOutlinedIcon />
         </IconButton>
-      </Item>
-      <Item>
+      </Item>}
+      {!user?.isAccountant &&  <Item>
         <IconButton
           title="قائمه الاطباء"
           variant="contained"
@@ -43,8 +58,8 @@ function CustumSideBar({
         >
           <Group />
         </IconButton>
-      </Item>
-      <Item title="اضافه طبيب">
+      </Item>}
+      {!user?.isAccountant &&   <Item title="اضافه طبيب">
         <IconButton
           variant="contained"
           onClick={() => {
@@ -53,7 +68,7 @@ function CustumSideBar({
         >
           <PersonAdd />
         </IconButton>
-      </Item>
+      </Item>}
       <Item title="ملخص اليوميه المالي">
         <IconButton variant="contained" onClick={showShiftMoney}>
           <Calculate />
@@ -84,6 +99,17 @@ function CustumSideBar({
         )}
       </Item>
 
+      <Item>
+       
+          <IconButton
+            title="استحقاق الاطباء"
+            onClick={() => setShowDoctorCredit(true)}
+            variant="contained"
+          >
+            <Diversity3Icon />
+          </IconButton>
+      
+      </Item>
       {activeShift && (
         <Item>
           <IconButton
@@ -96,25 +122,10 @@ function CustumSideBar({
           </IconButton>
         </Item>
       )}
-      {activePatient && (
-        <Item>
-          <IconButton
-            onClick={() => {
-              setShowLabTests(false)
-              setShowPatientServices(false);
-              // showServicePanel(false);
-              setShowServicePanel(false);
-              setShowTestPanel(true)
-              
-            }}
-            color="info"
-            title="Lab tests"
-            variant="contained"
-          >
-            <img width={50} src={bloodTest} />
-          </IconButton>
-        </Item>
-      )}
+     
+     <EmptyDialog setShow={setShowDoctorCredit} show={showDoctorCredit}>
+        <DoctorsCredits/>
+     </EmptyDialog>
     </Stack>
   );
 }

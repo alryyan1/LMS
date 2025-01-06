@@ -9,15 +9,18 @@ interface MyCheckBoxLabProps {
   isbankak: boolean;
   activePatient: DoctorVisit;
   update: (doctorVisit: DoctorVisit) => void;
+  setAllMoneyUpdatedLab:()=>void;
+  disabled:boolean;
 }
 function MyCheckBoxLab({
   id,
   isbankak,
+  setAllMoneyUpdatedLab,
   update,
   activePatient,
+  disabled
 }: MyCheckBoxLabProps) {
   const [isChecked, setIsChecked] = useState(isbankak);
-  const disabled = activePatient.patient.is_lab_paid === 0;
   const bankakChangeHandler = (val) => {
     // console.log(val.target.checked, "checked handler");
     setIsChecked(val.target.checked);
@@ -28,6 +31,7 @@ function MyCheckBoxLab({
       .then(({ data }) => {
         if (data.status) {
           update(data.data);
+          setAllMoneyUpdatedLab((prev)=>prev+1)
         }
         // if (status > 400) {
         // }

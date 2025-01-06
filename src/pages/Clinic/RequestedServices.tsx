@@ -35,10 +35,12 @@ interface RequestedServiceProps {
   activeShift: DoctorShift;
   companies: Company[];
   user: User;
+  setAllMoneyUpdated:()=>void
   update: (data: DoctorVisit) => void;
 }
 function RequestedServices({
   actviePatient,
+  setAllMoneyUpdated,
   setDialog,
   setShowServicePanel,
   setShowPatientServices,
@@ -59,6 +61,8 @@ function RequestedServices({
       .then(({ data }: any) => {
         console.log(data, "pay service");
         update(data.patient);
+        setAllMoneyUpdated((prev)=>prev+1)
+
      
       })
       .catch(({ response: { data } }: any) => {
@@ -75,6 +79,8 @@ function RequestedServices({
     axiosClient
       .patch(`requestedService/cancel/${id}`)
       .then(({ data }: any) => {
+        setAllMoneyUpdated((prev)=>prev+1)
+
         if (data.status) {
           update(data.patient);
 
@@ -95,6 +101,7 @@ function RequestedServices({
       .delete(`requestedService/${id}`)
       .then(({ data }: any) => {
         if (data.status) {
+          setAllMoneyUpdated((prev)=>prev+1)
           update(data.patient);
      
         }
@@ -103,7 +110,7 @@ function RequestedServices({
   };
   let total_endurance = 0;
   let total_price = 0;
-
+  console.log(actviePatient,'active patient')
   return (
     <>
       <div className="requested-tests">
@@ -141,7 +148,8 @@ function RequestedServices({
               <TableBody>
                 {actviePatient?.services
                   .filter((service) => {
-                    return service.doctor_id == activeShift.doctor.id;
+                    return true
+                   // return service.doctor_id == activeShift.doctor.id;
                   })
                   .map((service) => {
                     // console.log(actviePatient,'active patient')
@@ -206,6 +214,8 @@ function RequestedServices({
                         ) : (
                           <TableCell>
                             <MyCheckboxReception
+                                    setAllMoneyUpdated={setAllMoneyUpdated}
+
                               update={update}
                               disabled={service.is_paid == 0}
                               checked={service.bank == 1}

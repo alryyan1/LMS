@@ -16,9 +16,12 @@ interface AutocompleteSearchPatientPros{
   focusPaitent:(patient:DoctorVisit)=>void;
   labOnlyPatients:boolean;
   setSelectedResult:()=>void;
+  hideForm?:boolean;
+  autofocus?:boolean;
+  width?:number;
 }
 
-export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyPatients}:AutocompleteSearchPatientPros) {
+export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyPatients,hideForm,autofocus=false,width=300}:AutocompleteSearchPatientPros) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<DoctorVisit[]>([]);
@@ -55,6 +58,10 @@ export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyP
         if (newVal) {
           console.log(newVal)
             update(newVal)
+
+            if(hideForm){
+              hideForm()
+            }
             
             if(focusPaitent){
 
@@ -63,7 +70,7 @@ export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyP
         }
 
       }}
-      sx={{ width: 300, display: "inline-block" }}
+      sx={{ width: width, display: "inline-block" }}
       open={open}
       
       onOpen={() => {
@@ -78,6 +85,7 @@ export default function AutocompleteSearchPatient({ update,focusPaitent,labOnlyP
       loading={loading}
       renderInput={(params) => (
         <TextField
+         autoFocus={autofocus}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               console.log("enter pressed");

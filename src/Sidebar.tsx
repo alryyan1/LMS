@@ -40,7 +40,7 @@ import { useTranslation } from "react-i18next";
 
 function SidebarNav() {
   const {t} = useTranslation("sidebar")
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const {
     user,
   

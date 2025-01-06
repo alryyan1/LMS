@@ -1,6 +1,7 @@
 import axios from "axios";
 import { host, schema } from "./src/pages/constants";
 import { toast } from "react-toastify";
+import { useAuthStore } from "./src/AuthStore";
 
 const axiosClient =  axios.create({
     // baseURL : `https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api`
@@ -35,7 +36,9 @@ axiosClient.interceptors.response.use((res)=>{
       });
         console.log('removing access token')
         localStorage.removeItem('ACCESS_TOKEN')
-        
+        useAuthStore.setState({
+          openLoginDialog:true
+        })
         // alert('Access token removed successfully')
         
     }

@@ -7,6 +7,8 @@ import  {Item} from '../constants'
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
 type PatientReceptinPros  = {
   patient: DoctorVisit;
+  setShowDetails:()=>void;
+  showDetails:boolean;
   hideForm: ()=>void;
   change: (doctorVisit: DoctorVisit) => void;
 }
@@ -36,13 +38,11 @@ function PatientReception(props:PatientReceptinPros) {
       <Stack
         sx={{ cursor: "pointer" }}
         onClick={() => {
+          // setShowLabTests(false)
           if (actviePatient) {
-            console.log(actviePatient,'active patient')
             setShowTestPanel(false)
-            setShowLabTests(true)
             /** this because if was same patient */
             if (actviePatient.id == props.patient.id) {
-              console.log("same patient");
             } else {
               props.change(props.patient);
             }
@@ -55,17 +55,17 @@ function PatientReception(props:PatientReceptinPros) {
             }).length > 0
           ) {
             if (!showServicePanel) {
-              setShowPatientServices(true);
+              // setShowPatientServices(true);
             } else {
               setShowServicePanel(false);
-              setShowPatientServices(true);
+              // setShowPatientServices(true);
             }
           } else {
             setShowServicePanel(true);
             setShowPatientServices(false);
           }
 
-          props.hideForm();
+        //  props.hideForm();
         }}
         direction={"row"}
       >
@@ -79,6 +79,7 @@ function PatientReception(props:PatientReceptinPros) {
             justifyContent: "space-between",
             minWidth: "230px",
             cursor: "pointer",
+            color:'black'
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -98,7 +99,9 @@ function PatientReception(props:PatientReceptinPros) {
 
           {props.patient.patient.name}
         </Item>
-        <Item className="patient-no">
+        <Item onDoubleClick={()=>{
+          props.setShowDetails(! props.showDetails)
+        }} className="patient-no">
           {props.patient.number }
           {props.patient.patient.company && <span
             style={{

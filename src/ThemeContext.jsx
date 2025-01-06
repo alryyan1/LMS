@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { useStateContext } from "./appContext";
 const ThemeContext = createContext({
+  
   mode: "",
   setMode: () => {},
 });
@@ -30,7 +31,15 @@ const {setUser} = useStateContext()
   },[mode])
 
   const theme = createTheme({
-     
+     components : {
+      styleOverrides: {
+        paper: {
+          width: "auto", // Auto-fit the content width
+          maxWidth: "90%", // Optional: Limit the maximum width
+          margin: "16px", // Ensure some margin for spacing
+        },
+      },
+     },
   palette: {
       
       mode: mode,
