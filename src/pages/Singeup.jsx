@@ -26,8 +26,8 @@ import {
   CardTitle,
 } from "/src/components/ui/card";
 
-const SignUp = ({ setUsers, doctors }) => {
-  const { setToken, setUser } = useStateContext();
+const SignUp = ({ setUsers, doctors,setOpen }) => {
+  const { setToken } = useStateContext();
   console.log(doctors, "doctorrs");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ val: false, msg: "" });
@@ -46,6 +46,7 @@ const SignUp = ({ setUsers, doctors }) => {
       password: data.password,
       password_confirmation: data.confirm,
       doctor_id: data.doctor?.id,
+      name: data.name,
     };
     console.log(payload);
     axiosClient
@@ -55,8 +56,9 @@ const SignUp = ({ setUsers, doctors }) => {
           console.log(data);
           // setUser(data.user);
           setUsers((prev) => {
-            return [...prev, data.user];
+            return [ data.user,...prev];
           });
+          setOpen(false)
           // setToken(data.token);
         }
       })
@@ -67,115 +69,31 @@ const SignUp = ({ setUsers, doctors }) => {
       .finally(() => setLoading(false));
   };
   return (
-    // <form onSubmit={handleSubmit(sumbitHamdler)} noValidate>
-    //   <Stack direction={"column"} gap={2}>
-    //     <Typography sx={{ p: 1, textAlign: "center" }} variant="h5">
-    //        {
-    //         t('Addnewuser')
-    //        }
-    //     </Typography>
-    //     <TextField
-    //       error={errors.username != null}
-    //       {...register("username", {
-    //         required: {
-    //           value: true,
-    //           message: "username is required",
-    //         },
-    //         minLength: {
-    //           value: 6,
-    //           message: "username must be at least 6 characters",
-    //         },
-    //       })}
-    //       sx={{ mb: 1 }}
-    //       variant="standard"
-    //       label="Username"
-    //     ></TextField>
-    //     {errors.username && errors.username.message}
-    //     <TextField
-    //       error={errors.password != null}
-    //       sx={{ mb: 1 }}
-    //       {...register("password", {
-    //         required: { value: true, message: "password is required" },
-    //         minLength: {
-    //           value: 8,
-    //           message: "at least 8 chracters must be entered",
-    //         },
-    //       })}
-    //       variant="standard"
-    //       label="Password"
-    //     ></TextField>
-    //     {errors.password && errors.password.message}
-    //     <TextField
-    //       error={errors.confirm != null}
-    //       sx={{ mb: 1 }}
-    //       {...register("confirm", {
-    //         required: {
-    //           value: true,
-    //           message: "confirm password is required",
-    //         },
-    //         minLength: 8,
-    //       })}
-    //       variant="standard"
-    //       label="confirm password"
-    //     ></TextField>
-    //     {errors.confirm && errors.confirm.message}
-    //     <Controller
-    //       name="doctor"
-    //       // rules={{
-    //       //   required: {
-    //       //     value: true,
-    //       //     message: "يجب اختيار اسم الطبيب",
-    //       //   },
-    //       // }}
-    //       control={control}
-    //       render={({ field }) => {
-    //         return (
-    //           <Autocomplete
-    //             onChange={(e, newVal) => field.onChange(newVal)}
-    //             getOptionKey={(op) => op.id}
-    //             getOptionLabel={(option) => option.name}
-    //             options={doctors}
-    //             renderInput={(params) => {
-    //               // console.log(params)
-
-    //               return (
-    //                 <TextField
-    //                   inputRef={field.ref}
-    //                   error={errors?.doctor}
-    //                   {...params}
-    //                   label={t('doctor_name')}
-    //                 />
-    //               );
-    //             }}
-    //           ></Autocomplete>
-    //         );
-    //       }}
-    //     />
-    //     <LoadingButton
-    //       loading={loading}
-    //       type="submit"
-    //       sx={{ m: 1 }}
-    //       variant="contained"
-    //     >
-    //       {t('signup')}
-    //     </LoadingButton>
-    //   </Stack>
-
-    //   {error.val && <Alert severity="error">{error.msg}</Alert>}
-    // </form>
+   
     <Card className="   text-right col-span-3 ">
       <CardHeader>
         <CardTitle> تسجيل بيانات المستخدم</CardTitle>
-        <CardDescription>الرجاء ادخال بيانات المستخدم</CardDescription>
       </CardHeader>
       <CardContent>
         <form noValidate  onSubmit={handleSubmit(sumbitHamdler)}>
-          <div className="grid w-full items-center gap-4">
+          <Stack direction={'column'} gap={1} >
             {/** Name  */}
-            <div className="flex flex-col space-y-1.5 text-right">
-              <Label htmlFor="name"> اسم المستخدم</Label>
-              <Input
-                className="text-right"
+            <TextField
+                
+                error={errors.name != null}
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "name is required",
+                  },
+                
+                })}
+                sx={{ mb: 1 }}
+                variant="standard"
+                label="name"
+              />
+              <TextField
+                
                 error={errors.username != null}
                 {...register("username", {
                   required: {
@@ -191,14 +109,9 @@ const SignUp = ({ setUsers, doctors }) => {
                 variant="standard"
                 label="Username"
               />
-            </div>
-            {/** password */}
-            {errors.username && errors.username.message}
 
-            <div className="flex flex-col space-y-1.5 text-right">
-              <Label htmlFor="cash_percentage"> كلمة المرور</Label>
-              <Input
-                className="text-right"
+              <TextField
+                
                 error={errors.password != null}
                 sx={{ mb: 1 }}
                 {...register("password", {
@@ -211,14 +124,9 @@ const SignUp = ({ setUsers, doctors }) => {
                 variant="standard"
                 label="Password"
               />
-            </div>
-            {/**confirm password     */}
-            {errors.password && errors.password.message}
 
-            <div className="flex flex-col space-y-1.5 text-right">
-              <Label htmlFor="company_percentage"> تاكيد كلمة المرور </Label>
-              <Input
-                className="text-right"
+              <TextField
+                
                 error={errors.confirm != null}
                 sx={{ mb: 1 }}
                 {...register("confirm", {
@@ -231,10 +139,7 @@ const SignUp = ({ setUsers, doctors }) => {
                 variant="standard"
                 label="confirm password"
               />
-            </div>
 
-            {/** choose the doctor */}
-            {errors.confirm && errors.confirm.message}
 
             <Controller
               name="doctor"
@@ -268,7 +173,7 @@ const SignUp = ({ setUsers, doctors }) => {
                 );
               }}
             />
-          </div>
+          </Stack>
 
           <LoadingButton
             loading={loading}

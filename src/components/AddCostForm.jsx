@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import axiosClient from '../../axios-client';
 import MyCustomControlledAutocomplete from '../pages/doctor/MyCutomAutocomplete';
 
-function AddCostForm({setShift,selectedShift}) {
+function AddCostForm({setShift,selectedShift,setAllMoneyUpdatedLab}) {
     const [loading , setLoading] = useState(false)
     const [costCategories,setCostCategories] = useState([])
     useEffect(()=>{
@@ -30,7 +30,10 @@ function AddCostForm({setShift,selectedShift}) {
           console.log(data);
           if (data.status) {
             reset()
-            
+            if(setAllMoneyUpdatedLab){
+
+              setAllMoneyUpdatedLab((prev)=>prev+1)
+            }
             if (setShift) {
                 
                 setShift(data.data);

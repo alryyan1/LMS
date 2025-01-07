@@ -296,7 +296,7 @@ function Reception() {
   const update = (doctorVisit: DoctorVisit) => {
     console.log(doctorVisit, "doctor visit in update function", doctorVisit.id);
     setActivePatient(doctorVisit);
-    // hideForm()
+    hideForm();
     setActiveShift((prev) => {
       if (prev.visits.map((v) => v.id).find((v) => v == doctorVisit.id)) {
         // alert('patient found')
@@ -384,7 +384,7 @@ function Reception() {
             <Lottie options={boxesOptions} height={100} width={100} />
           </Stack>
         )}
-        <div >
+        <div>
           <AutocompleteSearchPatient
             autofocus={user?.isAcountant}
             width={250}
@@ -416,7 +416,7 @@ function Reception() {
           gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
       >
-        <Paper sx={{p:1}}>
+        <Paper sx={{ p: 1 }}>
           {!actviePatient && dialog.showHistory > 0 && (
             <div
               style={{
@@ -435,10 +435,11 @@ function Reception() {
               />
             </div>
           )}
-          {actviePatient && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div>
-               {showDetails ?   <PatientDetail
+
+          <Slide direction="up" in mountOnEnter unmountOnExit>
+            <div>
+              {showDetails && actviePatient ? (
+                <PatientDetail
                   user={user}
                   settings={settings}
                   openedDoctors={openedDoctors}
@@ -446,21 +447,24 @@ function Reception() {
                   key={actviePatient.id}
                   patient={actviePatient}
                   copyPatient={true}
-                />:<div style={{width:'300px'}}>
-                  
-                  <AllMoneyDetails allMoneyUpdated={allMoneyUpdated} allMoneyUpdatedLab={allMoneyUpdatedLab}/>
-                  </div>}
-                
-              </div>
-            </Slide>
-          )}
+                />
+              ) : (
+                <div style={{ width: "300px" }}>
+                  <AllMoneyDetails
+                    allMoneyUpdated={allMoneyUpdated}
+                    allMoneyUpdatedLab={allMoneyUpdatedLab}
+                  />
+                </div>
+              )}
+            </div>
+          </Slide>
         </Paper>
 
         <Paper key={actviePatient?.id} sx={{ p: 2 }}>
           {actviePatient && (
             <>
               <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
-                <Stack sx={{ p: 2 }} direction={"row"} gap={1}>
+                <Stack sx={{ p: 0 }} direction={"row"} gap={1}>
                   <Tooltip title="الخدمات">
                     <Badge
                       anchorOrigin={{
@@ -510,7 +514,11 @@ function Reception() {
                           ? "success"
                           : "error"
                       }
-                      badgeContent={actviePatient.patient.labrequests.length ==  0 ? undefined : actviePatient.patient.labrequests.length}
+                      badgeContent={
+                        actviePatient.patient.labrequests.length == 0
+                          ? undefined
+                          : actviePatient.patient.labrequests.length
+                      }
                     >
                       <Button
                         //  sx={{border:'1px solid lightblue'}}
@@ -535,9 +543,9 @@ function Reception() {
                       </Button>
                     </Badge>
                   </Tooltip>
-                  <IconButton 
-                   disabled={user?.isAccountant}
-                   title="تعديل بيانات المريض"
+                  <IconButton
+                    disabled={user?.isAccountant}
+                    title="تعديل بيانات المريض"
                     size="small"
                     sx={{ flexGrow: 1 }}
                     onClick={() => {
@@ -545,7 +553,7 @@ function Reception() {
                     }}
                     variant="contained"
                   >
-                    <Settings/>
+                    <Settings />
                   </IconButton>
                   {showPatientServices && (
                     <IconButton
@@ -637,12 +645,15 @@ function Reception() {
                       variant="contained"
                       target="myframe"
                     >
-                      <PrinterIcon/>
+                      <PrinterIcon />
                     </IconButton>
                   )}
-                 
-                  <IconButton title=" A5  فاتوره" href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`} >
-                    <Print/>
+
+                  <IconButton
+                    title=" A5  فاتوره"
+                    href={`${webUrl}printLabAndClinicReceipt?doctor_visit=${actviePatient.id}&user=${user?.id}`}
+                  >
+                    <Print />
                   </IconButton>
                 </Stack>
 
@@ -668,9 +679,9 @@ function Reception() {
               setSelectedTests={setSelectedTests}
             />
           )}
-          {showLabTests && actviePatient &&(
+          {showLabTests && actviePatient && (
             <RequestedTestsLab
-            setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
+              setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
               actviePatient={actviePatient}
               companies={companies}
               setDialog={setDialog}
@@ -679,24 +690,26 @@ function Reception() {
             />
           )}
           {actviePatient && showTestPanel && <TestGroups />}
-          {actviePatient &&  showPatientServices && actviePatient.services.length > 0 && (
-            <Slide direction="up" in mountOnEnter unmountOnExit>
-              <div>
-                <RequestedServices
+          {actviePatient &&
+            showPatientServices &&
+            actviePatient.services.length > 0 && (
+              <Slide direction="up" in mountOnEnter unmountOnExit>
+                <div>
+                  <RequestedServices
                     setAllMoneyUpdated={setAllMoneyUpdated}
-                  update={update}
-                  user={user}
-                  activeShift={activeShift}
-                  setShowServicePanel={setShowServicePanel}
-                  companies={companies}
-                  setActivePatient={setActivePatient}
-                  setDialog={setDialog}
-                  setShowPatientServices={setShowPatientServices}
-                  actviePatient={actviePatient}
-                />
-              </div>
-            </Slide>
-          )}
+                    update={update}
+                    user={user}
+                    activeShift={activeShift}
+                    setShowServicePanel={setShowServicePanel}
+                    companies={companies}
+                    setActivePatient={setActivePatient}
+                    setDialog={setDialog}
+                    setShowPatientServices={setShowPatientServices}
+                    actviePatient={actviePatient}
+                  />
+                </div>
+              </Slide>
+            )}
           {actviePatient && (
             <TextField
               hidden
@@ -711,11 +724,15 @@ function Reception() {
         </Paper>
         <Paper
           sx={{
-            overflow: "auto",
+            // overflow: "auto",
             height: "77vh",
+            overflowX: "hidden",
+            overflowY: "auto",
           }}
         >
-          <div style={{ overflow: "auto", padding: "5px" }}>
+          <div
+            style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
+          >
             <Stack
               flexDirection={"row"}
               flexWrap={"wrap"}
@@ -733,8 +750,8 @@ function Reception() {
                   .map((visit) => {
                     return (
                       <PatientReception
-                      showDetails={showDetails}
-                      setShowDetails={setShowDetails}
+                        showDetails={showDetails}
+                        setShowDetails={setShowDetails}
                         change={change}
                         key={visit.id}
                         hideForm={hideForm}
@@ -745,19 +762,24 @@ function Reception() {
             </Stack>
           </div>
         </Paper>
-        {!user?.isAccountant ?     <div>
-          { layOut.hideForm || actviePatient ? (
-            ""
-          ) : (
-            <ReceptionForm
-              socket={socket}
-              settings={settings}
-              hideForm={hideForm}
-              update={update}
-            />
-          )}
-        </div>:<div></div>}
+        {!user?.isAccountant ? (
+          <div>
+            {layOut.hideForm || actviePatient ? (
+              ""
+            ) : (
+              <ReceptionForm
+                socket={socket}
+                settings={settings}
+                hideForm={hideForm}
+                update={update}
+              />
+            )}
+          </div>
+        ) : (
+          <div></div>
+        )}
         <CustumSideBar
+        setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
           activePatient={actviePatient}
           setOpen={setOpen}
           showShiftMoney={showShiftMoney}

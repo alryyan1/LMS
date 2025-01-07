@@ -16,10 +16,11 @@ import AddCostForm from "../../components/AddCostForm";
 interface CostDialogProbs {
     show: boolean;
     setShow: (show: boolean) => void;
-    setShift: ()=>VoidFunctionComponent
+    setShift: ()=>void;
+    setAllMoneyUpdatedLab: ()=>void
   
 }
-  function CostDialog({show,setShow,setShift}:CostDialogProbs) {
+  function CostDialog({show,setShow,setShift,setAllMoneyUpdatedLab}:CostDialogProbs) {
 
   
     return (
@@ -27,7 +28,7 @@ interface CostDialogProbs {
         <Dialog open={show}>
           <DialogTitle> اضافه منصرف</DialogTitle>
           <DialogContent>
-            <AddCostForm  setShift={setShift}/>
+            <AddCostForm setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}  setShift={setShift}/>
           </DialogContent>
           <DialogActions>
             <Button

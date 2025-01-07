@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import MyCustomLoadingButton from '../../components/MyCustomLoadingButton'
 import TdLoader from '../../components/TdLoader'
 
-function DoctorsCredits() {
+function DoctorsCredits({setAllMoneyUpdatedLab}) {
     const [doctorShifts,setDoctorShifts] = useState([])
     const [update,setUpdate] = useState(0)
     useEffect(() => {
@@ -21,6 +21,7 @@ function DoctorsCredits() {
         setIsLoading(true)
         axiosClient.post(`costForDoctor/${id}`,{shiftId:id}).then(({data})=>{
             console.log(data)
+            setAllMoneyUpdatedLab(true)
         }).catch((err)=>console.log(err)).finally(()=>{
             setUpdate((prev)=>prev+1)
         }).finally(()=>setIsLoading(false))

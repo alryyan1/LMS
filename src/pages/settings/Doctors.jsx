@@ -238,7 +238,7 @@ function Doctors() {
                     <TableCell> نسبه(التامين) </TableCell>
                     <TableCell> رقم الهاتف </TableCell>
                     <TableCell> التخصص </TableCell>
-                    <TableCell> الثابت </TableCell>
+                    {/* <TableCell> الثابت </TableCell> */}
                     <TableCell> الخدمات </TableCell>
                   </TableRow>
                 </thead>
@@ -283,13 +283,13 @@ function Doctors() {
                       >
                         {doctor.specialist}
                       </MyAutoCompeleteTableCell>
-                      <MyTableCell
+                      {/* <MyTableCell
                         table="doctors"
                         colName={"static_wage"}
                         item={doctor}
                       >
                         {doctor.static_wage}
-                      </MyTableCell>
+                      </MyTableCell> */}
                       <TableCell>
                         <Button onClick={()=>{
                           setSelectedDoctor(doctor);

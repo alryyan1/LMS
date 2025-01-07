@@ -61,7 +61,7 @@ function Users() {
       setUsers(data);
       console.log(data, "users");
     });
-  }, [isSubmitSuccessful, updater]);
+  }, []);
   useEffect(() => {
     axiosClient("roles").then(({ data }) => {
       setRoles(data);
@@ -78,7 +78,7 @@ function Users() {
   }, []);
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
+      <Grid sx={{height:`${window.innerHeight}px`,overflow:'auto'}} item xs={6}>
         <Box sx={{ p: 1 }}>
           <Stack direction={'row'} justifyContent={'space-between'}>
           <Tooltip title='add user'>
@@ -86,16 +86,17 @@ function Users() {
               <Plus/>
             </IconButton>
           </Tooltip>
-            <Typography textAlign={"center"} variant="h4">
-            Users
+            <Typography textAlign={"center"} variant="h5">
+            المستخدمين
           </Typography>
           </Stack>
     
           <Table size="small">
             <TableRow>
               <TableCell>No</TableCell>
+              <TableCell>name</TableCell>
               <TableCell>Username</TableCell>
-              <TableCell>is Nurse</TableCell>
+              <TableCell> Nurse</TableCell>
               <TableCell>Doctor Link</TableCell>
             </TableRow>
             <TableBody>
@@ -109,7 +110,8 @@ function Users() {
                   onClick={() => {
                     setSelectedUser(user);
                   }} key={user.id}>
-                    <TableCell>{i+1}</TableCell>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.name}</TableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>
                       {" "}
@@ -127,34 +129,7 @@ function Users() {
               })}
             </TableBody>
           </Table>
-          {/* {users.map((user) => {
-            return (
-              <Card
-                className={
-                  selectedUser?.id == user.id
-                    ? "p-4 mb-2 bg-slate-700 text-white"
-                    : "p-4 mb-2 bg-slate-100 hover:bg-slate-700 hover:text-gray-100 hover:cursor-pointer"
-                }
-                onClick={() => {
-                  setSelectedUser(user);
-                }}
-                key={user.id}
-              >
-                <ListItem
-                  secondaryAction={
-                    <MyCheckbox
-                      setDialog={setDialog}
-                      colName={"is_nurse"}
-                      isChecked={user.is_nurse}
-                      path={`update/${user.id}`}
-                    />
-                  }
-                >
-                  <ListItemText>{user.username}</ListItemText>
-                </ListItem>
-              </Card>
-            );
-          })} */}
+        
         </Box>
       </Grid>
       <Grid item xs={2}>
@@ -274,7 +249,7 @@ function Users() {
       {/* <Grid item xs={3}>
         <SignUp doctors={doctors} setUsers={setUsers} />
       </Grid> */}
-      <EmptyDialog title="add user" setShow={setOpen} show={open}><SignUp/></EmptyDialog>
+      <EmptyDialog  title="add user" setShow={setOpen} show={open}><SignUp setOpen={setOpen} setUsers={setUsers}/></EmptyDialog>
     </Grid>
   );
 }

@@ -1,4 +1,4 @@
-import { Divider, IconButton, Stack } from "@mui/material";
+import { Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import { Item, webUrl } from "../pages/constants";
 import { Calculate, Group, PersonAdd, Print } from "@mui/icons-material";
@@ -13,6 +13,8 @@ import { User } from "../types/Patient";
 import EmptyDialog from "../pages/Dialogs/EmptyDialog";
 import CashDenos from "../pages/Clinic/CashDenos";
 import DoctorsCredits from "../pages/Clinic/DoctorsCredits";
+import { Plus } from "lucide-react";
+import CostDialog from "../pages/Dialogs/CostDialog";
 interface CustomSideBarProbs {
   showFormHandler: () => void;
   showDoctorsDialog: () => void;
@@ -21,10 +23,13 @@ interface CustomSideBarProbs {
   activeShift: string;
   user: User;
   activePatient: any;
+  setAllMoneyUpdatedLab: () => void;
+
 }
 function CustumSideBar({
   showFormHandler,
   showDoctorsDialog,
+  setAllMoneyUpdatedLab,
   setOpen,
   showShiftMoney,
   activeShift,
@@ -34,6 +39,8 @@ function CustumSideBar({
   const { setShowPatientServices, setShowServicePanel ,setShowTestPanel,setShowLabTests} =
     useOutletContext<ReceptionLayoutProps>();
     const [showDoctorCredit,setShowDoctorCredit] = useState(false)
+      const [show, setShow] = useState(false);
+    
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -110,6 +117,13 @@ function CustumSideBar({
           </IconButton>
       
       </Item>
+      <Tooltip title='اضافه منصرف'>
+          <IconButton onClick={()=>{
+            setShow(true);
+          }}>
+              <Plus/>
+            </IconButton>
+          </Tooltip>
       {activeShift && (
         <Item>
           <IconButton
@@ -122,9 +136,10 @@ function CustumSideBar({
           </IconButton>
         </Item>
       )}
-     
+               <CostDialog setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}  setShift={null} setShow={setShow} show={show} />
+
      <EmptyDialog setShow={setShowDoctorCredit} show={showDoctorCredit}>
-        <DoctorsCredits/>
+        <DoctorsCredits setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}/>
      </EmptyDialog>
     </Stack>
   );

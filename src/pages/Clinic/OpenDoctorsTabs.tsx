@@ -61,7 +61,13 @@ export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler
           aria-label="basic tabs example"
         >
           {openedDoctors
-            .filter((shift) => shift.user_id == user?.id)
+            .filter((shift) => {
+              if(user.isAccountant || user.isAdmin){
+                return true;
+              }else{
+                shift.user_id == user?.id
+              }
+            })
             .map((shift,index) => {
               // console.log(shift, "shift");
               return (
@@ -81,6 +87,7 @@ export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler
                 >
                   <Tab
                     value={index}
+                    title={shift.doctor.specialist.name}
                     
 
                 

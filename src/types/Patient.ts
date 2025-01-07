@@ -302,6 +302,7 @@ export interface Patient {
     sub_routes: SubRoute[]
     doctor: any;
     isAccountant:boolean
+    isAdmin:boolean;
   }
 
   
@@ -331,46 +332,86 @@ export interface Patient {
     patient_id: number
   }
 
-  export interface RequestedService {
-    id: number
-    doctor_visit_id: number
-    service_id: number
-    user_id: number
-    user_deposited: number
-    doctor_id: number
-    price: number
-    amount_paid: number
-    endurance: number
-    is_paid: number
-    discount: number
-    bank: number
-    count: number
-    created_at: string
-    updated_at: string
-    doctor_note: string
-    nurse_note: string
-    done: number
-    service: Service
-  }
-  
+ interface RequestedService {
+  id: number;
+  doctorvisits_id: number;
+  service_id: number;
+  user_id: number;
+  user_deposited: User;
+  doctor_id: number;
+  price: number;
+  amount_paid: number;
+  endurance: number;
+  is_paid: number;
+  discount: number;
+  bank: number;
+  count: number;
+  created_at: string;
+  updated_at: string;
+  doctor_note: string;
+  nurse_note: string;
+  done: number;
+  service: Service;
+  user_requested: User;
+}
+
+
+
+interface Subroute2 {
+  id: number;
+  sub_route_id: number;
+  user_id: number;
+  sub_route: Subroute;
+}
+
+interface Route2 {
+  id: number;
+  user_id: number;
+  route_id: number;
+  created_at: null;
+  updated_at: null;
+  route: Route;
+}
+
+interface Subroute {
+  id: number;
+  route_id: number;
+  name: string;
+  path: string;
+  icon: number;
+}
+
 
   
  
-  export interface Doctor {
-    id: number
-    name: string
-    phone: string
-    cash_percentage: number
-    company_percentage: number
-    static_wage: number
-    lab_percentage: number
-    specialist_id: number
-    created_at: string
-    updated_at: string
-    lastShift: LastShift
-    services: DoctorService[]
-  }
-  
+  interface Doctor {
+  id: number;
+  name: string;
+  phone: string;
+  cash_percentage: number;
+  company_percentage: number;
+  static_wage: number;
+  lab_percentage: number;
+  specialist_id: number;
+  created_at: string;
+  updated_at: string;
+  lastShift: LastShift;
+  services: Service[];
+  specialist: Specialist;
+}
+
+interface Specialist {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+
+
+
+
+
   export interface LastShift {
     id: number
     user_id: number

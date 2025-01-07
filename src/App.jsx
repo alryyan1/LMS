@@ -8,6 +8,7 @@ import { useStateContext } from "./appContext";
 import nurse from "./assets/images/nurse.jpg";
 import heart from "./assets/images/heart.jpg";
 import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from 'react-router-dom';
 
 import { ToastContainer } from "react-toastify";
 import SidebarNav from "./Sidebar";
@@ -16,6 +17,7 @@ import EmptyDialog from "./pages/Dialogs/EmptyDialog";
 import { useAuthStore } from "./AuthStore";
 import Login from "./pages/Login";
 function App() {
+  const location = useLocation();
   const { openLoginDialog, setCloseLoginDialog, setOpenLoginDialog } =
     useAuthStore((state) => state);
 
@@ -28,7 +30,7 @@ function App() {
   if (user?.doctor) {
     image = `url("${heart}")`;
   }
-
+// alert(location.pathname)
   return (
     <>
       {/* <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container"> */}
@@ -43,20 +45,20 @@ function App() {
         {user && <SidebarNav />}
 
         {/* Main Content */}
-        <div style={{ padding: "5px", margin: "15px auto", width: "95%" }}>
+        <div style={{ padding: "10px", margin: "15px auto", width: "95%" }}>
           <ToastContainer />
 
           <Nav />
 
           <Outlet />
           <Suspense>
-            <EmptyDialog
+           {!location.pathname == '/login' && <EmptyDialog
               show={openLoginDialog}
               setShow={setOpenLoginDialog}
             
             >
               <Login />
-            </EmptyDialog>
+            </EmptyDialog>}
           </Suspense>
         </div>
       </div>

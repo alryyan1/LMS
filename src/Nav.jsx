@@ -57,7 +57,13 @@ const Nav = () => {
       .then(() => {
         setToken(null);
         setUser(null);
-        localStorage.clear();
+        const langValue = localStorage.getItem('lang'); // Save the 'lang' value
+
+        localStorage.clear(); // Clear all keys
+      
+        if (langValue !== null) {
+          localStorage.setItem('lang', langValue); // Restore the 'lang' value
+        }
         navigate("/dashboard");
       })
       .finally(() => setLoading(false));

@@ -41,9 +41,6 @@ interface RequestedServiceProps {
 function RequestedServices({
   actviePatient,
   setAllMoneyUpdated,
-  setDialog,
-  setShowServicePanel,
-  setShowPatientServices,
   activeShift,
   companies,
   user,
@@ -93,6 +90,11 @@ function RequestedServices({
       })
     
   };
+  useEffect(()=>{
+    axiosClient.post(`doctorvisitById`,{id:actviePatient.id}).then(({data})=>{
+      update(data)
+    })
+  },[])
   // console.log(actviePatient,'active patient')
   // alert(actviePatient.company_id)
 
@@ -183,7 +185,7 @@ function RequestedServices({
                         key={service.id}
                       >
                         <TableCell sx={{width:'200px'}}scope="row">
-                          {service.service.name}
+                          <Tooltip title={service.user_requested.username}> {service.service.name}</Tooltip>
                         </TableCell>
 
                         <TableCell>{price}</TableCell>
@@ -207,7 +209,7 @@ function RequestedServices({
                         ) : (
                           ""
                         )}
-                        <TableCell>{service.amount_paid}</TableCell>
+                        <TableCell><Tooltip title={service?.user_deposited?.username}> {service.amount_paid}</Tooltip></TableCell> 
 
                         {actviePatient.patient.company ? (
                           ""

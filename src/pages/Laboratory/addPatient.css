@@ -21,6 +21,7 @@
     text-overflow: ellipsis;
     text-wrap: nowrap;
     padding: 10px;
+    height: 60px;
     color: black!important;
     
 }

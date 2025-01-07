@@ -52,7 +52,7 @@ function DoctorsAutocomplete({doctors,val,user,setDialog}) {
             return (
               <TextField
                 {...params}
-                label={t("doctor_name")}
+                label={'الطبيب'}
               />
             );
           }}

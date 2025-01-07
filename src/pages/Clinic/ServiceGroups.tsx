@@ -46,14 +46,14 @@ function ServiceGroup({socket}) {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Button
+      {/* <Button
         onClick={() => {
           setShowPatientServices(true);
           setShowServicePanel(false);
         }}
       >
         عرض الخدمات المضافه
-      </Button>
+      </Button> */}
       <AddServiceAutocomplete
         setSelectedServices={setSelectedServices}
         setShowPatientServices={setShowPatientServices}

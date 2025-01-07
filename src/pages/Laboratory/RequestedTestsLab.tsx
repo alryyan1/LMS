@@ -206,7 +206,7 @@ function RequestedTestsLab({
   let total_endurance = 0;
   return (
     <>
-      <Box sx={{ p: 1 }} className="">
+     {actviePatient.patient.labrequests.length > 0 ?  <Box sx={{ p: 1 }} className="">
         <div className="">
           <Typography>Lab Requests</Typography>
           <TableContainer>
@@ -404,7 +404,7 @@ function RequestedTestsLab({
             </div>
           </div>
         </div>
-      </Box>
+      </Box>: <div className='text-center'>لا يوجد تحاليل مطلوبه</div> }
     </>
   );
 }
