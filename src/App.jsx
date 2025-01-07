@@ -30,7 +30,7 @@ function App() {
   if (user?.doctor) {
     image = `url("${heart}")`;
   }
-// alert(location.pathname)
+
   return (
     <>
       {/* <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container"> */}
@@ -52,13 +52,13 @@ function App() {
 
           <Outlet />
           <Suspense>
-           {!location.pathname == '/login' && <EmptyDialog
-              show={openLoginDialog}
+            <EmptyDialog
+              show={location.pathname != '/login' && openLoginDialog }
               setShow={setOpenLoginDialog}
             
             >
               <Login />
-            </EmptyDialog>}
+            </EmptyDialog>
           </Suspense>
         </div>
       </div>
