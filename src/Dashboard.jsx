@@ -159,7 +159,7 @@ function Dashboard() {
         <>
         
         <IncomeInfoGraphic/>
-        <CountInfoGraphic/>
+        {/* <CountInfoGraphic/> */}
         </>
 
         <Grid spacing={2} container>

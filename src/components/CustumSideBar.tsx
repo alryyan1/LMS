@@ -13,7 +13,7 @@ import { User } from "../types/Patient";
 import EmptyDialog from "../pages/Dialogs/EmptyDialog";
 import CashDenos from "../pages/Clinic/CashDenos";
 import DoctorsCredits from "../pages/Clinic/DoctorsCredits";
-import { Plus } from "lucide-react";
+import { Book, Plus } from "lucide-react";
 import CostDialog from "../pages/Dialogs/CostDialog";
 interface CustomSideBarProbs {
   showFormHandler: () => void;
@@ -66,7 +66,7 @@ function CustumSideBar({
           <Group />
         </IconButton>
       </Item>}
-      {!user?.isAccountant &&   <Item title="اضافه طبيب">
+      {/* {!user?.isAccountant &&   <Item title="اضافه طبيب">
         <IconButton
           variant="contained"
           onClick={() => {
@@ -75,12 +75,12 @@ function CustumSideBar({
         >
           <PersonAdd />
         </IconButton>
-      </Item>}
-      <Item title="ملخص اليوميه المالي">
+      </Item>} */}
+      {/* <Item title="ملخص اليوميه المالي">
         <IconButton variant="contained" onClick={showShiftMoney}>
           <Calculate />
         </IconButton>
-      </Item>
+      </Item> */}
 
       <Item>
         {user && (
@@ -101,7 +101,7 @@ function CustumSideBar({
             href={`${webUrl}userClinicReport?user=${user.id}`}
             variant="contained"
           >
-            <Diversity3Icon />
+            <Book />
           </IconButton>
         )}
       </Item>

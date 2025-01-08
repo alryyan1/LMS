@@ -92,6 +92,8 @@ function Reception() {
   const [allMoneyUpdatedLab, setAllMoneyUpdatedLab] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
+    const [value, setValue] = useState(0);
+  
   function onConnect() {
     setIsConnected(true);
   }
@@ -293,6 +295,11 @@ function Reception() {
       // console.log(data, "opened doctors");
     });
   }, []);
+
+  const focusPaitent = (doctorVisit) => {
+    setActivePatient(doctorVisit);
+    hideForm();
+  };
   const update = (doctorVisit: DoctorVisit) => {
     console.log(doctorVisit, "doctor visit in update function", doctorVisit.id);
     setActivePatient(doctorVisit);
@@ -374,7 +381,15 @@ function Reception() {
     }
   };
   const [showSearch, setShowSearch] = useState(false);
-
+  const AllTestsArePaid = actviePatient?.patient.labrequests.every(
+    (t) => t.is_paid
+  )
+    ? "success"
+    : "error";
+  const testsCount =
+    actviePatient?.patient.labrequests.length == 0
+      ? undefined
+      : actviePatient?.patient.labrequests.length;
   return (
     <>
       <Stack sx={{ mb: 1 }} direction={"row"} gap={1}>
@@ -386,13 +401,19 @@ function Reception() {
         )}
         <div>
           <AutocompleteSearchPatient
+            setShowDetails={setShowDetails}
             autofocus={user?.isAcountant}
             width={250}
             hideForm={hideForm}
             withTests={1}
-            setActivePatient={update}
-            setActivePatientHandler={setActivePatient}
-            update={setActivePatient}
+            focusPaitent={focusPaitent}
+            activeShift={activeShift}
+            setActiveShift={setActiveShift}
+            openedDoctors={openedDoctors}
+            setShowServicePanel={setShowServicePanel}
+            setValue={setValue}
+            setShowPatientServices={setShowPatientServices}
+
           />
         </div>
 
@@ -402,6 +423,8 @@ function Reception() {
             activeShift={activeShift}
             openedDoctors={openedDoctors}
             selectDoctorHandler={selectDoctorHandler}
+            value={value}
+             setValue={setValue}
           />
         </div>
       </Stack>
@@ -416,7 +439,7 @@ function Reception() {
           gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
       >
-        <Paper sx={{ p: 1 }}>
+        <Paper sx={{ p: 1, m: 1 }}>
           {!actviePatient && dialog.showHistory > 0 && (
             <div
               style={{
@@ -507,18 +530,8 @@ function Reception() {
                         vertical: "top",
                         horizontal: "bottom",
                       }}
-                      color={
-                        actviePatient.patient.labrequests.every(
-                          (t) => t.is_paid
-                        )
-                          ? "success"
-                          : "error"
-                      }
-                      badgeContent={
-                        actviePatient.patient.labrequests.length == 0
-                          ? undefined
-                          : actviePatient.patient.labrequests.length
-                      }
+                      color={testsCount ? AllTestsArePaid : ""}
+                      badgeContent={testsCount}
                     >
                       <Button
                         //  sx={{border:'1px solid lightblue'}}
@@ -779,7 +792,7 @@ function Reception() {
           <div></div>
         )}
         <CustumSideBar
-        setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
+          setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
           activePatient={actviePatient}
           setOpen={setOpen}
           showShiftMoney={showShiftMoney}

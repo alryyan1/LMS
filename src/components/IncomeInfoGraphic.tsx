@@ -26,6 +26,9 @@ function IncomeInfoGraphic() {
     setSelectedMonth(e.target.value);
   };
 
+  // alert('s')
+
+
   const startOfYear = dayjs().startOf("year");
   const monthArr = [];
   for (let i = 0; i < 12; i++) {

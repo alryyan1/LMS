@@ -108,7 +108,7 @@ const Nav = () => {
   useEffect(() => {
     const handleMouseMove = (event) => {
       // Check if the mouse is within 5px from the top of the page
-      if (event.clientY <= 20) {
+      if (event.clientY <= 5) {
         setIsNearTop(true);
         setDisplay("block");
       } else {

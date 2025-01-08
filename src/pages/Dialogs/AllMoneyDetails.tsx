@@ -157,14 +157,14 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
           <ListItemText primary="النقدي" />
         </ListItem>
 
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.expenses)}</div>}  key="3">
+        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.expenses)}</div>}  key="4">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>
           <ListItemText primary="المصروفات" />
         </ListItem>
 
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="3">
+        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>

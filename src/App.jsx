@@ -40,12 +40,12 @@ function App() {
 
       {/* </div> */}
       {/* </div> */}
-      <div style={{ display: "flex", height: "100vh", userSelect: "none" }}>
+      <div style={{ display: "flex", height: "100vh", userSelect: "none" ,overflowX:'none'}}>
         {/* Sidebar */}
         {user && <SidebarNav />}
 
         {/* Main Content */}
-        <div style={{ padding: "10px", margin: "15px auto", width: "95%" }}>
+        <div style={{  width: "95%",overflowX:'none' }}>
           <ToastContainer />
 
           <Nav />

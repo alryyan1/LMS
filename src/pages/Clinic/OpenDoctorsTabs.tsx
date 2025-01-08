@@ -42,15 +42,31 @@ interface openDoctorTabsProps {
   
 
 }
-export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler ,activeShift}:openDoctorTabsProps) {
-  const [value, setValue] = React.useState(0);
+export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue}:openDoctorTabsProps) {
 
+  const tabRefs = React.useRef([]); // Create a ref array to hold all tab refs.
+
+  console.log(tabRefs,'tabRefs')
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    alert('s')
+    // alert(newValue)
     setValue(newValue);
     console.log(newValue,'new val')
-  };
+        // Scroll the active tab into view
+    
+    
 
+  };
+  React.useEffect(()=>{
+    // alert(value)
+    if (tabRefs.current[value]) {
+      tabRefs.current[value].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center", // Ensures horizontal scrolling.
+      });
+    }
+  },[value])
+  // alert(value)
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -71,33 +87,28 @@ export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler
             .map((shift,index) => {
               // console.log(shift, "shift");
               return (
-                <Badge
-                style={{
 
-                    minHeight:'15px!important',minWidth:"15px!important",height:'15px!important',width:'15px!important'
-                  }}
-                   
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "bottom",
-                    }}
-                  color="secondary"
-                  badgeContent={shift.visits.length}
-                  key={shift.id}
-                >
                   <Tab
-                    value={index}
+                              ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
+
+                    value={shift.id}
                     title={shift.doctor.specialist.name}
+
                     
 
                 
                 //   value={shift.doctor_id}
                   onClick={()=>{
-                    setValue(index)
+                    setValue(shift.id)
                      console.log(shift.id)
                      console.log(shift,'selected shift')
                     selectDoctorHandler(shift)
                   }}
+                  // sx={
+                  //   activeShift && activeShift.id === shift.id
+                  //       ? {backgroundColor:'green'}
+                  //       : null
+                  // }
                     className={
                       activeShift && activeShift.id === shift.id
                         ? "activeDoctor doctor"
@@ -107,7 +118,7 @@ export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler
                     {...a11yProps(0)}
                   />
 
-                </Badge>
+             
               );
             })}
         </Tabs>

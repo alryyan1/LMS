@@ -6,6 +6,7 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  overflow-x: none!important;
   font-variation-settings:
     "wdth" 100;
     unicode-range: U+00-FF, U+980-9FF;
@@ -171,6 +172,9 @@ a.active{
   flex-grow: 1;
   border-bottom: 4px solid blue;
   font-weight: bolder;
+  color:white!important;
+  border-radius: 10px!important;
+  background-color: #64b5f6!important;
 }
 
 .MuiDialog-paper{

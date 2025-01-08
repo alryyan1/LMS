@@ -26,6 +26,8 @@ import { PanelBottom } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import bloodTest from "./../../assets/images/blood-test.png";
 import { useOutletContext } from "react-router-dom";
+import axios from "axios";
+import printJS from "print-js";
 
 interface RequestedServiceProps {
   actviePatient: DoctorVisit;
@@ -35,7 +37,7 @@ interface RequestedServiceProps {
   activeShift: DoctorShift;
   companies: Company[];
   user: User;
-  setAllMoneyUpdated:()=>void
+  setAllMoneyUpdated: () => void;
   update: (data: DoctorVisit) => void;
 }
 function RequestedServices({
@@ -45,83 +47,125 @@ function RequestedServices({
   companies,
   user,
   update,
+  setActivePatient,
 }: RequestedServiceProps) {
   const [loading, setLoading] = useState(false);
   console.log(companies, "companies");
   const { t } = useTranslation("requestedServiceTable");
-  const {  setShowTestPanel,setShowLabTests} =
-    useOutletContext();
+  const { setShowTestPanel, setShowLabTests } = useOutletContext();
   const pay = (id: number, setLoading: (loading: boolean) => void) => {
     setLoading(true);
     axiosClient
       .patch(`requestedService/pay/${id}`)
       .then(({ data }: any) => {
+        //print reciet
+
+
+        //print reciet
+
         console.log(data, "pay service");
         update(data.patient);
-        setAllMoneyUpdated((prev)=>prev+1)
-
-     
+        setAllMoneyUpdated((prev) => prev + 1);
       })
       .catch(({ response: { data } }: any) => {
         // alert(data.message)
-       
       })
       .finally(() => {
         setLoading(false);
-      })
-   
+        
+        const form = new URLSearchParams();
+
+        axiosClient
+          .get(`printRecieptionOneService?doctor_visit=${actviePatient.id}&service=${id}&base64=1`)
+          .then(({ data }) => {
+            form.append("data", data);
+            console.log(data, "daa");
+            printJS({
+              printable: data.slice(data.indexOf("JVB")),
+              base64: true,
+              type: "pdf",
+            });
+
+            // fetch("http://127.0.0.1:4000/", {
+            //   method: "POST",
+            //   headers: {
+            //     "Content-Type":
+            //       "application/x-www-form-urlencoded",
+            //   },
+
+            //   body: form,
+            // }).then(() => {});
+          });
+      });
   };
   const cancelPayHandler = (id: number) => {
     setLoading(true);
     axiosClient
       .patch(`requestedService/cancel/${id}`)
       .then(({ data }: any) => {
-        setAllMoneyUpdated((prev)=>prev+1)
+        setAllMoneyUpdated((prev) => prev + 1);
 
         if (data.status) {
           update(data.patient);
-
-       
         }
       })
-     
+
       .finally(() => {
         setLoading(loading);
-      })
-    
+      });
   };
-  useEffect(()=>{
-    axiosClient.post(`doctorvisitById`,{id:actviePatient.id}).then(({data})=>{
-      update(data)
-    })
-  },[])
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const response = await axiosClient.post(
+          "doctorvisitById",
+          { id: actviePatient.id },
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response.data, "daaaaaaaaaata");
+        setActivePatient(response.data);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled:", error.message);
+        } else {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      controller.abort(); // Cancel the request on component unmount
+    };
+  }, []);
+
   // console.log(actviePatient,'active patient')
   // alert(actviePatient.company_id)
 
   const deleteService = (id: number) => {
-    axiosClient
-      .delete(`requestedService/${id}`)
-      .then(({ data }: any) => {
-        if (data.status) {
-          setAllMoneyUpdated((prev)=>prev+1)
-          update(data.patient);
-     
-        }
-      })
-     
+    axiosClient.delete(`requestedService/${id}`).then(({ data }: any) => {
+      if (data.status) {
+        setAllMoneyUpdated((prev) => prev + 1);
+        update(data.patient);
+      }
+    });
   };
   let total_endurance = 0;
   let total_price = 0;
-  console.log(actviePatient,'active patient')
+  console.log(actviePatient, "active patient");
   return (
     <>
       <div className="requested-tests">
-    
-
         <div className="requested-table">
           <Typography>Medical Services</Typography>
           <TableContainer component={Card}>
-            <Table  className="table-small" size="small">
+            <Table className="table-small" size="small">
               <TableHead className="thead">
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
@@ -139,19 +183,15 @@ function RequestedServices({
                   ) : (
                     <TableCell>{t("bank")}</TableCell>
                   )}
-                  <TableCell >
-                    {t("pay")}
-                  </TableCell>
-                  <TableCell >
-                    {t("other")}
-                  </TableCell>
+                  <TableCell>{t("pay")}</TableCell>
+                  <TableCell>{t("other")}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {actviePatient?.services
                   .filter((service) => {
-                    return true
-                   // return service.doctor_id == activeShift.doctor.id;
+                    return true;
+                    // return service.doctor_id == activeShift.doctor.id;
                   })
                   .map((service) => {
                     // console.log(actviePatient,'active patient')
@@ -184,8 +224,11 @@ function RequestedServices({
                         }}
                         key={service.id}
                       >
-                        <TableCell sx={{width:'200px'}}scope="row">
-                          <Tooltip title={service.user_requested.username}> {service.service.name}</Tooltip>
+                        <TableCell sx={{ width: "200px" }} scope="row">
+                          <Tooltip title={service.user_requested.username}>
+                            {" "}
+                            {service.service.name}
+                          </Tooltip>
                         </TableCell>
 
                         <TableCell>{price}</TableCell>
@@ -194,30 +237,31 @@ function RequestedServices({
                           disabled={service.is_paid == 1}
                           table="requestedService/discount"
                           item={service}
-                          sx={{width:'50px'}}
+                          sx={{ width: "50px" }}
                           update={update}
                         >
                           {service.discount}
                         </MyTableCell>
                         {actviePatient.patient.company ? (
-                          <TableCell
-                            sx={{ border: "none", color: "red" }}
-                           
-                          >
+                          <TableCell sx={{ border: "none", color: "red" }}>
                             {service.endurance}
                           </TableCell>
                         ) : (
                           ""
                         )}
-                        <TableCell><Tooltip title={service?.user_deposited?.username}> {service.amount_paid}</Tooltip></TableCell> 
+                        <TableCell>
+                          <Tooltip title={service?.user_deposited?.username}>
+                            {" "}
+                            {service.amount_paid}
+                          </Tooltip>
+                        </TableCell>
 
                         {actviePatient.patient.company ? (
                           ""
                         ) : (
                           <TableCell>
                             <MyCheckboxReception
-                                    setAllMoneyUpdated={setAllMoneyUpdated}
-
+                              setAllMoneyUpdated={setAllMoneyUpdated}
                               update={update}
                               disabled={service.is_paid == 0}
                               checked={service.bank == 1}
