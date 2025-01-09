@@ -1,0 +1,18 @@
+{
+    "doctors": "الاطباء",
+    "doctor_services": "خدمات الطبيب",
+   "error": "خطأ",
+   "name": "الاسم",
+   "doctor_percentage": "نصيب الطبيب نسبه",
+   "doctor_amount": "نصيب الطبيب مبلغ",
+    "delete": "حذف",
+    "close": "اغلاق",
+   "search": "بحث",
+   "id": "رقم",
+   "cash_percentage": "نسبه(النقدي)",
+   "insurance_percentage": "نسبه(التامين)",
+   "phone": "رقم الهاتف",
+   "specialist": "التخصص",
+    "fixed": "الثابت",
+    "services": "الخدمات"
+ }

@@ -6,7 +6,7 @@ export interface DoctorShift {
   status: number
   created_at: string
   updated_at: string
-  visits: DoctorVisit[]
+  visits: DoctorVisit[]|null
   cost: any
   doctor: Doctor
 }
@@ -27,6 +27,7 @@ export interface DoctorVisit {
   only_lab:number;
   file:PatientFile;
   totalservicebank:number;
+  doctor_shift:DoctorShift;
 
 
 }
@@ -303,6 +304,7 @@ export interface Patient {
     doctor: any;
     isAccountant:boolean
     isAdmin:boolean;
+    canPayLab:boolean;
   }
 
   

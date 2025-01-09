@@ -231,7 +231,7 @@ function RequestedServices({
                           </Tooltip>
                         </TableCell>
 
-                        <TableCell>{price}</TableCell>
+                        <TableCell>{formatNumber(price)}</TableCell>
                         <MyTableCell
                           colName={"discount"}
                           disabled={service.is_paid == 1}

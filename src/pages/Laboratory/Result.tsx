@@ -76,7 +76,7 @@ function Result() {
         {
           <AutocompleteSearchPatient
             labOnlyPatients={true}
-            update={setActivePatientHandler}
+            focusPaitent={setActivePatientHandler}
           />
         }
       </Stack>

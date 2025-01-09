@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
@@ -24,15 +24,18 @@ import axiosClient from "../../../axios-client";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
+import EmptyDialog from "../Dialogs/EmptyDialog";
 
 function AddService() {
-  const [selectedService , setSelectedService] = useState(null)
+    const { t } = useTranslation('addService');
+  const [selectedService, setSelectedService] = useState(null);
   const [search, setSearch] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showServiceCostDialog, setShowServiceCostDialog] = useState(false);
   const [services, setservices] = useState([]);
   const [links, setLinks] = useState([]);
   const [page, setPage] = useState(50);
-  const [updated,setUpdated] = useState(0)
+  const [updated, setUpdated] = useState(0);
   const [serviceGroups, setServiceGroups] = useState([]);
   useEffect(() => {
     axiosClient.get("serviceGroup/all").then(({ data }) => {
@@ -40,7 +43,11 @@ function AddService() {
       setServiceGroups(data);
     });
   }, []);
-   const {register:register2,handleSubmit:handleSubmit2,formState:{errors:errors2}} = useForm()
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm();
   const searchHandler = (word) => {
     setSearch(word);
     axiosClient
@@ -75,33 +82,41 @@ function AddService() {
         setLoading(false);
       });
   };
-  
-  const removeServiceCost = (id)=>{
+
+  const removeServiceCost = (id) => {
     setLoading(true);
 
-    axiosClient.delete(`removeServiceCost/${id}`).then(({data})=>{
-      console.log(data)
-      if (data.status) {
-        setSelectedService(data.service)
-     
-        reset();
-      }
-    }).finally(() => setLoading(false));
-  }
-  const addServiceCostHandler = (data)=>{
-    console.log(data)
+    axiosClient
+      .delete(`removeServiceCost/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          setSelectedService(data.service);
+
+          reset();
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+  const addServiceCostHandler = (data) => {
+    console.log(data);
     setLoading(true);
 
-    axiosClient.post(`addServiceCost/${selectedService.id}`,{...data,service_id:selectedService.id}).then(({data})=>{
-      console.log(data)
-      if (data.status) {
-        setSelectedService(data.service)
-      
-        reset();
-     
-      }
-    }).finally(() => setLoading(false));
-  }
+    axiosClient
+      .post(`addServiceCost/${selectedService.id}`, {
+        ...data,
+        service_id: selectedService.id,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.status) {
+          setSelectedService(data.service);
+
+          reset();
+        }
+      })
+      .finally(() => setLoading(false));
+  };
   //create state variable to store all Items
   const submitHandler = (data) => {
     setLoading(true);
@@ -119,12 +134,12 @@ function AddService() {
               ...prev,
               open: true,
               color: "success",
-              msg: "Addition was successfull",
+              msg: t("additionSuccess"),
             };
           });
           reset();
-          setValue('service_group_id',null)
-          setUpdated((prev)=> prev + 1 )
+          setValue("service_group_id", null);
+          setUpdated((prev) => prev + 1);
         }
       })
       .finally(() => setLoading(false));
@@ -156,14 +171,14 @@ function AddService() {
       .finally(() => setLoading(false));
   }, [page, isSubmitting]);
   useEffect(() => {
-    document.title = "الخدمات";
+    document.title = t("services");
   }, []);
   return (
-    <Grid container  gap={1}>
+    <Grid container gap={1}>
       {loading ? (
-        <Skeleton width={'100%'} height={400} ></Skeleton>
+        <Skeleton width={"100%"} height={400}></Skeleton>
       ) : (
-        <Grid item xs={8}  >
+        <Grid item xs={8}>
           <TableContainer sx={{ mb: 1 }}>
             <Stack
               sx={{ mb: 1 }}
@@ -188,7 +203,7 @@ function AddService() {
                 onChange={(e) => {
                   searchHandler(e.target.value);
                 }}
-                label="Search"
+                label={t("search")}
               ></TextField>
             </Stack>
 
@@ -196,16 +211,24 @@ function AddService() {
               <thead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Cost </TableCell>
-                  <TableCell>Dlt</TableCell>
+                  <TableCell>{t("name")}</TableCell>
+                  <TableCell>{t("price")}</TableCell>
+                  <TableCell>{t("category")}</TableCell>
+                  <TableCell>{t("cost")}</TableCell>
+                  <TableCell>{t("delete")}</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
                 {services.map((item) => (
-                  <TableRow sx={{background:(theme)=>selectedService?.id == item.id ? theme.palette.warning.light :''}} key={item.id}>
+                  <TableRow
+                    sx={{
+                      background: (theme) =>
+                        selectedService?.id == item.id
+                          ? theme.palette.warning.light
+                          : "",
+                    }}
+                    key={item.id}
+                  >
                     <TableCell>{item.id}</TableCell>
                     <MyTableCell table="service" colName={"name"} item={item}>
                       {item.name}
@@ -229,15 +252,22 @@ function AddService() {
                       {item.service_group}
                     </MyAutoCompeleteTableCell>
                     <TableCell>
-                      <Button onClick={()=>{
-                        setSelectedService(item)
-                      }}>Select</Button>
+                      <Button
+                        onClick={() => {
+                          setSelectedService(item);
+                          setShowServiceCostDialog(true);
+                        }}
+                      >
+                        {t("select")}
+                      </Button>
                     </TableCell>
 
                     <TableCell>
                       <MyLoadingButton
                         onClick={() => {
-                          const result = confirm(" \n سيتم حذف العمليات الماليه المتلقه بالخدمه-- هل انت متاكد من حذف الخدمه");
+                          const result = confirm(
+                            t("deleteServiceConfirmation")
+                          );
                           if (result) {
                             axiosClient
                               .delete(`service/${item.id}`)
@@ -248,7 +278,7 @@ function AddService() {
                                       ...prev,
                                       open: true,
                                       color: "success",
-                                      msg: "Delete was successfull",
+                                      msg: t("deleteSuccess"),
                                     };
                                   });
                                   setservices((prev) =>
@@ -259,7 +289,7 @@ function AddService() {
                           }
                         }}
                       >
-                        Delete
+                         {t("delete")}
                       </MyLoadingButton>
                     </TableCell>
                   </TableRow>
@@ -315,10 +345,10 @@ function AddService() {
           </Grid>
         </Grid>
       )}
-      <Grid item xs={3} >
+      <Grid item xs={3}>
         <Stack direction={"row"} justifyContent={"center"} spacing={4}>
           <Typography variant="h4" fontFamily={"Tajwal-Regular"}>
-            خدمه جديده
+            {t("newService")}
           </Typography>
         </Stack>
         <form noValidate dir="rtl" onSubmit={handleSubmit(submitHandler)}>
@@ -327,10 +357,10 @@ function AddService() {
               fullWidth
               error={errors.name != null}
               {...register("name", {
-                required: { value: true, message: "field is required" },
+                required: { value: true, message: t("fieldRequired") },
               })}
               id="outlined-basic"
-              label="Name "
+              label={t("name")}
               variant="filled"
               helperText={errors.name?.message}
             />
@@ -339,10 +369,10 @@ function AddService() {
               type="number"
               error={errors.price != null}
               {...register("price", {
-                required: { value: true, message: "the field is required" },
+                required: { value: true, message: t("fieldRequired") },
               })}
               id="outlined-basic"
-              label="Price"
+              label={t("price")}
               variant="filled"
               helperText={errors.price?.message}
             />
@@ -353,18 +383,17 @@ function AddService() {
               rules={{
                 required: {
                   value: true,
-                  message: "field is required",
+                  message: t("fieldRequired"),
                 },
               }}
               render={({ field }) => {
                 return (
                   <Autocomplete
-                  key={updated}
-                  {...field}
-                 
-                    getOptionKey={(op)=>op.id}
+                    key={updated}
+                    {...field}
+                    getOptionKey={(op) => op.id}
                     options={serviceGroups}
-                    getOptionLabel={(option) => option.name }
+                    getOptionLabel={(option) => option.name}
                     onChange={(_, newVal) => field.onChange(newVal)}
                     renderInput={(params) => {
                       return (
@@ -375,7 +404,7 @@ function AddService() {
                             errors.service_group_id.message
                           }
                           {...params}
-                          label="Section"
+                          label={t("section")}
                           variant="filled"
                         />
                       );
@@ -391,47 +420,63 @@ function AddService() {
               variant="contained"
               type="submit"
             >
-              Save
+              {t("save")}
             </LoadingButton>
           </Stack>
         </form>
       </Grid>
-    {selectedService &&   <Card sx={{p:1}}>
-        <h5>Service Cost </h5>
-        <form onSubmit={handleSubmit2(addServiceCostHandler)}>
-          <Stack direction={"column"} gap={2}>
-            <TextField variant="standard"   label='وصف المصروف' {...register2('name')}/>
-            <TextField  variant="standard" label='النسبه' {...register2('percentage')}/>
-            <TextField variant="standard"  label='مبلغ' {...register2('fixed')}/>
-            <LoadingButton type="submit">حفظ</LoadingButton>
-          </Stack>
-        </form>
-      </Card>}
-      <Grid>
-      {selectedService && <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell> الوصف</TableCell>
-              <TableCell>النسبة</TableCell>
-              <TableCell>المبلغ</TableCell>
-              <TableCell>حذف</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {selectedService?.service_costs.map((cost) => (
-              <TableRow key={cost.id}>
-                <TableCell>{cost.name}</TableCell>
-                <TableCell>{cost.percentage}%</TableCell>
-                <TableCell>{cost.fixed}</TableCell>
-                <TableCell>
-                  <Button onClick={() => removeServiceCost(cost.id)}>حذف</Button>
-                </TableCell>
+      <EmptyDialog setShow={setShowServiceCostDialog} show={showServiceCostDialog}>
+        <Stack direction={"row"} gap={1}>
+        
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t("description")}</TableCell>
+                <TableCell>{t("percentage")}</TableCell>
+                <TableCell>{t("amount")}</TableCell>
+                <TableCell>{t("delete")}</TableCell>
               </TableRow>
-            ))}
-
-          </TableBody>
-        </Table>}
-      </Grid>
+            </TableHead>
+            <TableBody>
+              {selectedService?.service_costs.map((cost) => (
+                <TableRow key={cost.id}>
+                  <TableCell>{cost.name}</TableCell>
+                  <TableCell>{cost.percentage}%</TableCell>
+                  <TableCell>{cost.fixed}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => removeServiceCost(cost.id)}>
+                      {t("delete")}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <Card sx={{ p: 1 ,width:'300px'}}>
+            <Typography textAlign={'center'} variant="h5">{t("serviceExpenses")}</Typography>
+            <form onSubmit={handleSubmit2(addServiceCostHandler)}>
+              <Stack direction={"column"} gap={2}>
+                <TextField
+                  variant="standard"
+                  label={t("expenseDescription")}
+                  {...register2("name")}
+                />
+                <TextField
+                  variant="standard"
+                  label={t("percentage")}
+                  {...register2("percentage")}
+                />
+                <TextField
+                  variant="standard"
+                  label={t("amount")}
+                  {...register2("fixed")}
+                />
+                <LoadingButton type="submit">{t("save")}</LoadingButton>
+              </Stack>
+            </form>
+          </Card>
+        </Stack>
+      </EmptyDialog>
     </Grid>
   );
 }

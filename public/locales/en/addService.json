@@ -1,0 +1,22 @@
+{
+  "services": "Services",
+  "search": "Search",
+  "name": "Name",
+  "price": "Price",
+  "category": "Category",
+  "cost": "Cost",
+   "delete":"Delete",
+    "select":"Select",
+  "newService": "New Service",
+  "fieldRequired": "Field is required",
+  "section": "Section",
+  "save": "Save",
+  "additionSuccess": "Addition was successful",
+  "deleteServiceConfirmation": "Are you sure you want to delete the service and all related financial operations?",
+  "deleteSuccess": "Deletion was successful",
+  "description": "Description",
+  "percentage": "Percentage",
+  "amount": "Amount",
+  "serviceExpenses":"Service Expenses",
+  "expenseDescription":"Expense Description"
+}

@@ -1,19 +1,19 @@
-import { FavoriteBorder } from "@mui/icons-material";
+import { CopyAll, FavoriteBorder } from "@mui/icons-material";
 import { Badge, Chip, Icon, Paper, Stack, styled } from "@mui/material";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
-import { DoctorVisit, Patient } from '../../types/Patient';
-import  {Item} from '../constants'
+import { DoctorVisit, Patient } from "../../types/Patient";
+import { Item } from "../constants";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
-type PatientReceptinPros  = {
+type PatientReceptinPros = {
   patient: DoctorVisit;
-  setShowDetails:()=>void;
-  showDetails:boolean;
-  hideForm: ()=>void;
+  setShowDetails: () => void;
+  showDetails: boolean;
+  hideForm: () => void;
   change: (doctorVisit: DoctorVisit) => void;
-}
+};
 
-function PatientReception(props:PatientReceptinPros) {
+function PatientReception(props: PatientReceptinPros) {
   const {
     actviePatient,
     setActivePatient,
@@ -22,14 +22,13 @@ function PatientReception(props:PatientReceptinPros) {
     setShowServicePanel,
     activeShift,
     setShowTestPanel,
-    setShowLabTests
+    setShowLabTests,
   } = useOutletContext<ReceptionLayoutProps>();
   return (
     <Badge
       color="primary"
       badgeContent={
         props.patient.services.filter((service) => {
-          
           return service.doctor_id == activeShift?.doctor.id;
         }).length
       }
@@ -40,7 +39,7 @@ function PatientReception(props:PatientReceptinPros) {
         onClick={() => {
           // setShowLabTests(false)
           if (actviePatient) {
-            setShowTestPanel(false)
+            setShowTestPanel(false);
             /** this because if was same patient */
             if (actviePatient.id == props.patient.id) {
             } else {
@@ -65,26 +64,21 @@ function PatientReception(props:PatientReceptinPros) {
             setShowPatientServices(false);
           }
 
-        //  props.hideForm();
+          //  props.hideForm();
         }}
         direction={"row"}
       >
         <Item
-          className={
-          actviePatient?.id === props.patient.id ? "active" : ""
-          }
-        
+          className={actviePatient?.id === props.patient.id ? "active" : ""}
           sx={{
             display: "flex",
             justifyContent: "space-between",
             minWidth: "230px",
             cursor: "pointer",
-            color:'black'
+            color: "black",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-          
-
             {props.patient.totalservicebank > 0 && (
               <Chip
                 label="bank"
@@ -99,23 +93,24 @@ function PatientReception(props:PatientReceptinPros) {
 
           {props.patient.patient.name}
         </Item>
-        <Item onDoubleClick={()=>{
-          props.setShowDetails(! props.showDetails)
-        }} className="patient-no">
-          {props.patient.number }
-          {props.patient.patient.company && <span
-            style={{
-              position: "absolute",
-              top: "-6px",
-              right: "3px",
-              width: "10px",
-            }}
-          >
-            {" "}
-            <Icon>
-              <FavoriteBorder />
-            </Icon>
-          </span>}
+        <Item
+          onDoubleClick={() => {
+            props.setShowDetails(!props.showDetails);
+          }}
+          className="patient-no"
+        >
+          {props.patient.number}
+         
+              <Stack sx={{ position: "absolute" ,top:'-10px',right:'0px',fontSize:'5px',alignContent:'center',justifyContent:'center'}} direction={"column"}>
+                {props.patient.patient.company &&  <Icon >
+                  <FavoriteBorder titleAccess="تامين" fontSize="small" />
+                </Icon>}
+                {props.patient.patient.doctor.id != props.patient.doctor_shift.doctor_id &&  <Icon>
+                  <CopyAll titleAccess="منسوخ" fontSize="small"/>
+                </Icon>}
+              </Stack>
+           
+   
         </Item>
       </Stack>
     </Badge>

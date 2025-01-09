@@ -21,9 +21,10 @@ function DoctorsCredits({setAllMoneyUpdatedLab}) {
         setIsLoading(true)
         axiosClient.post(`costForDoctor/${id}`,{shiftId:id}).then(({data})=>{
             console.log(data)
-            setAllMoneyUpdatedLab(true)
         }).catch((err)=>console.log(err)).finally(()=>{
             setUpdate((prev)=>prev+1)
+            setAllMoneyUpdatedLab((prev)=>prev+1)
+
         }).finally(()=>setIsLoading(false))
     }
   return (
@@ -32,7 +33,7 @@ function DoctorsCredits({setAllMoneyUpdatedLab}) {
             <TableHead>
                 <TableRow>
                     <TableCell>الاسم</TableCell>
-                    <TableCell>اجمالي الدخل</TableCell>
+                    <TableCell>اجمالي الاستحقاق</TableCell>
                     <TableCell>عدد المرضي</TableCell>
                     <TableCell>استحقاق النقدي</TableCell>
                     <TableCell>استحقاق التامين</TableCell>
@@ -45,7 +46,7 @@ function DoctorsCredits({setAllMoneyUpdatedLab}) {
                     return(
                         <TableRow key={shift.id}>
                             <TableCell>{shift.doctor.name}</TableCell>
-                            <TableCell>{shift.total}</TableCell>
+                            <TdLoader api={`doctor/totalMoney/${shift.id}`}/>
                             <TableCell>{shift.visits.length}</TableCell>
                             <TdLoader api={`doctor/moneyCash/${shift.id}`}/>
                             <TdLoader api={`doctor/moneyInsu/${shift.id}`}/>

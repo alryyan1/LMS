@@ -1,0 +1,18 @@
+{
+    "doctors": "Doctors",
+    "doctor_services": "Doctor Services",
+    "error": "Error",
+    "name": "Name",
+    "doctor_percentage": "Doctor Percentage",
+    "doctor_amount": "Doctor Amount",
+    "delete": "Delete",
+    "close": "Close",
+    "search": "Search",
+    "id": "ID",
+    "cash_percentage": "Cash Percentage",
+    "insurance_percentage": "Insurance Percentage",
+    "phone": "Phone",
+    "specialist": "Specialist",
+    "fixed": "Fixed",
+    "services": "Services"
+  }

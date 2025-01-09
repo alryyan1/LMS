@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { Badge } from "@mui/material";
 import { DoctorShift, User } from "../../types/Patient";
+import axiosClient from "../../../axios-client";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,11 +39,16 @@ interface openDoctorTabsProps {
     openedDoctors: DoctorShift[];
     selectDoctorHandler: (shift: DoctorShift) => void;
     activeShift: DoctorShift|null;
-    user : User
+    user : User;
+    setValue: React.Dispatch<React.SetStateAction<number>>;
+    setOpenedDoctors: React.Dispatch<React.SetStateAction<DoctorShift[]>>;
+    setActiveShift: React.Dispatch<React.SetStateAction<DoctorShift|null>>;
+
+
   
 
 }
-export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue}:openDoctorTabsProps) {
+export default function OpenDoctorTabs({setLoadingDoctorPatients, user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue,setOpenedDoctors,setActiveShift}:openDoctorTabsProps) {
 
   const tabRefs = React.useRef([]); // Create a ref array to hold all tab refs.
 
@@ -65,6 +71,28 @@ export default function OpenDoctorTabs({ user, openedDoctors,selectDoctorHandler
         inline: "center", // Ensures horizontal scrolling.
       });
     }
+    setLoadingDoctorPatients(true)
+    //update latest patients for doctor
+    const controller = new AbortController()
+    if(value){
+      axiosClient.get(`getDoctorShiftById?id=${value}`,{
+        signal: controller.signal,
+      }).then(({data})=>{
+        console.log(data,'getDoctorShiftById')
+        setActiveShift(data);
+
+        setOpenedDoctors((prev)=>{
+         return  prev.map((doctorShift)=>{
+            if(doctorShift.id == value){
+              return data;
+            }
+            return doctorShift;
+          })
+        })
+      }).finally(()=>setLoadingDoctorPatients(false))
+    }
+    return () => controller.abort() // Clean up the abort controller when component unmounts.
+   
   },[value])
   // alert(value)
   return (

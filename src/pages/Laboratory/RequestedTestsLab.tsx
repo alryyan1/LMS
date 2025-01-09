@@ -15,7 +15,7 @@ import {
 import DiscountSelect from "./DiscountSelect";
 import { act, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { formatNumber, url } from "../constants";
+import { formatNumber, printBarcodeRaw, PrintLab, url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
@@ -27,7 +27,7 @@ import DiscountSelectLab from "./DiscountSelectLab";
 import MyCheckBoxLab from "./MyCheckboxLab";
 import { socket } from "../../socket";
 import { LabLayoutPros } from "../../LabLayout";
-import { Company, DoctorVisit, MainTest } from "../../types/Patient";
+import { Company, DoctorVisit, MainTest, User } from "../../types/Patient";
 import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import { DollarSignIcon, Download, Group } from "lucide-react";
@@ -54,9 +54,15 @@ function RequestedTestsLab({
   setAllMoneyUpdatedLab
 }: RequestedTestsLab) {
   console.log(actviePatient, "activePatient from");
-  const { user } = useStateContext();
+  const { user }= useStateContext();
   const [loading, setLoading] = useState(false);
-  const payHandler = () => {
+  const payHandler = async() => {
+
+    if(!user?.canPayLab){
+      PrintLab(actviePatient,userSettings)
+
+      return
+    }
     const result = confirm(
       `${t("هل تؤكد استلامك مبلغ قدره")} ${actviePatient?.patient.labrequests.filter((l) => l.is_paid == 0).reduce((prev, curr) => prev + curr.price, 0)}`
     );
@@ -67,14 +73,7 @@ function RequestedTestsLab({
     //   console.log(data,'barcode')
     //   })
 
-    fetch("http://127.0.0.1:5000/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "APPLICATION/JSON",
-      },
-
-      body: JSON.stringify(actviePatient),
-    }).then(() => {});
+   printBarcodeRaw(actviePatient)
     setLoading(true);
     axiosClient
       .patch(`payment/${actviePatient.id}`, {
@@ -88,31 +87,7 @@ function RequestedTestsLab({
           setAllMoneyUpdatedLab((prev)=>prev+1)
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {
-            const form = new URLSearchParams();
-            axiosClient
-              .get(`printLab/${actviePatient.id}?base64=1`)
-              .then(({ data }) => {
-                form.append("data", data);
-                form.append("node_direct", userSettings.node_direct);
-                console.log(data, "daa");
-                if (userSettings?.web_dialog) {
-                  printJS({
-                    printable: data.slice(data.indexOf("JVB")),
-                    base64: true,
-                    type: "pdf",
-                  });
-                }
-                if (userSettings?.node_direct) {
-                  fetch("http://127.0.0.1:4000/", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded",
-                    },
-
-                    body: form,
-                  }).then(() => {});
-                }
-              });
+            PrintLab(actviePatient,userSettings)
           }
 
           setLoading(false);

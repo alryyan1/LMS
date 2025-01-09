@@ -24,10 +24,11 @@ import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import { useOutletContext } from "react-router-dom";
 import AddDoctorForm from "./AddDoctorForm";
+import { useTranslation } from "react-i18next";
 
 function Doctors() {
-  const { specialists, doctorUpdater ,setDialog} = useOutletContext();
-
+  const { specialists, doctorUpdater, setDialog } = useOutletContext();
+  const {t} = useTranslation('doctorsTable')
   const [search, setSearch] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [links, setLinks] = useState([]);
@@ -66,7 +67,7 @@ function Doctors() {
         return res.json();
       })
       .then(({ data, links }) => {
-        console.log(data, links,'doctors data');
+        console.log(data, links, "doctors data");
         setDoctors(data);
         setLinks(links);
       })
@@ -76,13 +77,13 @@ function Doctors() {
   };
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    document.title = 'الاطباء' ;
+    document.title = t("doctors");
   }, []);
   // console.log(isSubmitting);
   useEffect(() => {
     setLoading(true);
     axiosClient.get("service/all").then(({ data }) => {
-      console.log(data,'service data')
+      console.log(data, "service data");
       setServices(data);
     });
     // console.log("start of use effect");
@@ -90,7 +91,7 @@ function Doctors() {
     axiosClient
       .get(`doctors/pagination/${page}`)
       .then(({ data: { data, links } }) => {
-        console.log(data,'doctors data');
+        console.log(data, "doctors data");
         // console.log(data, "companies");
         // console.log(links);
         setDoctors(data);
@@ -104,73 +105,95 @@ function Doctors() {
   return (
     <>
       <Dialog fullWidth open={openDocotrServiceDialog}>
-        <DialogTitle>خدمات الطبيب</DialogTitle>
+        <DialogTitle>{t("doctor_services")}</DialogTitle>
         <DialogContent>
-          <Stack direction={'row'}>
-            <Button variant="contained" onClick={()=>{
-              console.log(selectedDoctorServices)
-              axiosClient.post(`doctors/${selectedDoctor.id}/services`, {services:selectedDoctorServices.map((s)=>s.id)}).then(({data})=>{
-                if (data.status) {
-                  setSelectedDoctor(data.doctor)
-                  setSelectedDoctorServices([])
-                  
-                }
-              }).catch(({response:{data}})=>{
-                console.log(data,'my error')
-                console.log(setDialog)
-                setDialog(()=>{
-                  return {
-                    open:true,
-                    title: "خطأ",
-                    msg: data.message,
-                    color: "error",
-                  }
-                })
-              });
-            }}>+</Button>
-            <Autocomplete 
-            value={selectedDoctorServices}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionKey={(option) => option.id}
-            onChange={(e, data) =>{
-              setSelectedDoctorServices(data)
-            }}
-          fullWidth
-          multiple
-            getOptionLabel={(option) => option.name}
-            renderInput={(params) => <TextField {...params} />}
-            options={services}
-          />
+          <Stack direction={"row"}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                console.log(selectedDoctorServices);
+                axiosClient
+                  .post(`doctors/${selectedDoctor.id}/services`, {
+                    services: selectedDoctorServices.map((s) => s.id),
+                  })
+                  .then(({ data }) => {
+                    if (data.status) {
+                      setSelectedDoctor(data.doctor);
+                      setSelectedDoctorServices([]);
+                    }
+                  })
+                  .catch(({ response: { data } }) => {
+                    console.log(data, "my error");
+                    console.log(setDialog);
+                    setDialog(() => {
+                      return {
+                        open: true,
+                        title: t("error"),
+                        msg: data.message,
+                        color: "error",
+                      };
+                    });
+                  });
+              }}
+            >
+              +
+            </Button>
+            <Autocomplete
+              value={selectedDoctorServices}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionKey={(option) => option.id}
+              onChange={(e, data) => {
+                setSelectedDoctorServices(data);
+              }}
+              fullWidth
+              multiple
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => <TextField {...params} />}
+              options={services}
+            />
           </Stack>
           <TableContainer>
-            <Table size="small" style={{direction:'rtl',marginTop:'5px'}}>
+            <Table size="small" style={{ direction: "rtl", marginTop: "5px" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell>الاسم</TableCell>
-                  <TableCell>نصيب الطبيب نسبه</TableCell>
-                  <TableCell>نصيب الطبيب مبلغ</TableCell>
-                  <TableCell>حذف</TableCell>
+                  <TableCell>{t("name")}</TableCell>
+                  <TableCell>{t("doctor_percentage")}</TableCell>
+                  <TableCell>{t("doctor_amount")}</TableCell>
+                  <TableCell>{t("delete")}</TableCell>
                 </TableRow>
-                </TableHead>
-                <TableBody>
-                  {selectedDoctor && selectedDoctor.services.map((service) => (
+              </TableHead>
+              <TableBody>
+                {selectedDoctor &&
+                  selectedDoctor.services.map((service) => (
                     <TableRow key={service.id}>
                       <TableCell>{service.service.name}</TableCell>
-                      <MyTableCell table="doctor/service" colName={'percentage'}   item={service}    >{service.percentage}</MyTableCell>
-                      <MyTableCell table="doctor/service" colName={'fixed'} item={service}   >{service.fixed}</MyTableCell>
+                      <MyTableCell
+                        table="doctor/service"
+                        colName={"percentage"}
+                        item={service}
+                      >
+                        {service.percentage}
+                      </MyTableCell>
+                      <MyTableCell
+                        table="doctor/service"
+                        colName={"fixed"}
+                        item={service}
+                      >
+                        {service.fixed}
+                      </MyTableCell>
                       <TableCell>
                         <Button
                           variant="contained"
                           color="error"
                           onClick={() => {
-                            axiosClient.delete(`doctors/doctor/${service.id}`).then(({data}) =>{
-                              console.log(data)
-                              if (data.status) {
-                                setSelectedDoctor(data.doctor)
-                              }
-
-                            })
-                            
+                            axiosClient
+                              .delete(`doctors/doctor/${service.id}`)
+                              .then(({ data }) => {
+                                console.log(data);
+                                if (data.status) {
+                                  setSelectedDoctor(data.doctor);
+                                }
+                              });
                           }}
                         >
                           x
@@ -178,11 +201,9 @@ function Doctors() {
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
-
+              </TableBody>
             </Table>
           </TableContainer>
-         
         </DialogContent>
         <DialogActions>
           <Button
@@ -191,7 +212,7 @@ function Doctors() {
               setOpenDoctorServiceDialog(false);
             }}
           >
-            close
+            {t("close")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -225,21 +246,21 @@ function Doctors() {
                   onChange={(e) => {
                     searchHandler(e.target.value);
                   }}
-                  label="بحث"
+                  label={t("search")}
                 ></TextField>
               </Stack>
 
               <Table dir="rtl" size="small">
                 <thead>
                   <TableRow>
-                    <TableCell>رقم</TableCell>
-                    <TableCell>الاسم</TableCell>
-                    <TableCell>نسبه(النقدي) </TableCell>
-                    <TableCell> نسبه(التامين) </TableCell>
-                    <TableCell> رقم الهاتف </TableCell>
-                    <TableCell> التخصص </TableCell>
-                    {/* <TableCell> الثابت </TableCell> */}
-                    <TableCell> الخدمات </TableCell>
+                    <TableCell>{t("id")}</TableCell>
+                    <TableCell>{t("name")}</TableCell>
+                    <TableCell>{t("cash_percentage")}</TableCell>
+                    <TableCell>{t("insurance_percentage")}</TableCell>
+                    <TableCell>{t("phone")}</TableCell>
+                    <TableCell>{t("specialist")}</TableCell>
+                    {/* <TableCell> {t("fixed")} </TableCell> */}
+                    <TableCell>{t("services")}</TableCell>
                   </TableRow>
                 </thead>
                 <TableBody>
@@ -291,11 +312,13 @@ function Doctors() {
                         {doctor.static_wage}
                       </MyTableCell> */}
                       <TableCell>
-                        <Button onClick={()=>{
-                          setSelectedDoctor(doctor);
-                          showDoctorServicesDialog(true)
-                        }}>
-                          الخدمات
+                        <Button
+                          onClick={() => {
+                            setSelectedDoctor(doctor);
+                            showDoctorServicesDialog(true);
+                          }}
+                        >
+                         {t("services")}
                         </Button>
                       </TableCell>
                     </TableRow>

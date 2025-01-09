@@ -18,9 +18,9 @@ import { Controller, useForm } from "react-hook-form";
 import axiosClient from "../../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
-import { t } from "i18next";
 import { Item } from "../constants";
 import { DoctorVisit } from "../../types/Patient";
+import { useTranslation } from "react-i18next";
 
 interface EditDialog {
   openEdit: boolean;
@@ -28,15 +28,15 @@ interface EditDialog {
   patient: DoctorVisit;
   doctorVisitId: number;
   isLab?: boolean;
-  update:(paitent:DoctorVisit)=>void; 
+  update: (paitent: DoctorVisit) => void;
 }
 function EditPatientDialog({
-  patient:{patient},
+  patient: { patient },
   doctorVisitId,
   isLab = false,
   setDialog,
   update,
-}:EditDialog) {
+}: EditDialog) {
   const {
     doctors,
     setActivePatient,
@@ -45,7 +45,8 @@ function EditPatientDialog({
     setOpenEdit,
     openEdit,
   } = useOutletContext();
-  console.log(patient,'patient to be edited');
+  const {t}=  useTranslation('editDialog')
+  console.log(patient, "patient to be edited");
   // console.log(appData.doctors, "doctors");
   console.log(openedDoctors, "open doctors");
   const [loading, setLoading] = useState();
@@ -64,8 +65,8 @@ function EditPatientDialog({
         console.log(data, "edited data");
         if (data.status) {
           setOpenEdit(false);
-        
-          update(data.data)
+
+          update(data.data);
         }
       })
       .catch(({ response: { data } }) => {
@@ -100,7 +101,7 @@ function EditPatientDialog({
   });
   return (
     <Dialog key={patient.id} open={openEdit}>
-      <DialogTitle>تعديل البيانات</DialogTitle>
+      <DialogTitle>{t("edit_data")}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(editDoctorHandler)}>
           <Stack
@@ -111,7 +112,7 @@ function EditPatientDialog({
           >
             <TextField
               {...register("name", {
-                required: { value: true, message: "يجب ادخال اسم المريض" },
+                required: { value: true, message: t("name_required") },
               })}
               defaultValue={patient.name}
               error={errors.name != null}
@@ -124,8 +125,7 @@ function EditPatientDialog({
                 {...register("phone", {
                   required: {
                     value: true,
-
-                    message: "يجب ادخال رقم الهاتف",
+                    message: t("phone_required"),
                     //phone validation
                     validator: (value) => {
                       if (value.length == 10) {
@@ -154,8 +154,8 @@ function EditPatientDialog({
                       }}
                       label={t("gender")}
                     >
-                      <MenuItem value={"ذكر"}>ذكر</MenuItem>
-                      <MenuItem value={"اثني"}>اثني</MenuItem>
+                      <MenuItem value={"ذكر"}>{t("male")}</MenuItem>
+                      <MenuItem value={"اثني"}>{t("female")}</MenuItem>
                       <MenuItem value=""></MenuItem>
                     </Select>
                   );
@@ -165,12 +165,6 @@ function EditPatientDialog({
             {isLab && (
               <Controller
                 name="doctor"
-                // rules={{
-                //   required: {
-                //     value: true,
-                //     message: "يجب اختيار اسم الطبيب",
-                //   },
-                // }}
                 control={control}
                 render={({ field }) => {
                   return (
@@ -184,8 +178,6 @@ function EditPatientDialog({
                       options={doctors}
                       value={field.value}
                       renderInput={(params) => {
-                        // console.log(params)
-
                         return (
                           <TextField
                             inputRef={field.ref}
@@ -212,7 +204,7 @@ function EditPatientDialog({
                   {...register("age_year", {
                     required: {
                       value: true,
-                      message: "يجب ادخال العمر بالسنه",
+                      message: t("age_year_required"),
                     },
                   })}
                   label={t("ageInYear")}
@@ -241,63 +233,34 @@ function EditPatientDialog({
             </Stack>
             <Stack direction={"row"} gap={2}>
               <TextField
-              defaultValue={patient.address}
+                defaultValue={patient.address}
                 fullWidth
                 {...register("address")}
                 label={t("address")}
                 variant="outlined"
               />
-                <TextField
-              defaultValue={patient.gov_id}
+              <TextField
+                defaultValue={patient.gov_id}
                 fullWidth
                 {...register("gov_id")}
                 label={t("govId")}
                 variant="outlined"
               />
             </Stack>
-            {patient.company_id && <Divider>التامين</Divider>}
+            {patient.company_id && <Divider>{t("insurance")}</Divider>}
             {patient.company_id && (
               <Stack direction={"column"} spacing={1}>
-                {/* <Controller
-                  name="company"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => {
-                    return (
-                      <Autocomplete
-                        value={patient.company}
-                        isOptionEqualToValue={(opt, val) => opt.id === val.id}
-                        getOptionKey={(op) => op.id}
-                        {...field}
-                        getOptionLabel={(op) => op.name}
-                        options={companies}
-                        onChange={(_, val) => {
-                          field.onChange(val);
-                        }}
-                        renderInput={(params) => {
-                          return (
-                            <TextField
-                              label="الشركه"
-                              error={errors.company && errors.company.message}
-                              {...params}
-                            />
-                          );
-                        }}
-                      />
-                    );
-                  }}
-                /> */}
                 <Stack direction={"row"} gap={2}>
                   <TextField
                     fullWidth
                     {...register("insurance_no")}
-                    label="رقم البطاقه"
+                    label={t("insurance_no")}
                     variant="outlined"
                   />
                   <TextField
                     fullWidth
                     {...register("guarantor")}
-                    label="اسم الضامن"
+                    label={t("guarantor")}
                     variant="outlined"
                   />
                 </Stack>
@@ -322,7 +285,7 @@ function EditPatientDialog({
                           renderInput={(params) => {
                             return (
                               <TextField
-                                label="الجهه"
+                                label={t("subcompany")}
                                 error={
                                   errors.subcompany_id &&
                                   errors.subcompany_id.message
@@ -342,7 +305,7 @@ function EditPatientDialog({
                     render={({ field }) => {
                       return (
                         <Autocomplete
-                         disabled={patient?.labrequests.length > 0}
+                          disabled={patient?.labrequests.length > 0}
                           {...field}
                           value={field.value}
                           fullWidth
@@ -354,7 +317,7 @@ function EditPatientDialog({
                             field.onChange(val);
                           }}
                           renderInput={(params) => {
-                            return <TextField label="العلاقه" {...params} />;
+                            return <TextField label={t("relation")} {...params} />;
                           }}
                         />
                       );
@@ -371,7 +334,7 @@ function EditPatientDialog({
             fullWidth
             variant="contained"
           >
-            حفظ التعدييل
+            {t("save_changes")}
           </LoadingButton>
         </form>
       </DialogContent>
@@ -382,7 +345,7 @@ function EditPatientDialog({
             setOpenEdit(false);
           }}
         >
-          close
+          {t("close")}
         </Button>
       </DialogActions>
     </Dialog>

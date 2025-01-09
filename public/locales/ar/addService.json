@@ -1,0 +1,22 @@
+{
+    "services": "الخدمات",
+    "search": "بحث",
+    "name": "الاسم",
+    "price": "السعر",
+    "category": "الفئة",
+    "cost": "التكلفة",
+    "delete":"حذف",
+      "select":"اختر",
+    "newService": "خدمة جديدة",
+    "fieldRequired": "هذا الحقل مطلوب",
+    "section": "القسم",
+    "save": "حفظ",
+    "additionSuccess": "تمت الإضافة بنجاح",
+      "deleteServiceConfirmation": "سيتم حذف العمليات الماليه المتلقه بالخدمه-- هل انت متاكد من حذف الخدمه",
+    "deleteSuccess": "تم الحذف بنجاح",
+     "description": "الوصف",
+    "percentage": "النسبة",
+    "amount": "المبلغ",
+      "serviceExpenses":"مصروفات الخدمه",
+       "expenseDescription":"وصف المصروف"
+  }

@@ -14,6 +14,7 @@ import {
   Tooltip,
   IconButton,
   Card,
+  Skeleton,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { useStateContext } from "../../appContext";
@@ -56,6 +57,7 @@ function Reception() {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+  const [loadingDoctorPatients, setLoadingDoctorPatients] = useState(false);
   const {
     actviePatient,
     setActivePatient,
@@ -92,8 +94,8 @@ function Reception() {
   const [allMoneyUpdatedLab, setAllMoneyUpdatedLab] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
-    const [value, setValue] = useState(0);
-  
+  const [value, setValue] = useState(0);
+
   function onConnect() {
     setIsConnected(true);
   }
@@ -201,7 +203,7 @@ function Reception() {
     setActiveShift((prevShift: DoctorShift) => {
       return {
         ...prevShift,
-        visits: prevShift.visits.map((v) => {
+        visits: prevShift?.visits?.map((v) => {
           if (v.id === doctorVisit.id) {
             console.log(doctorVisit, "doctor visit in side change");
             // alert('founded')
@@ -215,7 +217,7 @@ function Reception() {
       return prev.map((shift) => {
         return {
           ...shift,
-          visits: shift.visits.map((v) => {
+          visits: shift?.visits?.map((v) => {
             if (v.id === doctorVisit.id) {
               console.log(doctorVisit, "doctor visit in side change");
               // alert('founded')
@@ -236,7 +238,7 @@ function Reception() {
         requestedDiv: "minmax(0,2.4fr)",
 
         patientDetails: "0.8fr",
-        patients: "minmax(297px,1.2fr)",
+        patients: "minmax(315px,1.2fr)",
       };
     });
   };
@@ -250,6 +252,7 @@ function Reception() {
         ...prev,
         form: "minmax(350px, 1fr)",
         hideForm: false,
+        requestedDiv:'0fr'
       };
     });
   };
@@ -368,17 +371,17 @@ function Reception() {
     setActivePatient(null);
     setShowPatientServices(false);
     setShowServicePanel(false);
-    if (shift.visits.length == 0) {
-      showFormHandler();
-    } else {
-      hideForm();
-      setLayout((prev) => {
-        return {
-          ...prev,
-          patients: "minmax(270px,3.2fr)",
-        };
-      });
-    }
+    // if (shift.visits.length == 0) {
+    //   showFormHandler();
+    // } else {
+    hideForm();
+    setLayout((prev) => {
+      return {
+        ...prev,
+        patients: "minmax(270px,3.2fr)",
+      };
+    });
+    // }
   };
   const [showSearch, setShowSearch] = useState(false);
   const AllTestsArePaid = actviePatient?.patient.labrequests.every(
@@ -413,18 +416,20 @@ function Reception() {
             setShowServicePanel={setShowServicePanel}
             setValue={setValue}
             setShowPatientServices={setShowPatientServices}
-
           />
         </div>
 
         <div style={{ width: `${window.innerWidth - 360}px` }}>
           <OpenDoctorTabs
+            setOpenedDoctors={setOpenedDoctors}
+            setActiveShift={setActiveShift}
             user={user}
             activeShift={activeShift}
             openedDoctors={openedDoctors}
             selectDoctorHandler={selectDoctorHandler}
             value={value}
-             setValue={setValue}
+            setLoadingDoctorPatients={setLoadingDoctorPatients}
+            setValue={setValue}
           />
         </div>
       </Stack>
@@ -738,42 +743,47 @@ function Reception() {
         <Paper
           sx={{
             // overflow: "auto",
-            height: "77vh",
+            // height: "77vh",
             overflowX: "hidden",
             overflowY: "auto",
           }}
         >
-          <div
-            style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
-          >
-            <Stack
-              flexDirection={"row"}
-              flexWrap={"wrap"}
-              gap={2}
-              justifyContent={"center"}
-              style={{
-                padding: "5px",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
+         
+            <div
+              style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
             >
-              {activeShift &&
-                activeShift.visits
-                  .filter((dcVisit) => dcVisit.only_lab == 0)
-                  .map((visit) => {
-                    return (
-                      <PatientReception
-                        showDetails={showDetails}
-                        setShowDetails={setShowDetails}
-                        change={change}
-                        key={visit.id}
-                        hideForm={hideForm}
-                        patient={visit}
-                      ></PatientReception>
-                    );
-                  })}
-            </Stack>
-          </div>
+               {loadingDoctorPatients ?
+            <Skeleton  height={"400px"} />  : <Stack
+                flexDirection={"row"}
+                flexWrap={"wrap"}
+                gap={2}
+                justifyContent={"center"}
+                style={{
+                  padding: "5px",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+              
+          
+                {activeShift &&
+                  activeShift?.visits
+                    ?.filter((dcVisit) => dcVisit.only_lab == 0)
+                    .map((visit) => {
+                      return (
+                        <PatientReception
+                          showDetails={showDetails}
+                          setShowDetails={setShowDetails}
+                          change={change}
+                          key={visit.id}
+                          hideForm={hideForm}
+                          patient={visit}
+                        ></PatientReception>
+                      );
+                    })}
+              </Stack>}
+            </div>
+          
         </Paper>
         {!user?.isAccountant ? (
           <div>

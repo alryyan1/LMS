@@ -1,4 +1,11 @@
-import { Autocomplete, Divider, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Divider,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axiosClient from "../../../axios-client";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
@@ -6,15 +13,14 @@ import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import i18n from "i18next";
 import dayjs from "dayjs";
 
-
 interface PatientDetailProps {
-  patient: DoctorVisit,
-  openedDoctors: DoctorShift[],
-  activeShift: DoctorShift,
-  copyPatient?: boolean,
-  settings: any,
-  user: any,
-  update: (patient: DoctorVisit) => void
+  patient: DoctorVisit;
+  openedDoctors: DoctorShift[];
+  activeShift: DoctorShift;
+  copyPatient?: boolean;
+  settings: any;
+  user: any;
+  update: (patient: DoctorVisit) => void;
 }
 function PatientDetail({
   patient,
@@ -23,10 +29,10 @@ function PatientDetail({
   copyPatient = false,
   settings,
   user,
-  update
+  update,
 }: PatientDetailProps) {
-  const { t } = useTranslation('PatientDetails');
-  console.log(patient, 'patient in details')
+  const { t } = useTranslation("PatientDetails");
+  console.log(patient, "patient in details");
   const date = new Date(patient.created_at);
 
   return (
@@ -35,16 +41,18 @@ function PatientDetail({
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
         elevation={3}
         className="bolder"
-        sx={{ p: 1, width: '300px' }}
+        sx={{ p: 1, width: "300px" }}
       >
         {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
           تفاصيل المريض
         </Typography> */}
         {/** add card body   */}
-        <Typography className="text-center p-name mb-1"  variant="h6">{patient.patient.name}</Typography>
+        <Typography className="text-center p-name mb-1" variant="h6">
+          {patient.patient.name}
+        </Typography>
         <div className="form-control">
           <div>Visit Id</div>
-          <div >{patient.id}</div>
+          <div>{patient.id}</div>
         </div>
         <Divider />
         <div className="form-control">
@@ -59,7 +67,7 @@ function PatientDetail({
           <div>
             {
               //print iso date
-              dayjs(patient.created_at).format('YYYY-MM-DD')
+              dayjs(patient.created_at).format("YYYY-MM-DD")
             }
           </div>
         </div>
@@ -110,7 +118,7 @@ function PatientDetail({
         </div>
         <Divider />
         <div className="form-control">
-          <div>{t('fileId')} </div>
+          <div>{t("fileId")} </div>
 
           <div>
             {
@@ -127,29 +135,35 @@ function PatientDetail({
             {
               //print iso date
               ` ${patient.patient.age_year ?? 0} Y ${
-              patient.patient.age_month == null
-                ? ""
-                : " / " + patient.patient.age_month + " M "
+                patient.patient.age_month == null
+                  ? ""
+                  : " / " + patient.patient.age_month + " M "
               } ${
-              patient.patient.age_day == null ? "" : " / " + patient.patient.age_day + " D "
+                patient.patient.age_day == null
+                  ? ""
+                  : " / " + patient.patient.age_day + " D "
               } `
             }
           </div>
         </div>
         <Divider />
-        {settings?.gov ? <div className="form-control">
-          <div>{t('govermentId')}</div>
+        {settings?.gov ? (
+          <div className="form-control">
+            <div>{t("govermentId")}</div>
 
-          <div>
-            {
-              //print iso date
-              patient.patient?.gov_id
-            }
+            <div>
+              {
+                //print iso date
+                patient.patient?.gov_id
+              }
+            </div>
           </div>
-        </div> : ''}
+        ) : (
+          ""
+        )}
         <Divider />
         <div className="form-control">
-          <div>{t('address')}</div>
+          <div>{t("address")}</div>
 
           <div>
             {
@@ -159,16 +173,20 @@ function PatientDetail({
           </div>
         </div>
         <Divider />
-        {settings?.country ? <div className="form-control">
-          <div>{t('country')}</div>
+        {settings?.country ? (
+          <div className="form-control">
+            <div>{t("country")}</div>
 
-          <div>
-            {
-              //print iso date
-              patient.patient?.country?.name
-            }
+            <div>
+              {
+                //print iso date
+                patient.patient?.country?.name
+              }
+            </div>
           </div>
-        </div> : ''}
+        ) : (
+          ""
+        )}
         {patient.patient.company_id && (
           <div>
             <div className="form-control">
@@ -231,7 +249,9 @@ function PatientDetail({
               <div>
                 {
                   //print iso date
-                  new Date(patient.patient.result_print_date).toLocaleTimeString()
+                  new Date(
+                    patient.patient.result_print_date
+                  ).toLocaleTimeString()
                 }
               </div>
             </div>
@@ -242,11 +262,9 @@ function PatientDetail({
           <Autocomplete
             onChange={(e, data) => {
               axiosClient
-                .post(`patient/copy/${data.id}?patient_id=${patient.id}`, {
-
-                })
+                .post(`patient/copy/${data.id}?patient_id=${patient.patient.id}`, {})
                 .then(({ data }) => {
-                  // update(data);
+                  update(data);
                   if (data.status) {
                     // alert('status')
                   }
@@ -257,9 +275,11 @@ function PatientDetail({
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.name}
-            options={openedDoctors.filter((shift) => shift.user_id == user?.id).map((shift) => {
-              return shift.doctor;
-            })}
+            options={openedDoctors
+              // .filter((shift) => shift.user_id == user?.id)
+              .map((shift) => {
+                return shift.doctor;
+              })}
             //fill isOptionEqualToValue
 
             isOptionEqualToValue={(option, val) => option.id === val.id}

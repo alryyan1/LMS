@@ -24,9 +24,12 @@ import axiosClient from "../../../axios-client";
 import { formatNumber } from "../constants";
 import { BarChartIcon, PanelsTopLeftIcon, PieChartIcon } from "lucide-react";
 import { ShiftDetails } from "../../types/CutomTypes";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
   const { dialog, setDialog } = useOutletContext();
+  const {t} =useTranslation('allMoneyDetails')
   const [money, setMoney] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingLab, setLoadingLab] = useState(false);
@@ -84,7 +87,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
   return (
     <div style={{ textAlign: "center", direction: "rtl" }}>
       <Typography className="text-center" variant="h5">
-        العيادات
+       {t("clinics")}
       </Typography>
 
       {loading ? (
@@ -93,9 +96,9 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
         <Table size="small">
           <TableHead className="thead">
             <TableRow>
-              <TableCell>اجمالي</TableCell>
-              <TableCell>البنك</TableCell>
-              <TableCell>النقدي</TableCell>
+              <TableCell>{t("total")}</TableCell>
+              <TableCell>{t("bank")}</TableCell>
+              <TableCell>{t("cash")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -109,7 +112,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
       )}
       <Divider />
       <Typography className="text-center" variant="h5">
-        المختبر
+       {t("lab")}
       </Typography>
       {loadingLab ? (
         <CircularProgress />
@@ -117,9 +120,9 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
         <Table size="small">
           <TableHead className="thead">
             <TableRow>
-              <TableCell>اجمالي</TableCell>
-              <TableCell>البنك</TableCell>
-              <TableCell>النقدي</TableCell>
+            <TableCell>{t("total")}</TableCell>
+              <TableCell>{t("bank")}</TableCell>
+              <TableCell>{t("cash")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -139,14 +142,14 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
           <ListItemIcon>
             <PieChartIcon />
           </ListItemIcon>
-          <ListItemText  primary="الاجمالي" />
+          <ListItemText  primary={t("all_total")} />
         </ListItem>
 
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.bank)}</div>} key="2">
           <ListItemIcon>
             <BarChartIcon />
           </ListItemIcon>
-          <ListItemText primary="البنك" />
+          <ListItemText primary={t("bank")} />
         </ListItem>
 
 
@@ -154,21 +157,21 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>
-          <ListItemText primary="النقدي" />
+          <ListItemText primary={t("cash")} />
         </ListItem>
 
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.expenses)}</div>}  key="4">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>
-          <ListItemText primary="المصروفات" />
+          <ListItemText primary={t("expenses")} />
         </ListItem>
 
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>
-          <ListItemText primary="صافي النقدي" />
+          <ListItemText primary={t("net_cash")} />
         </ListItem>
       </List>
     </div>

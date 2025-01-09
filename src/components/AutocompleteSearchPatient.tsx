@@ -116,7 +116,10 @@ export default function AutocompleteSearchPatient({
                 .post(`patients?name=${enteredId}`)
                 .then(({ data }:{data:DoctorVisit}) => {
                   if (data != null) {
-                    setShowDetails(true);
+                    if(setShowDetails){
+
+                      setShowDetails(true);
+                    }
                     focusPaitent(data);
                     const doc = data.patient.doctor.id;
                        const docShift =  openedDoctors.find((shift)=>shift.doctor.id == doc)
