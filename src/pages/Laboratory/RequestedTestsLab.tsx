@@ -72,8 +72,13 @@ function RequestedTestsLab({
     // axiosClient.get(`patient/barcode/${actviePatient.id}`).then(({data})=>{
     //   console.log(data,'barcode')
     //   })
+    try{
+      printBarcodeRaw(actviePatient)
 
-   printBarcodeRaw(actviePatient)
+    }catch(e){
+
+    }
+
     setLoading(true);
     axiosClient
       .patch(`payment/${actviePatient.id}`, {

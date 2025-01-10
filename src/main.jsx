@@ -21,6 +21,7 @@ createRoot(document.querySelector("#root")).render(
         style={{
           height: "100vh",
           display: "flex",
+          padding:'10px',
           justifyContent: "center",
           alignContent: "center",
         }}

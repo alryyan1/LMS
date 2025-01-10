@@ -64,13 +64,11 @@ function Result() {
       <Stack className="mb-4" direction={"row"} gap={1}>
         <div>
           {actviePatient && (
-            <Card style={{ backgroundColor: "ffffff40", overflow: "auto" }}>
-              {/* file visits */}
               <LabHistory
                 setActiveDoctorVisit={setActivePatientHandler}
                 doctorVisit={actviePatient}
               />
-            </Card>
+          
           )}
         </div>
         {
@@ -86,14 +84,12 @@ function Result() {
           userSelect: "none",
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "80vh",
+          height:`${ window.innerHeight - 90}px`,
           display: "grid",
-          gridTemplateColumns: `20px  ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
+          gridTemplateColumns: ` ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
         }}
       >
-        <div>
-          <AddDoctorDialog />
-        </div>
+     
         <Card sx={{ overflow: "auto", p: 1 }}>
           <Stack justifyContent={"space-around"} direction={"row"}>
             <div>
@@ -162,7 +158,7 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card sx={{ height: "80vh", overflow: "auto" }}>
+        <Card sx={{ overflow: "auto" }}>
           <List>
             {actviePatient?.patient.labrequests.map((test) => {
               return (
@@ -202,7 +198,7 @@ function Result() {
             })}
           </List>
         </Card>
-        <Card key={actviePatient?.id} sx={{ height: "80vh", overflow: "auto", p: 1 }}>
+        <Card key={actviePatient?.id} sx={{  overflow: "auto", p: 1 }}>
           {actviePatient &&(
             <ResultSection
               patient={actviePatient}
@@ -222,14 +218,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                <Button
+                {/* <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button>
+                </Button> */}
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}

@@ -436,7 +436,7 @@ function Doctor() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "80vh",
+          height: window.innerHeight,
           display: "grid",
           gridTemplateColumns: `70px    ${layOut.patients}  ${layOut.visits} ${layOut.vitals} 2fr 1fr    `,
         }}

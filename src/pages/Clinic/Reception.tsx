@@ -31,7 +31,7 @@ import PatientReception from "./PatientReception";
 import CustumSideBar from "../../components/CustumSideBar";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
-import { Item, webUrl } from "../constants";
+import { Item, printBarcodeOldWay, webUrl } from "../constants";
 import TestGroups from "../../../TestGroups";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { socket } from "../../socket";
@@ -439,7 +439,7 @@ function Reception() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: "75vh",
+          height: window.innerHeight,
           display: "grid",
           gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
@@ -618,20 +618,14 @@ function Reception() {
                       onClick={() => {
                         const form = new URLSearchParams();
 
-                        fetch("http://127.0.0.1:5000/", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "APPLICATION/JSON",
-                          },
-
-                          body: JSON.stringify(actviePatient),
-                        }).then(() => {});
+                       
                         if (settings?.barcode) {
-                          axiosClient
-                            .get(`patient/barcode/${actviePatient.id}`)
-                            .then(({ data }) => {
-                              console.log(data, "barcode");
-                            });
+                          try{
+
+                            printBarcodeOldWay(actviePatient)
+                          }catch(e){
+
+                          }
                         }
 
                         axiosClient

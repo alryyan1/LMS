@@ -47,18 +47,11 @@ function LabHistory({ doctorVisit,setActiveDoctorVisit }: LabHistoryProbs) {
               <InputLabel id="demo-simple-select-label">History</InputLabel>
 
               <Select
+              variant="standard"
                 size="small"
                 value={selectedValue}
                 onChange={handleChange}
-                sx={{
-                    width: '350px',
-                    "& .Mui-selected": {
-                      backgroundColor: "#f0f8ff !important", // Highlight selected item
-                    },
-                    "& .Mui-selected:hover": {
-                      backgroundColor: "#e0e8ff !important", // Highlight on hover
-                    },
-                  }}
+            
                 displayEmpty
               >
                 {patientWithFileHistory?.file.patients.filter((p)=>p.patient.labrequests.length > 0).map((p) => {

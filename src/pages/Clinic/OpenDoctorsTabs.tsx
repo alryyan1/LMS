@@ -106,10 +106,10 @@ export default function OpenDoctorTabs({setLoadingDoctorPatients, user, openedDo
         >
           {openedDoctors
             .filter((shift) => {
-              if(user.isAccountant || user.isAdmin){
+              if(user?.isAccountant || user?.isAdmin){
                 return true;
               }else{
-                shift.user_id == user?.id
+               return shift.user_id == user?.id
               }
             })
             .map((shift,index) => {

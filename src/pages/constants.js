@@ -166,6 +166,17 @@ export function printBarcodeRaw (actviePatient){
   
 }
 
+export function printBarcodeOldWay (actviePatient){
+
+  return new Promise((resolve)=>{
+   axiosClient.get(`patient/barcode/${actviePatient.id}`)
+    .then(({data})=>{
+      resolve(data)
+    })
+  })
+  
+}
+
 export function PrintLab (actviePatient,userSettings){
   const form = new URLSearchParams();
   axiosClient

@@ -80,7 +80,7 @@ function SidebarNav() {
 
     <Sidebar  collapsed={collapsed}>
       <div  style={{ padding: "10px", textAlign: "center" }}>
-        <IconButton onClick={() => setCollapsed(!collapsed)}>
+        <IconButton color={user?.isAdmin ? "primary" :''} onClick={() => setCollapsed(!collapsed)}>
           <FormatListBulleted />
         </IconButton>
       </div>

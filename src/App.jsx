@@ -45,7 +45,7 @@ function App() {
         {user && <SidebarNav />}
 
         {/* Main Content */}
-        <div style={{  width: "95%",overflowX:'none' }}>
+        <div style={{  width: "95%",overflowX:'none',padding: '15px' }}>
           <ToastContainer />
 
           <Nav />

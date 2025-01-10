@@ -25,6 +25,7 @@ import MyTableCell from "../inventory/MyTableCell";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import EmptyDialog from "../Dialogs/EmptyDialog";
+import MyServiceCostTableCell from "../inventory/SelectCostType";
 
 function AddService() {
     const { t } = useTranslation('addService');
@@ -43,6 +44,16 @@ function AddService() {
       setServiceGroups(data);
     });
   }, []);
+  useEffect(() => {
+    setservices((prev)=>{
+      return prev.map((s)=>{
+        if(s.id === selectedService?.id){
+          return selectedService
+        }
+        return s
+      })
+    })
+  }, [selectedService]);
   const {
     register: register2,
     handleSubmit: handleSubmit2,
@@ -230,10 +241,11 @@ function AddService() {
                     key={item.id}
                   >
                     <TableCell>{item.id}</TableCell>
-                    <MyTableCell table="service" colName={"name"} item={item}>
+                    <MyTableCell table="service"  colName={"name"} item={item}>
                       {item.name}
                     </MyTableCell>
                     <MyTableCell
+
                       show
                       table="service"
                       colName={"price"}
@@ -434,6 +446,7 @@ function AddService() {
                 <TableCell>{t("description")}</TableCell>
                 <TableCell>{t("percentage")}</TableCell>
                 <TableCell>{t("amount")}</TableCell>
+                <TableCell>{t("type")}</TableCell>
                 <TableCell>{t("delete")}</TableCell>
               </TableRow>
             </TableHead>
@@ -443,6 +456,7 @@ function AddService() {
                   <TableCell>{cost.name}</TableCell>
                   <TableCell>{cost.percentage}%</TableCell>
                   <TableCell>{cost.fixed}</TableCell>
+                  <MyServiceCostTableCell   update={setSelectedService} colName={'cost_type'} item={cost} myVal={cost.cost_type} table="updateServiceCost"/>
                   <TableCell>
                     <Button onClick={() => removeServiceCost(cost.id)}>
                       {t("delete")}

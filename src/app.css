@@ -12,6 +12,9 @@ body {
     unicode-range: U+00-FF, U+980-9FF;
   background-color:  #f0f2f5!important;
 }
+*{
+  /* box-sizing: border-box!important; */
+}
 button,
 h1,
 h2,
@@ -169,12 +172,12 @@ a.active{
 
 }
 .activeDoctor{
-  flex-grow: 1;
-  border-bottom: 4px solid blue;
+  /* flex-grow: 1; */
+  /* border-bottom: 4px solid blue; */
   font-weight: bolder;
-  color:white!important;
-  border-radius: 10px!important;
-  background-color: #64b5f6!important;
+  color:black!important;
+  /* border-radius: 10px!important; */
+  background-color: #00BCD4!important;
 }
 
 .MuiDialog-paper{

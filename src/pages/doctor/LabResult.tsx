@@ -85,7 +85,7 @@ function LabResults(props:LabResultsProps) {
           </Grid>
           <Grid item xs={9}>
             <Card   style={{ backgroundColor: "#ffffff73" }}
-              sx={{ height: "80vh", overflow: "auto", p: 1 }}
+              sx={{ height: window.innerHeight, overflow: "auto", p: 1 }}
               key={selectedTest?.id}
             >
               {patient.patient.result_auth ?  (

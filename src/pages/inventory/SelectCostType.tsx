@@ -4,12 +4,13 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
-function MySelectTableCell({
+function MyServiceCostTableCell({
   myVal,
   item,
   colName,
+  update,
   table = "items",
-  test_id = null,
+
   show = false,
 }) {
 
@@ -33,10 +34,10 @@ function MySelectTableCell({
     if (val != iniVal ) {
       console.log('diffent value')
     axiosClient.patch(`${table}/${item.id}`, 
-      { colName: colName, val, test_id ,service_id:test_id}
+      { [colName]: val}
     )
-      .then((data) => {
-        
+      .then(({data}) => {
+        update(data.service)
       });
     }
 
@@ -53,7 +54,6 @@ function MySelectTableCell({
    
       onClick={clickHandler}
     >
-      {show || edited ? (
         <Select onChange={  changeHandler} onBlur={blurHandler} value={iniVal} sx={{
           '& .MuiSelect-select': {
              paddingRight: 0.5,
@@ -62,15 +62,13 @@ function MySelectTableCell({
              paddingBottom: 0.5,
           }
         }} >
-          <MenuItem value = {1}>نعم</MenuItem>
-          <MenuItem value={0}>لا</MenuItem>
+          <MenuItem value = {'total'}>من الاجمالي</MenuItem>
+          <MenuItem value={'after cost'}>بعد المصروف</MenuItem>
 
         </Select>
-      ) : (
-        iniVal ? 'نعم' :"لا"
-      )}
+   
     </TableCell>
   );
 }
 
-export default MySelectTableCell;
+export default MyServiceCostTableCell;
