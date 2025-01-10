@@ -70,6 +70,43 @@ interface Labrequest {
   is_paid: boolean;
 }
 
+interface Servicegroup {
+  id: number;
+  name: string;
+  services: Service[];
+}
+
+export interface Service {
+  id: number;
+  name: string;
+  service_group_id: number;
+  price: number;
+  activate: number;
+  created_at: string;
+  updated_at: string;
+  service_costs: Servicecost[];
+  service_group: Servicegroup;
+
+}
+
+interface Servicecost {
+  id: number;
+  name: string;
+  service_id: number;
+  percentage: number;
+  fixed: number;
+  cost_type: string;
+  cost_orders: Costorder[];
+}
+
+interface Costorder {
+  id: number;
+  requested_service_id: number;
+  service_cost_id: number;
+  service_cost_item: number;
+  created_at: string;
+  updated_at: string;
+}
 interface Maintest {
   id: number;
   main_test_name: string;

@@ -69,7 +69,7 @@ th,span {
 }
 .mygrid {
   display: grid;
-  height: 50vh;
+ 
   overflow: auto;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 5px!important;

@@ -239,7 +239,7 @@ function AddPatient() {
         <Card
           sx={{ p: 1,userSelect:'none' }}
           style={{
-            height: "80vh",
+            height: window.innerHeight,
             overflow: "auto",
             backgroundColor: "#ffffff73",
           }}
@@ -272,7 +272,7 @@ function AddPatient() {
 
         <Card
           style={{ backgroundColor: "#ffffff73" }}
-          sx={{ p: 1, height: "80vh", overflow: "auto" }}
+          sx={{ p: 1, overflow: "auto" }}
         >
           {actviePatient && actviePatient.patient.labrequests.length > 0 && (
             <RequestedTestsLab

@@ -89,7 +89,10 @@ function RequestedTestsLab({
         if (data.status) {
           update(data.data);
           socket.emit("labPayment", data.data);
-          setAllMoneyUpdatedLab((prev)=>prev+1)
+          if(setAllMoneyUpdatedLab){
+
+            setAllMoneyUpdatedLab((prev)=>prev+1)
+          }
           const r = confirm("هل تريد طباعه الايصال");
           if (r) {
             PrintLab(actviePatient,userSettings)
@@ -115,10 +118,13 @@ function RequestedTestsLab({
     setLoading(true);
     axiosClient
       .patch(`paymentSingleTest/${actviePatient.id}`, {
-        test_id,
+        test_id
       })
       .then(({ data: data }) => {
-        setAllMoneyUpdatedLab((prev)=>prev+1)
+        if(setAllMoneyUpdatedLab){
+
+          setAllMoneyUpdatedLab((prev)=>prev+1)
+        }
 
         console.log(data, "patient paid data");
         if (data.status) {
@@ -137,7 +143,11 @@ function RequestedTestsLab({
     axiosClient
       .patch(`cancelPayment/${actviePatient.id}`)
       .then(({ data }) => {
-        setAllMoneyUpdatedLab((prev)=>prev+1)
+
+        if(setAllMoneyUpdatedLab){
+
+          setAllMoneyUpdatedLab((prev)=>prev+1)
+        }
 
         console.log(data, "data from cancel");
         if (data.status) {
@@ -163,7 +173,10 @@ function RequestedTestsLab({
         test_id: test.id,
       })
       .then(({ data }) => {
-        setAllMoneyUpdatedLab((prev)=>prev+1)
+        if(setAllMoneyUpdatedLab){
+
+          setAllMoneyUpdatedLab((prev)=>prev+1)
+        }
 
         if (data.status) {
           setLoading(false);
@@ -177,7 +190,10 @@ function RequestedTestsLab({
     axiosClient
       .delete(`labRequest/${id}/${doctorVisit.id}`)
       .then(({ data }) => {
-        setAllMoneyUpdatedLab((prev)=>prev+1)
+        if(setAllMoneyUpdatedLab){
+
+          setAllMoneyUpdatedLab((prev)=>prev+1)
+        }
 
         console.log(data, "data deleted");
         update(data.data);
@@ -322,7 +338,7 @@ function RequestedTestsLab({
                       </TableCell>
                       <TableCell>
                         <IconButton
-                          disabled={actviePatient.patient?.is_lab_paid == 1}
+                          disabled={test.is_paid == 1}
                           aria-label="delete"
                           onClick={() => deleteTest(test.id, actviePatient)}
                         >

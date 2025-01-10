@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Button,
   Card,
+  Checkbox,
   Divider,
   Grid,
   Skeleton,
@@ -26,14 +27,15 @@ import MyLoadingButton from "../../components/MyLoadingButton";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import MyServiceCostTableCell from "../inventory/SelectCostType";
+import { Service } from "../../types/type";
 
 function AddService() {
     const { t } = useTranslation('addService');
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState<Service|null>(null);
   const [search, setSearch] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showServiceCostDialog, setShowServiceCostDialog] = useState(false);
-  const [services, setservices] = useState([]);
+  const [services, setservices] = useState<Service[]>([]);
   const [links, setLinks] = useState([]);
   const [page, setPage] = useState(50);
   const [updated, setUpdated] = useState(0);
@@ -114,9 +116,9 @@ function AddService() {
     setLoading(true);
 
     axiosClient
-      .post(`addServiceCost/${selectedService.id}`, {
+      .post(`addServiceCost/${selectedService?.id}`, {
         ...data,
-        service_id: selectedService.id,
+        service_id: selectedService?.id,
       })
       .then(({ data }) => {
         console.log(data);
@@ -210,7 +212,7 @@ function AddService() {
               </select>
               <TextField
                 size="small"
-                value={search}
+                defaultValue={search}
                 onChange={(e) => {
                   searchHandler(e.target.value);
                 }}
@@ -266,6 +268,7 @@ function AddService() {
                     <TableCell>
                       <Button
                         onClick={() => {
+                          console.log(item,'req service')
                           setSelectedService(item);
                           setShowServiceCostDialog(true);
                         }}
@@ -447,6 +450,7 @@ function AddService() {
                 <TableCell>{t("percentage")}</TableCell>
                 <TableCell>{t("amount")}</TableCell>
                 <TableCell>{t("type")}</TableCell>
+                <TableCell>{t("order")}</TableCell>
                 <TableCell>{t("delete")}</TableCell>
               </TableRow>
             </TableHead>
@@ -457,6 +461,34 @@ function AddService() {
                   <TableCell>{cost.percentage}%</TableCell>
                   <TableCell>{cost.fixed}</TableCell>
                   <MyServiceCostTableCell   update={setSelectedService} colName={'cost_type'} item={cost} myVal={cost.cost_type} table="updateServiceCost"/>
+                  <TableCell>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{t("name")}</TableCell>
+                          <TableCell>{t("check")}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {cost.cost_type == 'after cost' && selectedService.service_costs.filter((c)=>c.id !=cost.id).map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell><Checkbox defaultChecked={
+                              cost.cost_orders.map((co)=>co.service_cost_item ).includes(item.id)
+                            } onChange={(e)=>{
+                              axiosClient.post(`addCostOrder`,{
+                                service_id:selectedService.id,
+                                service_cost_id:cost.id,
+                                service_cost_item:item.id,
+                                add:e.target.checked? 1 : 0
+                              })
+                            }} /></TableCell>
+                          
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableCell>
                   <TableCell>
                     <Button onClick={() => removeServiceCost(cost.id)}>
                       {t("delete")}
