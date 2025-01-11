@@ -254,10 +254,12 @@ function Result() {
                           form.append("data", data);
 
                           printJS({
-                            printable: data.slice(data.indexOf("JVB")),
+                            printable: data.data.slice(data.data.indexOf("JVB")),
                             base64: true,
                             type: "pdf",
                           });
+
+                        setActivePatient(data.patient)                          
 
                           // fetch('http://127.0.0.1:3000/',{
                           //   method: 'POST',

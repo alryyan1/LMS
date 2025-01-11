@@ -204,7 +204,7 @@ function PaperConfig() {
                   }}
                 />
               }
-              label={"disable doctor service check"}
+              label={"تعطيل التحقق من خدمات الطبيب"}
             />
           </FormGroup>
           <Divider />

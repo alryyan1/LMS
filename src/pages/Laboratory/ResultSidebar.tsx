@@ -286,23 +286,25 @@ function ResultSidebar({
                 }
                 if (data.status) {
                   console.log(data, "patient cbc");
-                  setSelectedTest((prev) => {
-                    console.log(prev, "previous selected test");
-                    return data.patient.labrequests.find(
-                      (labr) => labr.id == prev.id
-                    );
-                  });
-                  setResultUpdated((prev) => {
-                    return prev + 1;
-                  });
-                  setActivePatient(data.patient)
+             
+                 setActivePatient(data.data)
+                 setSelectedTest((prev) => {
+                  console.log(prev, "previous selected test");
+                  return data.data.patient.labrequests.find(
+                    (labr) => labr.id == prev.id
+                  );
+                });
+                setResultUpdated((prev) => {
+                  return prev + 1;
+                });
                 }
               })
               .finally(() => setLoading(false));
           }}
           variant="contained"
         >
-          <ElectricBolt />
+          <ElectricBolt             color={actviePatient.hasChemistry ? "warning" : "inherit"}
+ />
         </LoadingButton>
       )}
     </Stack>

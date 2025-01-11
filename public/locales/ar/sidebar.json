@@ -1,8 +1,8 @@
 {
-    "Clinic": "عيادة",
+    "clinic": "عيادة",
     "booking": "حجز",
     "doctorsReclaim": "استحقاق الاطباء",
-    "Lab": "مختبر",
+    "lab": "مختبر",
     "test_management": "ادارة الفحوصات",
       "price_list":"قائمة الاسعار",
     "CBC LIS": "نظام  الدم",
@@ -11,9 +11,8 @@
       "register_lab_patient":"تسجيل مريض ",
       "result_entry": "ادخال النتائج",
       "sample_collection":"جمع العينات",
-    "Pharmacy": "صيدلية",
       "pos":"نقطة البيع",
-      " Permissions":"الصلاحيات" ,
+      "permissions":"الصلاحيات" ,
       "items":"المواد",
       "sales":"المبيعات",
       "quantities":"الكميات",
@@ -21,14 +20,14 @@
       "define":"تعريف",
       "supplier":"المورد",
      "clients":"العملاء",
-      "Settings":"اعدادات",
+      "settings":"اعدادات",
       "doctors":"الأطباء",
       "specialists":"التخصصات",
       "users":"المستخدمين",
      "other":"اخرى",
      "defineService":"تعريف خدمة",
      "serviceGroup":"مجموعة خدمات",
-    "Insurance":"تأمين",
+    "insurance":"تأمين",
       "defineInsurance":"تعريف التأمين",
       "labContract":"عقد المختبر",
       "ServiceContract":"عقد الخدمات",
@@ -45,6 +44,7 @@
     "moneyIncome":" الايرادات",
      "finance":"المالية",
     "denos":"سندات",
-    "salesTable":"المبيعات والارباح"
+    "salesTable":"المبيعات والارباح",
+    "pharmacy":"صيدلية" 
     
   }

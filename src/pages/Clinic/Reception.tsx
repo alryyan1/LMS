@@ -736,10 +736,10 @@ function Reception() {
         </Paper>
         <Paper
           sx={{
-            // overflow: "auto",
-            // height: "77vh",
-            overflowX: "hidden",
-            overflowY: "auto",
+            overflow: "auto",
+            height: window.innerHeight,
+            // overflowX: "hidden",
+            // overflowY: "auto",
           }}
         >
          

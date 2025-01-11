@@ -5,6 +5,7 @@ import { url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 import { DoctorVisit } from "../../types/Patient";
+import { toast } from "react-toastify";
 
 interface AddServiceAutocompleteProps {
   selectedServices: any;
@@ -13,7 +14,7 @@ interface AddServiceAutocompleteProps {
   setShowPatientServices: any;
   setShowServicePanel: any;
   settings: any;
-  patient: DoctorVisit|null;
+  patient: DoctorVisit | null;
   setActiveDoctorVisit: any;
   socket: any;
 }
@@ -26,7 +27,7 @@ function AddServiceAutocomplete({
   settings,
   patient,
   setActiveDoctorVisit,
-  socket
+  socket,
 }: AddServiceAutocompleteProps) {
   const [autoCompleteServices, setAutoComleteServices] = useState([]);
   // const { actviePatient, setActivePatient, setDialog,selectedServices,setSelectedServices,activeShift,setShowPatientServices,setShowServicePanel  ,setUpdate,settings} = useOutletContext();
@@ -40,29 +41,19 @@ function AddServiceAutocomplete({
       if (activeShift) {
         if (!settings.disable_doctor_service_check) {
           if (activeShift.doctor.services.length == 0) {
-            // setDialog((prev)=>{
-            //   return {
-            //    ...prev,
-            //     open:true,
-            //     color:'error',
-            //     message:'لا توجد خدمات معرفه لهذا الطبيب'
-            //   }
-            // })
+            toast.error("لا توجد خدمات معرفه لهذا الطبيب");
             return;
           }
-          activeShift.doctor.services.map((s) => {
-            if (!payload.includes(s.service.id)) {
-              alert("هذه الخدمه غير معرفه من ضمن خدمات الطبيب");
-              // setDialog((prev)=>{
-              //   return {
-              //    ...prev,
-              //     open:true,
-              //     color:'error',
-              //     message:'هذه الخدمه غير معرفه للطبيب'
-              //   }
-              // })
+          payload.forEach((t) => {
+            if (
+              !activeShift.doctor.services.map((s) => s.service.id).includes(t)
+            ) {
+              let service= selectedServices.find((s)=> t == s.id)
+              // alert(service)
+              toast.error(`هذه الخدمه (${service.name})  غير معرفه من ضمن خدمات الطبيب`);
             }
           });
+
           payload = payload.filter((s) => {
             return activeShift.doctor.services
               .map((ds) => ds.service.id)
@@ -96,7 +87,6 @@ function AddServiceAutocomplete({
 
           setActiveDoctorVisit(data.patient);
           socket.emit("patientUpdated", data.patient);
-
         }
       } else {
         const { data: data } = await axiosClient.post(

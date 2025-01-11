@@ -38,15 +38,14 @@ function LabHistory({ doctorVisit,setActiveDoctorVisit }: LabHistoryProbs) {
   }, [doctorVisit]);
   return (
     <div style={{width:'350px',overflow:'hidden',textAlign:'center'}}>
-      {loading ? (
-        <CircularProgress size={'30px'} />
-      ) : (
+     
         <>
           {patientWithFileHistory?.file.patients.length > 1 ? (
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">History</InputLabel>
 
-              <Select
+              <Select 
+              endAdornment={loading ? <CircularProgress size={'20px'}/> : null }
               variant="standard"
                 size="small"
                 value={selectedValue}
@@ -67,7 +66,7 @@ function LabHistory({ doctorVisit,setActiveDoctorVisit }: LabHistoryProbs) {
             <div>No History Found</div>
           )}
         </>
-      )}
+      
     </div>
   );
 }
