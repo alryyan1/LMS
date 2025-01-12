@@ -27,7 +27,8 @@ import MyLoadingButton from "../../components/MyLoadingButton";
 import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import MyServiceCostTableCell from "../inventory/SelectCostType";
-import { Service } from "../../types/type";
+import { Service, ServiceCost } from "../../types/type";
+import AddSubServiceCostAutocomplete from "../../components/AddSubServiceCostAutocomplete";
 
 function AddService() {
     const { t } = useTranslation('addService');
@@ -40,10 +41,15 @@ function AddService() {
   const [page, setPage] = useState(50);
   const [updated, setUpdated] = useState(0);
   const [serviceGroups, setServiceGroups] = useState([]);
+  const [subServiceCosts, setSubServiceCosts] = useState([]);
+  
   useEffect(() => {
     axiosClient.get("serviceGroup/all").then(({ data }) => {
       console.log(data, "service groups");
       setServiceGroups(data);
+    });
+    axiosClient.get("subServiceCosts").then(({ data }) => {
+      setSubServiceCosts(data);
     });
   }, []);
   useEffect(() => {
@@ -58,6 +64,8 @@ function AddService() {
   }, [selectedService]);
   const {
     register: register2,
+    setValue:setValue2,
+    control:control2,
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
   } = useForm();
@@ -118,6 +126,7 @@ function AddService() {
     axiosClient
       .post(`addServiceCost/${selectedService?.id}`, {
         ...data,
+        sub_service_cost_id: data.sub_service_cost_id.id,
         service_id: selectedService?.id,
       })
       .then(({ data }) => {
@@ -455,9 +464,9 @@ function AddService() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {selectedService?.service_costs.map((cost) => (
+              {selectedService?.service_costs.map((cost:ServiceCost) => (
                 <TableRow key={cost.id}>
-                  <TableCell>{cost.name}</TableCell>
+                  <TableCell>{cost.sub_service_cost.name}</TableCell>
                   <TableCell>{cost.percentage}%</TableCell>
                   <TableCell>{cost.fixed}</TableCell>
                   <MyServiceCostTableCell   update={setSelectedService} colName={'cost_type'} item={cost} myVal={cost.cost_type} table="updateServiceCost"/>
@@ -472,14 +481,14 @@ function AddService() {
                       <TableBody>
                         {cost.cost_type == 'after cost' && selectedService.service_costs.filter((c)=>c.id !=cost.id).map((item) => (
                           <TableRow key={item.id}>
-                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.sub_service_cost.name}</TableCell>
                             <TableCell><Checkbox defaultChecked={
-                              cost.cost_orders.map((co)=>co.service_cost_item ).includes(item.id)
+                              cost.cost_orders.map((co)=>co.sub_service_cost_id ).includes(item.sub_service_cost_id)
                             } onChange={(e)=>{
                               axiosClient.post(`addCostOrder`,{
                                 service_id:selectedService.id,
                                 service_cost_id:cost.id,
-                                service_cost_item:item.id,
+                                sub_service_cost_id:item.sub_service_cost_id,
                                 add:e.target.checked? 1 : 0
                               })
                             }} /></TableCell>
@@ -502,11 +511,7 @@ function AddService() {
             <Typography textAlign={'center'} variant="h5">{t("serviceExpenses")}</Typography>
             <form onSubmit={handleSubmit2(addServiceCostHandler)}>
               <Stack direction={"column"} gap={2}>
-                <TextField
-                  variant="standard"
-                  label={t("expenseDescription")}
-                  {...register2("name")}
-                />
+                <AddSubServiceCostAutocomplete errors={errors2} setValue={setValue2} subServiceCosts={subServiceCosts} setSubServiceCosts={setSubServiceCosts} Controller={Controller} control={control2}/>
                 <TextField
                   variant="standard"
                   label={t("percentage")}

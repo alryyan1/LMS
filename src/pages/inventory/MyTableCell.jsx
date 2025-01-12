@@ -1,6 +1,6 @@
 import { TableCell, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { url } from "../constants";
+import { formatNumber, url } from "../constants";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client";
 
@@ -139,9 +139,10 @@ function MyTableCell({
             color: "black",
             fontSize: "large",
             fontWeight: "bolder",
+            width:'80px'
           }}
         >
-          {Number(iniVal).toFixed(3)}{" "}
+          {formatNumber(iniVal)}{" "}
         </span>
       ) : (
         <span

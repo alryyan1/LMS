@@ -309,14 +309,7 @@ export interface Patient {
 
   
   
-  export interface Route {
-    id: number
-    name: string
-    path: string
-    created_at: string
-    updated_at: string
-    sub_routes: SubRoute[]
-  }
+
   
   
   
@@ -334,18 +327,18 @@ export interface Patient {
     patient_id: number
   }
 
- interface RequestedService {
+export interface RequestedService {
   id: number;
   doctorvisits_id: number;
   service_id: number;
   user_id: number;
-  user_deposited: User;
+  user_deposited: Userdeposited;
   doctor_id: number;
   price: number;
   amount_paid: number;
   endurance: number;
   is_paid: number;
-  discount: number;
+  discoun: number;
   bank: number;
   count: number;
   created_at: string;
@@ -355,9 +348,55 @@ export interface Patient {
   done: number;
   service: Service;
   user_requested: User;
+  requested_service_costs: Requestedservicecost[];
+}
+
+interface Requestedservicecost {
+  id: number;
+  requested_service_id: number;
+  sub_service_cost_id: number;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  service_cost_id: number;
+  service_cost: Servicecost;
 }
 
 
+
+interface Servicecost {
+  id: number;
+  sub_service_cost_id: number;
+  service_id: number;
+  percentage: number;
+  fixed: number;
+  cost_type: string;
+  cost_orders: any[];
+  sub_service_cost: Subservicecost;
+}
+
+interface Subservicecost {
+  id: number;
+  name: string;
+}
+
+interface Userdeposited {
+  id: number;
+  username: string;
+  created_at: string;
+  updated_at: string;
+  doctor_id: null;
+  is_nurse: number;
+  name: string;
+  isAdmin: boolean;
+  isAccountant: boolean;
+  canPayLab: boolean;
+  roles: Role[];
+  routes: Route2[];
+  sub_routes: Subroute2[];
+  doctor: null;
+  permissions: any[];
+}
 
 interface Subroute2 {
   id: number;
@@ -375,12 +414,33 @@ interface Route2 {
   route: Route;
 }
 
+interface Route {
+  id: number;
+  name: string;
+  path: string;
+  created_at: string;
+  updated_at: string;
+  icon: string;
+  is_multi: number;
+  sub_routes: Subroute[];
+}
+
 interface Subroute {
   id: number;
   route_id: number;
   name: string;
   path: string;
-  icon: number;
+  icon: string;
+}
+
+
+
+interface Subroute {
+  id: number;
+  route_id: number;
+  name: string;
+  path: string;
+  icon: string;
 }
 
 

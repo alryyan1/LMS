@@ -84,26 +84,32 @@ export interface Service {
   activate: number;
   created_at: string;
   updated_at: string;
-  service_costs: Servicecost[];
+  service_costs: ServiceCost[];
   service_group: Servicegroup;
 
 }
 
-interface Servicecost {
+export interface ServiceCost {
   id: number;
-  name: string;
+  sub_service_cost_id: number;
   service_id: number;
   percentage: number;
   fixed: number;
   cost_type: string;
   cost_orders: Costorder[];
+  sub_service_cost: Subservicecost;
+}
+
+export interface Subservicecost {
+  id: number;
+  name: string;
 }
 
 interface Costorder {
   id: number;
   requested_service_id: number;
   service_cost_id: number;
-  service_cost_item: number;
+  sub_service_cost_id: number;
   created_at: string;
   updated_at: string;
 }

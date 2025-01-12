@@ -1,11 +1,13 @@
 import {
   Autocomplete,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
   Skeleton,
   Stack,
   Table,
@@ -25,10 +27,12 @@ import MyAutoCompeleteTableCell from "../inventory/MyAutoCompeleteTableCell";
 import { useOutletContext } from "react-router-dom";
 import AddDoctorForm from "./AddDoctorForm";
 import { useTranslation } from "react-i18next";
+import EmptyDialog from "../Dialogs/EmptyDialog";
+import { Plus } from "lucide-react";
 
 function Doctors() {
   const { specialists, doctorUpdater, setDialog } = useOutletContext();
-  const {t} = useTranslation('doctorsTable')
+  const { t } = useTranslation("doctorsTable");
   const [search, setSearch] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [links, setLinks] = useState([]);
@@ -36,6 +40,9 @@ function Doctors() {
   const [selectedDoctorServices, setSelectedDoctorServices] = useState([]);
   const [page, setPage] = useState(10);
   const [doctors, setDoctors] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [openCosts, setOpenCosts] = useState(false);
+
   const [openDocotrServiceDialog, setOpenDoctorServiceDialog] = useState(false);
   const showDoctorServicesDialog = () => {
     setOpenDoctorServiceDialog(true);
@@ -75,6 +82,13 @@ function Doctors() {
         setLoading(false);
       });
   };
+  const [subServiceCosts, setSubServiceCosts] = useState([]);
+
+  useEffect(() => {
+    axiosClient.get("subServiceCosts").then(({ data }) => {
+      setSubServiceCosts(data);
+    });
+  }, []);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     document.title = t("doctors");
@@ -104,6 +118,9 @@ function Doctors() {
 
   return (
     <>
+      <IconButton onClick={() => setOpen(true)}>
+        <Plus />
+      </IconButton>
       <Dialog fullWidth open={openDocotrServiceDialog}>
         <DialogTitle>{t("doctor_services")}</DialogTitle>
         <DialogContent>
@@ -258,9 +275,12 @@ function Doctors() {
                     <TableCell>{t("cash_percentage")}</TableCell>
                     <TableCell>{t("insurance_percentage")}</TableCell>
                     <TableCell>{t("phone")}</TableCell>
+                    <TableCell>{t("fixed")}</TableCell>
+                    <TableCell>{t("start")}</TableCell>
                     <TableCell>{t("specialist")}</TableCell>
                     {/* <TableCell> {t("fixed")} </TableCell> */}
                     <TableCell>{t("services")}</TableCell>
+                    <TableCell>{t("costs")}</TableCell>
                   </TableRow>
                 </thead>
                 <TableBody>
@@ -295,6 +315,20 @@ function Doctors() {
                       >
                         {doctor.phone}
                       </MyTableCell>
+                      <MyTableCell
+                        table="doctors"
+                        colName={"static_wage"}
+                        item={doctor}
+                      >
+                        {doctor.static_wage}
+                      </MyTableCell>
+                      <MyTableCell
+                        table="doctors"
+                        colName={"start"}
+                        item={doctor}
+                      >
+                        {doctor.start}
+                      </MyTableCell>
                       <MyAutoCompeleteTableCell
                         val={doctor.specialist}
                         table="doctors"
@@ -318,7 +352,17 @@ function Doctors() {
                             showDoctorServicesDialog(true);
                           }}
                         >
-                         {t("services")}
+                          {t("services")}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => {
+                            setSelectedDoctor(doctor);
+                            setOpenCosts(true);
+                          }}
+                        >
+                          {t("costs")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -374,8 +418,43 @@ function Doctors() {
             </Grid>
           </div>
         )}
-        <AddDoctorForm />
       </Stack>
+
+      <EmptyDialog show={open} setShow={setOpen}>
+        <AddDoctorForm setOpen={setOpen} />
+      </EmptyDialog>
+      {selectedDoctor && <EmptyDialog show={openCosts} setShow={setOpenCosts}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t("name")}</TableCell>
+              <TableCell>{t("check")}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+                subServiceCosts  .map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <Checkbox
+                        defaultChecked={selectedDoctor.doctor_sub_service_costs
+                          .map((dc) => dc.sub_service_cost_id)
+                          .includes(item.id)}
+                        onChange={(e) => {
+                          axiosClient.post(`addDoctorServiceCost`, {
+                            doctor_id: selectedDoctor.id,
+                            sub_service_cost_id: item.id,
+                            add: e.target.checked ? 1 : 0,
+                          });
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+          </TableBody>
+        </Table>
+      </EmptyDialog>}
     </>
   );
 }

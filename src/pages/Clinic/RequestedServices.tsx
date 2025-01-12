@@ -20,7 +20,13 @@ import MyCheckboxReception from "./MycheckboxReception";
 import RequestedServiceOptions from "./RequestedServiceOptions";
 import { formatNumber, Item, webUrl } from "../constants";
 import BottomMoney from "./BottomMoney";
-import { Company, DoctorShift, DoctorVisit, User } from "../../types/Patient";
+import {
+  Company,
+  DoctorShift,
+  DoctorVisit,
+  RequestedService,
+  User,
+} from "../../types/Patient";
 import MyTableCell from "../inventory/MyTableCell";
 import { PanelBottom } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -28,6 +34,7 @@ import bloodTest from "./../../assets/images/blood-test.png";
 import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 import printJS from "print-js";
+import EmptyDialog from "../Dialogs/EmptyDialog";
 
 interface RequestedServiceProps {
   actviePatient: DoctorVisit;
@@ -52,6 +59,9 @@ function RequestedServices({
   const [loading, setLoading] = useState(false);
   console.log(companies, "companies");
   const { t } = useTranslation("requestedServiceTable");
+  const [showServiceCost, setShowServiceCost] = useState(false);
+  const [selectedRequestedService, setSelectedRequestedService] =
+    useState<RequestedService | null>(null);
   const { setShowTestPanel, setShowLabTests } = useOutletContext();
   const pay = (id: number, setLoading: (loading: boolean) => void) => {
     setLoading(true);
@@ -59,7 +69,6 @@ function RequestedServices({
       .patch(`requestedService/pay/${id}`)
       .then(({ data }: any) => {
         //print reciet
-
 
         //print reciet
 
@@ -72,11 +81,13 @@ function RequestedServices({
       })
       .finally(() => {
         setLoading(false);
-        
+
         const form = new URLSearchParams();
 
         axiosClient
-          .get(`printRecieptionOneService?doctor_visit=${actviePatient.id}&service=${id}&base64=1`)
+          .get(
+            `printRecieptionOneService?doctor_visit=${actviePatient.id}&service=${id}&base64=1`
+          )
           .then(({ data }) => {
             form.append("data", data);
             console.log(data, "daa");
@@ -224,9 +235,15 @@ function RequestedServices({
                         }}
                         key={service.id}
                       >
-                        <TableCell sx={{ width: "200px" }} scope="row">
+                        <TableCell
+                          onClick={() => {
+                            setShowServiceCost(true);
+                            setSelectedRequestedService(service);
+                          }}
+                          sx={{ width: "200px" }}
+                          scope="row"
+                        >
                           <Tooltip title={service.user_requested.username}>
-                            {" "}
                             {service.service.name}
                           </Tooltip>
                         </TableCell>
@@ -338,6 +355,30 @@ function RequestedServices({
           />
         )}
       </div>
+     {selectedRequestedService && <EmptyDialog title={selectedRequestedService.service.name}
+        setShow={setShowServiceCost}
+        show={showServiceCost}
+      >
+        <Table>
+            <TableRow>
+              <TableCell> مصروف</TableCell>
+              <TableCell>المبلغ</TableCell>
+            </TableRow>
+            <TableBody>
+              {
+                selectedRequestedService?.requested_service_costs.map((rc)=>{
+                  return(
+                    <TableRow key={rc.id}>
+                    <TableCell>{rc.service_cost.sub_service_cost.name}</TableCell>
+                    <MyTableCell sx={{width:'60px'}} colName={'amount'} isNum={true}  table="updateRequestedServiceCost" item={rc}>{rc.amount}</MyTableCell>
+                    </TableRow>
+                  )
+                })
+              }
+            </TableBody>
+        </Table>
+        
+        </EmptyDialog>}
     </>
   );
 }
