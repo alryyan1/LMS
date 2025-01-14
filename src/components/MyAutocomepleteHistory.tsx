@@ -24,7 +24,7 @@ const MyAutocomepleteHistory: React.FC<autoProps> = ({
     .map((shift) => {
       return shift.doctor;
     });
-  const [selected, setSelected] = useState<Doctor | undefined | null>();
+  const [selected, setSelected] = useState<Doctor | undefined | null>(activeShift?.doctor);
   //   ()=>{
   //  const doc =  doctorsFilteredByUserOpened.find((d)=>{
   //       return d.id == patient?.doctor?.id

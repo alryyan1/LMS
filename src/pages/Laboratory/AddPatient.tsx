@@ -239,7 +239,7 @@ function AddPatient() {
         <Card
           sx={{ p: 1,userSelect:'none' }}
           style={{
-            height: window.innerHeight,
+            height: `${window.innerHeight - 100}px`,
             overflow: "auto",
             backgroundColor: "#ffffff73",
           }}
