@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
-import { Close, Download } from "@mui/icons-material";
+import { AirlineStops, Close, Download } from "@mui/icons-material";
 import MyLoadingButton from "../../components/MyLoadingButton";
 import MyCheckboxReception from "./MycheckboxReception";
 import RequestedServiceOptions from "./RequestedServiceOptions";
@@ -244,7 +244,7 @@ function RequestedServices({
                           scope="row"
                         >
                           <Tooltip title={service.user_requested.username}>
-                            {service.service.name}
+                            {service.service.name} {service.requested_service_costs.length > 0 && <IconButton title="هذه الخدمه تحتوي علي مصروفات"><AirlineStops/></IconButton>}
                           </Tooltip>
                         </TableCell>
 

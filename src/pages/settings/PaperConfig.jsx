@@ -6,6 +6,7 @@ import {
   FormGroup,
   Grid,
   Paper,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -56,38 +57,86 @@ function PaperConfig() {
   return (
     <Grid gap={4} container>
       <Grid item xs={4}>
-        <Typography textAlign={'center'} variant="h3"> Header </Typography>
-        <input onChange={(e)=>{
-          handleFileChange(e,'header_base64')
-        }} type="file"></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-           <img width={100} src={image1.src} alt="" />
-
-        <Divider />
-        <Typography textAlign={'center'} variant="h3">Footer</Typography>
-
-        <input onChange={(e)=>{
-          handleFileChange(e,'footer_base64')
-        }} type="file"></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-           <img width={100} src={image2.src} alt="" />
+        <Stack gap={1} direction='column'>
+              <TextField defaultValue={settings?.hospital_name} sx={{mb:1}} label='اسم المستشفي' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "hospital_name",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+            <TextField defaultValue={settings?.currency} sx={{mb:1}} label='العمله ' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "currency",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+          <TextField defaultValue={settings?.lab_name} sx={{mb:1}} label='اسم المختبر' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "lab_name",
+              data: e.target.value,
+            });
+          }}/>
+           <TextField defaultValue={settings?.phone} sx={{mb:1}} label='الهاتف ' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "phone",
+              data: e.target.value,
+            });
+          }}/>
+           <Divider/>
+           <TextField defaultValue={settings?.inventory_notification_number} label='رقم هاتف المخزن لارسال الاشعارات' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "inventory_notification_number",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.vatin} label='vat in' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "vatin",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.cr} label='cr' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "cr",
+              data: e.target.value,
+            });
+          }}/>
+            <Divider/>
+           <TextField defaultValue={settings?.email} label='email' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "email",
+              data: e.target.value,
+            });
+          }}/>
+           <Divider/>
+           <TextField defaultValue={settings?.address} label='address' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "address",
+              data: e.target.value,
+            });
+          }}/>
+            <TextField defaultValue={settings?.instance_id} label='instance_id' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "instance_id",
+              data: e.target.value,
+            });
+          }}/>
+            <TextField defaultValue={settings?.token} label='token' fullWidth onChange={(e)=>{
+             axiosClient.post("settings", {
+              colName: "token",
+              data: e.target.value,
+            });
+          }}/>
+        </Stack>
+       
 
       </Grid>
       <Grid xs={3}>
+        
         <Box key={settings?.id} sx={{p:1}}>
           <FormGroup>
             <FormControlLabel
@@ -225,71 +274,75 @@ function PaperConfig() {
               label={"لوقو"}
             />
           </FormGroup>
+        
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.send_result_after_auth}
+
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "send_result_after_auth",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"ارسال النتيجه بعد التحقيق"}
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.send_result_after_result}
+
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "send_result_after_result",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"ارسال النتيجه بعد الطباعه"}
+            />
+          </FormGroup>
           <Divider/>
-          <TextField defaultValue={settings?.hospital_name} sx={{mb:1}} label='اسم المستشفي' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "hospital_name",
-              data: e.target.value,
-            });
-          }}/>
-            <Divider/>
-            <TextField defaultValue={settings?.currency} sx={{mb:1}} label='العمله ' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "currency",
-              data: e.target.value,
-            });
-          }}/>
-            <Divider/>
-          <TextField defaultValue={settings?.lab_name} sx={{mb:1}} label='اسم المختبر' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "lab_name",
-              data: e.target.value,
-            });
-          }}/>
-           <TextField defaultValue={settings?.phone} sx={{mb:1}} label='الهاتف ' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "phone",
-              data: e.target.value,
-            });
-          }}/>
-           <Divider/>
-           <TextField defaultValue={settings?.inventory_notification_number} label='رقم هاتف المخزن لارسال الاشعارات' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "inventory_notification_number",
-              data: e.target.value,
-            });
-          }}/>
-            <Divider/>
-           <TextField defaultValue={settings?.vatin} label='vat in' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "vatin",
-              data: e.target.value,
-            });
-          }}/>
-            <Divider/>
-           <TextField defaultValue={settings?.cr} label='cr' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "cr",
-              data: e.target.value,
-            });
-          }}/>
-            <Divider/>
-           <TextField defaultValue={settings?.email} label='email' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "email",
-              data: e.target.value,
-            });
-          }}/>
-           <Divider/>
-           <TextField defaultValue={settings?.address} label='address' fullWidth onChange={(e)=>{
-             axiosClient.post("settings", {
-              colName: "address",
-              data: e.target.value,
-            });
-          }}/>
+       
         </Box>
       </Grid>
       <Grid xs={3}>
+      <Typography textAlign={'center'} variant="h3"> Header </Typography>
+        <input onChange={(e)=>{
+          handleFileChange(e,'header_base64')
+        }} type="file"></input>
+        {file && (
+          <section>
+            File details:
+            <ul>
+              <li>Name: {file.name}</li>
+            </ul>
+          </section>
+        )}
+           <img width={100} src={image1.src} alt="" />
+
+        <Divider />
+        <Typography textAlign={'center'} variant="h3">Footer</Typography>
+
+        <input onChange={(e)=>{
+          handleFileChange(e,'footer_base64')
+        }} type="file"></input>
+        {file && (
+          <section>
+            File details:
+            <ul>
+              <li>Name: {file.name}</li>
+            </ul>
+          </section>
+        )}
+           <img width={100} src={image2.src} alt="" />
           <Box sx={{p:1}}>
            <TextField defaultValue={settings?.header_contentr} sx={{mb:1}}  rows={3} label='محتوي الترويسه' multiline fullWidth onChange={(e)=>{
              axiosClient.post("settings", {

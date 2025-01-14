@@ -174,7 +174,7 @@ function AddPatient() {
           )}
         </Box>
         <Box>
-         {showSearch && <AutocompleteSearchPatient
+         { <AutocompleteSearchPatient
             update={update}
             setDialog={setDialog}
             

@@ -52,8 +52,9 @@ function CountInfoGraphic() {
           </FormControl>
         <h3 className="text-lg font-medium text-gray-900 mb-4" >{`  ${monthArr[selectedMonth -1]}   التردد علي مستوي الشهر`}</h3>
         <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
+          {/* <ResponsiveContainer width="100%" height="100%"> */}
             <AreaChart
+            width={window.innerWidth - 200} height={300}
               margin={{ top: 20, right: 50, left: 50, bottom: 20 }}
               data={data}
             >
@@ -68,7 +69,7 @@ function CountInfoGraphic() {
                 fill="#EEF2FF"
               />
             </AreaChart>
-          </ResponsiveContainer>
+          {/* </ResponsiveContainer> */}
         </div>
       </div>
     

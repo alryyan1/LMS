@@ -1,6 +1,17 @@
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import { ArrowBack, ArrowForward, Lock, LockOpen } from "@mui/icons-material";
 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+} from "recharts";
 
 import {
   Card,
@@ -24,11 +35,9 @@ import boxes from "./lotties/boxes.json";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import axiosClient from "../axios-client";
-import { webUrl } from "./pages/constants";
-import dayjs from "dayjs";
+import { formatNumber, webUrl } from "./pages/constants";
 import { LoadingButton } from "@mui/lab";
 import { socket } from "./socket";
-import { toast } from "react-toastify";
 import IncomeInfoGraphic from "./components/IncomeInfoGraphic";
 import CountInfoGraphic from "./components/CountInfoGraphic";
 function toFixed(num, fixed) {
@@ -37,7 +46,14 @@ function toFixed(num, fixed) {
   return num.toString().match(re)[0];
 }
 function Dashboard() {
+  const [data, setData] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
+  useEffect(() => {
+    axiosClient(`incomeInfoGraphic?month=${selectedMonth}`).then(({ data }) => {
+      setData(data);
+    });
+  }, [selectedMonth]);
   const options = {
     weekday: "long",
     year: "numeric",
@@ -46,8 +62,7 @@ function Dashboard() {
   };
   const [loading, setLoading] = useState(false);
   const [shift, setShift] = useState(null);
- 
- 
+
   useEffect(() => {
     setLoading(true);
     axiosClient
@@ -157,12 +172,18 @@ function Dashboard() {
         </Card>
 
         <>
-        
-        <IncomeInfoGraphic/>
-        {/* <CountInfoGraphic/> */}
+      <IncomeInfoGraphic />
+          {/* <LineChart width={600} height={300} data={data}>
+            <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+            <CartesianGrid stroke="#ccc" />
+            <XAxis dataKey="name" />
+            <YAxis  dataKey={"sales"}/>
+          </LineChart> */}
+             
+          <CountInfoGraphic/>
         </>
 
-        <Grid spacing={2} container>
+        <Grid spacing={2} container sx={{mt:1}}>
           <Grid item xs={12} md={6} lg={3}>
             <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
               <CardContent>
@@ -344,7 +365,6 @@ function Dashboard() {
                   <Stack justifyContent={"space-between"} direction={"column"}>
                     <Typography>Expired Items</Typography>
                     <Divider />
-                  
                   </Stack>
                   <Stack direction={"column"} justifyContent={"center"}>
                     <IconButton href={`${webUrl}expireReport`}>

@@ -250,7 +250,7 @@ function Reception() {
     setLayout((prev) => {
       return {
         ...prev,
-        form: "minmax(350px, 1fr)",
+        form: "minmax(350px, 400px)",
         hideForm: false,
         requestedDiv:'0fr'
       };
@@ -439,7 +439,7 @@ function Reception() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: window.innerHeight,
+          // height: window.innerHeight,
           display: "grid",
           gridTemplateColumns: `    ${layOut.patientDetails}   ${layOut.requestedDiv}  ${layOut.patients}   ${layOut.form} 0.1fr   `,
         }}
@@ -450,8 +450,9 @@ function Reception() {
               style={{
                 position: "absolute",
                 zIndex: 3,
-                width: "60vw",
+                width: `${window.innerWidth - 700}px`,
                 overflow: "auto",
+                boxShadow: "2px 7px 10px gray"
               }}
             >
               <SearchDialog
@@ -479,6 +480,7 @@ function Reception() {
               ) : (
                 <div style={{ width: "300px" }}>
                   <AllMoneyDetails
+                  setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
                     allMoneyUpdated={allMoneyUpdated}
                     allMoneyUpdatedLab={allMoneyUpdatedLab}
                   />
@@ -737,7 +739,7 @@ function Reception() {
         <Paper
           sx={{
             overflow: "auto",
-            height: window.innerHeight,
+            height: `${window.innerHeight - 100}px`,
             // overflowX: "hidden",
             // overflowY: "auto",
           }}

@@ -15,6 +15,8 @@ import TdLoader from "../../components/TdLoader";
 import { Eye } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import DoctorShiftAddictionalCosts from "../../components/DoctorShiftAddictionalCosts";
+import { formatNumber } from "../constants";
+import { Shift } from "../../types/Shift";
 
 function DoctorsCredits({ setAllMoneyUpdatedLab }) {
   const [doctorShifts, setDoctorShifts] = useState([]);
@@ -22,7 +24,15 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
   const [showAdditonalCosts, setShowAdditonalCosts] = useState(false);
   const [selectedDoctorShift, setSelectedDoctorShift] = useState(null);
 
-  
+  const [unifiedShift, setUnifiedShift] = useState<Shift | null>(null);
+
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    axiosClient.get("shift/last").then(({ data: { data } }) => {
+      setUnifiedShift(data);
+      
+    });
+  }, [unifiedShift?.cost.length]);
   useEffect(() => {
     document.title = "استحقاق الاطباء";
   }, []);
@@ -54,6 +64,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             <TableCell>الاسم</TableCell>
             <TableCell>اجمالي الاستحقاق</TableCell>
             <TableCell>عدد المرضي</TableCell>
+            <TableCell>الثابت</TableCell>
             <TableCell>استحقاق النقدي</TableCell>
             <TableCell>استحقاق التامين</TableCell>
             <TableCell>الزمن</TableCell>
@@ -68,6 +79,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 <TableCell>{shift.doctor.name}</TableCell>
                 <TdLoader api={`doctor/totalMoney/${shift.id}`} />
                 <TableCell>{shift.visits.length}</TableCell>
+                <TableCell>{formatNumber(shift.doctor.static_wage)}</TableCell>
                 <TdLoader api={`doctor/moneyCash/${shift.id}`} />
                 <TdLoader api={`doctor/moneyInsu/${shift.id}`} />
                 <TableCell>
@@ -75,7 +87,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                    disabled={shift.cost}
+                    disabled={unifiedShift?.cost.map((c)=>c.doctor_shift_id).includes(shift.id)}
                     onClick={(setIsLoading) => {
                       addCost(shift.id, setIsLoading);
                     }}

@@ -89,7 +89,7 @@ function SearchDialog({ lab = false, user, update, isReception, hideForm,setActi
     <>
       <IconButton
         size="small"
-        sx={{ position: "absolute" }}
+        sx={{ position: "absolute"}}
         onClick={() => {
           setDialog((prev) => {
             return { ...prev, showHistory: false };
@@ -100,21 +100,21 @@ function SearchDialog({ lab = false, user, update, isReception, hideForm,setActi
       </IconButton>
 
       <TableContainer
-        className=" shadow-lg "
+        className=" "
         component={Card}
-        sx={{ height: "70vh", overflow: "auto" }}
+        sx={{ height: `${window.innerHeight - 200}px`, overflow: "auto",boxShadow:'5px 10px 15px gray' }}
       >
         <Table
           className="table-sm  table-small "
           style={{ direction: "rtl" }}
           size="small"
         >
-          <thead className="thead">
+          <thead className="">
             <TableRow>
               <TableCell>الاسم</TableCell>
               <TableCell>الرقم</TableCell>
               <TableCell>التاريخ</TableCell>
-              {/* <TableCell>  الطبيب السابق</TableCell> */}
+              <TableCell>  الطبيب السابق</TableCell>
               <TableCell> الطبيب</TableCell>
               <TableCell> الشركه</TableCell>
               <TableCell> </TableCell>
@@ -138,7 +138,7 @@ function SearchDialog({ lab = false, user, update, isReception, hideForm,setActi
                       "YYYY-MM-DD"
                     )}
                   </TableCell>
-                  {/* <TableCell sx={{textWrap:'nowrap'}}>{item?.doctor?.name}</TableCell> */}
+                  <TableCell sx={{textWrap:'nowrap'}}>{item?.patient?.doctor.name}</TableCell>
                   <TableCell>
                     {lab ? (
                       <MyAutocomepleteHistoryLab

@@ -82,7 +82,6 @@ function AddDoctorForm({setOpen}) {
             <Input type="hidden" name="user_id" />
             <div className="grid w-full items-center gap-4">
               {/** Name  */}
-              <div >
                 <TextField
                 fullWidth
                   className=""
@@ -95,10 +94,10 @@ function AddDoctorForm({setOpen}) {
                   variant="filled"
                   helperText={errors.name?.message}
                 />
-              </div>
               {/** Cash Precentage */}
               <Stack  direction={'row'} gap={1}>
                 <TextField
+                fullWidth
                   className=""
                   type="number"
                   error={errors.cash_percentage != null}
@@ -118,9 +117,9 @@ function AddDoctorForm({setOpen}) {
                   variant="filled"
                   helperText={errors.cash_percentage?.message}
                 />
-                 <div >
                 <TextField
                   className=""
+                  fullWidth
                   type="number"
                   error={errors.company_percentage != null}
                   {...register("company_percentage", {
@@ -135,7 +134,6 @@ function AddDoctorForm({setOpen}) {
                   variant="filled"
                   helperText={errors.company_percentage?.message}
                 />
-              </div>
               </Stack>
               {/**Insurance precentage of the doctor */}
              
@@ -143,6 +141,7 @@ function AddDoctorForm({setOpen}) {
               {/**phone */}
               <TextField
                 className=""
+                fullWidth
                 type="number"
                 error={errors.phone != null}
                 {...register("phone", {
@@ -154,12 +153,14 @@ function AddDoctorForm({setOpen}) {
               />
               <Stack direction={"row"} gap={1}><TextField
                 className=""
+                fullWidth
                 type="number"
                 {...register("static_wage")}
                 label="الثابت"
                 variant="filled"
               />
               <TextField
+              fullWidth
                 className=""
                 type="number"
                 {...register("start")}

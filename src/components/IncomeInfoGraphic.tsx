@@ -56,23 +56,19 @@ function IncomeInfoGraphic() {
           </FormControl>
         <h3 className="text-lg font-medium text-gray-900 mb-4" >{`  ${monthArr[selectedMonth -1]}   الايرادات علي مستوي الشهر`}</h3>
         <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              margin={{ top: 20, right: 50, left: 50, bottom: 20 }}
-              data={data}
-            >
-              <CartesianGrid  strokeDasharray="3 3" />
+           {/* <ResponsiveContainer width="100%" height="100%"> */}
+           
+           
+                      {/* <ResponsiveContainer width="100%" height="100%"> */}
+            <AreaChart width={window.innerWidth - 200} height={300} data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis  tickFormatter={(val)=>formatNumber(val)} />
-              <Tooltip formatter={(val)=>formatNumber(val)} />
-              <Area
-                type="monotone"
-                dataKey="Revenues"
-                stroke="#4F46E5"
-                fill="#EEF2FF"
-              />
+              <YAxis />
+              <Tooltip />
+              <Area type="monotone" dataKey="sales" stroke="#4F46E5" fill="#EEF2FF" />
             </AreaChart>
-          </ResponsiveContainer>
+          {/* </ResponsiveContainer> */}
+          {/* </ResponsiveContainer> */}
         </div>
       </div>
     

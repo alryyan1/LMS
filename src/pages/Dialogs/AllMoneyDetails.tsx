@@ -26,8 +26,13 @@ import { BarChartIcon, PanelsTopLeftIcon, PieChartIcon } from "lucide-react";
 import { ShiftDetails } from "../../types/CutomTypes";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import BasicPopover from "../pharmacy/MyPopOver";
+import { LoadingButton } from "@mui/lab";
+import { Shift } from "../../types/Shift";
+import { useStateContext } from "../../appContext";
+import ShiftCostsTable from "../../components/ShiftCostsTable";
 
-function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
+function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdatedLab}) {
   const { dialog, setDialog } = useOutletContext();
   const {t} =useTranslation('allMoneyDetails')
   const [money, setMoney] = useState();
@@ -35,7 +40,6 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
   const [loadingLab, setLoadingLab] = useState(false);
   const [bank, setBank] = useState();
     const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
-  
   useEffect(()=>{
     axiosClient.get("shift/last").then(({ data: { data } }) => {
         // setShift(data);
@@ -83,6 +87,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
       .catch((err) => console.log(err))
       .finally(() => setLoadingLab(false));
   }, [allMoneyUpdatedLab]);
+
 
   return (
     <div style={{ textAlign: "center", direction: "rtl" }}>
@@ -160,14 +165,19 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab }) {
           <ListItemText primary={t("cash")} />
         </ListItem>
 
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.expenses)}</div>}  key="4">
+    
+           <ListItem secondaryAction={<BasicPopover  content={<>
+              <ShiftCostsTable setAllMoneyUpdatedLab ={setAllMoneyUpdatedLab}/>
+            </>} title={formatNumber(shiftSummary?.expenses)}></BasicPopover>}  key="4">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>
           <ListItemText primary={t("expenses")} />
         </ListItem>
+       
+       
 
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
+        <ListItem sx={{backgroundColor: shiftSummary?.safi < 0 ? 'lightpink' : ''}} secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
           <ListItemIcon>
             <PanelsTopLeftIcon />
           </ListItemIcon>

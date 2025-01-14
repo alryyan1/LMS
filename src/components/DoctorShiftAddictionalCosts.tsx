@@ -21,7 +21,7 @@ function DoctorShiftAddictionalCosts({ doctorShift }) {
   };
   return (
     <div>
-      <Table size="small">
+      <Table style={{direction:'rtl'}} size="small">
         <TableHead>
           <TableRow>
             <TableCell>الاسم</TableCell>

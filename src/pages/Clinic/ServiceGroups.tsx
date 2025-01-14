@@ -97,7 +97,7 @@ function ServiceGroup({socket}) {
                       : { textAlign: "center" }
                   }
                   className={
-                    founedService ? "active testGroupItem" : " testGroupItem"
+                    founedService ? "active " : " "
                   }
                   onClick={() => serviceAddHandler(service)}
                   sx={{ cursor: "pointer", p: 1, minWidth: "80px" }}
