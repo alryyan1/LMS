@@ -13,12 +13,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { webUrl } from "./constants";
 import PatientDetail from "./Laboratory/PatientDetail";
 import { DoctorShift, DoctorVisit } from "../types/Patient";
 import { Shift, Specialist } from "../types/Shift";
 import { Heart, HeartIcon } from "lucide-react";
+import axiosClient from "../../axios-client";
 interface AuditClincsProps {
   selectedShift: Shift;
   selectedDoctorShift: any;
@@ -26,6 +27,7 @@ interface AuditClincsProps {
   setSelectedDoctorShift: any;
   selectedVisit: DoctorVisit;
   setShowServices: any;
+
 }
 function AuditClinics({
   selectedShift,
@@ -34,10 +36,34 @@ function AuditClinics({
   setSelectedDoctorShift,
   selectedVisit,
   setShowServices,
+  
 }: AuditClincsProps) {
+  console.log(selectedDoctorShift,'selecteddoctorshift')
   const [selectedSpecialist, setSelectedSpecialist] =
     useState<Specialist | null>(null);
+    const [loading,setLoading] = useState(false);
+    const [patients,setPatients] = useState<DoctorVisit[]>([]);
 
+    useEffect(()=>{
+        setLoading(true)
+      //update latest patients for doctor
+      const controller = new AbortController()
+      if(selectedDoctorShift){
+  
+        axiosClient.get(`getDoctorShiftById?id=${selectedDoctorShift?.id}`,{
+          signal: controller.signal,
+        }).then(({data})=>{
+          console.log(data,'getDoctorShiftById')
+       
+          setSelectedDoctorShift(data)
+          setPatients(data.visits)
+        }).finally(()=>{
+          setLoading(false)
+        })
+      }
+      return () => controller.abort() // Clean up the abort controller when component unmounts.
+     
+    },[selectedDoctorShift?.id])
   return (
     <div
       style={{
@@ -136,9 +162,9 @@ function AuditClinics({
         </Box>
       )}
       <Box>
-        {selectedDoctorShift && (
+  
           <List dense>
-            {selectedDoctorShift.visits.map((visit) => {
+            {patients.map((visit) => {
               return (
                 <ListItem
                   sx={{
@@ -192,7 +218,7 @@ function AuditClinics({
               );
             })}
           </List>
-        )}
+    
       </Box>
       <Box>
         {selectedVisit && (

@@ -89,6 +89,19 @@ export default function AutocompleteSearchPatient({
 
           if (focusPaitent) {
             focusPaitent(newVal);
+            if(setShowDetails){
+
+              setShowDetails(true);
+            }
+            const doc = newVal.patient.doctor.id;
+               const docShift =  openedDoctors.find((shift)=>shift.doctor.id == doc)
+               if(docShift){
+                //ممكن يكون الورديه قديمه 
+                setValue(docShift.id)
+                setShowPatientServices(true)
+                setShowServicePanel(false)
+                 setActiveShift(docShift)
+               }
           }
         }
       }}

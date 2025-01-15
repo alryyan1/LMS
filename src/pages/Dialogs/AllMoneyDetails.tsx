@@ -98,7 +98,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
       {loading ? (
         <CircularProgress />
       ) : (
-        <Table size="small">
+        <Table className="table" size="small">
           <TableHead className="thead">
             <TableRow>
               <TableCell>{t("total")}</TableCell>
@@ -122,7 +122,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
       {loadingLab ? (
         <CircularProgress />
       ) : (
-        <Table size="small">
+        <Table className="table" size="small">
           <TableHead className="thead">
             <TableRow>
             <TableCell>{t("total")}</TableCell>

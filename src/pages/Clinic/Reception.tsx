@@ -31,7 +31,7 @@ import PatientReception from "./PatientReception";
 import CustumSideBar from "../../components/CustumSideBar";
 import EditPatientDialog from "../Dialogs/EditPatientDialog";
 import printJS from "print-js";
-import { Item, printBarcodeOldWay, webUrl } from "../constants";
+import { Item, printBarcodeOldWay, updateHandler, webUrl } from "../constants";
 import TestGroups from "../../../TestGroups";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import { socket } from "../../socket";
@@ -95,7 +95,17 @@ function Reception() {
   const [showDetails, setShowDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [value, setValue] = useState(0);
-
+  const [patients,setPatients] = useState<DoctorVisit[]>([]);
+  useEffect(()=>{
+    setPatients((prev)=>{
+      return prev.map((p)=>{
+        if(p.id === actviePatient?.id){
+          return {...actviePatient} 
+        }
+        return p;
+      })
+    })
+  },[actviePatient])
   function onConnect() {
     setIsConnected(true);
   }
@@ -160,41 +170,7 @@ function Reception() {
     patientDetails: "0.8fr",
     patients: "minmax(270px,1fr)",
   });
-  const updateHandler = (e, colName) => {
-    axiosClient
-      .patch(`patients/${actviePatient.patient.id}`, {
-        [colName]: e.target.value,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        if (data.status) {
-          axiosClient
-            .get(`doctorvisit/find?pid=${actviePatient.patient.id}`)
-            .then(({ data }) => {
-              change(data);
-            });
-          setDialog((prev) => {
-            return {
-              ...prev,
-              message: "Saved",
-              open: true,
-              color: "success",
-            };
-          });
-        }
-      })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return {
-            ...prev,
-            message: data.message,
-            open: true,
-            color: "error",
-          };
-        });
-      });
-  };
+ 
   // console.log(openDrawer, "open drawer");
 
   const change = (doctorVisit: DoctorVisit) => {
@@ -257,22 +233,7 @@ function Reception() {
     });
   };
   // console.log("update count", update);
-  const showShiftMoney = () => {
-    setDialog((prev) => {
-      return {
-        ...prev,
-        showMoneyDialog: true,
-      };
-    });
-  };
-  const showDoctorsDialog = () => {
-    setDialog((prev) => {
-      return {
-        ...prev,
-        showDoctorsDialog: true,
-      };
-    });
-  };
+
   useEffect(() => {
     document.title = "الاستقبال";
     document.addEventListener("keydown", SearchHandler);
@@ -304,66 +265,11 @@ function Reception() {
     hideForm();
   };
   const update = (doctorVisit: DoctorVisit) => {
+    // alert('s')
     console.log(doctorVisit, "doctor visit in update function", doctorVisit.id);
     setActivePatient(doctorVisit);
     hideForm();
-    setActiveShift((prev) => {
-      if (prev.visits.map((v) => v.id).find((v) => v == doctorVisit.id)) {
-        // alert('patient found')
-        //existing
-        //update patient
-        const ActiveDoctorShiftUpdated = {
-          ...prev,
-          visits: [
-            ...prev.visits.map((visit) => {
-              if (visit.id === doctorVisit.id) {
-                console.log(doctorVisit, "doctor visit in side change");
-                // alert('founded')
-                return { ...doctorVisit };
-              }
-              return visit;
-            }),
-          ],
-        };
-        //update openedDoctos
-        setOpenedDoctors((prev) => {
-          return prev.map((shift) => {
-            if (shift.id === ActiveDoctorShiftUpdated.id) {
-              console.log(doctorVisit, "doctor visit in side change");
-              // alert('founded')
-              return { ...ActiveDoctorShiftUpdated };
-            }
-            return shift;
-          });
-        });
-        //return the updated ActiveDoctorShiftUpdated
-        return ActiveDoctorShiftUpdated;
-      } else {
-        // alert('new patient')
-        console.log("new patient");
-        if (doctorVisit.patient.shift_id != doctorVisit.patient.lastShift)
-          return prev;
-        //new patietn added
-        setShowServicePanel(true);
-        const ActiveDoctorShiftUpdated = {
-          ...prev,
-          visits: [{ ...doctorVisit }, ...prev.visits],
-        };
-        // update opened doctors state
-        setOpenedDoctors((prev) => {
-          return prev.map((shift) => {
-            if (shift.id === ActiveDoctorShiftUpdated.id) {
-              console.log(doctorVisit, "doctor visit in side change");
-              // alert('founded')
-              return { ...ActiveDoctorShiftUpdated };
-            }
-            return shift;
-          });
-        });
-        //return the updated ActiveDoctorShiftUpdated
-        return ActiveDoctorShiftUpdated;
-      }
-    });
+   
   };
   const selectDoctorHandler = (shift: DoctorShift) => {
     setActiveShift(shift);
@@ -430,6 +336,7 @@ function Reception() {
             value={value}
             setLoadingDoctorPatients={setLoadingDoctorPatients}
             setValue={setValue}
+            setPatients={setPatients}
           />
         </div>
       </Stack>
@@ -461,6 +368,7 @@ function Reception() {
                 isReception={true}
                 update={update}
                 user={user}
+                setPatients={setPatients}
               />
             </div>
           )}
@@ -730,7 +638,7 @@ function Reception() {
               sx={{ mt: 1 }}
               defaultValue={actviePatient.patient.discount}
               onChange={(e) => {
-                updateHandler(e, "discount");
+                updateHandler(e.target.value, "discount",actviePatient,setActivePatient);
               }}
               label="Total Discount"
             ></TextField>
@@ -762,8 +670,8 @@ function Reception() {
               >
               
           
-                {activeShift &&
-                  activeShift?.visits
+                {
+                  patients
                     ?.filter((dcVisit) => dcVisit.only_lab == 0)
                     .map((visit) => {
                       return (
@@ -791,6 +699,7 @@ function Reception() {
                 settings={settings}
                 hideForm={hideForm}
                 update={update}
+                setPatients={setPatients}
               />
             )}
           </div>
@@ -801,11 +710,10 @@ function Reception() {
           setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
           activePatient={actviePatient}
           setOpen={setOpen}
-          showShiftMoney={showShiftMoney}
+         
           showFormHandler={showFormHandler}
           activeShift={activeShift}
           user={user}
-          showDoctorsDialog={showDoctorsDialog}
         />
 
         <ServiceMoneyDialog />

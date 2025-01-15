@@ -45,7 +45,7 @@ function Patient({
           horizontal: "bottom",
         }}
         badgeContent={patient.patient.labrequests.length == 0 ? undefined :patient.patient.labrequests.length }
-        color={patient.patient.is_lab_paid == 0 ? "error" : "success"}
+        color={patient.patient.labrequests.every((l)=>l.is_paid) == 0 ? "error" : "success"}
       >
         <Box
           style={

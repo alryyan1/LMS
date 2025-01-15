@@ -3,7 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { Badge } from "@mui/material";
-import { DoctorShift, User } from "../../types/Patient";
+import { DoctorShift, DoctorVisit, User } from "../../types/Patient";
 import axiosClient from "../../../axios-client";
 
 interface TabPanelProps {
@@ -43,12 +43,13 @@ interface openDoctorTabsProps {
     setValue: React.Dispatch<React.SetStateAction<number>>;
     setOpenedDoctors: React.Dispatch<React.SetStateAction<DoctorShift[]>>;
     setActiveShift: React.Dispatch<React.SetStateAction<DoctorShift|null>>;
+    setPatients: React.Dispatch<React.SetStateAction<DoctorVisit[]>>;
 
 
   
 
 }
-export default function OpenDoctorTabs({setLoadingDoctorPatients, user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue,setOpenedDoctors,setActiveShift}:openDoctorTabsProps) {
+export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue,setOpenedDoctors,setActiveShift}:openDoctorTabsProps) {
 
   const tabRefs = React.useRef([]); // Create a ref array to hold all tab refs.
 
@@ -71,16 +72,17 @@ export default function OpenDoctorTabs({setLoadingDoctorPatients, user, openedDo
         inline: "center", // Ensures horizontal scrolling.
       });
     }
-    setLoadingDoctorPatients(true)
     //update latest patients for doctor
     const controller = new AbortController()
     if(value){
+    setLoadingDoctorPatients(true)
+
       axiosClient.get(`getDoctorShiftById?id=${value}`,{
         signal: controller.signal,
       }).then(({data})=>{
         console.log(data,'getDoctorShiftById')
         setActiveShift(data);
-
+        setPatients(data.visits)
         setOpenedDoctors((prev)=>{
          return  prev.map((doctorShift)=>{
             if(doctorShift.id == value){
@@ -117,6 +119,7 @@ export default function OpenDoctorTabs({setLoadingDoctorPatients, user, openedDo
               return (
 
                   <Tab
+                   
                               ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
 
                     value={shift.id}

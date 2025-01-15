@@ -9,8 +9,10 @@ type PatientReceptinPros = {
   patient: DoctorVisit;
   setShowDetails: () => void;
   showDetails: boolean;
+
   hideForm: () => void;
   change: (doctorVisit: DoctorVisit) => void;
+
 };
 
 function PatientReception(props: PatientReceptinPros) {
@@ -23,6 +25,7 @@ function PatientReception(props: PatientReceptinPros) {
     activeShift,
     setShowTestPanel,
     setShowLabTests,
+    
   } = useOutletContext<ReceptionLayoutProps>();
   return (
     <Badge
@@ -38,27 +41,18 @@ function PatientReception(props: PatientReceptinPros) {
         sx={{ cursor: "pointer" }}
         onClick={() => {
           // setShowLabTests(false)
-          if (actviePatient) {
-            setShowTestPanel(false);
-            /** this because if was same patient */
-            if (actviePatient.id == props.patient.id) {
-            } else {
-              props.change(props.patient);
-            }
-          } else {
+          
             props.change(props.patient);
-          }
+          
           if (
             props.patient.services.filter((service) => {
-              return service.doctor_id == activeShift.doctor.id;
+              return service.doctor_id == activeShift?.doctor.id;
             }).length > 0
           ) {
-            if (!showServicePanel) {
-              // setShowPatientServices(true);
-            } else {
+        
+              setShowPatientServices(true);
               setShowServicePanel(false);
-              // setShowPatientServices(true);
-            }
+           
           } else {
             setShowServicePanel(true);
             setShowPatientServices(false);

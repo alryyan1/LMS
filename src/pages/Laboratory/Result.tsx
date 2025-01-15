@@ -158,8 +158,8 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card sx={{ overflow: "auto" }}>
-          <List>
+        <Card sx={{ overflow: "auto",'direction':'rtl' }}>
+          <List style={{direction:'rtl'}}>
             {actviePatient?.patient.labrequests.map((test) => {
               return (
                 <ListItem title={test.is_paid ? '': "غير مدفوع"}
@@ -214,7 +214,7 @@ function Result() {
         <div>
           {/** add card using material   */}
           {actviePatient && (
-            <div>
+            <div style={{width:'300px'}}>
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>

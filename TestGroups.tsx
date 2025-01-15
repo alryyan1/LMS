@@ -55,6 +55,30 @@ console.log(packageData,'packages in groups')
               // variant="text"
               variant="contained"
               color="inherit"
+              sx={{
+                m: 1,
+                textOverflow:'ellipsis',
+                width: 200,
+                cursor: "pointer",
+                textTransform: "capitalize",
+                fontSize: "0.8rem",
+                height: "2rem",
+                borderRadius: 5,
+                backgroundColor: "white",
+                color: "black",
+                "&:hover": {
+                  backgroundColor: "#f0f0f0",
+                },
+                "&:active": {
+                  backgroundColor: "#e0e0e0",
+                },
+                "&:focus": {
+                  backgroundColor: "#d0d0d0",
+                },
+                "&:focus-visible": {
+                  backgroundColor: "#c0c0c0",
+                },
+              }}
               square
                 onClick={()=>handleTestAdd(p,t)}
                 className={`testGroupItem test card p-1 shadow-sm  ${actviePatient?.patient.labrequests.map((t)=>t.main_test.id).includes(t.id) ? 'active' :''}` }

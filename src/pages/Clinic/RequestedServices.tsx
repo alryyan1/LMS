@@ -62,7 +62,7 @@ function RequestedServices({
   const [showServiceCost, setShowServiceCost] = useState(false);
   const [selectedRequestedService, setSelectedRequestedService] =
     useState<RequestedService | null>(null);
-  const { setShowTestPanel, setShowLabTests } = useOutletContext();
+  
   const pay = (id: number, setLoading: (loading: boolean) => void) => {
     setLoading(true);
     axiosClient
@@ -74,7 +74,10 @@ function RequestedServices({
 
         console.log(data, "pay service");
         update(data.patient);
-        setAllMoneyUpdated((prev) => prev + 1);
+        if(setAllMoneyUpdated){
+
+          setAllMoneyUpdated((prev) => prev + 1);
+        }
       })
       .catch(({ response: { data } }: any) => {
         // alert(data.message)
@@ -377,6 +380,11 @@ function RequestedServices({
               }
             </TableBody>
         </Table>
+            <Button onClick={()=>{
+              axiosClient.patch(`updateRequestedServiceCostAfterUdate/${selectedRequestedService.id}`).then(({data})=>{
+                setActivePatient(data)
+              })
+            }} fullWidth variant="contained">تحديث</Button>
         
         </EmptyDialog>}
     </>

@@ -4,6 +4,7 @@ function TestGroupChildren(props) {
   
     return (
       <div 
+      style={{height:`${window.innerHeight - 150}px`,overflow:'auto'}}
 
         role="tabpanel"
         hidden={value !== index}

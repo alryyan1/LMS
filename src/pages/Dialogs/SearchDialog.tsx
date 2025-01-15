@@ -21,7 +21,7 @@ import ComponyAutocompleteHistory from "./ComponyAutocompleteHistory";
 import { MessageCircleDashed, Plus } from "lucide-react";
 import { OutletContextType } from "../../types/CutomTypes";
 
-import { Company, DoctorShift, DoctorVisit } from "../../types/Patient";
+import { Company, Doctor, DoctorShift, DoctorVisit } from "../../types/Patient";
 interface SearchDialogProbs {
   lab?: boolean;
   user: any;
@@ -30,8 +30,9 @@ interface SearchDialogProbs {
   hideForm: () => void;
   setActiveShift: (shift: any) => void;
   openedDoctors: DoctorShift[];
+  setPatients: (patients: DoctorVisit[]) => void;
 }
-function SearchDialog({ lab = false, user, update, isReception, hideForm,setActiveShift,openedDoctors }:SearchDialogProbs) {
+function SearchDialog({setPatients, lab = false, user, update, isReception, hideForm,setActiveShift,openedDoctors }:SearchDialogProbs) {
   const {
     foundedPatients,
     setDialog,
@@ -67,16 +68,17 @@ function SearchDialog({ lab = false, user, update, isReception, hideForm,setActi
       .then(({ data }) => {
         console.log(data, "data from history");
         if(setActiveShift){
-         const docShift= openedDoctors.find((ds)=>ds.doctor.id == doctor.id)
+         const docShift= openedDoctors.find((ds)=>ds.doctor.id == doctor?.id)
           setActiveShift(docShift);
         }
         update(data.patient);
+        setPatients((prev)=>{
+          return [data.patient,...prev]
+        })
       })
-      .catch(({ response: { data } }) => {
-        console.log(data);
-        setDialog((prev) => {
-          return { ...prev, open: true, message: data.message, color: "error" };
-        });
+      .catch((error) => {
+        console.log(error);
+       
       })
       .finally(() => {
         setDialog((prev) => {

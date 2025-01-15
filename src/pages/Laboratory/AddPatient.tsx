@@ -37,6 +37,7 @@ import AddTestAutocompleteLab from "./AddTestAutocompleteLab";
 import { LabLayoutPros } from "../../LabLayout";
 import { DoctorVisit } from "../../types/Patient";
 import { socket } from "../../socket";
+import { Printer, Settings } from "lucide-react";
 
 function AddPatient() {
   const { user } = useStateContext();
@@ -175,7 +176,7 @@ function AddPatient() {
         </Box>
         <Box>
          { <AutocompleteSearchPatient
-            update={update}
+            update={setActivePatientHandler}
             setDialog={setDialog}
             
           />}
@@ -300,14 +301,14 @@ function AddPatient() {
             />
           )}
           {actviePatient && (
-            <Stack sx={{ mt: 1 }} direction={"row"} gap={2}>
+            <Stack sx={{ mt: 1 }} direction={"row"} >
               <a
                 href={`${webUrl}printLabReceipt/${actviePatient?.id}/${user?.id}`}
               >
                 Receipt
               </a>
 
-              <Button
+              <IconButton
                 size="small"
                 sx={{ flexGrow: 1 }}
                 onClick={() => {
@@ -315,9 +316,9 @@ function AddPatient() {
                 }}
                 variant="contained"
               >
-                Edit
-              </Button>
-              <Button
+                <Settings/>
+              </IconButton>
+              <IconButton
                 size="small"
                 sx={{ flexGrow: 1 }}
                 onClick={() => {
@@ -369,8 +370,8 @@ function AddPatient() {
                 variant="contained"
                 target="myframe"
               >
-                Print
-              </Button>
+                <Printer/>
+              </IconButton>
             </Stack>
           )}
         </div>

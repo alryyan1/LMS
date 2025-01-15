@@ -19,7 +19,7 @@ import { Item } from "../constants";
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
-function ReceptionForm({ hideForm, lab, settings, socket, update }) {
+function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients }) {
   const { t } = useTranslation('receptionForm'); // Initialize translation hook
 
   const [loading, setIsLoading] = useState(false);
@@ -155,6 +155,9 @@ function ReceptionForm({ hideForm, lab, settings, socket, update }) {
           //this update patient list
           console.log(data.data.patient, "data data");
           update(data.data.patient);
+          setPatients((prev)=>{
+            return [data.data.patient,...prev]
+          })
         }
       })
       .catch(({ response: { data } }) => {
@@ -229,6 +232,7 @@ function ReceptionForm({ hideForm, lab, settings, socket, update }) {
           <Slide unmountOnExit in={selectedCompany == null} mountOnEnter>
             <Stack direction={"column"} gap={1}>
               <TextField
+                autoComplete="off"
                 type="number"
                 autoFocus
                 error={errors?.phone && errors.phone.message}

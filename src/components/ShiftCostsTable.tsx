@@ -37,7 +37,7 @@ function ShiftCostsTable({setAllMoneyUpdatedLab}) {
   const {user}= useStateContext()
 
   return (
-    <div> <Typography variant="h6" textAlign={"center"}>
+    <div  style={{ direction: "rtl",height:'300px',overflow:'auto' }}> <Typography variant="h6" textAlign={"center"}>
     مصروفات الورديه
   </Typography>
   <Table size="small" style={{ direction: "rtl" }}>

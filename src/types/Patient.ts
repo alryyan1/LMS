@@ -165,6 +165,7 @@ export interface Patient {
     requested_organisms: any[]
     created_at : string;
     updated_at : string;
+    is_paid:boolean;
   }
   
   
@@ -446,7 +447,7 @@ interface Subroute {
 
   
  
-  interface Doctor {
+  export interface Doctor {
   id: number;
   name: string;
   phone: string;
