@@ -66,6 +66,19 @@ export const getDoctorVisit = (pid) => {
     });
   });
 };
+
+export const sendResult = (actviePatient,setLoading)=>{
+  axiosClient
+  .get(`result?pid=${actviePatient.id}&base64=1`)
+  .then(({ data }) => {
+    const pdfData = data.data.slice(data.data.indexOf("JVB"));
+    axiosClient
+      .post(`sendPdf/${actviePatient.id}`, {
+        pdfData,
+      })
+      .finally(() => setLoading(false));
+  });
+}
 export const updateHandler = (
   val,
   colName,

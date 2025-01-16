@@ -1,5 +1,5 @@
 import { FavoriteBorder, HeatPumpRounded, Lock } from "@mui/icons-material";
-import { Badge, Box, Grow } from "@mui/material";
+import { Badge, Box, Grow, Stack } from "@mui/material";
 import "animate.css";
 import { useOutletContext } from "react-router-dom";
 import { DoctorVisit } from "../../types/Patient";
@@ -19,8 +19,7 @@ function PatientLab({ onClick, patient, actviePatient }: PatientLabPros) {
             horizontal: "bottom",
           }}
           badgeContent={patient.patient.labrequests.length}
-          color={patient.patient.is_lab_paid == 0 ? "error" : "success"}
-        >
+          color={patient.patient.labrequests.every((l)=>l.is_paid) == 0 ? "error" : "success"}        >
           <Box
             onClick={() => {
               onClick(patient);
@@ -67,13 +66,18 @@ function PatientLab({ onClick, patient, actviePatient }: PatientLabPros) {
           }
         >
           {patient.patient.visit_number}
-          <span>
+          <Stack direction={'column'}>
             {patient.patient.company_id != null ? (
               <FavoriteBorder sx={{ width: "16px" }} />
             ) : (
               ""
             )}
-          </span>
+             {patient.patient.labrequests.some((l)) != null ? (
+              <FavoriteBorder sx={{ width: "16px" }} />
+            ) : (
+              ""
+            )}
+          </Stack>
           <span>{patient.patient.result_is_locked ? <Lock /> : ""}</span>
         </Box>
       )}

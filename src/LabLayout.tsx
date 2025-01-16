@@ -5,6 +5,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { Company, Doctor, DoctorVisit } from "./types/Patient";
 import { Container, LabPackage, MainTest } from "./types/Lab";
 import { Specialist } from "./types/Shift";
+import { Settings } from "./types/type";
 export interface LabLayoutPros {
   dialog: {
     showMoneyDialog: boolean;
@@ -79,7 +80,7 @@ function LabLayout() {
   const [companies, setCompanies] = useState([]);
   const [selectedTests, setSelectedTests] = useState([]);
   const [userSettings, setUserSettings] = useState(null);
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState<Settings|null>(null);
 
   const [update, setUpdate] = useState(0);
 

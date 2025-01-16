@@ -1,6 +1,6 @@
 import { Button, Divider, IconButton, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { host, Item } from "../constants";
+import { host, Item, sendResult } from "../constants";
 import {
   Download,
   ElectricBolt,
@@ -12,6 +12,7 @@ import {
   Panorama,
   PanoramaHorizontal,
   StarBorder,
+  WhatsApp,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
@@ -38,13 +39,13 @@ function ResultSidebar({
   setActivePatient,
   selectedTest,
   setResultUpdated,
- 
+
   setShift,
   socket,
-  isConnected,update
-}:ResultSideBarPros) {
-
- const {setDialog} =  useOutletContext()
+  isConnected,
+  update,
+}: ResultSideBarPros) {
+  const { setDialog } = useOutletContext();
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -59,7 +60,6 @@ function ResultSidebar({
         title="Sync"
         size="small"
         onClick={() => {
-
           isConnected ? socket.disconnect() : socket.connect();
         }}
         variant="contained"
@@ -78,7 +78,6 @@ function ResultSidebar({
                   .post(`addOrganism/${selectedTest.id}`)
                   .then(({ data }) => {
                     setActivePatient(data.patient);
-                   
                   });
               }
             }}
@@ -123,8 +122,8 @@ function ResultSidebar({
                     (labr) => labr.id == prev.id
                   );
                 });
-               
-                setActivePatient(data.data)
+
+                setActivePatient(data.data);
               })
               .finally(() => setLoading(false));
           }}
@@ -155,8 +154,8 @@ function ResultSidebar({
                     (labr) => labr.id == prev.id
                   );
                 });
-               
-                setActivePatient(data.data)
+
+                setActivePatient(data.data);
                 setResultUpdated((prev) => {
                   return prev + 1;
                 });
@@ -182,23 +181,21 @@ function ResultSidebar({
               })
               .then(({ data }) => {
                 if (data.status == false) {
-              
-
                   return;
                 }
                 if (data.status) {
                   console.log(data, "patient cbc");
-             
-                 setActivePatient(data.data)
-                 setSelectedTest((prev) => {
-                  console.log(prev, "previous selected test");
-                  return data.data.patient.labrequests.find(
-                    (labr) => labr.id == prev.id
-                  );
-                });
-                setResultUpdated((prev) => {
-                  return prev + 1;
-                });
+
+                  setActivePatient(data.data);
+                  setSelectedTest((prev) => {
+                    console.log(prev, "previous selected test");
+                    return data.data.patient.labrequests.find(
+                      (labr) => labr.id == prev.id
+                    );
+                  });
+                  setResultUpdated((prev) => {
+                    return prev + 1;
+                  });
                 }
               })
               .finally(() => setLoading(false));
@@ -247,7 +244,7 @@ function ResultSidebar({
                   setResultUpdated((prev) => {
                     return prev + 1;
                   });
-                  setActivePatient(data.data)
+                  setActivePatient(data.data);
                 }
               })
               .finally(() => setLoading(false));
@@ -257,6 +254,22 @@ function ResultSidebar({
           <PanoramaHorizontal
             color={actviePatient.hasCbc ? "error" : "inherit"}
           />
+        </LoadingButton>
+      )}
+
+      {selectedTest && (
+        <LoadingButton
+          color="inherit"
+          size="small"
+          title="ارسال النتيجه PDF"
+          loading={loading}
+          onClick={() => {
+            setLoading(true);
+            sendResult(actviePatient,setLoading)
+          }}
+          variant="contained"
+        >
+          <WhatsApp />
         </LoadingButton>
       )}
       {selectedTest && (
@@ -286,25 +299,26 @@ function ResultSidebar({
                 }
                 if (data.status) {
                   console.log(data, "patient cbc");
-             
-                 setActivePatient(data.data)
-                 setSelectedTest((prev) => {
-                  console.log(prev, "previous selected test");
-                  return data.data.patient.labrequests.find(
-                    (labr) => labr.id == prev.id
-                  );
-                });
-                setResultUpdated((prev) => {
-                  return prev + 1;
-                });
+
+                  setActivePatient(data.data);
+                  setSelectedTest((prev) => {
+                    console.log(prev, "previous selected test");
+                    return data.data.patient.labrequests.find(
+                      (labr) => labr.id == prev.id
+                    );
+                  });
+                  setResultUpdated((prev) => {
+                    return prev + 1;
+                  });
                 }
               })
               .finally(() => setLoading(false));
           }}
           variant="contained"
         >
-          <ElectricBolt             color={actviePatient.hasChemistry ? "warning" : "inherit"}
- />
+          <ElectricBolt
+            color={actviePatient.hasChemistry ? "warning" : "inherit"}
+          />
         </LoadingButton>
       )}
     </Stack>

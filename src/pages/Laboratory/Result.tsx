@@ -1,7 +1,7 @@
 import "./addPatient.css";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import { newImage, notifyMe, updateHandler, webUrl } from "../constants";
+import { newImage, notifyMe, sendResult, updateHandler, webUrl } from "../constants";
 
 import {
   List,
@@ -34,9 +34,11 @@ import ShiftNav from "./ShiftNav";
 import { useState } from "react";
 import dayjs from "dayjs";
 import LabHistory from "./LabHistory";
+import { Settings } from "../../types/type";
 function Result() {
   const {
     shift,
+    setPatientsLoading,
     layOut,
     setActivePatientHandler,
     audioRef,
@@ -59,6 +61,7 @@ function Result() {
   } = useResult();
   console.log(selectedTest,'selected Test')
   const shiftDate = new Date(Date.parse(shift?.created_at));
+  const {settings}:{settings:Settings} = useOutletContext()
   return (
     <>
       <Stack className="mb-4" direction={"row"} gap={1}>
@@ -258,6 +261,9 @@ function Result() {
                             base64: true,
                             type: "pdf",
                           });
+                          if(settings.send_result_after_auth){
+                            sendResult(actviePatient,setLoading)
+                          }
 
                         setActivePatient(data.patient)                          
 
@@ -290,6 +296,10 @@ function Result() {
                         console.log("after update", data);
                         setActivePatient(data);
                         setLoading(false);
+                        if(settings.send_result_after_result){
+                          sendResult(actviePatient,setLoading)
+                        }
+
                       });
                     }}
                     sx={{ mt: 1 }}

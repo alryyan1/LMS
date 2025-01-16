@@ -17,6 +17,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
@@ -89,6 +90,16 @@ function Doctors() {
       setSubServiceCosts(data);
     });
   }, []);
+  useEffect(() => {
+    setDoctors((prev)=>{
+      return prev.map((d)=>{
+        if(d.id == selectedDoctor?.id){
+          return {...selectedDoctor}
+        }
+        return d;
+      })
+    })
+  }, [selectedDoctor]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     document.title = t("doctors");
@@ -424,6 +435,7 @@ function Doctors() {
         <AddDoctorForm setOpen={setOpen} />
       </EmptyDialog>
       {selectedDoctor && <EmptyDialog show={openCosts} setShow={setOpenCosts}>
+        <Typography variant="h4" textAlign={'center'}>{selectedDoctor.name}</Typography>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -446,6 +458,8 @@ function Doctors() {
                             doctor_id: selectedDoctor.id,
                             sub_service_cost_id: item.id,
                             add: e.target.checked ? 1 : 0,
+                          }).then(({data})=>{
+                            setSelectedDoctor(data)
                           });
                         }}
                       />

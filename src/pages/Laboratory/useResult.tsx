@@ -5,6 +5,7 @@ import { socket } from "../../socket";
 import { Shift } from "../../types/Shift";
 import { ResultProps } from "../../types/CutomTypes";
 import { DoctorVisit, Labrequest, RequestedResult } from "../../types/Patient";
+import { useOutletContext } from "react-router-dom";
 
 export default function useResult(): ResultProps {
   const audioRef = useRef();
@@ -18,6 +19,7 @@ export default function useResult(): ResultProps {
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [actviePatient, setActivePatient] = useState<DoctorVisit | null>(null);
+
   function onConnect() {
     setIsConnected(true);
     console.log("connected succfully");
@@ -153,6 +155,7 @@ export default function useResult(): ResultProps {
     setSelectedResult,
     patients,
     setPatients
+    
     ,
     showSearch,
   };

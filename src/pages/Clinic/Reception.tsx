@@ -148,6 +148,14 @@ function Reception() {
       setActivePatient(doctorVisit);
     }
   };
+  const showDoctorsDialog = () => {
+    setDialog((prev) => {
+      return {
+        ...prev,
+        showDoctorsDialog: true,
+      };
+    });
+  };
   useEffect(() => {
     socket.on("patientUpdatedFromServer", (doctorVisit) => {
       //patientUpdatedFromServerHandler(doctorVisit)
@@ -710,8 +718,8 @@ function Reception() {
           setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
           activePatient={actviePatient}
           setOpen={setOpen}
-         
           showFormHandler={showFormHandler}
+          showDoctorsDialog={showDoctorsDialog}
           activeShift={activeShift}
           user={user}
         />

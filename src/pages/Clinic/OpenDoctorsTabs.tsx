@@ -118,7 +118,8 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
               // console.log(shift, "shift");
               return (
 
-                  <Tab
+             <Tab
+                  
                    
                               ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
 

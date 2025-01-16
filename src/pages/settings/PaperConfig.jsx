@@ -57,7 +57,7 @@ function PaperConfig() {
   return (
     <Grid gap={4} container>
       <Grid item xs={4}>
-        <Stack gap={1} direction='column'>
+        <Stack key={settings?.id} gap={1} direction='column'>
               <TextField defaultValue={settings?.hospital_name} sx={{mb:1}} label='اسم المستشفي' fullWidth onChange={(e)=>{
              axiosClient.post("settings", {
               colName: "hospital_name",

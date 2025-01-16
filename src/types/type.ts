@@ -182,6 +182,38 @@ interface Unit {
   name: string;
 }
 
+export interface Settings {
+  id: number;
+  is_header: number;
+  is_footer: number;
+  is_logo: number;
+  header_base64: string;
+  footer_base64: string;
+  header_content: null;
+  footer_content: null;
+  logo_base64: null;
+  lab_name: null;
+  hospital_name: string;
+  print_direct: null;
+  inventory_notification_number: null;
+  created_at: string;
+  updated_at: string;
+  disable_doctor_service_check: number;
+  currency: string;
+  phone: string;
+  gov: number;
+  country: number;
+  barcode: number;
+  show_water_mark: number;
+  vatin: string;
+  cr: string;
+  email: string;
+  address: string;
+  instance_id: string;
+  token: string;
+  send_result_after_auth: number;
+  send_result_after_result: number;
+}
 interface Userrequested {
   id: number;
   username: string;
