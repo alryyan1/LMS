@@ -31,7 +31,7 @@ import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import { Shift } from "../../types/Shift";
 import { useOutletContext } from "react-router-dom";
 import ShiftNav from "./ShiftNav";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import LabHistory from "./LabHistory";
 import { Settings } from "../../types/type";
@@ -62,6 +62,33 @@ function Result() {
   console.log(selectedTest,'selected Test')
   const shiftDate = new Date(Date.parse(shift?.created_at));
   const {settings}:{settings:Settings} = useOutletContext()
+  const autocompleteRefs = useRef([]); // Array to store refs
+  const [currentFocusIndex, setCurrentFocusIndex] = useState(0); // Track focused Autocomplete
+
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const nextIndex = (currentFocusIndex + 1) % autocompleteRefs.current.length;
+      setCurrentFocusIndex(nextIndex);
+      autocompleteRefs.current[nextIndex]?.querySelector('textarea')?.focus();
+      console.log(autocompleteRefs.current[nextIndex],'ref')
+
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      const prevIndex = (currentFocusIndex - 1 + autocompleteRefs.current.length) % autocompleteRefs.current.length;
+      setCurrentFocusIndex(prevIndex);
+      autocompleteRefs.current[prevIndex]?.querySelector('textarea')?.focus();
+      console.log(autocompleteRefs.current[prevIndex],'ref')
+    }
+  };
+
+  const addRef = (el, index) => {
+    autocompleteRefs.current[index] = el;
+  };
+
+  useEffect(()=>{
+    setCurrentFocusIndex(0)
+  },[selectedTest])
   return (
     <>
       <Stack className="mb-4" direction={"row"} gap={1}>
@@ -204,12 +231,16 @@ function Result() {
         <Card key={actviePatient?.id} sx={{  overflow: "auto", p: 1 }}>
           {actviePatient &&(
             <ResultSection
+            handleKeyDown={handleKeyDown}
+            addRef={addRef}
               patient={actviePatient}
               selectedReslult={selectedReslult}
               selectedTest={selectedTest}
               setActivePatient={setActivePatient}
               setSelectedResult={setSelectedResult}
               resultUpdated={resultUpdated}
+              setResultUpdated={setResultUpdated}
+
             />
           )}
         </Card>

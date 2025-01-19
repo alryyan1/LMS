@@ -20,15 +20,15 @@ function SellBox({
   setActiveSell,
   update,
 }: SellboxProbs) {
-  useEffect(() => {
-    const controller = new AbortController();
-    axiosClient(`sells/find/${sell.id}`, {
-      signal: controller.signal,
-    }).then(({ data }) => {
-      update(data);
-    });
-    return () => controller.abort();
-  }, [activeSell?.id]);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   axiosClient(`sells/find/${sell.id}`, {
+  //     signal: controller.signal,
+  //   }).then(({ data }) => {
+  //     update(data);
+  //   });
+  //   return () => controller.abort();
+  // }, [activeSell?.id]);
 
   return (
     <Grow timeout={2000} in>

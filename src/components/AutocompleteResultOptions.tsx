@@ -11,58 +11,69 @@ import axiosClient from "../../axios-client";
 import { useOutletContext } from "react-router-dom";
 import { DoctorVisit, RequestedResult } from "../types/Patient";
 function isNumeric(str) {
-  if (str.includes('-')) {
-    return true
+  if (str.includes("-")) {
+    return true;
   }
-  if (typeof str != "string") return false // we only process strings!  
-  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  if (typeof str != "string") return false; // we only process strings!
+  return (
+    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ); // ...and ensure strings of whitespace fail
 }
 const filter = createFilterOptions();
 
-
-
 interface AutocompleteResultOptionsProbs {
-  setActivePatient:DoctorVisit;
+  setActivePatient: DoctorVisit;
 
-  setSelectedResult: ()=>void;
- child_test :number;
- id :number ;
- result:string;
- req:RequestedResult;
-  index:number;
-  setDialog:()=>void;
-  disabled:boolean
+  setSelectedResult: () => void;
+  child_test: number;
+  id: number;
+  result: string;
+  req: RequestedResult;
+  index: number;
+  setDialog: () => void;
+  disabled: boolean;
 }
-export default function AutocompleteResultOptions(
-  { setActivePatient, setSelectedResult, child_test,id ,result,req,index,setDialog,disabled=false}:AutocompleteResultOptionsProbs) {
-    // console.log('inside table option result rebuilt with result',result)
-    
+export default function AutocompleteResultOptions({
+  setActivePatient,
+  setSelectedResult,
+  child_test,
+  id,
+  result,
+  req,
+  index,
+  setDialog,
+  handleKeyDown,
+  setSelectedDevice,
+  addRef,
+  disabled = false,
+}: AutocompleteResultOptionsProbs) {
+  // console.log('inside table option result rebuilt with result',result)
+
   const [value, setValue] = React.useState(result);
   const [open, toggleOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [options,setOptions] = React.useState([])
+  const [options, setOptions] = React.useState([]);
 
-  React.useEffect(()=>{
-    const localStorageOption =  localStorage.getItem(child_test.id)
+  React.useEffect(() => {
+    const localStorageOption = localStorage.getItem(child_test.id);
     if (localStorageOption == null) {
-        axiosClient
-     .get(`childTestOption/${child_test.id}`)
-     .then(({ data }) => {
-        setOptions(data);
-        localStorage.setItem(child_test.id, JSON.stringify(data))
-      })
-     .catch((err) => {
-        console.log(err);
-      });
-    }else{
-      setOptions(JSON.parse(localStorageOption))
+      axiosClient
+        .get(`childTestOption/${child_test.id}`)
+        .then(({ data }) => {
+          setOptions(data);
+          localStorage.setItem(child_test.id, JSON.stringify(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setOptions(JSON.parse(localStorageOption));
     }
-  
-  },[])
+  }, []);
 
   const handleClose = () => {
-    setDialogValue('');
+    setDialogValue("");
     toggleOpen(false);
   };
 
@@ -74,35 +85,36 @@ export default function AutocompleteResultOptions(
     axiosClient
       .post(`childTestOption/${child_test.id}`, { name: dialogValue })
       .then(({ data }) => {
-        console.log(data,'options data');
+        console.log(data, "options data");
         if (data.status) {
-            setOptions(data.options)
+          setOptions(data.options);
         }
         handleClose();
       })
       .finally(() => setLoading(false));
   };
 
-//   console.log('child group in autocomplete')
+  //   console.log('child group in autocomplete')
   return (
-    <React.Fragment>
-      <Autocomplete  
-       disabled={disabled}
-     sx={{
-      
-        "& .MuiOutlinedInput-root": {
-          padding: "0px!important",
-        },
-      }}
-      size="small"
-       isOptionEqualToValue={(option,val)=> {
-        return option.id === val.id
-       }}
+    <div>
+        <Autocomplete
+        disabled={disabled}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            padding: "0px!important",
+          },
+        }}
+        size="small"
+        isOptionEqualToValue={(option, val) => {
+          return option.id === val.id;
+        }}
         value={value}
+        // ref={(el)=>addRef(el,index)}
+
         onChange={(event, newValue) => {
           if (typeof newValue === "string") {
             setValue(newValue);
-            console.log('val 1' ,newValue)
+            console.log("val 1", newValue);
 
             // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
@@ -110,21 +122,23 @@ export default function AutocompleteResultOptions(
               setDialogValue(newValue);
             });
           } else if (newValue && newValue.inputValue) {
-            console.log('val 2' ,newValue)
+            console.log("val 2", newValue);
 
             toggleOpen(true);
             setDialogValue(newValue.inputValue);
           } else {
             setValue(newValue);
             // console.log(first)
-            axiosClient.patch(`requestedResult/${id}`,{val:newValue?.name ?? ''}).then(({data})=>{
-               if (data.status) {
-                setDialog((prev)=>{
-                   return {...prev, open: true, message:'تم الحفظ' };
-                })
-               }
-            })
-           // axiosClient.patch(`editChildTestGroup/${child_id}`,{id:newValue.id})
+            axiosClient
+              .patch(`requestedResult/${id}`, { val: newValue?.name ?? "" })
+              .then(({ data }) => {
+                if (data.status) {
+                  setDialog((prev) => {
+                    return { ...prev, open: true, message: "تم الحفظ" };
+                  });
+                }
+              });
+            // axiosClient.patch(`editChildTestGroup/${child_id}`,{id:newValue.id})
           }
         }}
         filterOptions={(options, params) => {
@@ -142,7 +156,7 @@ export default function AutocompleteResultOptions(
         options={options}
         disableClearable
         getOptionLabel={(option) => {
-        //   console.log('option',option)
+          //   console.log('option',option)
           // for example value selected with enter, right from the input
           if (typeof option === "string") {
             return option;
@@ -156,37 +170,49 @@ export default function AutocompleteResultOptions(
         clearOnBlur
         handleHomeEndKeys
         renderOption={(props, option) => <li {...props}>{option.name}</li>}
-      
         freeSolo
         renderInput={(params) => (
           <TextField
-           key={req.updated_at}
-          autoFocus={index == 0}
-          onClick={()=>{
-            setSelectedResult(req)
-          }} multiline {...params} onChange={(val)=>{
-            console.log(val.target.value,'target value')
+            tabIndex={0}
+            ref={(el) => addRef(el, index)}
+            onKeyDown={handleKeyDown}
+            key={req.updated_at}
+            autoFocus={index == 0}
+            onClick={() => {
+              setSelectedResult(req);
+              setSelectedDevice(null)
+            }}
+            multiline
+            {...params}
+            onChange={(val) => {
+              console.log(val.target.value, "target value");
 
-            setValue(val.target.value)
-            axiosClient.patch(`requestedResult/${id}`,{val:val.target.value}).then(({data})=>{
-              if (data.status) {
-                 setActivePatient(data.data)
-                  setDialog((prev)=>{
-                    return {...prev, open: true, message:'تم الحفظ' };
-                  })
-                }
+              setValue(val.target.value);
+              axiosClient
+                .patch(`requestedResult/${id}`, { val: val.target.value })
+                .then(({ data }) => {
+                  if (data.status) {
+                    setActivePatient(data.data);
+                    setDialog((prev) => {
+                      return { ...prev, open: true, message: "تم الحفظ" };
+                    });
+                  }
 
-                console.log(data,'result saved')
-            })
-          }} label="" />
+                  console.log(data, "result saved");
+                });
+            }}
+            label=""
+          />
         )}
       />
+
+      
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
-          <DialogTitle> add test option   </DialogTitle>
+          <DialogTitle> add test option </DialogTitle>
           <DialogContent>
             <TextField
-            size="small"
+              size="small"
               autoFocus
               margin="dense"
               id="name"
@@ -205,6 +231,6 @@ export default function AutocompleteResultOptions(
           </DialogActions>
         </form>
       </Dialog>
-    </React.Fragment>
+    </div>
   );
 }
