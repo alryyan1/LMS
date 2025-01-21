@@ -172,6 +172,7 @@ function RequestedServices({
   };
   let total_endurance = 0;
   let total_price = 0;
+  let companyService;
   console.log(actviePatient, "active patient");
   return (
     <>
@@ -187,6 +188,11 @@ function RequestedServices({
                   <TableCell>{t("discount")}</TableCell>
                   {actviePatient.patient.company ? (
                     <TableCell>{t("endurance")}</TableCell>
+                  ) : (
+                    ""
+                  )}
+                    {actviePatient.patient.company ? (
+                    <TableCell>{t("approval")}</TableCell>
                   ) : (
                     ""
                   )}
@@ -219,6 +225,10 @@ function RequestedServices({
                       );
                       //  console.log(company,'finded company')
                       //  console.log(service,'service')
+
+                      companyService = company.services.find((cs)=>{
+                        return cs.pivot.service_id == service.service_id;
+                      })
 
                       //  console.log(companyService,'company service')
                       price = service.price;
@@ -265,6 +275,13 @@ function RequestedServices({
                         {actviePatient.patient.company ? (
                           <TableCell sx={{ border: "none", color: "red" }}>
                             {service.endurance}
+                          </TableCell>
+                        ) : (
+                          ""
+                        )}
+                            {actviePatient.patient.company ? (
+                          <TableCell sx={{ border: "none", color: companyService.pivot.approval ?  'red':'' }}>
+                            {companyService.pivot.approval ? 'يحتاج  موافقه':'لا يحتاج موافقه'}
                           </TableCell>
                         ) : (
                           ""

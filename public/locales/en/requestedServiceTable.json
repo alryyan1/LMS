@@ -6,6 +6,7 @@
     "paid": "Paid",
     "bank": "Bank",
     "pay": "Pay",
+    "approval": "approval",
       "receipt":"Receipt",
     "other": "Other",
     "paymentSuccess": "Payment was successful",

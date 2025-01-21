@@ -30,15 +30,16 @@ interface SearchDialogProbs {
   hideForm: () => void;
   setActiveShift: (shift: any) => void;
   openedDoctors: DoctorShift[];
+  activeShift: DoctorShift;
   setPatients: (patients: DoctorVisit[]) => void;
 }
-function SearchDialog({setPatients, lab = false, user, update, isReception, hideForm,setActiveShift,openedDoctors }:SearchDialogProbs) {
+function SearchDialog({setPatients, lab = false, user, update, isReception, hideForm,setActiveShift,openedDoctors ,activeShift}:SearchDialogProbs) {
   const {
     foundedPatients,
     setDialog,
     doctors,
     companies,
-    activeShift,
+
   } = useOutletContext<OutletContextType>();
   const [doctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(false);
@@ -59,7 +60,7 @@ function SearchDialog({setPatients, lab = false, user, update, isReception, hide
     setLoading(true);
 
     const onlyLab = isReception ? 0 : 1;
-    const url = `patients/add-patient-by-history/${doctor?.id ?? doctorvisit.patient.doctor_id}/${doctorvisit.patient.id}?onlyLab=${onlyLab}`;
+    const url = `patients/add-patient-by-history/${doctor?.id ?? activeShift.doctor_id}/${doctorvisit.patient.id}?onlyLab=${onlyLab}`;
 
     axiosClient
       .post(url, {
@@ -166,7 +167,7 @@ function SearchDialog({setPatients, lab = false, user, update, isReception, hide
                     />
                   </TableCell>
                   <TableCell>
-                    <LoadingButton
+                   <LoadingButton
                       size="small"
                       variant="outlined"
                       loading={loading}
@@ -175,7 +176,7 @@ function SearchDialog({setPatients, lab = false, user, update, isReception, hide
                       }}
                     >
                       <Plus />
-                    </LoadingButton>
+                    </LoadingButton> 
                   </TableCell>
                 </TableRow>
               ))}
