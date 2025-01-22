@@ -226,9 +226,9 @@ function RequestedServices({
                       //  console.log(company,'finded company')
                       //  console.log(service,'service')
 
-                      companyService = company.services.find((cs)=>{
-                        return cs.pivot.service_id == service.service_id;
-                      })
+                      // companyService = company.services.find((cs)=>{
+                      //   return cs.pivot.service_id == service.service_id;
+                      // })
 
                       //  console.log(companyService,'company service')
                       price = service.price;
@@ -280,8 +280,8 @@ function RequestedServices({
                           ""
                         )}
                             {actviePatient.patient.company ? (
-                          <TableCell sx={{ border: "none", color: companyService.pivot.approval ?  'red':'' }}>
-                            {companyService.pivot.approval ? 'يحتاج  موافقه':'لا يحتاج موافقه'}
+                          <TableCell sx={{ border: "none", color: service.approval  == 1 ?  'red':'' }}>
+                            {service.approval  == 1? 'يحتاج  موافقه':'لا يحتاج موافقه'}
                           </TableCell>
                         ) : (
                           ""

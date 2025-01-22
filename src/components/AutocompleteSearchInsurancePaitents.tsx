@@ -27,7 +27,7 @@ export default function AutocompleteSearchPatientInsurance({selectedDeduct,setAc
     if (search != '') {
        const timer = setTimeout(() => {
       axiosClient
-        .get(`patients?name=${search}&insurance=1`)
+        .post(`patients?name=${search}&insurance=1`)
         .then(({ data }) => {
           console.log(data,'doctor visit data')
           setOptions(data);
@@ -73,7 +73,7 @@ export default function AutocompleteSearchPatientInsurance({selectedDeduct,setAc
               console.log("enter pressed");
               //get test from tests using find
               const enteredId = e.target.value;
-              axiosClient.get(`patients?name=${enteredId}`).then(({ data }) => {
+              axiosClient.post(`patients?name=${enteredId}`).then(({ data }) => {
                 if (data.data != null) {
                     
                 }
