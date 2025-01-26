@@ -7,8 +7,9 @@ import { Outlet } from "react-router-dom";
 import { useStateContext } from "./appContext";
 import nurse from "./assets/images/nurse.jpg";
 import heart from "./assets/images/heart.jpg";
+import dental from "./assets/images/dental.jpg";
 import "react-toastify/dist/ReactToastify.css";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import SidebarNav from "./Sidebar";
@@ -33,35 +34,50 @@ function App() {
 
   return (
     <>
-      {/* <div style={{background:'var(--clr-2)',userSelect:'none' ,backgroundImage:`${image} `,backgroundRepeat: 'repeat'} } className="app-container"> */}
-      {/* <div className="app-container2"> */}
+      {/* <div
+        style={{
+          background: "var(--clr-2)",
+          userSelect: "none",
+          backgroundImage: `${dental} `,
+          backgroundRepeat: "repeat",
+        }}
+        className="app-container"
+      > */}
+        {/* <div className="app-container2"> */}
 
-      {/* <Outlet key={i18n.language} /> */}
+        {/* <Outlet key={i18n.language} /> */}
 
-      {/* </div> */}
-      {/* </div> */}
-      <div style={{ display: "flex", height: "100vh", userSelect: "none" ,overflowX:'none'}}>
-        {/* Sidebar */}
-        {user && <SidebarNav />}
+        {/* </div> */}
+        {/* </div> */}
+        <div
+          style={{
+            display: "flex",
+            height: "100vh",
+            userSelect: "none",
+            overflowX: "none",
+          }}
+        >
+          {/* Sidebar */}
+          {user && <SidebarNav />}
 
-        {/* Main Content */}
-        <div style={{  width: "95%",overflowX:'none',padding: '15px' }}>
-          <ToastContainer />
+          {/* Main Content */}
+          <div style={{ width: "100%", overflowX: "none", padding: "5px" }}>
+            <ToastContainer />
 
-          <Nav />
+            <Nav />
 
-          <Outlet />
-          <Suspense>
-            <EmptyDialog
-              show={location.pathname != '/login' && openLoginDialog }
-              setShow={setOpenLoginDialog}
-            
-            >
-              <Login />
-            </EmptyDialog>
-          </Suspense>
+            <Outlet />
+            <Suspense>
+              <EmptyDialog
+                show={location.pathname != "/login" && openLoginDialog}
+                setShow={setOpenLoginDialog}
+              >
+                <Login />
+              </EmptyDialog>
+            </Suspense>
+          </div>
         </div>
-      </div>
+      {/* </div> */}
     </>
   );
 }

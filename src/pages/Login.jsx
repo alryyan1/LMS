@@ -14,6 +14,7 @@ import {
 import { Label } from "/src/components/ui/label"
 import { Button } from "../components/ui/button";
 import { useAuthStore } from "../AuthStore";
+import back from "../assets/images/dental.jpg"
 
 function Login() {
   console.log("login page");
@@ -58,6 +59,8 @@ function Login() {
         alignItems: "center",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        // backgroundColor:'red'
+        backgroundImage: `url(${back})`,
       }}
     >
       <Stack  justifyContent="center" className="  rounded-md bg-white" alignItems="center" sx={{borderRadius:'10px',minWidth:'400px'}} direction="column">

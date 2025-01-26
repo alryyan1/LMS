@@ -90,7 +90,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
 
 
   return (
-    <div style={{ textAlign: "center", direction: "rtl" }}>
+    <div style={{ textAlign: "center" }}>
       <Typography className="text-center" variant="h5">
        {t("clinics")}
       </Typography>
@@ -115,8 +115,8 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
           </TableBody>
         </Table>
       )}
-      <Divider />
-      <Typography className="text-center" variant="h5">
+      {/* <Divider /> */}
+      {/* <Typography className="text-center" variant="h5">
        {t("lab")}
       </Typography>
       {loadingLab ? (
@@ -140,7 +140,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
             </TableRow>
           </TableBody>
         </Table>
-      )}
+      )} */}
       <Divider />
       <List>
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.total + shiftSummary?.lab)}</div>} key="1">

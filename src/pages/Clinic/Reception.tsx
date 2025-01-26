@@ -84,7 +84,6 @@ function Reception() {
     setSelectedTests,
     showLabTests,
     setShowLabTests,
-    settings,
     dialog,
   } = useOutletContext<ReceptionLayoutProps>();
 
@@ -95,6 +94,8 @@ function Reception() {
   const [showDetails, setShowDetails] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [value, setValue] = useState(0);
+  const [settings, setSettings] = useState(null);
+
   const [patients,setPatients] = useState<DoctorVisit[]>([]);
   useEffect(()=>{
     setPatients((prev)=>{
@@ -133,6 +134,7 @@ function Reception() {
       socket.off("disconnect", onConnect);
     };
   });
+
   const patientUpdatedFromServerHandler = (doctorVisit) => {
     // alert('patient updated')
     console.log(
@@ -148,6 +150,12 @@ function Reception() {
       setActivePatient(doctorVisit);
     }
   };
+  useEffect(() => {
+    axiosClient.get("settings").then(({ data }) => {
+      console.log(data, "data see");
+      setSettings(data);
+    });
+  }, []);
   const showDoctorsDialog = () => {
     setDialog((prev) => {
       return {
@@ -596,7 +604,7 @@ function Reception() {
             </>
           )}
           {actviePatient && showServicePanel && (
-            <ServiceGroup socket={socket} />
+            <ServiceGroup settings={settings}  setShowServicePanel={setShowServicePanel} activeShift={activeShift} setActivePatient={setActivePatient} actviePatient={actviePatient} setShowPatientServices={setShowPatientServices} socket={socket} />
           )}
           {actviePatient && showTestPanel && (
             <AddTestAutoComplete

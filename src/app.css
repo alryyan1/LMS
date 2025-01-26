@@ -74,7 +74,15 @@ th,span {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 5px!important;
 }
-
+#Spots{
+  polygon, path{
+    -webkit-transition:fill .25s;
+    transition:fill .25s;
+  }
+  polygon:hover, polygon:active, path:hover, path:active,.active{
+    fill:#b90707 !important;
+  }
+}
 /* @font-face {
   font-family: 'Public Sans';
   src: local('Public Sans'), url(./fonts/PublicSans-Regular.woff) format('woff');

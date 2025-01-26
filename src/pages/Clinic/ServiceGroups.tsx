@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   Tab,
@@ -13,19 +13,25 @@ import { useOutletContext } from "react-router-dom";
 import AddTestAutoComplete from "../Laboratory/AddTestAutoComplete";
 import AddServiceAutocomplete from "./AddServiceAutocomplete";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
-function ServiceGroup({socket}) {
-  const {
-    serviceCategories,
-    selectedServices,
-    setSelectedServices,
-    setShowPatientServices,
-    setShowServicePanel,
-    activeShift,
-    actviePatient,
-    setActivePatient,
-    settings,
-  } = useOutletContext<ReceptionLayoutProps>();
+import axiosClient from "../../../axios-client";
+function ServiceGroup({socket,setShowPatientServices,setShowServicePanel,activeShift,actviePatient,setActivePatient,settings,activeTooth}) {
+  const [serviceCategories, setServiceCategories] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
 
+
+  useEffect(() => {
+    Promise.all([
+     
+  
+      axiosClient
+        .get(`serviceGroup/all`)
+        .then(({ data: data }) => {
+          console.log(data, "serviceGroup ");
+          setServiceCategories(data);
+        })
+        .catch((err) => console.log(err)),
+    ]).finally(() => {});
+  }, []);
   const serviceAddHandler = (service) => {
     setSelectedServices((prev) => {
       const founded = prev.find((s) => s.id === service.id);
@@ -55,6 +61,8 @@ function ServiceGroup({socket}) {
         عرض الخدمات المضافه
       </Button> */}
       <AddServiceAutocomplete
+  activeTooth={activeTooth}
+
         setSelectedServices={setSelectedServices}
         setShowPatientServices={setShowPatientServices}
         setShowServicePanel={setShowServicePanel}

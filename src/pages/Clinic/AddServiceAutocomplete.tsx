@@ -19,6 +19,7 @@ interface AddServiceAutocompleteProps {
   socket: any;
 }
 function AddServiceAutocomplete({
+  activeTooth,
   selectedServices,
   setSelectedServices,
   activeShift,
@@ -39,7 +40,12 @@ function AddServiceAutocomplete({
       console.log(payload, "payload");
 
       if (activeShift) {
+        // alert('s')
+        // alert('ss')
+
         if (!settings.disable_doctor_service_check) {
+          alert("ss");
+
           if (activeShift.doctor.services.length == 0) {
             toast.error("لا توجد خدمات معرفه لهذا الطبيب");
             return;
@@ -48,9 +54,11 @@ function AddServiceAutocomplete({
             if (
               !activeShift.doctor.services.map((s) => s.service.id).includes(t)
             ) {
-              let service= selectedServices.find((s)=> t == s.id)
+              let service = selectedServices.find((s) => t == s.id);
               // alert(service)
-              toast.error(`هذه الخدمه (${service.name})  غير معرفه من ضمن خدمات الطبيب`);
+              toast.error(
+                `هذه الخدمه (${service.name})  غير معرفه من ضمن خدمات الطبيب`
+              );
             }
           });
 
@@ -60,17 +68,24 @@ function AddServiceAutocomplete({
               .includes(s);
           });
           if (payload.length == 0) {
+            alert("ss");
+
             setLoading(false);
             return;
           }
         }
+        // alert('ss')
       }
-
+      // alert('s')
       setLoading(true);
       if (patient) {
+        // alert("patient");
+
         const { data: data } = await axiosClient.post(
           `patient/service/add/${patient.id}`,
           {
+            activeTooth,
+            doctorvisit_id:patient.id,
             services: payload,
             doctor_id: activeShift?.doctor?.id ?? patient.patient.doctor.id,
           }
@@ -92,6 +107,8 @@ function AddServiceAutocomplete({
         const { data: data } = await axiosClient.post(
           `patient/service/add/${patient.id}`,
           {
+            activeTooth,
+            doctorvisit_id:patient.id,
             services: payload,
             doctor_id: activeShift?.doctor?.id ?? patient.patient.doctor.id,
           }
@@ -111,7 +128,9 @@ function AddServiceAutocomplete({
       }
     } catch (error) {
       setLoading(false);
+      console.log(error)
     }
+    // alert('ss')
 
     setSelectedServices([]);
   };

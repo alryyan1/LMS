@@ -8,7 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import axiosClient from "../../../axios-client";
-import { DoctorVisit } from "../../types/Patient";
+import { DoctorVisit, User } from "../../types/Patient";
+import { useStateContext } from "../../appContext";
+import TeethModel from "../TeethModel";
 interface VitalSignsProps {
   patient: DoctorVisit;
   setActiveDoctorVisit: any;
@@ -18,7 +20,9 @@ function VitalSigns({
   patient,
   setActiveDoctorVisit,
   socket,
+  settings
 }: VitalSignsProps) {
+  const { user }: { user: User } = useStateContext();
   const updateHandler = (
     val,
     colName,
@@ -34,8 +38,11 @@ function VitalSigns({
         .then(({ data }) => {
           console.log(data, "updated patient ");
           if (data.status) {
-            socket.emit("patientUpdated", data.data);
-            setActiveDoctorVisit(data.data);
+            if (!user.doctor_id) {
+              socket.emit("patientUpdated", data.data);
+              setActiveDoctorVisit(data.data);
+            }
+
             resolve(data.data);
           }
         })
@@ -55,7 +62,7 @@ function VitalSigns({
   };
   return (
     <div style={{ padding: "5px" }}>
-      <Typography textAlign={"center"} variant="h6">
+      {/* <Typography textAlign={"center"} variant="h6">
         Vital Signs
       </Typography>
 
@@ -80,7 +87,7 @@ function VitalSigns({
                   },
                 }}
                 onChange={(e) => {
-                  console.log(patient.id,'active doctor visit id')
+                  console.log(patient.id, "active doctor visit id");
                   updateHandler(
                     e.target.value,
                     "bp",
@@ -233,7 +240,10 @@ function VitalSigns({
             </TableCell>
           </TableRow>
         </TableBody>
-      </Table>
+      </Table> */}
+      <>
+       <TeethModel settings={settings} setActiveDoctorVisit={setActiveDoctorVisit} actviePatient={patient} user={user}/>
+      </>
     </div>
   );
 }

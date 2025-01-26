@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import { Badge } from "@mui/material";
 import { DoctorShift, DoctorVisit, User } from "../../types/Patient";
 import axiosClient from "../../../axios-client";
+import doctorImage from "../../assets/images/doctor.png"
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -119,7 +120,7 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
               return (
 
              <Tab
-                  
+                  // icon={<img height={'50px'} width={'50px'} src={doctorImage}/>}
                    
                               ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
 
@@ -146,7 +147,20 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
                         ? "activeDoctor doctor"
                         : "doctor"
                     }
-                    label={shift.doctor.name}
+                    label={
+                      <div style={{ display: "flex", alignItems: "center",justifyContent:'space-between'}}>
+                        <Badge badgeContent={shift?.visitsCount} color="secondary">
+                        <img src={doctorImage} alt="Home" width="35" />
+
+                        </Badge>
+                      <div>
+
+                      {shift.doctor.name}
+                      </div>
+                    </div>
+          
+                    }
+                    // label={shift.doctor.name}
                     {...a11yProps(0)}
                   />
 
@@ -155,6 +169,7 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
             })}
         </Tabs>
       </Box>
+      {/* <img src={doctorImage} alt="" /> */}
     </Box>
   );
 }

@@ -44,10 +44,7 @@ import { socket } from "../../socket";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CodeEditor from "./CodeMirror";
-import {
-  DoctorShift,
-  DoctorVisit,
-} from "../../types/Patient";
+import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import ReviewOfSystems from "./ReviewOfSystems";
 
 function Doctor() {
@@ -62,15 +59,23 @@ function Doctor() {
   const [value, setValue] = useState(0);
   const [complains, setComplains] = useState([]);
   const [diagnosis, setDiagnosis] = useState([]);
-  const [patients,setPatients] = useState([])
-  const [currentDate,setCurrentDate] = useState(null)
+  const [patients, setPatients] = useState([]);
+  const [currentDate, setCurrentDate] = useState(null);
   const { user } = useStateContext();
   const [showPatients, setShowPatients] = useState(true);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [showSearch, setShowSearch] = useState(false);
   const [userSettings, setUserSettings] = useState(null);
   const [shift, setShift] = useState<DoctorShift | null>(null);
+  const [settings, setSettings] = useState(null);
+
   const [doctor, setDoctor] = useState();
+  useEffect(() => {
+    axiosClient.get("settings").then(({ data }) => {
+      console.log(data, "data see");
+      setSettings(data);
+    });
+  }, []);
   const [activeDoctorVisit, setActiveDoctorVisit] =
     useState<DoctorVisit | null>(null);
   const [items, setItems] = useState([]);
@@ -116,18 +121,20 @@ function Doctor() {
   }, []);
   useEffect(() => {
     if (id == undefined) {
-      // alert("id is null");
-      setLoading(true)
+      // alert("id is null k");
+      setLoading(true);
       axiosClient
         .get("/user")
         .then(({ data }) => {
           console.log(data, "user data");
           axiosClient.get(`doctors/find/${data.doctor_id}`).then(({ data }) => {
-            console.log(data, "finded doctor");
+            console.log(data, "daaaaaaaat");
             setDoctor(data.doctor);
             setShift(data);
-            setPatients(data.visits)
-            setLoading(false)
+            setPatients(data.visits);
+            // alert(data.visits.length);
+
+            setLoading(false);
           });
         })
         .catch((err) => {});
@@ -136,9 +143,8 @@ function Doctor() {
         console.log(data, "finded doctor");
         setDoctor(data.doctor);
         setShift(data);
-        setPatients(data.visits)
-        setLoading(false)
-
+        setPatients(data.visits);
+        setLoading(false);
       });
     }
   }, []);
@@ -192,7 +198,6 @@ function Doctor() {
       // socketEventHandler(null, doctorVisit, " has just booked", newImage);
     });
 
- 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
@@ -200,25 +205,30 @@ function Doctor() {
       socket.off("newDoctorPatientFromServer");
     };
   }, []);
-    useEffect(()=>{
-      socket.on("patientUpdatedFromServer", (doctorVisit) => {
-        patientUpdatedFromServerHandler(doctorVisit)
-      });
-      return ()=>{
-        socket.off("patientUpdatedFromServer");
-      }
-    },[activeDoctorVisit])
+  useEffect(() => {
+    socket.on("patientUpdatedFromServer", (doctorVisit) => {
+      patientUpdatedFromServerHandler(doctorVisit);
+    });
+    return () => {
+      socket.off("patientUpdatedFromServer");
+    };
+  }, [activeDoctorVisit]);
 
-  const patientUpdatedFromServerHandler = (doctorVisit)=>{
- // alert('patient updated')
- console.log(doctorVisit,'doc visit from server update','active docvisit id ',activeDoctorVisit?.id)
- update(doctorVisit)
- if (doctorVisit.id == activeDoctorVisit?.id) {
-  // alert('same')
-  console.log('saaaaaaaaaaame')
-   setActiveDoctorVisit(doctorVisit);
- }
-  }
+  const patientUpdatedFromServerHandler = (doctorVisit) => {
+    // alert('patient updated')
+    console.log(
+      doctorVisit,
+      "doc visit from server update",
+      "active docvisit id ",
+      activeDoctorVisit?.id
+    );
+    update(doctorVisit);
+    if (doctorVisit.id == activeDoctorVisit?.id) {
+      // alert('same')
+      console.log("saaaaaaaaaaame");
+      setActiveDoctorVisit(doctorVisit);
+    }
+  };
 
   const hideVisits = () => {
     setShowPreviousVisits(false);
@@ -290,7 +300,9 @@ function Doctor() {
       setShowSearch(true);
     }
   };
-  let patientCount = patients.filter((d:DoctorVisit)=>d.patient.doctor.id == id).length
+  let patientCount = patients.filter(
+    (d: DoctorVisit) => d.patient.doctor.id == id ||d.patient.doctor.id == user.doctor_id
+  ).length;
   const showDocPatients = () => {
     setActiveDoctorVisit(null);
     setLayout((prev) => {
@@ -304,7 +316,7 @@ function Doctor() {
     setShowPatients(true);
   };
 
-  const focusPaitent = (visit)=>{
+  const focusPaitent = (visit) => {
     setActiveDoctorVisit(visit);
     // console.log(visit, "selected visit");
     setLayout((prev) => {
@@ -316,26 +328,24 @@ function Doctor() {
       };
     });
     setShowPatients(false);
-  }
+  };
 
-
-  const update = (patient:DoctorVisit)=>{
-    if(patient.id == activeDoctorVisit?.id){
+  const update = (patient: DoctorVisit) => {
+    if (patient.id == activeDoctorVisit?.id) {
       // setActiveDoctorVisit(()=>{
       //   return {...patient }
       // })
     }
-    setPatients((prev)=>{
-      
-      if(!prev.find((p)=>p.id == patient.id)) return [patient,...prev]
-      return prev.map((p)=>{
-        if(p.id === patient?.id){
-          return {...patient }
+    setPatients((prev) => {
+      if (!prev.find((p) => p.id == patient.id)) return [patient, ...prev];
+      return prev.map((p) => {
+        if (p.id === patient?.id) {
+          return { ...patient };
         }
-        return p
-      })
-    })
-  }
+        return p;
+      });
+    });
+  };
   //update doctor visit whenever change is made to doctorVisit state variable
   useEffect(() => {
     if (activeDoctorVisit) {
@@ -344,7 +354,7 @@ function Doctor() {
           is_new: false,
         });
       }
-      update(activeDoctorVisit)
+      update(activeDoctorVisit);
     }
     //update patient when user click it to remove animation
   }, [activeDoctorVisit]);
@@ -354,49 +364,50 @@ function Doctor() {
   return (
     <>
       <div></div>
-      <Stack direction={"row"} gap={1} alignItems={'center'} justifyContent={"space-between"}>
+      <Stack
+        direction={"row"}
+        gap={1}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
         {activeDoctorVisit && (
           <Stack
-            sx={{ border: "1px dashed grey", borderRadius: "5px", p: 1 }}
+            sx={{ border: "1px dashed grey", borderRadius: "5px", p: 1}}
             direction={"row"}
             gap={2}
             flexGrow={"1"}
             justifyContent={"space-between"}
           >
-            <Stack direction={'row'} gap={1}>
-              <Stack direction={'column'} gap={1}>
-              <Typography variant="h6">
-                <Box sx={{ display: "inline-block" }}>
-                  Code : {activeDoctorVisit.id}
-                </Box>
-              </Typography>
-              <Typography variant="h6">
-                <Box sx={{ display: "inline-block" }}>
-                  Visit : {activeDoctorVisit.number}
-                </Box>
-              </Typography>
-                </Stack>
-              <Typography sx={{ mr: 1 }} variant="h4">
-              {activeDoctorVisit?.patient.name}
-            </Typography>
-            </Stack>
-            <Stack direction={"column"} gap={1}>
+            <Stack direction={"row"} gap={1}>
+              <Stack direction={"column"} gap={1}>
                 <Typography variant="h6">
-                  <Box sx={{ display: "inline-block", ml: 1 }}>
-                    Doctor :{" "}
-                    {
-                      activeDoctorVisit.patient.doctor.name
-                    }
+                  <Box sx={{ display: "inline-block" }}>
+                    Code : {activeDoctorVisit.id}
                   </Box>
                 </Typography>
                 <Typography variant="h6">
                   <Box sx={{ display: "inline-block" }}>
-                    Gender : {activeDoctorVisit.patient?.gender}
+                    Visit : {activeDoctorVisit.number}
                   </Box>
                 </Typography>
               </Stack>
+              <Typography sx={{ mr: 1 }} variant="h4">
+                {activeDoctorVisit?.patient.name}
+              </Typography>
+            </Stack>
+            <Stack direction={"column"} gap={1}>
+              <Typography variant="h6">
+                <Box sx={{ display: "inline-block", ml: 1 }}>
+                  Doctor : {activeDoctorVisit.patient.doctor.name}
+                </Box>
+              </Typography>
+              <Typography variant="h6">
+                <Box sx={{ display: "inline-block" }}>
+                  Gender : {activeDoctorVisit.patient?.gender}
+                </Box>
+              </Typography>
+            </Stack>
             <div>
-              
               <Stack direction={"row"} gap={1}>
                 <Typography variant="h6">
                   <Box sx={{ display: "inline-block", ml: 1 }}>
@@ -425,23 +436,33 @@ function Doctor() {
               <Typography variant="h6">
                 <Box sx={{ display: "inline-block" }}>
                   Date :{" "}
-                  {dayjs(Date.parse(activeDoctorVisit.created_at)).format('YYYY-MM-DD')}
+                  {dayjs(Date.parse(activeDoctorVisit.created_at)).format(
+                    "YYYY-MM-DD"
+                  )}
                 </Box>
               </Typography>
-            
             </div>
           </Stack>
         )}
 
         {showSearch && (
-          <Stack gap={1} direction={'row'} flexWrap={'wrap'}>
-            <AutocompleteSearchPatient focusPaitent={focusPaitent} update={setActiveDoctorVisit} />
-            <input  className="bg-transparent" onChange={(e)=>{
-              axiosClient.post('patient/search/date',{date:e.target.value}).then(({data})=>{
-                console.log(data,'search by date ')
-                setPatients(data)
-              })
-            }} type="date" />
+          <Stack gap={1} direction={"row"} flexWrap={"wrap"}>
+            <AutocompleteSearchPatient
+              focusPaitent={focusPaitent}
+              update={setActiveDoctorVisit}
+            />
+            <input
+              className="bg-transparent"
+              onChange={(e) => {
+                axiosClient
+                  .post("patient/search/date", { date: e.target.value })
+                  .then(({ data }) => {
+                    console.log(data, "search by date ");
+                    setPatients(data);
+                  });
+              }}
+              type="date"
+            />
           </Stack>
         )}
       </Stack>
@@ -528,6 +549,7 @@ function Doctor() {
                       minute: "numeric",
                     })}
                 </div>
+                <div>{patients.length}</div>
                 <div>
                   {shift &&
                     shiftDate.toLocaleDateString("ar-Eg", {
@@ -539,35 +561,37 @@ function Doctor() {
                 </div>
               </Stack>
 
-            
               <Divider></Divider>
               <Stack
+                key={patients.length}
                 direction={"column"}
                 gap={1}
                 alignItems={"center"}
                 style={{ padding: "15px" }}
               >
-                {patients.filter((p:DoctorVisit)=>{
-                  return p.patient.doctor.id == id
-                }).map((visit, i) => {
-                  // console.log(visit, "visit in doctor page");
-                  return (
-                    <DoctorPatient
-                      showPatients={showPatients}
-                      setShowPatients={setShowPatients}
-                      setLayout={setLayout}
-                      setActiveDoctorVisit={setActiveDoctorVisit}
-                      delay={i * 100}
-                      activeDoctorVisit={activeDoctorVisit}
-                      key={visit.id}
-                      hideForm={null}
-                      useIndex={showSearch}
-                      index={patientCount--}
-                      visit={visit}
-                      focusPaitent={focusPaitent}
-                    />
-                  );
-                })}
+                {patients
+                  .filter((p: DoctorVisit) => {
+                    return p.patient.doctor.id == id ||p.patient.doctor.id == user.doctor_id ;
+                  })
+                  .map((visit, i) => {
+                    // console.log(visit, "visit in doctor page");
+                    return (
+                      <DoctorPatient
+                        showPatients={showPatients}
+                        setShowPatients={setShowPatients}
+                        setLayout={setLayout}
+                        setActiveDoctorVisit={setActiveDoctorVisit}
+                        delay={i * 100}
+                        activeDoctorVisit={activeDoctorVisit}
+                        key={visit.id}
+                        hideForm={null}
+                        useIndex={showSearch}
+                        index={patientCount--}
+                        visit={visit}
+                        focusPaitent={focusPaitent}
+                      />
+                    );
+                  })}
               </Stack>
             </div>
           </Card>
@@ -575,16 +599,19 @@ function Doctor() {
           <div></div>
         )}
         {activeDoctorVisit ? (
-          <Card style={{ backgroundColor: "ffffff40" ,overflow:'auto'}}>
+          <Card style={{ backgroundColor: "ffffff40", overflow: "auto" }}>
             {/* file visits */}
             <List>
-              {
-                activeDoctorVisit.file?.patients?.map((patient: DoctorVisit, i) => {
+              {activeDoctorVisit.file?.patients?.map(
+                (patient: DoctorVisit, i) => {
                   return (
                     <ListItem
                       onClick={() => {
-                        console.log(patient,'patient doc visit')
-                        setActiveDoctorVisit({...patient,file:activeDoctorVisit.file});
+                        console.log(patient, "patient doc visit");
+                        setActiveDoctorVisit({
+                          ...patient,
+                          file: activeDoctorVisit.file,
+                        });
                       }}
                       sx={{
                         cursor: "pointer",
@@ -595,8 +622,8 @@ function Doctor() {
                       }}
                       key={patient.id}
                     >
-                      <Stack gap={2} flexWrap={'wrap'} direction="row">
-                        <Typography>sheet ({i+1})</Typography>
+                      <Stack gap={2} flexWrap={"wrap"} direction="row">
+                        <Typography>sheet ({i + 1})</Typography>
                         <Typography className="text-neutral-500 dark:text-neutral-400  ">
                           {dayjs(
                             new Date(Date.parse(patient.created_at))
@@ -605,15 +632,19 @@ function Doctor() {
                       </Stack>
                     </ListItem>
                   );
-                })}
+                }
+              )}
             </List>
           </Card>
         ) : (
           <div></div>
         )}
-        <Card key={activeDoctorVisit?.patient.updated_at} style={{ backgroundColor: "#ffffff40" }}>
+        <Card
+          key={activeDoctorVisit?.patient.updated_at}
+          style={{ backgroundColor: "#ffffff40" }}
+        >
           {activeDoctorVisit && (
-            <VitalSigns 
+            <VitalSigns settings={settings}
               setActiveDoctorVisit={setActiveDoctorVisit}
               key={activeDoctorVisit.updated_at}
               socket={socket}

@@ -10,6 +10,12 @@ export interface DoctorShift {
   cost: any
   doctor: Doctor
 }
+export interface RequestedToothService {
+  id: number;
+  requested_service_id: number;
+  tooth_id: number;
+  doctorvisit_id: number;
+}
 export interface DoctorVisit {
   id: number
   hasCbc:boolean;
@@ -28,6 +34,7 @@ export interface DoctorVisit {
   file:PatientFile;
   totalservicebank:number;
   doctor_shift:DoctorShift;
+  requested_tooth_services:RequestedToothService[]
 
 
 }
