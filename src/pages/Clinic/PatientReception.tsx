@@ -99,7 +99,7 @@ function PatientReception(props: PatientReceptinPros) {
                 {props.patient.patient.company &&  <Icon >
                   <FavoriteBorder titleAccess="تامين" fontSize="small" />
                 </Icon>}
-                {props.patient.patient.doctor.id != props.patient.doctor_shift.doctor_id &&  <Icon>
+                {props.patient.patient?.doctor?.id != props.patient.doctor_shift.doctor_id &&  <Icon>
                   <CopyAll titleAccess="منسوخ" fontSize="small"/>
                 </Icon>}
               </Stack>
