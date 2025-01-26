@@ -115,8 +115,8 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
           </TableBody>
         </Table>
       )}
-      {/* <Divider /> */}
-      {/* <Typography className="text-center" variant="h5">
+      <Divider />
+      <Typography className="text-center" variant="h5">
        {t("lab")}
       </Typography>
       {loadingLab ? (
@@ -140,28 +140,22 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
             </TableRow>
           </TableBody>
         </Table>
-      )} */}
+      )}
       <Divider />
       <List>
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.total + shiftSummary?.lab)}</div>} key="1">
-          <ListItemIcon>
-            <PieChartIcon />
-          </ListItemIcon>
+      
           <ListItemText  primary={t("all_total")} />
         </ListItem>
 
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.bank)}</div>} key="2">
-          <ListItemIcon>
-            <BarChartIcon />
-          </ListItemIcon>
+        
           <ListItemText primary={t("bank")} />
         </ListItem>
 
 
         <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.cash)}</div>}  key="3">
-          <ListItemIcon>
-            <PanelsTopLeftIcon />
-          </ListItemIcon>
+         
           <ListItemText primary={t("cash")} />
         </ListItem>
 
@@ -169,18 +163,14 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
            <ListItem secondaryAction={<BasicPopover  content={<>
               <ShiftCostsTable setAllMoneyUpdatedLab ={setAllMoneyUpdatedLab}/>
             </>} title={formatNumber(shiftSummary?.expenses)}></BasicPopover>}  key="4">
-          <ListItemIcon>
-            <PanelsTopLeftIcon />
-          </ListItemIcon>
+         
           <ListItemText primary={t("expenses")} />
         </ListItem>
        
        
 
         <ListItem sx={{backgroundColor: shiftSummary?.safi < 0 ? 'lightpink' : ''}} secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
-          <ListItemIcon>
-            <PanelsTopLeftIcon />
-          </ListItemIcon>
+       
           <ListItemText primary={t("net_cash")} />
         </ListItem>
       </List>

@@ -107,8 +107,9 @@ export const updateHandler = (
        
         }
       })
-      .catch(({ response: { data } }) => {
-        console.log(data);
+      .catch((error)=>{
+        console.log(error)
+        reject(error)
       });
   });
 };

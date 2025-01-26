@@ -79,9 +79,11 @@ function CodeEditor({
             });
           updateHandler(value, colName, patient, setActiveDoctorVisit,changeUrl,apiUrl).then(
             (_, data) => {
-              setLoading(false);
             }
-          );
+          ).finally(()=>{
+            setLoading(false);
+
+          });
         }}
       >
         Save

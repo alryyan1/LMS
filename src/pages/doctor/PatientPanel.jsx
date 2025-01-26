@@ -25,7 +25,8 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
   // console.log("start fetching", "packages and their tests");
 
   return (
-    <Box
+      <Stack direction={'column'} gap={1}>
+        <Box
       className='mygrid'
     >
       {/* <Tabs
@@ -308,8 +309,11 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
           </Stack>
         )}
       {/* </Tabs> */}
-      {/* {!user?.is_nurse && (
+     
+    </Box>
+    {!user?.is_nurse && (
         <LoadingButton
+         sx={{width: '100%'}}
           disabled={patient.patient.doctor_finish == 1}
           loading={loading}
           color={patient.doctor_finish ? "success" : "primary"}
@@ -338,8 +342,8 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         >
           Complete
         </LoadingButton>
-      )} */}
-    </Box>
+      )}
+      </Stack>
   );
 }
 

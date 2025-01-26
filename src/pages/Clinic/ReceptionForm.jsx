@@ -238,9 +238,16 @@ function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients }) 
                 error={errors?.phone && errors.phone.message}
                 {...register("phone", {
                   required: {
+                  
                     value: true,
                     message: t("phoneValidation"),
                   },
+                  minLength: {
+                    value: 8,
+                    message: 'الرجاء ادخال رقم الهاتف',
+
+                  },
+                  
                 })}
                 label={t("phone")}
                 helperText={errors?.phone && errors.phone.message}
