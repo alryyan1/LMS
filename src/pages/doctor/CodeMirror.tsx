@@ -46,6 +46,7 @@ function CodeEditor({
   return (
     <>
       <CodeMirror
+        height="200px"
         width="100%"
         dir="ltr"
         value={value}

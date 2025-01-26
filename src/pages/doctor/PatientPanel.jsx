@@ -142,7 +142,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             label=" Review Of Systems"
           />
         </Stack>)} */}
-        <Stack
+        {/* <Stack
           className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
             value == 6 ? "bg-sky-500 hover:text-white  " : ""
           }`}
@@ -159,8 +159,8 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             value={6}
             label="Lab Request"
           />
-        </Stack>
-        <Stack
+        </Stack> */}
+        {/* <Stack
           className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
             value == 9 ? "bg-sky-500 hover:text-white  " : ""
           }`}
@@ -177,7 +177,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             value={9}
             label="Lab Result"
           />
-        </Stack>
+        </Stack> */}
         {!user?.is_nurse && (
           <Stack
             className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed   ${
