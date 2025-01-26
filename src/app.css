@@ -291,7 +291,16 @@ body {
     --gradient-angle: 360deg;
   }
 }
+.mygrid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 140px));
 
+  gap: 10px;
+}
+.mygrid div{
+  align-items: center!important;
+  max-height: 140px;
+}
 /* .muirtl-1cnhgfl-MuiAutocomplete-root .MuiAutocomplete-tag {
   background-color: aliceblue
 } */

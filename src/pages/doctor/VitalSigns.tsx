@@ -62,7 +62,9 @@ function VitalSigns({
   };
   return (
     <div style={{ padding: "5px" }}>
-      {/* <Typography textAlign={"center"} variant="h6">
+       <TeethModel settings={settings} setActiveDoctorVisit={setActiveDoctorVisit} actviePatient={patient} user={user}/>
+{/* 
+      <Typography textAlign={"center"} variant="h6">
         Vital Signs
       </Typography>
 
@@ -242,7 +244,6 @@ function VitalSigns({
         </TableBody>
       </Table> */}
       <>
-       <TeethModel settings={settings} setActiveDoctorVisit={setActiveDoctorVisit} actviePatient={patient} user={user}/>
       </>
     </div>
   );

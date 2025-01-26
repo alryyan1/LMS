@@ -25,30 +25,28 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
   // console.log("start fetching", "packages and their tests");
 
   return (
-    <Stack
-      justifyContent={"space-around"}
-      direction={"column"}
-      component={Card}
-      sx={{ border: "1px solid black", p: 1, backgroundColor: "ffffff40" }}
+    <Box
+      className='mygrid'
     >
-      <Tabs
+      {/* <Tabs
         indicatorColor=""
-        sx={{ gap: 3 }}
+        sx={{ gap: 1 }}
         orientation="vertical"
         variant="scrollable"
         textColor=""
         value={value}
         onChange={handleChange}
-      >
+      > */}
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3   font-extrabold  ${
+          
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed      ${
             value == 0 ? "bg-sky-500 hover:text-black" : ""
           }`}
           onClick={() => {
             setValue(0);
           }}
           sx={{ p: 1, color: "black", fontWeight: "600" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={info} />
@@ -61,14 +59,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
 
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 2 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 2 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(2);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img
@@ -88,14 +86,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
 
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 3 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 3 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(3);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img style={{ marginRight: "5px" }} width={50} src={historyBook} />
@@ -109,14 +107,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
           </Stack>
         )}
       {!user?.is_nurse && (  <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-            value == 1 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+            value == 1 ? "bg-sky-500 hover:text-white  " : ""
           }`}
           onClick={() => {
             setValue(1);
           }}
           sx={{ p: 1, color: "black" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={examination} />
@@ -127,14 +125,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
           />
         </Stack>)}
         {/* {!user?.is_nurse && (  <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-            value == 12 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+            value == 12 ? "bg-sky-500 hover:text-white  " : ""
           }`}
           onClick={() => {
             setValue(12);
           }}
           sx={{ p: 1, color: "black" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={examination} />
@@ -145,14 +143,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
           />
         </Stack>)} */}
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-            value == 6 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+            value == 6 ? "bg-sky-500 hover:text-white  " : ""
           }`}
           onClick={() => {
             setValue(6);
           }}
           sx={{ p: 1, color: "black" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={bloodTest} />
@@ -163,14 +161,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
           />
         </Stack>
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-            value == 9 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+            value == 9 ? "bg-sky-500 hover:text-white  " : ""
           }`}
           onClick={() => {
             setValue(9);
           }}
           sx={{ p: 1, color: "black" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={labResult} />
@@ -182,14 +180,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         </Stack>
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3  ${
-              value == 5 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed   ${
+              value == 5 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(5);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img className="" width={50} src={diagnosis} />
@@ -204,14 +202,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         )}
         {/* <Tab  label='Appointments' />; */}
         <Stack
-          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-            value == 7 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+          className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+            value == 7 ? "bg-sky-500 hover:text-white  " : ""
           }`}
           onClick={() => {
             setValue(7);
           }}
           sx={{ p: 1, color: "black" }}
-          direction={"row"}
+          direction={"column"}
           gap={1}
         >
           <img style={{ marginRight: "5px" }} width={50} src={healthcare} />
@@ -223,14 +221,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         </Stack>
         {user?.is_nurse == 1 && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 8 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 8 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(8);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img style={{ marginRight: "5px" }} width={50} src={barcode} />
@@ -245,14 +243,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         )}
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 4 ? " font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 4 ? "  " : ""
             }`}
             onClick={() => {
               setValue(4);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img style={{ marginRight: "5px" }} width={50} src={pills} />
@@ -267,14 +265,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         )}
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 10 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 10 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(10);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img style={{ marginRight: "5px" }} width={50} src={sickleave} />
@@ -289,14 +287,14 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         )}
         {!user?.is_nurse && (
           <Stack
-            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3 ${
-              value == 11 ? "bg-sky-500 hover:text-white font-extrabold " : ""
+            className={` hover:bg-sky-700 cursor-pointer  hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500  rounded-md border-2 border-dashed  ${
+              value == 11 ? "bg-sky-500 hover:text-white  " : ""
             }`}
             onClick={() => {
               setValue(11);
             }}
             sx={{ p: 1, color: "black" }}
-            direction={"row"}
+            direction={"column"}
             gap={1}
           >
             <img style={{ marginRight: "5px" }} width={50} src={diet} />
@@ -309,8 +307,8 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
             )}
           </Stack>
         )}
-      </Tabs>
-      {!user?.is_nurse && (
+      {/* </Tabs> */}
+      {/* {!user?.is_nurse && (
         <LoadingButton
           disabled={patient.patient.doctor_finish == 1}
           loading={loading}
@@ -340,8 +338,8 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
         >
           Complete
         </LoadingButton>
-      )}
-    </Stack>
+      )} */}
+    </Box>
   );
 }
 

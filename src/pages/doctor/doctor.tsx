@@ -488,7 +488,7 @@ function Doctor() {
         style={{
           gap: "15px",
           transition: "0.3s all ease-in-out",
-          height: window.innerHeight,
+          height: `${window.innerHeight - 150}px`,
           display: "grid",
           gridTemplateColumns: `70px    ${layOut.patients}  ${layOut.visits} ${layOut.vitals} 2fr 1fr    `,
         }}
@@ -656,7 +656,7 @@ function Doctor() {
           <Card
             style={{ backgroundColor: "#ffffff40" }}
             key={activeDoctorVisit?.id}
-            sx={{ height: window.innerHeight - 60, overflow: "auto", p: 1 }}
+            sx={{ height: window.innerHeight - 150, overflow: "auto", p: 1 }}
           >
             {activeDoctorVisit && (
               <>
