@@ -23,7 +23,8 @@
     "female": "Female",
     "company": "Company",
     "save": "Save",
-    "addition_successfull": "Addition was successful"
+    "addition_successfull": "Addition was successful",
+    "4part":"Full name must have at least 4 parts "
 
 
 }

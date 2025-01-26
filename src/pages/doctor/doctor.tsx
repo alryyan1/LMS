@@ -301,7 +301,7 @@ function Doctor() {
     }
   };
   let patientCount = patients.filter(
-    (d: DoctorVisit) => d.patient.doctor.id == id ||d.patient.doctor.id == user.doctor_id
+    (d: DoctorVisit) => d.patient.doctor?.id == id ||d.patient.doctor?.id == user.doctor_id
   ).length;
   const showDocPatients = () => {
     setActiveDoctorVisit(null);
@@ -571,7 +571,7 @@ function Doctor() {
               >
                 {patients
                   .filter((p: DoctorVisit) => {
-                    return p.patient.doctor.id == id ||p.patient.doctor.id == user.doctor_id ;
+                    return p.patient.doctor?.id == id ||p.patient.doctor?.id == user.doctor_id ;
                   })
                   .map((visit, i) => {
                     // console.log(visit, "visit in doctor page");

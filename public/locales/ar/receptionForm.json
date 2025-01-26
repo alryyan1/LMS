@@ -23,5 +23,6 @@
     "female": "انثي",
     "company": "الشركة",
     "save": "حفظ",
-    "addition_successfull": "تمت الإضافة بنجاح"
+    "addition_successfull": "تمت الإضافة بنجاح",
+    "4part":"يجب ان يكون الاسم مكون من 4 اسماء"
 }

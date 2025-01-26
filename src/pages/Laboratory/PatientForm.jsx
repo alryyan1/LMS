@@ -111,6 +111,7 @@ function PatientForm({ hideForm, setUpdate }) {
           />
           {errors?.phone && errors.phone.message}
           <TextField
+          autoComplete="off"
           
             error={errors?.name}
             {...register("name", {
@@ -118,6 +119,10 @@ function PatientForm({ hideForm, setUpdate }) {
                 value: true,
                 message: "يجب ادخال اسم المريض",
               },
+              validate: (value) =>
+                value.trim().split(" ").length >= 4 ||
+                "Full name must have at least 4 parts.",
+              
             })}
             label="اسم المريض"
           />

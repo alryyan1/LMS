@@ -246,12 +246,19 @@ function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients }) 
                 helperText={errors?.phone && errors.phone.message}
               />
               <TextField
+              
+              autoComplete="off"
                 error={errors?.name}
+                
                 {...register("name", {
                   required: {
                     value: true,
                     message: t("patientNameValidation"),
+                   
                   },
+                  validate: (value) =>
+                    value.trim().split(" ").length >= 4 ||
+                    t('4part'),
                 })}
                 label={t("patient_name")}
                 helperText={errors?.name && errors.name.message}
