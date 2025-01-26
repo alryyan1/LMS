@@ -7,6 +7,7 @@
     "bank": "بنك",
     "pay": "ادفع",
     "other": "اخرى",
+    "approval": "الموافقه",
     "paymentSuccess": "تم السداد بنجاح",
     "cancelPaymentSuccess": "تم الغاء السداد بنجاح",
     "deleteSuccess": "تم الحذف بنجاح",

@@ -67,6 +67,7 @@ function ServiceList() {
                   <TableCell>نصيب الطبيب (مبلغ)</TableCell>
                   <TableCell>نصيب الطبيب (نسبه)</TableCell>
                   <TableCell>استخدام التحمل الثابت</TableCell>
+                  <TableCell>الموافقه</TableCell>
                 </TableRow>
               </thead>
               <tbody>
@@ -75,6 +76,7 @@ function ServiceList() {
                     <TableRow key={service.id}>
                       <TableCell>{service.name}</TableCell>
                       <MyTableCell
+                        sx={{width:'80px'}}
                         show={true}
                         item={activeCompany}
                         type={"number"}
@@ -85,6 +87,7 @@ function ServiceList() {
                         {service?.pivot?.price}
                       </MyTableCell>
                       <MyTableCell
+                        sx={{width:'80px'}}
                         show={true}
                         item={activeCompany}
                         type={"number"}
@@ -95,6 +98,7 @@ function ServiceList() {
                         {service?.pivot?.percentage_endurance}
                       </MyTableCell>
                       <MyTableCell
+                        sx={{width:'80px'}}
                         show={true}
                         item={activeCompany}
                         type={"number"}
@@ -107,6 +111,7 @@ function ServiceList() {
 
                       <MyTableCell
                         show
+                        sx={{width:'80px'}}
                         type={"number"}
                         item={activeCompany}
                         service_id={service.id}
@@ -117,6 +122,7 @@ function ServiceList() {
                       </MyTableCell>
                       <MyTableCell
                         show
+                        sx={{width:'80px'}}
                         item={activeCompany}
                         type={"number"}
                         service_id={service.id}
@@ -132,6 +138,14 @@ function ServiceList() {
                         myVal={service.pivot.use_static}
                         table="company/service"
                         colName={"use_static"}
+                      ></MySelectTableCell>
+                        <MySelectTableCell
+                        item={activeCompany}
+                        test_id={service.id}
+
+                        myVal={service.pivot.approval}
+                        table="company/service"
+                        colName={"approval"}
                       ></MySelectTableCell>
                     </TableRow>
                   ))}

@@ -37,8 +37,8 @@ function CustomToolbar({selectedCompany}) {
 function Reclaim() {
   const [rows, setRows] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
-  const [firstDate, setFirstDate] = useState(null);
-  const [secondDate, setSecondDate] = useState(null);
+  const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+  const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   const [loading, setLoading] = useState(null);
   const { companies } = useOutletContext();
   const {
@@ -204,28 +204,7 @@ function Reclaim() {
       <Grid item xs={10}>
     <Button disabled={selectedCompany == null} href={`${webUrl}reclaim?company=${selectedCompany?.id}&first=${firstDate?.format('YYYY-MM-DD')}&${secondDate?.format('YYYY-MM-DD')}`}>EXCEL</Button>
         
-      <DataGrid
-        
-            slots={{
-              toolbar: CustomToolbar,
-            }}
-          
-            componentsProps={{
-              toolbar: { printOptions: { disableToolbarButton: true } },
-            }}
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
-            pageSizeOptions={[5,10,20,50]}
-            checkboxSelection
-            disableRowSelectionOnClick
-          />
+     
       </Grid>
       <Grid item xs={2}>
         <form onSubmit={handleSubmit(submitHandler)}>

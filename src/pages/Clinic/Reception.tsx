@@ -385,6 +385,7 @@ function Reception() {
                 update={update}
                 user={user}
                 setPatients={setPatients}
+                activeShift={activeShift}
               />
             </div>
           )}
