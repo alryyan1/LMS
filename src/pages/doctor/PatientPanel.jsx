@@ -27,7 +27,7 @@ function PatientPanel({ value, setValue, setActiveDoctorVisit, patient }) {
   return (
       <Stack direction={'column'} gap={1}>
         <Box
-      className='mygrid'
+      className='patient-panel'
     >
       {/* <Tabs
         indicatorColor=""

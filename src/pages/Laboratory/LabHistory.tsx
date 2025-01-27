@@ -40,7 +40,7 @@ function LabHistory({ doctorVisit,setActiveDoctorVisit }: LabHistoryProbs) {
     <div style={{width:'350px',overflow:'hidden',textAlign:'center'}}>
      
         <>
-          {patientWithFileHistory?.file.patients.length > 1 ? (
+          {patientWithFileHistory?.file?.patients?.length > 1 ? (
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">History</InputLabel>
 

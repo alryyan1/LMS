@@ -3,6 +3,7 @@ import EmptyDialog from "./Dialogs/EmptyDialog";
 import RequestedServices from "./Clinic/RequestedServices";
 import ServiceGroup from "./Clinic/ServiceGroups";
 import { DoctorVisit } from "../types/Patient";
+import dayjs from "dayjs";
 interface TeethModelProbs {
   actviePatient: DoctorVisit;
   user: any;
@@ -1961,7 +1962,7 @@ c-0.6,1.5-0.3,3.6,1.1,4.2c2.7,1.1,4.3,4.2,3.8,7.1c-1,1-2.2-0.9-2.6-2.2C54.3,272.
           </g>
         </g>
       </svg>
-      <EmptyDialog title="Service Request" setShow={setShow} show={show}>
+    {!dayjs(actviePatient.created_at).startOf("day").isBefore(dayjs().startOf("day")) &&  <EmptyDialog title="Service Request" setShow={setShow} show={show}>
         <ServiceGroup
           activeTooth={activeTooth}
           setActiveTooth={setActiveTooth}
@@ -1979,7 +1980,7 @@ c-0.6,1.5-0.3,3.6,1.1,4.2c2.7,1.1,4.3,4.2,3.8,7.1c-1,1-2.2-0.9-2.6-2.2C54.3,272.
           setShowServicePanel={() => {}}
           user={user}
         />
-      </EmptyDialog>
+      </EmptyDialog>}
     </div>
   );
 }

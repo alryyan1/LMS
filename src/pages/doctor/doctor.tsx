@@ -195,7 +195,7 @@ function Doctor() {
       // alert('new patient')
       update(doctorVisit);
       // showDocPatients();
-      // socketEventHandler(null, doctorVisit, " has just booked", newImage);
+      socketEventHandler(null, doctorVisit, " has just booked", newImage);
     });
 
     return () => {
@@ -536,7 +536,7 @@ function Doctor() {
         </Stack>
         {showPatients ? (
           <Card
-            style={{ backgroundColor: "#ffffff40" }}
+            style={{ backgroundColor: "#ffffff40",height : window.innerHeight -50 }}
             sx={{ overflow: "auto", p: 1 }}
           >
             <div>

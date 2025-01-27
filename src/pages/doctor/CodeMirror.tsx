@@ -1,19 +1,20 @@
-import React, {  Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { autocompletion } from "@codemirror/autocomplete";
 import axiosClient from "../../../axios-client";
 import { updateHandler } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import { DoctorVisit } from "../../types/Patient";
+import dayjs from "dayjs";
 interface CodeEditorPrps {
   options: string[];
   setOptions: (options: string[]) => void;
   init: string;
   colName: string;
   patient: DoctorVisit;
-  setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>
+  setActiveDoctorVisit: Dispatch<SetStateAction<DoctorVisit>>;
   tableName: string;
-  api:string;
+  api: string;
   changeUrl?: boolean;
   apiUrl: string;
 }
@@ -27,7 +28,7 @@ function CodeEditor({
   tableName,
   changeUrl = false,
   apiUrl,
-}:CodeEditorPrps) {
+}: CodeEditorPrps) {
   const [value, setValue] = React.useState(init);
   const [loading, setLoading] = useState(false);
 
@@ -43,9 +44,14 @@ function CodeEditor({
     console.log("val:", val);
     setValue(val);
   }, []);
+  console.log(
+    dayjs(patient.created_at).startOf("day").isBefore(dayjs().startOf("day")),
+    "is before"
+  );
   return (
     <>
       <CodeMirror
+        editable={! dayjs(patient.created_at).startOf("day").isBefore(dayjs().startOf("day"))}
         height="200px"
         width="100%"
         dir="ltr"
@@ -54,9 +60,9 @@ function CodeEditor({
         extensions={[autocompletion({ override: [myCompletions] })]}
         onChange={onChange}
       />
-      
+
       <LoadingButton
-      sx={{mt:1}}
+        sx={{ mt: 1 }}
         loading={loading}
         fullWidth
         variant="contained"
@@ -73,17 +79,22 @@ function CodeEditor({
                 }),
             })
             .then(({ data }) => {
-                setOptions(data.map((c) => ({label:c.name,type:c.name})));
+              setOptions(data.map((c) => ({ label: c.name, type: c.name })));
 
               console.log(data, "update table db");
             });
-          updateHandler(value, colName, patient, setActiveDoctorVisit,changeUrl,apiUrl).then(
-            (_, data) => {
-            }
-          ).finally(()=>{
-            setLoading(false);
-
-          });
+          updateHandler(
+            value,
+            colName,
+            patient,
+            setActiveDoctorVisit,
+            changeUrl,
+            apiUrl
+          )
+            .then((_, data) => {})
+            .finally(() => {
+              setLoading(false);
+            });
         }}
       >
         Save

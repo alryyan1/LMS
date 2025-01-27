@@ -32,7 +32,7 @@ function PatientReception(props: PatientReceptinPros) {
       color="primary"
       badgeContent={
         props.patient.services.filter((service) => {
-          return service.doctor_id == activeShift?.doctor.id;
+          return service.doctor_id == activeShift?.doctor?.id;
         }).length
       }
       key={props.patient.id}
@@ -46,7 +46,7 @@ function PatientReception(props: PatientReceptinPros) {
           
           if (
             props.patient.services.filter((service) => {
-              return service.doctor_id == activeShift?.doctor.id;
+              return service.doctor_id == activeShift?.doctor?.id;
             }).length > 0
           ) {
         

@@ -291,13 +291,13 @@ body {
     --gradient-angle: 360deg;
   }
 }
-.mygrid{
+.patient-panel{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(50px, 140px));
 
   gap: 10px;
 }
-.mygrid div{
+.patient-panel div{
   align-items: center!important;
   max-height: 140px;
 }
