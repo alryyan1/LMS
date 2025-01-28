@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  Divider,
   IconButton,
   Stack,
   Table,
@@ -9,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -35,6 +37,8 @@ import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 import printJS from "print-js";
 import EmptyDialog from "../Dialogs/EmptyDialog";
+import dayjs from "dayjs";
+import InvoiceCard from "./InvoiceCard";
 
 interface RequestedServiceProps {
   actviePatient: DoctorVisit;
@@ -60,11 +64,15 @@ function RequestedServices({
   console.log(companies, "companies");
   const { t } = useTranslation("requestedServiceTable");
   const [showServiceCost, setShowServiceCost] = useState(false);
+  const [showServiceDeposits, setShowServiceDeposits] = useState(false);
+  const [amount, setAmount] = useState(0);
+
   const [selectedRequestedService, setSelectedRequestedService] =
     useState<RequestedService | null>(null);
-  
+
   const pay = (id: number, setLoading: (loading: boolean) => void) => {
     setLoading(true);
+
     axiosClient
       .patch(`requestedService/pay/${id}`)
       .then(({ data }: any) => {
@@ -74,8 +82,7 @@ function RequestedServices({
 
         console.log(data, "pay service");
         update(data.patient);
-        if(setAllMoneyUpdated){
-
+        if (setAllMoneyUpdated) {
           setAllMoneyUpdated((prev) => prev + 1);
         }
       })
@@ -191,7 +198,7 @@ function RequestedServices({
                   ) : (
                     ""
                   )}
-                    {actviePatient.patient.company ? (
+                  {actviePatient.patient.company ? (
                     <TableCell>{t("approval")}</TableCell>
                   ) : (
                     ""
@@ -257,11 +264,28 @@ function RequestedServices({
                           scope="row"
                         >
                           <Tooltip title={service.user_requested.username}>
-                            {service.service.name} {service.requested_service_costs.length > 0 && <IconButton title="هذه الخدمه تحتوي علي مصروفات"><AirlineStops/></IconButton>}
+                            {service.service.name}{" "}
+                            {service.requested_service_costs.length > 0 && (
+                              <IconButton title="هذه الخدمه تحتوي علي مصروفات">
+                                <AirlineStops />
+                              </IconButton>
+                            )}
                           </Tooltip>
                         </TableCell>
 
-                        <TableCell>{formatNumber(price)}</TableCell>
+                        <MyTableCell
+                          update={update}
+                          sx={{ width: "70px" }}
+                          item={service}
+                          isNum
+                          disabled={
+                            !service.service.variable || service.is_paid == 1
+                          }
+                          table="editRequested"
+                          colName={"price"}
+                        >
+                          {formatNumber(price)}
+                        </MyTableCell>
                         <MyTableCell
                           colName={"discount"}
                           disabled={service.is_paid == 1}
@@ -279,9 +303,16 @@ function RequestedServices({
                         ) : (
                           ""
                         )}
-                            {actviePatient.patient.company ? (
-                          <TableCell sx={{ border: "none", color: service.approval  == 1 ?  'red':'' }}>
-                            {service.approval  == 1? 'يحتاج  موافقه':'لا يحتاج موافقه'}
+                        {actviePatient.patient.company ? (
+                          <TableCell
+                            sx={{
+                              border: "none",
+                              color: service.approval == 1 ? "red" : "",
+                            }}
+                          >
+                            {service.approval == 1
+                              ? "يحتاج  موافقه"
+                              : "لا يحتاج موافقه"}
                           </TableCell>
                         ) : (
                           ""
@@ -312,9 +343,14 @@ function RequestedServices({
                             active={service.is_paid}
                             disabled={service.is_paid === 1}
                             loading={loading}
-                            onClick={(setLoading) =>
-                              pay(service.id, setLoading)
-                            }
+                            onClick={(setLoading) => {
+                              setSelectedRequestedService(service); //
+                              if (service.service.variable) {
+                                setShowServiceDeposits(true);
+                              } else {
+                                pay(service.id, setLoading);
+                              }
+                            }}
                           >
                             <Download />
                           </MyLoadingButton>
@@ -367,43 +403,112 @@ function RequestedServices({
           </Table>
         </TableContainer> */}
         </div>
-        {actviePatient && (
+        <InvoiceCard actviePatient={actviePatient} />
+        {/* {actviePatient && (
           <BottomMoney
             activeShift={activeShift}
             actviePatient={actviePatient}
             total_endurance={total_endurance}
           />
-        )}
+        )} */}
       </div>
-     {selectedRequestedService && <EmptyDialog title={selectedRequestedService.service.name}
-        setShow={setShowServiceCost}
-        show={showServiceCost}
-      >
-        <Table>
+      {selectedRequestedService && (
+        <EmptyDialog
+          title={selectedRequestedService.service.name}
+          setShow={setShowServiceCost}
+          show={showServiceCost}
+        >
+          <Table>
             <TableRow>
               <TableCell> مصروف</TableCell>
               <TableCell>المبلغ</TableCell>
             </TableRow>
             <TableBody>
-              {
-                selectedRequestedService?.requested_service_costs.map((rc)=>{
-                  return(
-                    <TableRow key={rc.id}>
-                    <TableCell>{rc.service_cost.sub_service_cost.name}</TableCell>
-                    <MyTableCell sx={{width:'60px'}} colName={'amount'} isNum={true}  table="updateRequestedServiceCost" item={rc}>{rc.amount}</MyTableCell>
-                    </TableRow>
-                  )
-                })
-              }
+              {selectedRequestedService?.requested_service_costs.map((rc) => {
+                return (
+                  <TableRow key={rc.id}>
+                    <TableCell>
+                      {rc.service_cost.sub_service_cost.name}
+                    </TableCell>
+                    <MyTableCell
+                      sx={{ width: "60px" }}
+                      colName={"amount"}
+                      isNum={true}
+                      table="updateRequestedServiceCost"
+                      item={rc}
+                    >
+                      {rc.amount}
+                    </MyTableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
-        </Table>
+          </Table>
+          <Button
+            onClick={() => {
+              axiosClient
+                .patch(
+                  `updateRequestedServiceCostAfterUdate/${selectedRequestedService.id}`
+                )
+                .then(({ data }) => {
+                  setActivePatient(data);
+                });
+            }}
+            fullWidth
+            variant="contained"
+          >
+            تحديث
+          </Button>
+        </EmptyDialog>
+      )}
+      {selectedRequestedService && (
+        <EmptyDialog
+          title={selectedRequestedService.service.name}
+          setShow={setShowServiceDeposits}
+          show={showServiceDeposits}
+        >
+          <Stack direction={"column"} gap={1}>
+            <TextField
+              fullWidth
+              label="المبلغ "
+           
+              onChange={(e) => setAmount(e.target.value)}
+            />
             <Button onClick={()=>{
-              axiosClient.patch(`updateRequestedServiceCostAfterUdate/${selectedRequestedService.id}`).then(({data})=>{
-                setActivePatient(data)
-              })
-            }} fullWidth variant="contained">تحديث</Button>
-        
-        </EmptyDialog>}
+              axiosClient.post(`addDepositToRequestedService/${selectedRequestedService.id}`, {amount}).then(({data})=>{
+                setActivePatient(data.patient);
+                setShowServiceDeposits(false);
+                setAllMoneyUpdated((prev) => prev + 1);
+
+              });
+            }} fullWidth variant="contained">
+              اضافه دفعة
+            </Button>
+            <Divider></Divider>
+            <Table>
+              <TableRow>
+                <TableCell> رقم</TableCell>
+                <TableCell> المبلغ</TableCell>
+                <TableCell>المستخدم</TableCell>
+                <TableCell> التاريخ</TableCell>
+              </TableRow>
+              <TableBody>
+                {selectedRequestedService?.deposits.map((d, i) => {
+                  return (
+                    <TableRow key={d.id}>
+                      <TableCell>{i + 1}</TableCell>
+                      <TableCell>{formatNumber(d.amount)}</TableCell>
+                      <TableCell>{d.user.name}</TableCell>
+                      <TableCell>{dayjs(d.created_at).format('YYYY/MM/DD')}</TableCell>
+                     
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Stack>
+        </EmptyDialog>
+      )}
     </>
   );
 }

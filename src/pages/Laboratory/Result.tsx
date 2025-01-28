@@ -252,14 +252,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                {/* <Button
+                <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button> */}
+                </Button>
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}

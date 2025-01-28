@@ -1,4 +1,4 @@
-import { CopyAll, FavoriteBorder } from "@mui/icons-material";
+import { AttachMoneySharp, CopyAll, FavoriteBorder } from "@mui/icons-material";
 import { Badge, Chip, Icon, Paper, Stack, styled } from "@mui/material";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
@@ -101,6 +101,11 @@ function PatientReception(props: PatientReceptinPros) {
                 </Icon>}
                 {props.patient.patient?.doctor?.id != props.patient.doctor_shift.doctor_id &&  <Icon>
                   <CopyAll titleAccess="منسوخ" fontSize="small"/>
+                </Icon>}
+                {props.patient.services.some((r)=>{
+                 return r.deposits.length > 0
+                }) && <Icon>
+                  <AttachMoneySharp titleAccess="اقساط" fontSize="small"/>
                 </Icon>}
               </Stack>
            

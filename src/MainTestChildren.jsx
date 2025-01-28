@@ -17,7 +17,8 @@ import {
 import MyTableCell from "./pages/inventory/MyTableCell";
 import ChildGroupAutoComplete from "./pages/Laboratory/ChildGroupAutoComplete";
 import UnitAutocomplete from "./components/UnitAutocomplete";
-import {  Plus, Trash } from "lucide-react";
+import {  Book, BookOpen, Plus, Trash } from "lucide-react";
+import { OfflinePinSharp } from "@mui/icons-material";
 
 function MainTestChildren() {
   const {
@@ -108,6 +109,40 @@ function MainTestChildren() {
             }}
           >
             <Plus />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="متاح">
+          <IconButton
+            size="small"
+            color={activeTestObj.available ? 'success' : 'danger'}
+            loading={loading}
+            onClick={() => {
+              axiosClient.patch(`mainTest/${activeTestObj.id}`,{
+                colName:`available`,
+                val:!activeTestObj.available
+              }).then(({data})=>{
+                setActiveTestObj(data.data)
+              })
+            }}
+          >
+            <OfflinePinSharp />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="قسم النتيجه">
+          <IconButton
+            size="small"
+            color={activeTestObj.divided ? 'success' : 'danger'}
+            loading={loading}
+            onClick={() => {
+              axiosClient.patch(`mainTest/${activeTestObj.id}`,{
+                colName:`divided`,
+                val:!activeTestObj.divided
+              }).then(({data})=>{
+                setActiveTestObj(data.data)
+              })
+            }}
+          >
+            <BookOpen />
           </IconButton>
         </Tooltip>
       </Stack>

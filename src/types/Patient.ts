@@ -297,6 +297,7 @@ export interface Patient {
     created_at: string
     updated_at: string
     service_costs: any[]
+    variable:boolean;
   }
   
   export interface User {
@@ -334,19 +335,18 @@ export interface Patient {
     file_id: number
     patient_id: number
   }
-
-export interface RequestedService {
+  export interface RequestedService {
   id: number;
   doctorvisits_id: number;
   service_id: number;
   user_id: number;
-  user_deposited: Userdeposited;
+  user_deposited: null;
   doctor_id: number;
   price: number;
   amount_paid: number;
   endurance: number;
   is_paid: number;
-  discoun: number;
+  discount: number;
   bank: number;
   count: number;
   created_at: string;
@@ -354,10 +354,81 @@ export interface RequestedService {
   doctor_note: string;
   nurse_note: string;
   done: number;
+  approval: number;
   service: Service;
   user_requested: User;
-  requested_service_costs: Requestedservicecost[];
+  requested_service_costs: any[];
+  deposits: Deposit[];
 }
+
+interface Deposit {
+  id: number;
+  requested_service_id: number;
+  amount: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+  user: User;
+}
+
+
+
+
+
+interface Doctorsubservicecost {
+  id: number;
+  doctor_id: number;
+  sub_service_cost_id: number;
+}
+
+interface Specialist {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+
+
+interface Route {
+  id: number;
+  name: string;
+  path: string;
+  created_at: null | string;
+  updated_at: null | string;
+  icon: string;
+  is_multi: number;
+  sub_routes: Subroute[];
+}
+
+interface Subroute {
+  id: number;
+  route_id: number;
+  name: string;
+  path: string;
+  icon: string;
+}
+
+
+
+interface Servicecost {
+  id: number;
+  name: string;
+  service_id: number;
+  percentage: number;
+  fixed: number;
+  cost_type: string;
+  sub_service_cost_id: number;
+  cost_orders: any[];
+  sub_service_cost: Subservicecost;
+}
+
+interface Subservicecost {
+  id: number;
+  name: string;
+}
+
+
 
 interface Requestedservicecost {
   id: number;

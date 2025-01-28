@@ -19,5 +19,6 @@
     "amount": "المبلغ",
       "serviceExpenses":"مصروفات الخدمه",
        "expenseDescription":"وصف المصروف",
-       "type":"نوع"
+       "type":"نوع",
+       "variable":"متغير"
   }

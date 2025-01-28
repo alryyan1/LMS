@@ -29,6 +29,7 @@ import EmptyDialog from "../Dialogs/EmptyDialog";
 import MyServiceCostTableCell from "../inventory/SelectCostType";
 import { Service, ServiceCost } from "../../types/type";
 import AddSubServiceCostAutocomplete from "../../components/AddSubServiceCostAutocomplete";
+import MySelectTableCell from "../inventory/MySelectTableCell";
 
 function AddService() {
     const { t } = useTranslation('addService');
@@ -238,6 +239,7 @@ function AddService() {
                   <TableCell>{t("category")}</TableCell>
                   <TableCell>{t("cost")}</TableCell>
                   <TableCell>{t("delete")}</TableCell>
+                  <TableCell>{t("variable")}</TableCell>
                 </TableRow>
               </thead>
               <TableBody>
@@ -316,7 +318,14 @@ function AddService() {
                          {t("delete")}
                       </MyLoadingButton>
                     </TableCell>
-                  </TableRow>
+                    <MySelectTableCell
+                        item={item}
+                        test_id={item.id}
+
+                        myVal={item.variable}
+                        table="service"
+                        colName={"variable"}
+                      ></MySelectTableCell>                  </TableRow>
                 ))}
               </TableBody>
             </Table>

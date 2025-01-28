@@ -86,6 +86,7 @@ export interface Service {
   updated_at: string;
   service_costs: ServiceCost[];
   service_group: Servicegroup;
+  variable:boolean;
 
 }
 
