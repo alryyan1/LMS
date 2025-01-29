@@ -137,7 +137,7 @@ export default function RequestedServiceOptions({
             update={update}
             service={service}
             id={service.id}
-            disabled={service.is_paid == 1}
+            disabled={service.is_paid == 1 || service.service.variable}
 
           />
         </MenuItem>

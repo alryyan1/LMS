@@ -17,5 +17,6 @@
       "sub_company":"الشركة الفرعية",
     "relation_name": "اسم العلاقة",
     "print_time": "وقت الطباعة",
+    "debit": "المديونيه",
       "copy_patient":"نسخ إلى طبيب أخر"
   }

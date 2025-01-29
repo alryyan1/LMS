@@ -95,6 +95,7 @@ function Reception() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [value, setValue] = useState(0);
   const [settings, setSettings] = useState(null);
+  const [fileMode, setFileMode] = useState(false);
 
   const [patients,setPatients] = useState<DoctorVisit[]>([]);
   useEffect(()=>{
@@ -343,6 +344,7 @@ function Reception() {
 
         <div style={{ width: `${window.innerWidth - 360}px` }}>
           <OpenDoctorTabs
+           
             setOpenedDoctors={setOpenedDoctors}
             setActiveShift={setActiveShift}
             user={user}
@@ -394,6 +396,7 @@ function Reception() {
             <div>
               {showDetails && actviePatient ? (
                 <PatientDetail
+                fileMode={fileMode}
                   user={user}
                   settings={settings}
                   openedDoctors={openedDoctors}
@@ -663,26 +666,38 @@ function Reception() {
         </Paper>
         <Paper
           sx={{
-            overflow: "auto",
+            overflowY: "auto",
             height: `${window.innerHeight - 100}px`,
-            // overflowX: "hidden",
+            overflowX: "visible",
             // overflowY: "auto",
+        
+
           }}
         >
          
             <div
-              style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
+              style={{ overflowX: "visible", overflowY: "auto", padding: "5px" }}
             >
+    {fileMode &&<>
+      <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
+           ملف المريض نشط
+        </Typography>
+        <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
+             عدد الزيارات {patients.length}
+        </Typography>
+    </> }
                {loadingDoctorPatients ?
             <Skeleton  height={"400px"} />  : <Stack
                 flexDirection={"row"}
                 flexWrap={"wrap"}
                 gap={2}
                 justifyContent={"center"}
+               
                 style={{
                   padding: "5px",
                   display: "flex",
                   justifyContent: "flex-end",
+                  
                 }}
               >
               
@@ -693,6 +708,9 @@ function Reception() {
                     .map((visit) => {
                       return (
                         <PatientReception
+                        fileMode={fileMode}
+                        setFileMode={setFileMode}
+                        setPatients={setPatients}
                           showDetails={showDetails}
                           setShowDetails={setShowDetails}
                           change={change}

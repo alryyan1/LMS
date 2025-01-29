@@ -31,9 +31,10 @@ export interface DoctorVisit {
   patient: Patient
   services: RequestedService[]
   only_lab:number;
-  file:PatientFile;
+  file:PatientFile|null;
   totalservicebank:number;
   doctor_shift:DoctorShift;
+  totalRemainig: number;
   requested_tooth_services:RequestedToothService[]
 
 

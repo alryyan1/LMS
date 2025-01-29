@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import { Badge } from "@mui/material";
 import { DoctorShift, DoctorVisit, User } from "../../types/Patient";
 import axiosClient from "../../../axios-client";
-import doctorImage from "../../assets/images/doctor.png"
+import doctorImage from "../../assets/images/doctor.png";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,34 +37,37 @@ function a11yProps(index: number) {
 }
 
 interface openDoctorTabsProps {
-    openedDoctors: DoctorShift[];
-    selectDoctorHandler: (shift: DoctorShift) => void;
-    activeShift: DoctorShift|null;
-    user : User;
-    setValue: React.Dispatch<React.SetStateAction<number>>;
-    setOpenedDoctors: React.Dispatch<React.SetStateAction<DoctorShift[]>>;
-    setActiveShift: React.Dispatch<React.SetStateAction<DoctorShift|null>>;
-    setPatients: React.Dispatch<React.SetStateAction<DoctorVisit[]>>;
-
-
-  
-
+  openedDoctors: DoctorShift[];
+  selectDoctorHandler: (shift: DoctorShift) => void;
+  activeShift: DoctorShift | null;
+  user: User;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+  setOpenedDoctors: React.Dispatch<React.SetStateAction<DoctorShift[]>>;
+  setActiveShift: React.Dispatch<React.SetStateAction<DoctorShift | null>>;
+  setPatients: React.Dispatch<React.SetStateAction<DoctorVisit[]>>;
 }
-export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, user, openedDoctors,selectDoctorHandler ,activeShift,value, setValue,setOpenedDoctors,setActiveShift}:openDoctorTabsProps) {
-
+export default function OpenDoctorTabs({
+  setPatients,
+  setLoadingDoctorPatients,
+  user,
+  openedDoctors,
+  selectDoctorHandler,
+  activeShift,
+  value,
+  setValue,
+  setOpenedDoctors,
+  setActiveShift,
+}: openDoctorTabsProps) {
   const tabRefs = React.useRef([]); // Create a ref array to hold all tab refs.
 
-  console.log(tabRefs,'tabRefs')
+  console.log(tabRefs, "tabRefs");
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     // alert(newValue)
     setValue(newValue);
-    console.log(newValue,'new val')
-        // Scroll the active tab into view
-    
-    
-
+    console.log(newValue, "new val");
+    // Scroll the active tab into view
   };
-  React.useEffect(()=>{
+  React.useEffect(() => {
     // alert(value)
     if (tabRefs.current[value]) {
       tabRefs.current[value].scrollIntoView({
@@ -74,29 +77,33 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
       });
     }
     //update latest patients for doctor
-    const controller = new AbortController()
-    if(value){
-    setLoadingDoctorPatients(true)
+    const controller = new AbortController();
+    if (value) {
+      setLoadingDoctorPatients(true);
 
-      axiosClient.get(`getDoctorShiftById?id=${value}`,{
-        signal: controller.signal,
-      }).then(({data})=>{
-        console.log(data,'getDoctorShiftById')
-        setActiveShift(data);
-        setPatients(data.visits)
-        setOpenedDoctors((prev)=>{
-         return  prev.map((doctorShift)=>{
-            if(doctorShift.id == value){
-              return data;
-            }
-            return doctorShift;
-          })
+      axiosClient
+        .get(`getDoctorShiftById?id=${value}`, {
+          signal: controller.signal,
         })
-      }).finally(()=>setLoadingDoctorPatients(false))
+        .then(({ data }) => {
+          console.log(data, "getDoctorShiftById");
+          setActiveShift(data);
+          setPatients(data.visits);
+          setOpenedDoctors((prev) => {
+            return prev.map((doctorShift) => {
+              if (doctorShift.id == value) {
+                return data;
+              }
+              return doctorShift;
+            });
+          });
+        })
+        .finally(() => setLoadingDoctorPatients(false));
     }
-    return () => controller.abort() // Clean up the abort controller when component unmounts.
-   
-  },[value])
+    return () => controller.abort(); // Clean up the abort controller when component unmounts.
+  }, [value]);
+
+  
   // alert(value)
   return (
     <Box sx={{ width: "100%" }}>
@@ -109,62 +116,58 @@ export default function OpenDoctorTabs({setPatients,setLoadingDoctorPatients, us
         >
           {openedDoctors
             .filter((shift) => {
-              if(user?.isAccountant || user?.isAdmin){
+              if (user?.isAccountant || user?.isAdmin) {
                 return true;
-              }else{
-               return shift.user_id == user?.id
+              } else {
+                return shift.user_id == user?.id;
               }
             })
-            .map((shift,index) => {
+            .map((shift, index) => {
               // console.log(shift, "shift");
               return (
-
-             <Tab
+                <Tab
                   // icon={<img height={'50px'} width={'50px'} src={doctorImage}/>}
-                   
-                              ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
 
-                    value={shift.id}
-                    title={shift.doctor.specialist.name}
-
-                    
-
-                
-                //   value={shift.doctor_id}
-                  onClick={()=>{
-                    setValue(shift.id)
-                     console.log(shift.id)
-                     console.log(shift,'selected shift')
-                    selectDoctorHandler(shift)
+                  ref={(el) => (tabRefs.current[shift.id] = el)} // Assign ref to each tab.
+                  value={shift.id}
+                  title={shift.doctor.specialist.name}
+                  //   value={shift.doctor_id}
+                  onClick={() => {
+                    setValue(shift.id);
+                    console.log(shift.id);
+                    console.log(shift, "selected shift");
+                    selectDoctorHandler(shift);
                   }}
                   // sx={
                   //   activeShift && activeShift.id === shift.id
                   //       ? {backgroundColor:'green'}
                   //       : null
                   // }
-                    className={
-                      activeShift && activeShift.id === shift.id
-                        ? "activeDoctor doctor"
-                        : "doctor"
-                    }
-                    label={
-                      <div style={{ display: "flex", alignItems: "center",justifyContent:'space-between'}}>
-                        <Badge badgeContent={shift?.visitsCount} color="secondary">
+                  className={
+                    activeShift && activeShift.id === shift.id
+                      ? "activeDoctor doctor"
+                      : "doctor"
+                  }
+                  label={
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Badge
+                        badgeContent={shift?.visitsCount}
+                        color="secondary"
+                      >
                         <img src={doctorImage} alt="Home" width="35" />
-
-                        </Badge>
-                      <div>
-
-                      {shift.doctor.name}
-                      </div>
+                      </Badge>
+                      <div>{shift.doctor.name}</div>
                     </div>
-          
-                    }
-                    // label={shift.doctor.name}
-                    {...a11yProps(0)}
-                  />
-
-             
+                  }
+                  // label={shift.doctor.name}
+                  {...a11yProps(0)}
+                />
               );
             })}
         </Tabs>

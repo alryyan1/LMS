@@ -21,6 +21,7 @@ interface PatientDetailProps {
   settings: any;
   user: any;
   update: (patient: DoctorVisit) => void;
+  fileMode?: boolean; // For file mode only, show patient details without actions.
 }
 function PatientDetail({
   patient,
@@ -29,6 +30,7 @@ function PatientDetail({
   copyPatient = false,
   settings,
   user,
+  fileMode,
   update,
 }: PatientDetailProps) {
   const { t } = useTranslation("PatientDetails");
@@ -39,13 +41,13 @@ function PatientDetail({
     <>
       <Paper
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
-        elevation={3}
+  
         className="bolder"
         sx={{ p: 1, width: "300px" }}
       >
-        {/* <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-          تفاصيل المريض
-        </Typography> */}
+       {fileMode && <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
+           ملف المريض نشط
+        </Typography>}
         {/** add card body   */}
         <Typography className="text-center p-name mb-1" variant="h6">
           {patient.patient.name}
@@ -124,6 +126,18 @@ function PatientDetail({
             {
               //print iso date
               patient?.file_id
+            }
+          </div>
+        </div>
+        <div className="form-control">
+          <div>{t("debit")} </div>
+
+          <div>
+            {
+              //print iso date
+              patient?.file?.patients?.reduce((prev,curr)=>{
+                return prev + curr.totalRemainig
+              },0)
             }
           </div>
         </div>
@@ -258,7 +272,7 @@ function PatientDetail({
           )
         }
         <Divider sx={{ m: 1 }} />
-        {copyPatient && patient.patient.doctor_id == activeShift?.doctor.id && (
+        {copyPatient && patient.patient.doctor_id == activeShift?.doctor?.id && (
           <Autocomplete
             onChange={(e, data) => {
               axiosClient

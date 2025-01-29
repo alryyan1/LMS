@@ -279,7 +279,7 @@ function RequestedServices({
                           item={service}
                           isNum
                           disabled={
-                            !service.service.variable || service.is_paid == 1
+                            !service.service.variable || service.is_paid == 1 || service.deposits.length > 0
                           }
                           table="editRequested"
                           colName={"price"}
@@ -288,7 +288,7 @@ function RequestedServices({
                         </MyTableCell>
                         <MyTableCell
                           colName={"discount"}
-                          disabled={service.is_paid == 1}
+                          disabled={service.is_paid == 1 || service.service.variable}
                           table="requestedService/discount"
                           item={service}
                           sx={{ width: "50px" }}
@@ -331,7 +331,7 @@ function RequestedServices({
                             <MyCheckboxReception
                               setAllMoneyUpdated={setAllMoneyUpdated}
                               update={update}
-                              disabled={service.is_paid == 0}
+                              // disabled={service.is_paid == 0}
                               checked={service.bank == 1}
                               id={service.id}
                             ></MyCheckboxReception>
