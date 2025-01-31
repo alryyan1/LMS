@@ -264,7 +264,7 @@ function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients }) 
                    
                   },
                   validate: (value) =>
-                    value.trim().split(" ").length >= 4 ||
+                    value.trim().split(" ").length >= 3 ||
                     t('4part'),
                 })}
                 label={t("patient_name")}
