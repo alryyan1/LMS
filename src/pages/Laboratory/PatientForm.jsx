@@ -120,8 +120,8 @@ function PatientForm({ hideForm, setUpdate }) {
                 message: "يجب ادخال اسم المريض",
               },
               validate: (value) =>
-                value.trim().split(" ").length >= 4 ||
-                "Full name must have at least 4 parts.",
+                value.trim().split(" ").length >= 3 ||
+                "Full name must have at least 3 parts.",
               
             })}
             label="اسم المريض"

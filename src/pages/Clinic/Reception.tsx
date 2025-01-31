@@ -668,7 +668,7 @@ function Reception() {
           sx={{
             overflowY: "auto",
             height: `${window.innerHeight - 100}px`,
-            overflowX: "visible",
+            overflowX: "hidden",
             // overflowY: "auto",
         
 
@@ -676,7 +676,7 @@ function Reception() {
         >
          
             <div
-              style={{ overflowX: "visible", overflowY: "auto", padding: "5px" }}
+              style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
             >
     {fileMode &&<>
       <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>

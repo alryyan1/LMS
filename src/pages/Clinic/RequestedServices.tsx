@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   Divider,
+  FormControlLabel,
   IconButton,
   Stack,
   Table,
@@ -30,15 +31,17 @@ import {
   User,
 } from "../../types/Patient";
 import MyTableCell from "../inventory/MyTableCell";
-import { PanelBottom } from "lucide-react";
+import { Delete, PanelBottom, Trash } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import bloodTest from "./../../assets/images/blood-test.png";
-import { useOutletContext } from "react-router-dom";
+import { Form, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import printJS from "print-js";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import dayjs from "dayjs";
 import InvoiceCard from "./InvoiceCard";
+import MyCheckbox from "../../components/MyCheckBox";
+import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
 
 interface RequestedServiceProps {
   actviePatient: DoctorVisit;
@@ -205,11 +208,11 @@ function RequestedServices({
                   )}
                   <TableCell>{t("paid")}</TableCell>
 
-                  {actviePatient.patient.company ? (
-                    ""
-                  ) : (
-                    <TableCell>{t("bank")}</TableCell>
-                  )}
+                  {/* {actviePatient.patient.company ? ( */}
+                    {/* "" */}
+                  {/* // ) : ( */}
+                    {/* // <TableCell>{t("bank")}</TableCell> */}
+                  {/* // )} */}
                   <TableCell>{t("pay")}</TableCell>
                   <TableCell>{t("other")}</TableCell>
                 </TableRow>
@@ -279,7 +282,9 @@ function RequestedServices({
                           item={service}
                           isNum
                           disabled={
-                            !service.service.variable || service.is_paid == 1 || service.deposits.length > 0
+                            !service.service.variable ||
+                            service.is_paid == 1 ||
+                            service.deposits.length > 0
                           }
                           table="editRequested"
                           colName={"price"}
@@ -288,7 +293,9 @@ function RequestedServices({
                         </MyTableCell>
                         <MyTableCell
                           colName={"discount"}
-                          disabled={service.is_paid == 1 || service.service.variable}
+                          disabled={
+                            service.is_paid == 1 || service.service.variable
+                          }
                           table="requestedService/discount"
                           item={service}
                           sx={{ width: "50px" }}
@@ -320,10 +327,10 @@ function RequestedServices({
                         <TableCell>
                           <Tooltip title={service?.user_deposited?.username}>
                             {" "}
-                            {service.amount_paid}
+                            {service.amountPaid}
                           </Tooltip>
                         </TableCell>
-
+{/* 
                         {actviePatient.patient.company ? (
                           ""
                         ) : (
@@ -331,22 +338,24 @@ function RequestedServices({
                             <MyCheckboxReception
                               setAllMoneyUpdated={setAllMoneyUpdated}
                               update={update}
-                              // disabled={service.is_paid == 0}
+                              disabled={service.service.variable}
                               checked={service.bank == 1}
                               id={service.id}
                             ></MyCheckboxReception>
                           </TableCell>
-                        )}
+                        )} */}
 
                         <TableCell>
                           <MyLoadingButton
                             active={service.is_paid}
-                            disabled={service.is_paid === 1}
+                            // disabled={service.is_paid === 1}
                             loading={loading}
+                            onDouble={() => {
+                              setShowServiceDeposits(true);
+                            }}
                             onClick={(setLoading) => {
                               setSelectedRequestedService(service); //
                               if (service.service.variable) {
-                                setShowServiceDeposits(true);
                               } else {
                                 pay(service.id, setLoading);
                               }
@@ -357,7 +366,9 @@ function RequestedServices({
                         </TableCell>
                         <TableCell>
                           <RequestedServiceOptions
+                          setShowServiceDeposits={setShowServiceDeposits}
                             update={update}
+                            setSelectedRequestedService={setSelectedRequestedService}
                             deleteService={deleteService}
                             actviePatient={actviePatient}
                             cancelPayHandler={cancelPayHandler}
@@ -467,30 +478,52 @@ function RequestedServices({
           setShow={setShowServiceDeposits}
           show={showServiceDeposits}
         >
-          <Stack direction={"column"} gap={1}>
+            <Form  onSubmit={(e) => {
+                axiosClient
+                  .post(
+                    `addDepositToRequestedService/${selectedRequestedService.id}`,
+                    { amount }
+                  )
+                  .then(({ data }) => {
+                    setSelectedRequestedService(data.data)
+
+                    setActivePatient(data.patient);
+                    setShowServiceDeposits(false);
+                    setAllMoneyUpdated((prev) => prev + 1);
+                  });
+              }}>
+          <Stack  sx={{p:1}} direction={"column"} gap={1}>
+
             <TextField
+            size="small"
+            autoFocus
               fullWidth
               label="المبلغ "
-           
               onChange={(e) => setAmount(e.target.value)}
             />
-            <Button onClick={()=>{
-              axiosClient.post(`addDepositToRequestedService/${selectedRequestedService.id}`, {amount}).then(({data})=>{
-                setActivePatient(data.patient);
-                setShowServiceDeposits(false);
-                setAllMoneyUpdated((prev) => prev + 1);
-
-              });
-            }} fullWidth variant="contained">
+            <Button
+              
+              type="submit"
+              fullWidth
+              variant="contained"
+            >
               اضافه دفعة
             </Button>
+          </Stack>
+
+            </Form>
+           
             <Divider></Divider>
-            <Table>
+            <Table  style={{ direction: "rtl" }}>
               <TableRow>
                 <TableCell> رقم</TableCell>
                 <TableCell> المبلغ</TableCell>
                 <TableCell>المستخدم</TableCell>
                 <TableCell> التاريخ</TableCell>
+                <TableCell> البنك</TableCell>
+                {/* <TableCell> الطبيب</TableCell> */}
+                {/* <TableCell> خصم</TableCell> */}
+                <TableCell> حذف</TableCell>
               </TableRow>
               <TableBody>
                 {selectedRequestedService?.deposits.map((d, i) => {
@@ -499,14 +532,71 @@ function RequestedServices({
                       <TableCell>{i + 1}</TableCell>
                       <TableCell>{formatNumber(d.amount)}</TableCell>
                       <TableCell>{d.user.name}</TableCell>
-                      <TableCell>{dayjs(d.created_at).format('YYYY/MM/DD')}</TableCell>
-                     
+                      <TableCell>
+                        {dayjs(d.created_at).format("YYYY/MM/DD")}
+                      </TableCell>
+                      <TableCell>
+                        <FormControlLabel
+                          control={
+                            <MyCheckbox
+                              
+                                setAllMoneyUpdated={setAllMoneyUpdated}
+                            
+                              path={`editDepositOfRequestedService/${d.id}`}
+                              isChecked={d.is_bank}
+                              colName={"is_bank"}
+                            />
+                          }
+                          label="بنكك"
+                        ></FormControlLabel>
+                       </TableCell>
+                      {/* <TableCell>3000</TableCell> 
+                      <TableCell>
+                        <MyCustomLoadingButton
+                          disabled={d.is_claimed}
+                          onClick={(setIsLoading) => {
+                            axiosClient
+                              .post("cost/general", {
+                                cost_category_id: null,
+                                amount,
+                              })
+                              .then(({ data }) => {
+                                setAllMoneyUpdated((prev)=>prev+1)
+
+                                console.log(data);
+                              })
+                              .finally(() => setLoading(false));
+                          }}
+                          variant="contained"
+                        >
+                          خصم
+                        </MyCustomLoadingButton>
+                      </TableCell> */}
+                      <TableCell>
+                        <MyCustomLoadingButton
+                          disabled={d.is_claimed}
+                          onClick={(setIsLoading) => {
+                            axiosClient
+                              .delete(`deleteDepositOfRequestedService/${d.id}`)
+                              .then(({ data }) => {
+                                setSelectedRequestedService(data.data)
+                                setActivePatient(data.patient);
+                                setAllMoneyUpdated((prev)=>prev+1)
+
+                              })
+                              .finally(() => setIsLoading(false));
+                          }}
+                          variant=""
+                          color="secondary"
+                        >
+                          <Trash/>
+                        </MyCustomLoadingButton>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
-          </Stack>
         </EmptyDialog>
       )}
     </>

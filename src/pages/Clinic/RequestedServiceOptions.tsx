@@ -73,7 +73,9 @@ export default function RequestedServiceOptions({
   loading,
   actviePatient,
   deleteService,
+  setSelectedRequestedService,
   update,
+  setShowServiceDeposits
 }: RequestedServiceOptionsPros){
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -107,7 +109,7 @@ export default function RequestedServiceOptions({
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
+        {/* <MenuItem onClick={handleClose} disableRipple>
           <LoadingButton
           variant="contained"
           fullWidth
@@ -119,6 +121,20 @@ export default function RequestedServiceOptions({
             onClick={(setLoading) => cancelPayHandler(service.id, setLoading)}
           >
             الغاء سداد
+          </LoadingButton>
+        </MenuItem> */}
+        <MenuItem onClick={handleClose} disableRipple>
+          <LoadingButton
+          variant="contained"
+          fullWidth
+            // disabled={actviePatient.patient.is_lab_paid == 1}
+            aria-label="اقساط"
+            onClick={() => {
+              setSelectedRequestedService(service)
+              setShowServiceDeposits(true)
+            }}
+          >
+          سداد قسط
           </LoadingButton>
         </MenuItem>
         <MenuItem onClick={handleClose} disableRipple>
