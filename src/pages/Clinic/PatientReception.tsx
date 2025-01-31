@@ -65,7 +65,8 @@ function PatientReception(props: PatientReceptinPros) {
           
           if (
             props.patient.services.filter((service) => {
-              return service.doctor_id == activeShift?.doctor?.id;
+              // return service.doctor_id == activeShift?.doctor?.id;
+              return true
             }).length > 0
           ) {
         

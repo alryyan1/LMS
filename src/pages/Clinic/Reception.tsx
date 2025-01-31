@@ -517,12 +517,24 @@ function Reception() {
                           .then(({ data }) => {
                             form.append("data", data);
                             console.log(data, "daa");
+                            if (userSettings?.web_dialog) {
+
                             printJS({
                               printable: data.slice(data.indexOf("JVB")),
                               base64: true,
                               type: "pdf",
                             });
-
+                          }
+                            if (userSettings?.node_dialog) {
+                              fetch("http://127.0.0.1:4000/", {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/x-www-form-urlencoded",
+                                },
+      
+                                body: form,
+                              }).then(() => {});
+                            }
                             // fetch("http://127.0.0.1:4000/", {
                             //   method: "POST",
                             //   headers: {

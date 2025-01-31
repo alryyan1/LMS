@@ -5,7 +5,7 @@ function MyLoadingButton({children,onClick,active,onDouble,disabled= false}) {
    const [loading,setLoading] =    useState(false)
    console.log('rendered',loading)
   return (
-    <LoadingButton onDoubleClick={onDouble} size='small' disabled={disabled} loading={loading} color={active ? 'primary':'inherit'} onClick={()=>{
+    <LoadingButton onDoubleClick={onDouble} variant='contained' size='small' disabled={disabled} loading={loading} color={active ? 'primary':'inherit'} onClick={()=>{
         
         onClick(setLoading)
     }} >

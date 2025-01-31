@@ -141,7 +141,7 @@ function SearchDialog({setPatients, lab = false, user, update, isReception, hide
                       "YYYY-MM-DD"
                     )}
                   </TableCell>
-                  <TableCell sx={{textWrap:'nowrap'}}>{item?.patient?.doctor.name}</TableCell>
+                  <TableCell sx={{textWrap:'nowrap'}}>{item?.patient?.doctor?.name}</TableCell>
                   <TableCell>
                     {lab ? (
                       <MyAutocomepleteHistoryLab

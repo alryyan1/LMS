@@ -56,7 +56,7 @@ function InvoiceCard({actviePatient}) {
               <div className="flex items-center">
                 <DollarSign className="w-6 h-6 text-gray-400 mr-1" />
                 <span className="text-2xl font-bold text-gray-800">
-                  {formatNumber(actviePatient.total_services- actviePatient?.total_paid_services) }
+                  {formatNumber(actviePatient.totalRemainig) }
                 </span>
               </div>
             </div>

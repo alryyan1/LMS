@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 function MyCustomLoadingButton({children,onClick,disabled=false}) {
    const [loading,setIsLoading] =   useState()
   return (
-    <LoadingButton variant='' disabled={disabled} onClick={()=>{
+    <LoadingButton variant='contained' disabled={disabled} onClick={()=>{
         onClick(setIsLoading)
     }} loading={loading}>
         {children}
