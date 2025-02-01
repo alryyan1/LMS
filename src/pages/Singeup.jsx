@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../appContext";
 import { useState } from "react";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "/src/components/ui/input";
 import { Label } from "/src/components/ui/label";
@@ -26,7 +26,9 @@ import {
   CardTitle,
 } from "/src/components/ui/card";
 
-const SignUp = ({ setUsers, doctors,setOpen }) => {
+const SignUp = ({ setUsers, doctors, setOpen }) => {
+    const { t } = useTranslation('addUser');
+
   const { setToken } = useStateContext();
   console.log(doctors, "doctorrs");
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ const SignUp = ({ setUsers, doctors,setOpen }) => {
           console.log(data);
           // setUser(data.user);
           setUsers((prev) => {
-            return [ data.user,...prev];
+            return [data.user, ...prev];
           });
           setOpen(false)
           // setToken(data.token);
@@ -69,86 +71,73 @@ const SignUp = ({ setUsers, doctors,setOpen }) => {
       .finally(() => setLoading(false));
   };
   return (
-   
     <Card className="   text-right col-span-3 ">
       <CardHeader>
-        <CardTitle> تسجيل بيانات المستخدم</CardTitle>
+        <CardTitle> {t('signUpTitle')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form noValidate  onSubmit={handleSubmit(sumbitHamdler)}>
-          <Stack direction={'column'} gap={1} >
+        <form noValidate onSubmit={handleSubmit(sumbitHamdler)}>
+          <Stack direction={"column"} gap={1}>
             {/** Name  */}
             <TextField
-                
-                error={errors.name != null}
-                {...register("name", {
-                  required: {
-                    value: true,
-                    message: "name is required",
-                  },
-                
-                })}
-                sx={{ mb: 1 }}
-                variant="standard"
-                label="name"
-              />
-              <TextField
-                
-                error={errors.username != null}
-                {...register("username", {
-                  required: {
-                    value: true,
-                    message: "username is required",
-                  },
-                  minLength: {
-                    value: 4,
-                    message: "username must be at least 4 characters",
-                  },
-                })}
-                sx={{ mb: 1 }}
-                variant="standard"
-                label="Username"
-              />
+              error={errors.name != null}
+              {...register("name", {
+                required: {
+                  value: true,
+                  message: t('nameRequired'),
+                },
+              })}
+              sx={{ mb: 1 }}
+              variant="standard"
+              label={t("name")}
+            />
+            <TextField
+              error={errors.username != null}
+              {...register("username", {
+                required: {
+                  value: true,
+                  message: t("usernameRequired"),
+                },
+                minLength: {
+                  value: 4,
+                  message: t("usernameMinLength"),
+                },
+              })}
+              sx={{ mb: 1 }}
+              variant="standard"
+              label={t("username")}
+            />
 
-              <TextField
-                
-                error={errors.password != null}
-                sx={{ mb: 1 }}
-                {...register("password", {
-                  required: { value: true, message: "password is required" },
-                  minLength: {
-                    value: 4,
-                    message: "at least 4 chracters must be entered",
-                  },
-                })}
-                variant="standard"
-                label="Password"
-              />
+            <TextField
+              error={errors.password != null}
+              sx={{ mb: 1 }}
+              {...register("password", {
+                required: { value: true, message: t("passwordRequired") },
+                minLength: {
+                  value: 4,
+                  message: t("passwordMinLength"),
+                },
+              })}
+              variant="standard"
+              label={t("password")}
+            />
 
-              <TextField
-                
-                error={errors.confirm != null}
-                sx={{ mb: 1 }}
-                {...register("confirm", {
-                  required: {
-                    value: true,
-                    message: "confirm password is required",
-                  },
-                  minLength: 4,
-                })}
-                variant="standard"
-                label="confirm password"
-              />
-
+            <TextField
+              error={errors.confirm != null}
+              sx={{ mb: 1 }}
+              {...register("confirm", {
+                required: {
+                  value: true,
+                  message: t("confirmPasswordRequired"),
+                },
+                minLength: 4,
+              })}
+              variant="standard"
+              label={t("confirmPassword")}
+            />
 
             <Controller
               name="doctor"
-              // rules={{
-              //   required: {
-              //     value: true,
-              //     message: "يجب اختيار اسم الطبيب",
-              //   },
-              // }}
               control={control}
               render={({ field }) => {
                 return (
@@ -158,8 +147,6 @@ const SignUp = ({ setUsers, doctors,setOpen }) => {
                     getOptionLabel={(option) => option.name}
                     options={doctors}
                     renderInput={(params) => {
-                      // console.log(params)
-
                       return (
                         <TextField
                           inputRef={field.ref}

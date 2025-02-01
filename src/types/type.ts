@@ -214,6 +214,7 @@ export interface Settings {
   token: string;
   send_result_after_auth: number;
   send_result_after_result: number;
+  edit_result_after_auth:boolean;
 }
 interface Userrequested {
   id: number;

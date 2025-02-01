@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControlLabel,
   FormGroup,
   Grid,
@@ -33,20 +34,23 @@ import DoctorsAutocomplete from "../../components/DoctorsAutocomplete";
 import { Plus } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import { useTranslation } from "react-i18next";
+import PasswordChangeForm from "../../components/ChangePassword";
+import MyTableCell from "../inventory/MyTableCell";
 
 function Users() {
   const { setDialog, doctors } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(null);
-  const {t} = useTranslation('sidebar')
+  const {t} = useTranslation('users')
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);
   const [routes, setRoutes] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [open,setOpen] = useState(false)
+   const [openPasswordFrom,setOpenPasswordFrom] = useState(false)
   console.log(selectedRoute, "selected Route");
   useEffect(() => {
-    document.title = "المستخدمين";
+    document.title = t("usersPageTitle");
   }, []);
   const {
     formState: { isSubmitSuccessful },
@@ -81,23 +85,23 @@ function Users() {
       <Grid sx={{height:`${window.innerHeight}px`,overflow:'auto'}} item xs={6}>
         <Box sx={{ p: 1 }}>
           <Stack direction={'row'} justifyContent={'space-between'}>
-          <Tooltip title='add user'>
+          <Tooltip title={t('addUser')}>
           <IconButton onClick={()=>setOpen(true)}>
               <Plus/>
             </IconButton>
           </Tooltip>
             <Typography textAlign={"center"} variant="h5">
-            المستخدمين
+              {t("users")}
           </Typography>
           </Stack>
     
           <Table size="small">
             <TableRow>
-              <TableCell>No</TableCell>
-              <TableCell>name</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell> Nurse</TableCell>
-              <TableCell>Doctor Link</TableCell>
+              <TableCell>{t("id")}</TableCell>
+              <TableCell>{t("name")}</TableCell>
+              <TableCell>{t("username")}</TableCell>
+                <TableCell>{t("isNurse")}</TableCell>
+                <TableCell>{t("isDoctor")}</TableCell>
             </TableRow>
             <TableBody>
               {users.map((user,i) => {
@@ -111,7 +115,7 @@ function Users() {
                     setSelectedUser(user);
                   }} key={user.id}>
                     <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
+                    <MyTableCell table="users"  colName={'name'} item={user} >{user.name}</MyTableCell>
                     <TableCell>{user.username}</TableCell>
                     <TableCell>
                       {" "}
@@ -123,7 +127,13 @@ function Users() {
                         path={`update/${user.id}`}
                       />
                     </TableCell>
-                    <TableCell><DoctorsAutocomplete  setDialog={setDialog} user={user} doctors={doctors} val={user?.doctor}/></TableCell>
+                       <TableCell><DoctorsAutocomplete  setDialog={setDialog} user={user} doctors={doctors} val={user?.doctor}/></TableCell>
+                     <TableCell><Button onClick={()=>{
+                      //set user
+                      setSelectedUser(user)
+                      //open change pasword form
+                      setOpenPasswordFrom(true)
+                    }}>{t('changePassword')}</Button></TableCell>
                   </TableRow>
                 );
               })}
@@ -136,7 +146,7 @@ function Users() {
         {selectedUser && (
           <Box key={selectedUser?.id} sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
-              Roles {selectedUser.name}{" "}
+              {t("roles")} {selectedUser.name}{" "}
             </Typography>
             <FormGroup>
               {roles.map((role) => {
@@ -156,7 +166,7 @@ function Users() {
                         isChecked={checked}
                       />
                     }
-                    label={role.name}
+                    label={t(role.name)}
                   />
                 );
               })}
@@ -168,7 +178,7 @@ function Users() {
         {selectedUser && (
           <Box sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
-              User Routes {selectedUser.name}{" "}
+              {t("routes")} {selectedUser.name}{" "}
             </Typography>
             <List>
               {routes.map((route) => {
@@ -215,7 +225,7 @@ function Users() {
         {selectedUser && (
           <Box key={selectedUser.id} sx={{ p: 1 }}>
             <Typography textAlign={"center"} variant="h5">
-              User sub Routes
+               {t("subRoutes")}
             </Typography>
             <FormGroup>
               {selectedRoute?.sub_routes.map((route) => {
@@ -249,7 +259,8 @@ function Users() {
       {/* <Grid item xs={3}>
         <SignUp doctors={doctors} setUsers={setUsers} />
       </Grid> */}
-      <EmptyDialog  title="add user" setShow={setOpen} show={open}><SignUp setOpen={setOpen} setUsers={setUsers}/></EmptyDialog>
+       <EmptyDialog  title={t("addUser")} setShow={setOpen} show={open}><SignUp setOpen={setOpen} setUsers={setUsers}/></EmptyDialog>
+       <EmptyDialog  title={t("changePassword")} setShow={setOpenPasswordFrom} show={openPasswordFrom}><PasswordChangeForm setOpenPasswordFrom={setOpenPasswordFrom} selectedUser={selectedUser}/></EmptyDialog>
     </Grid>
   );
 }

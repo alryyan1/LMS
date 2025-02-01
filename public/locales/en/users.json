@@ -1,0 +1,16 @@
+{
+    
+        "usersPageTitle": "Users",
+        "addUser": "Add User",
+        "users": "Users",
+        "id": "ID",
+        "name": "Name",
+        "username": "Username",
+        "isNurse": "Nurse?",
+        "isDoctor": "Doctor?",
+        "changePassword": "change Password",
+        "roles": "Roles",
+        "routes": "Routes",
+        "subRoutes": "Sub Routes"
+    
+}

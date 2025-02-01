@@ -1,0 +1,16 @@
+{
+    
+      "signUpTitle": "Register User",
+      "nameRequired": "Name is required",
+      "usernameRequired": "Username is required",
+      "usernameMinLength": "Username must be at least 4 characters",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "At least 4 characters must be entered",
+      "confirmPasswordRequired": "Confirm password is required",
+      "name": "Name",
+      "username": "Username",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "doctor_name": "Doctor's Name",
+      "signup": "Sign Up"
+     }

@@ -327,7 +327,7 @@ function RequestedServices({
                         <TableCell>
                           <Tooltip title={service?.user_deposited?.username}>
                             {" "}
-                            {service.amountPaid}
+                            {formatNumber(service.amountPaid)}
                           </Tooltip>
                         </TableCell>
 {/* 
@@ -355,10 +355,9 @@ function RequestedServices({
                             }}
                             onClick={(setLoading) => {
                               setSelectedRequestedService(service); //
-                              if (service.service.variable) {
-                              } else {
+                              
                                 pay(service.id, setLoading);
-                              }
+                              
                             }}
                           >
                             <Download />

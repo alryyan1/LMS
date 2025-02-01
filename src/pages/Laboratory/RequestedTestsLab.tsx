@@ -2,12 +2,14 @@ import {
   Box,
   Button,
   IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -15,7 +17,7 @@ import {
 import DiscountSelect from "./DiscountSelect";
 import { act, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { formatNumber, printBarcodeRaw, PrintLab, url } from "../constants";
+import { formatNumber, printBarcodeRaw, PrintLab, updateHandler, url } from "../constants";
 import { LoadingButton } from "@mui/lab";
 import MyCheckBox from "./MyCheckBox";
 import { useOutletContext } from "react-router-dom";
@@ -38,6 +40,8 @@ import {
   KeyboardDoubleArrowDown,
   Money,
 } from "@mui/icons-material";
+import InvoiceCard from "../Clinic/InvoiceCard";
+import InvoiceCardLab from "../Clinic/InvoiceCardLab";
 interface RequestedTestsLab {
   setDialog: (dialog: any) => void;
   actviePatient: DoctorVisit;
@@ -64,7 +68,7 @@ function RequestedTestsLab({
       return
     }
     const result = confirm(
-      `${t("هل تؤكد استلامك مبلغ قدره")} ${actviePatient?.patient.labrequests.filter((l) => l.is_paid == 0).reduce((prev, curr) => prev + curr.price, 0)}`
+      `${t("هل تؤكد استلامك مبلغ قدره")} ${actviePatient?.patient.labrequests.filter((l) => l.is_paid == 0).reduce((prev, curr) => prev + curr.price, 0) - actviePatient.patient.discountAmount}`
     );
     if (!result) {
       return;
@@ -204,8 +208,34 @@ function RequestedTestsLab({
     <>
      {actviePatient.patient.labrequests.length > 0 ?  <Box sx={{ p: 1 }} className="">
         <div className="">
+          <Stack direction='row' gap={1}>
           <Typography>Lab Requests</Typography>
-          <TableContainer>
+          {actviePatient.patient.is_lab_paid ? (
+                <LoadingButton
+                  // disabled={actviePatient.patient.result_print_date}
+                  loading={loading}
+                  color="error"
+                  onClick={cancelPayHandler}
+                  sx={{ textAlign: "center" }}
+                >
+                  <CancelOutlined />
+                </LoadingButton>
+              ) : (
+                <LoadingButton
+                  loading={loading}
+                  disabled={actviePatient.patient.is_lab_paid == 1}
+                  color={
+                    actviePatient.patient.is_lab_paid ? "success" : "primary"
+                  }
+                  onClick={payHandler}
+                  sx={{ textAlign: "center" }}
+                >
+                  <KeyboardDoubleArrowDown />
+                </LoadingButton>
+              )}
+          </Stack>
+        
+          <TableContainer sx={{height:'350px',overFlow:'auto'}}>
             <Table className="table-small" size="small">
               <TableHead className="thead">
                 <TableRow>
@@ -351,9 +381,12 @@ function RequestedTestsLab({
               </TableBody>
             </Table>
           </TableContainer>
+          {actviePatient.patient.discountAmount > 0 && <TextField defaultValue={actviePatient.patient.discount_comment} onChange={(e)=>{
+            updateHandler(e.target.value,'discount_comment',actviePatient)
+          }} label='سبب التخفيض' fullWidth sx={{mt:2}}/>}
         </div>
 
-        <div className="total-price mt-1">
+        {/* <div className="total-price mt-1">
           <div className="sub-price">
             <div className="title">Total</div>
             <Typography variant="h5">
@@ -399,7 +432,9 @@ function RequestedTestsLab({
               )}
             </div>
           </div>
-        </div>
+        </div> */}
+        <InvoiceCardLab actviePatient={actviePatient}/>
+     
       </Box>: <div className='text-center'>لا يوجد تحاليل مطلوبه</div> }
     </>
   );

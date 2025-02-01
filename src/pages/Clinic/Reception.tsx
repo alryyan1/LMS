@@ -344,7 +344,7 @@ function Reception() {
 
         <div style={{ width: `${window.innerWidth - 360}px` }}>
           <OpenDoctorTabs
-           
+           setFileMode={setFileMode}
             setOpenedDoctors={setOpenedDoctors}
             setActiveShift={setActiveShift}
             user={user}

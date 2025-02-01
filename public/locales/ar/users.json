@@ -1,0 +1,14 @@
+{
+  "usersPageTitle": "المستخدمين",
+  "addUser": "إضافة مستخدم",
+  "users": "المستخدمين",
+  "id": "رقم",
+  "name": "اسم",
+  "username": "اسم المستخدم",
+  "isNurse": "ممرض؟",
+  "isDoctor": "طبيب؟",
+  "changePassword": "تغيير كلمة المرور",
+  "roles": "المهام",
+  "routes": "النوافذ",
+  "subRoutes": "النوافذ الفرعيه"
+}

@@ -1,0 +1,17 @@
+{
+   
+      "signUpTitle": "تسجيل بيانات المستخدم",
+      "nameRequired": "الاسم مطلوب",
+      "usernameRequired": "اسم المستخدم مطلوب",
+      "usernameMinLength": "يجب أن يكون اسم المستخدم 4 أحرف على الأقل",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "passwordMinLength": "يجب إدخال 4 أحرف على الأقل",
+      "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+      "name": "الاسم",
+      "username": "اسم المستخدم",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+        "doctor_name": "اسم الطبيب",
+      "signup": "تسجيل"
+    
+  }

@@ -35,6 +35,8 @@ import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import LabHistory from "./LabHistory";
 import { Settings } from "../../types/type";
+import { User } from "lucide-react";
+import { useStateContext } from "../../appContext";
 function Result() {
   const {
     shift,
@@ -59,6 +61,7 @@ function Result() {
     setPatients,
     showSearch,
   } = useResult();
+  const {user} = useStateContext()
   console.log(selectedTest,'selected Test')
   const shiftDate = new Date(Date.parse(shift?.created_at));
   const {settings}:{settings:Settings} = useOutletContext()
@@ -233,6 +236,7 @@ function Result() {
             <ResultSection
             handleKeyDown={handleKeyDown}
             addRef={addRef}
+             disabled={!user.editResults || (actviePatient.patient.result_auth && !settings.edit_result_after_auth)}
               patient={actviePatient}
               selectedReslult={selectedReslult}
               selectedTest={selectedTest}

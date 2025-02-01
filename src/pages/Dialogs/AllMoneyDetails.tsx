@@ -115,7 +115,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
           </TableBody>
         </Table>
       )}
-      <Divider />
+      {/* <Divider />
       <Typography className="text-center" variant="h5">
        {t("lab")}
       </Typography>
@@ -140,7 +140,7 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
             </TableRow>
           </TableBody>
         </Table>
-      )}
+      )} */}
       <Divider />
       <List>
         <ListItem secondaryAction={<div>{formatNumber(Number(shiftSummary?.total )+ Number(shiftSummary?.lab))}</div>} key="1">

@@ -315,6 +315,7 @@ export interface Patient {
     isAccountant:boolean
     isAdmin:boolean;
     canPayLab:boolean;
+    editResults:boolean;
   }
 
   

@@ -205,6 +205,22 @@ function PaperConfig() {
               label={"العلامه المائيه"}
             />
           </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                defaultChecked={settings?.edit_result_after_auth}
+                  onChange={(e) => {
+                    axiosClient.post("settings", {
+                      colName: "edit_result_after_auth",
+                      data: e.target.checked,
+                    });
+                  }}
+                />
+              }
+              label={"تعديل النتائج بعد التحقيق "}
+            />
+          </FormGroup>
           <Divider />
           <FormGroup>
             <FormControlLabel

@@ -47,6 +47,7 @@ interface openDoctorTabsProps {
   setPatients: React.Dispatch<React.SetStateAction<DoctorVisit[]>>;
 }
 export default function OpenDoctorTabs({
+  setFileMode,
   setPatients,
   setLoadingDoctorPatients,
   user,
@@ -80,7 +81,7 @@ export default function OpenDoctorTabs({
     const controller = new AbortController();
     if (value) {
       setLoadingDoctorPatients(true);
-
+      setFileMode(false)
       axiosClient
         .get(`getDoctorShiftById?id=${value}`, {
           signal: controller.signal,
