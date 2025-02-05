@@ -27,7 +27,7 @@ function TeethModel({
           .includes(rs.id);
       })
       .map((rs) => {
-        return rs.service.name;
+        return ` - ${rs.service.name}`;;
       }),
     "alryyan"
   );
@@ -597,7 +597,7 @@ function TeethModel({
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -628,7 +628,7 @@ function TeethModel({
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -659,7 +659,7 @@ function TeethModel({
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -690,7 +690,7 @@ function TeethModel({
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -721,7 +721,7 @@ l-7.3-7l-5-9l-2-10c0,0-0.7-7,0.3-7.3c1-0.3,5.3-6.7,5.3-6.7l9-5H117.3z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </path>
@@ -754,7 +754,7 @@ l-7.3-7l-5-9l-2-10c0,0-0.7-7,0.3-7.3c1-0.3,5.3-6.7,5.3-6.7l9-5H117.3z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -803,7 +803,7 @@ l-7.3-7l-5-9l-2-10c0,0-0.7-7,0.3-7.3c1-0.3,5.3-6.7,5.3-6.7l9-5H117.3z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -834,7 +834,7 @@ l-10,0.3h-10l-2-6.7l2.7-7.3L235.3,637z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </path>
@@ -865,7 +865,7 @@ l-10,0.3h-10l-2-6.7l2.7-7.3L235.3,637z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -896,7 +896,7 @@ l-10,0.3h-10l-2-6.7l2.7-7.3L235.3,637z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -927,7 +927,7 @@ l-10,0.3h-10l-2-6.7l2.7-7.3L235.3,637z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -958,7 +958,7 @@ l-10,0.3h-10l-2-6.7l2.7-7.3L235.3,637z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -989,7 +989,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </path>
@@ -1021,7 +1021,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1052,7 +1052,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1083,7 +1083,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1114,7 +1114,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1145,7 +1145,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1177,7 +1177,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1209,7 +1209,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1240,7 +1240,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1271,7 +1271,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1302,7 +1302,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1333,7 +1333,7 @@ c-0.3-1.3-0.3-11-0.3-11l3.7-14.3l3.7-7l5.3-6.7l8-2l9.7-0.7L398,470z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1364,7 +1364,7 @@ l-6.3-5.3l-1-4.3l1.3-5c0,0,3.3-6,4.3-6s5.3-6,6.3-6s10.3-4.7,10.3-4.7L167,55z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </path>
@@ -1395,7 +1395,7 @@ l-6.3-5.3l-1-4.3l1.3-5c0,0,3.3-6,4.3-6s5.3-6,6.3-6s10.3-4.7,10.3-4.7L167,55z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1426,7 +1426,7 @@ l-6.3-5.3l-1-4.3l1.3-5c0,0,3.3-6,4.3-6s5.3-6,6.3-6s10.3-4.7,10.3-4.7L167,55z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1457,7 +1457,7 @@ l-6.3-5.3l-1-4.3l1.3-5c0,0,3.3-6,4.3-6s5.3-6,6.3-6s10.3-4.7,10.3-4.7L167,55z"
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1488,7 +1488,7 @@ l5-7.3l4-3.3l4.7-2.7l5.3,3.7l6.7,1.3c0,0,7.3,1.3,9.3,1.3s6.3,0.7,6.3,0.7L92.7,20
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </path>
@@ -1519,7 +1519,7 @@ l5-7.3l4-3.3l4.7-2.7l5.3,3.7l6.7,1.3c0,0,7.3,1.3,9.3,1.3s6.3,0.7,6.3,0.7L92.7,20
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>
@@ -1550,7 +1550,7 @@ l5-7.3l4-3.3l4.7-2.7l5.3,3.7l6.7,1.3c0,0,7.3,1.3,9.3,1.3s6.3,0.7,6.3,0.7L92.7,20
                     .includes(rs.id);
                 })
                 .map((rs) => {
-                  return rs.service.name;
+                  return ` - ${rs.service.name}`;;
                 })}
             </title>
           </polygon>

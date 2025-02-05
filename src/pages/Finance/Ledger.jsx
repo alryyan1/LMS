@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.jsx";
 import TitleIcon from '@mui/icons-material/Title';
 import LedjerTDialog from "./LedjerTDialog.jsx";
+import { formatNumber } from "../constants.js";
   function Ledger() {
     //create state variable to store all Accounts
     const {dialog, setDialog }=  useOutletContext()
@@ -70,7 +71,7 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
     return (
       <Grid container spacing={2}>
       
-        <Grid item xs={7}>
+        <Grid item xs={8}>
           <Paper sx={{p:1}}>
   
           {/* create table with all clients */}
@@ -103,8 +104,8 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
                         <TableCell>{dayjs(new Date(Date.parse(entry.created_at))).format('YYYY-MM-DD')}</TableCell>
                         <TableCell>{entry.id}</TableCell>
                         <TableCell>{entry.description}</TableCell>
-                        <TableCell>{entry.debit[0].account.id == selectedAccount.id ? entry.credit[0].amount :0}</TableCell>
-                        <TableCell>{entry.credit[0].account.id == selectedAccount.id ? entry.credit[0].amount :0}</TableCell>
+                        <TableCell>{entry.debit[0].account.id == selectedAccount.id ? formatNumber(entry.credit[0].amount) :0}</TableCell>
+                        <TableCell>{entry.credit[0].account.id == selectedAccount.id ? formatNumber(entry.credit[0].amount) :0}</TableCell>
                         <TableCell>{0}</TableCell>
                       
                 
@@ -119,7 +120,7 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
           </Paper>
   
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
                <Table size="small">
                 <TableHead>
                     <TableRow>

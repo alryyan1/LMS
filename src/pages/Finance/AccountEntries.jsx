@@ -15,6 +15,7 @@ import {
   import axiosClient from "../../../axios-client.js";
 import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.jsx";
+import { formatNumber } from "../constants.js";
   
   function AccountEntries() {
     const [loading, setLoading] = useState(false);
@@ -68,7 +69,7 @@ import AddEntryForm from "./AddEntryForm.jsx";
                     
                     
                     `}</TableCell>
-                    <TableCell>{entry.debit[0].amount}</TableCell>
+                    <TableCell>{formatNumber(entry.debit[0].amount)}</TableCell>
                     <TableCell></TableCell>
             
                   </TableRow>
@@ -82,7 +83,7 @@ import AddEntryForm from "./AddEntryForm.jsx";
                     `}</TableCell>
                     <TableCell></TableCell>
 
-                    <TableCell>{entry?.credit[0]?.amount}</TableCell>
+                    <TableCell>{formatNumber(entry?.credit[0]?.amount)}</TableCell>
             
                   </TableRow>
                   </>

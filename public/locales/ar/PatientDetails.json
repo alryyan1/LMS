@@ -18,5 +18,6 @@
     "relation_name": "اسم العلاقة",
     "print_time": "وقت الطباعة",
     "debit": "المديونيه",
-      "copy_patient":"نسخ إلى طبيب أخر"
+      "copy_patient":"نسخ إلى طبيب أخر",
+      "visitCount": "عدد الزيارات"
   }

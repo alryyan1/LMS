@@ -7,6 +7,7 @@ import {
   BadgeDollarSign,
   Calendar,
   CircleGauge,
+  DollarSign,
   Eye,
   Gift,
   HandPlatter,
@@ -160,6 +161,23 @@ function SidebarNav() {
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 6;
+            })
+            .map((r) => {
+              return (
+                <MenuItem style={{justifyContent: 'center'}}
+                  icon={menuItems[r.sub_route.icon].icon}
+                  component={<Link to={r.sub_route.path}></Link>}
+                  key={r.sub_route.id}
+                >
+                  {t(`${r.sub_route.name}`)}
+                </MenuItem>
+              );
+            })}
+        </SubMenu>
+        <SubMenu style={{justifyContent: 'center'}} icon={<DollarSign />} label={t("finance")}>
+          {user?.sub_routes
+            ?.filter((s) => {
+              return s.sub_route.route_id == 12;
             })
             .map((r) => {
               return (

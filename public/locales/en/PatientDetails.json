@@ -17,5 +17,7 @@
     "sub_company":"Sub Company",
   "relation_name": "Relation Name",
     "print_time": "Print Time",
-    "copy_patient":"Copy to another doctor"
+    "copy_patient":"Copy to another doctor",
+    "visitCount": "Visit Count "
+
 }

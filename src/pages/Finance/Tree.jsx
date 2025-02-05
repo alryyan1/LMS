@@ -5,6 +5,7 @@ import {
   MultiBackend,
   getBackendOptions
 } from "@minoru/react-dnd-treeview";
+import AccountManager from "./AccountManager";
 
 function App() {
   const handleDrop = (newTree) => {
@@ -26,26 +27,7 @@ function App() {
   };
   return (
     <div className="app">
-      <DndProvider backend={MultiBackend} options={getBackendOptions()}>
-        <Tree
-          tree={treeData}
-          rootId={0}
-          render={(node, { depth, isOpen, onToggle }) => (
-            <div style={{ marginInlineStart: depth * 10 }}>
-            <span onClick={onToggle}>{isOpen ? '[-]' : '[+]'} </span>
-            <input
-              type="text"
-              value={node.text}
-              onChange={(e) => handleTextChange(node.id, e.target.value)}
-            />
-          </div>
-          )}
-          dragPreviewRender={(monitorProps) => (
-            <div>{monitorProps.item.text}</div>
-          )}
-          onDrop={handleDrop}
-        />
-      </DndProvider>
+      <AccountManager/>
     </div>
   );
 }

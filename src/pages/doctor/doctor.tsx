@@ -445,7 +445,7 @@ function Doctor() {
           </Stack>
         )}
 
-        {showSearch && (
+     
           <Stack gap={1} direction={"row"} flexWrap={"wrap"}>
             <AutocompleteSearchPatient
               focusPaitent={focusPaitent}
@@ -464,7 +464,7 @@ function Doctor() {
               type="date"
             />
           </Stack>
-        )}
+     
       </Stack>
 
       {/* <CodeMirrorComponent/> */}

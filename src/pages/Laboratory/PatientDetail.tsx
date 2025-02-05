@@ -1,5 +1,7 @@
 import {
   Autocomplete,
+  Badge,
+  Box,
   Divider,
   Paper,
   Stack,
@@ -12,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { DoctorShift, DoctorVisit } from "../../types/Patient";
 import i18n from "i18next";
 import dayjs from "dayjs";
+import { formatNumber } from "../constants";
 
 interface PatientDetailProps {
   patient: DoctorVisit;
@@ -39,19 +42,26 @@ function PatientDetail({
 
   return (
     <>
-      <Paper
+      <Box
         style={i18n.language == "ar" ? { direction: "rtl" } : null}
-  
         className="bolder"
         sx={{ p: 1, width: "300px" }}
       >
-       {fileMode && <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
-           ملف المريض نشط
-        </Typography>}
+        {fileMode && (
+          <Typography fontWeight={"bold"} sx={{ textAlign: "center", mb: 2 }}>
+            ملف المريض نشط
+          </Typography>
+        )}
         {/** add card body   */}
-        <Typography className="text-center p-name mb-1" variant="h6">
+
+        <Typography
+          sx={{ width: "100%" }}
+          className="text-center   p-1 mb-1"
+          variant="h6"
+        >
           {patient.patient.name}
         </Typography>
+
         <div className="form-control">
           <div>Visit Id</div>
           <div>{patient.id}</div>
@@ -130,14 +140,25 @@ function PatientDetail({
           </div>
         </div>
         <div className="form-control">
+          <div>{t("visitCount")} </div>
+
+          <div>
+            {
+              //print iso date
+            }
+          </div>
+        </div>
+        <div className="form-control">
           <div>{t("debit")} </div>
 
           <div>
             {
               //print iso date
-              patient?.file?.patients?.reduce((prev,curr)=>{
-                return prev + curr.totalRemainig
-              },0)
+              formatNumber(
+                patient?.file?.patients?.reduce((prev, curr) => {
+                  return prev + curr.totalRemainig;
+                }, 0) ?? 0
+              )
             }
           </div>
         </div>
@@ -272,39 +293,43 @@ function PatientDetail({
           )
         }
         <Divider sx={{ m: 1 }} />
-        {copyPatient && patient.patient.doctor_id == activeShift?.doctor?.id && (
-          <Autocomplete
-            onChange={(e, data) => {
-              axiosClient
-                .post(`patient/copy/${data.id}?patient_id=${patient.patient.id}`, {})
-                .then(({ data }) => {
-                  update(data);
-                  if (data.status) {
-                    // alert('status')
-                  }
-                });
-            }}
-            getOptionDisabled={(option) => {
-              return option.id == patient.patient.doctor.id;
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={openedDoctors
-              // .filter((shift) => shift.user_id == user?.id)
-              .map((shift) => {
-                return shift.doctor;
-              })}
-            //fill isOptionEqualToValue
+        {copyPatient &&
+          patient.patient.doctor_id == activeShift?.doctor?.id && (
+            <Autocomplete
+              onChange={(e, data) => {
+                axiosClient
+                  .post(
+                    `patient/copy/${data.id}?patient_id=${patient.patient.id}`,
+                    {}
+                  )
+                  .then(({ data }) => {
+                    update(data);
+                    if (data.status) {
+                      // alert('status')
+                    }
+                  });
+              }}
+              getOptionDisabled={(option) => {
+                return option.id == patient.patient.doctor.id;
+              }}
+              getOptionKey={(op) => op.id}
+              getOptionLabel={(option) => option.name}
+              options={openedDoctors
+                // .filter((shift) => shift.user_id == user?.id)
+                .map((shift) => {
+                  return shift.doctor;
+                })}
+              //fill isOptionEqualToValue
 
-            isOptionEqualToValue={(option, val) => option.id === val.id}
-            renderInput={(params) => {
-              //
+              isOptionEqualToValue={(option, val) => option.id === val.id}
+              renderInput={(params) => {
+                //
 
-              return <TextField {...params} label={t("copy_patient")} />;
-            }}
-          />
-        )}
-      </Paper>
+                return <TextField {...params} label={t("copy_patient")} />;
+              }}
+            />
+          )}
+      </Box>
     </>
   );
 }

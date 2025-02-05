@@ -1,0 +1,20 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    font-family: sans-serif;
+}
+ .tree-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+/* .vertical-tree .node > text {
+    position: absolute;
+    top: -30px; /* Adjust this value to fine-tune the distance from the node */
+    /* left: 50%; */
+    /* transform: translateX(-50%); Center the text horizontally */
+    /* text-anchor: middle; Ensures the text is centered */
+    /* Add any other styles you want for the text (font, color, etc.) */
+/* }  */

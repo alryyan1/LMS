@@ -74,8 +74,8 @@ import dayjs from "dayjs";
                 <TableRow>
                   <TableCell>رقم</TableCell>
                   <TableCell>الاسم</TableCell>
-                  <TableCell>القسم</TableCell>
-                  <TableCell>نوع الحساب</TableCell>
+                  <TableCell>الكود</TableCell>
+                  <TableCell>طبيعه الحساب</TableCell>
                   <TableCell> تاريخ انشاء الحساب</TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
@@ -86,7 +86,7 @@ import dayjs from "dayjs";
                   <TableRow key={account.id}>
                     <TableCell>{account.id}</TableCell>
                     <TableCell>{account.name}</TableCell>
-                    <TableCell>{account.account_category.name}</TableCell>
+                    <TableCell>{account.code}</TableCell>
                     <TableCell>{account.debit  ==  0 ? 'debit' : 'credit'}</TableCell>
                     <TableCell>{dayjs(new Date(Date.parse(account.created_at))).format('YYYY-MM-DD')}</TableCell>
                     <TableCell>

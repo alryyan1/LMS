@@ -31,7 +31,7 @@ interface EditDialog {
   update: (paitent: DoctorVisit) => void;
 }
 function EditPatientDialog({
-  patient: { patient },
+  patient ,
   doctorVisitId,
   isLab = false,
   setDialog,
@@ -83,20 +83,20 @@ function EditPatientDialog({
     control,
   } = useForm({
     defaultValues: {
-      name: patient.name,
-      phone: patient.phone,
-      gender: patient.gender,
-      age_day: patient.age_day,
-      age_month: patient.age_month,
-      age_year: patient.age_year,
-      insurance_no: patient.insurance_no,
-      doctor: patient.doctor,
-      // company: patient.company,
-      guarantor: patient.guarantor,
-      company_relation_id: patient.relation,
-      subcompany_id: patient.subcompany,
-      address: patient.address,
-      gov_id: patient.gov_id,
+      name: patient.patient.name,
+      phone: patient.patient.phone,
+      gender: patient.patient.gender,
+      age_day: patient.patient.age_day,
+      age_month: patient.patient.age_month,
+      age_year: patient.patient.age_year,
+      insurance_no: patient.patient.insurance_no,
+      doctor: patient.patient.doctor,
+      // company: patient.patient.company,
+      guarantor: patient.patient.guarantor,
+      company_relation_id: patient.patient.relation,
+      subcompany_id: patient.patient.subcompany,
+      address: patient.patient.address,
+      gov_id: patient.patient.gov_id,
     },
   });
   return (
@@ -114,7 +114,7 @@ function EditPatientDialog({
               {...register("name", {
                 required: { value: true, message: t("name_required") },
               })}
-              defaultValue={patient.name}
+              defaultValue={patient.patient.name}
               error={errors.name != null}
               variant="outlined"
               label={t("name")}
@@ -135,7 +135,7 @@ function EditPatientDialog({
                     },
                   },
                 })}
-                defaultValue={patient.phone}
+                defaultValue={patient.patient.phone}
                 error={errors.phone != null}
                 variant="outlined"
                 label={t("phone")}
@@ -199,7 +199,7 @@ function EditPatientDialog({
             >
               <Item>
                 <TextField
-                  defaultValue={patient.age_year}
+                  defaultValue={patient.patient.age_year}
                   error={errors?.age_year}
                   {...register("age_year", {
                     required: {
@@ -215,7 +215,7 @@ function EditPatientDialog({
               <Item>
                 <TextField
                   type="number"
-                  defaultValue={patient.age_month}
+                  defaultValue={patient.patient.age_month}
                   {...register("age_month")}
                   label={t("ageInMonth")}
                   variant="standard"
@@ -224,7 +224,7 @@ function EditPatientDialog({
               <Item>
                 <TextField
                   type="number"
-                  defaultValue={patient.age_day}
+                  defaultValue={patient.patient.age_day}
                   {...register("age_day")}
                   label={t("ageInDays")}
                   variant="standard"
@@ -233,22 +233,22 @@ function EditPatientDialog({
             </Stack>
             <Stack direction={"row"} gap={2}>
               <TextField
-                defaultValue={patient.address}
+                defaultValue={patient.patient.address}
                 fullWidth
                 {...register("address")}
                 label={t("address")}
                 variant="outlined"
               />
               <TextField
-                defaultValue={patient.gov_id}
+                defaultValue={patient.patient.gov_id}
                 fullWidth
                 {...register("gov_id")}
                 label={t("govId")}
                 variant="outlined"
               />
             </Stack>
-            {patient.company_id && <Divider>{t("insurance")}</Divider>}
-            {patient.company_id && (
+            {patient.patient.company_id && <Divider>{t("insurance")}</Divider>}
+            {patient.patient.company_id && (
               <Stack direction={"column"} spacing={1}>
                 <Stack direction={"row"} gap={2}>
                   <TextField
@@ -273,12 +273,12 @@ function EditPatientDialog({
                       return (
                         <Autocomplete
                           fullWidth
-                          value={patient.subcompany}
+                          value={patient.patient.subcompany}
                           isOptionEqualToValue={(opt, val) => opt.id === val.id}
                           getOptionKey={(op) => op.id}
                           {...field}
                           getOptionLabel={(op) => op.name}
-                          options={patient.company.sub_companies}
+                          options={patient.patient.company.sub_companies}
                           onChange={(_, val) => {
                             field.onChange(val);
                           }}
@@ -305,14 +305,14 @@ function EditPatientDialog({
                     render={({ field }) => {
                       return (
                         <Autocomplete
-                          disabled={patient?.labrequests.length > 0}
+                          disabled={patient.patient?.labrequests.length > 0}
                           {...field}
                           value={field.value}
                           fullWidth
                           isOptionEqualToValue={(opt, val) => opt.id === val.id}
                           getOptionKey={(op) => op.id}
                           getOptionLabel={(op) => op.name}
-                          options={patient.company.relations}
+                          options={patient.patient.company.relations}
                           onChange={(_, val) => {
                             field.onChange(val);
                           }}

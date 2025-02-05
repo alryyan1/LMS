@@ -6,6 +6,7 @@ import { DoctorVisit, Patient } from "../../types/Patient";
 import { Item } from "../constants";
 import { ReceptionLayoutProps } from "../../types/CutomTypes";
 import dayjs from "dayjs";
+import Waves from "../../components/Waves";
 type PatientReceptinPros = {
   patient: DoctorVisit;
   setShowDetails: () => void;
@@ -50,13 +51,7 @@ function PatientReception(props: PatientReceptinPros) {
       key={props.patient.id}
     >
       <Stack 
-      onDoubleClick={() => {
-        console.log(props.patient.file?.patients)
-        if(props.patient.file?.patients?.length > 0 ){
-          props.setFileMode(true)
-          props.setPatients(props.patient.file?.patients)
-        }
-      }}
+     
         sx={{ cursor: "pointer" }}
         onClick={() => {
           // setShowLabTests(false)
@@ -83,7 +78,13 @@ function PatientReception(props: PatientReceptinPros) {
         direction={"row"}
       >
         
-        <Item
+        <Item onDoubleClick={() => {
+        console.log(props.patient.file?.patients)
+        if(props.patient.file?.patients?.length > 0 ){
+          props.setFileMode(true)
+          props.setPatients(props.patient.file?.patients)
+        }
+      }}
           className={actviePatient?.id === props.patient.id ? "active" : ""}
           sx={{
             display: "flex",
@@ -91,10 +92,10 @@ function PatientReception(props: PatientReceptinPros) {
             minWidth: "230px",
             cursor: "pointer",
             color: "black",
-            backgroundColor:props.patient?.file?.patients.some((p)=>p.totalRemainig > 0) ? {backgroundColor:'pink'}:null
+            // backgroundColor:props.patient?.file?.patients.some((p)=>p.totalRemainig > 0) ? {backgroundColor:'pink'}:null
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div   style={{ display: "flex", justifyContent: "space-between" }}>
             {props.patient.totalservicebank > 0 && (
               <Chip
                 label="bank"
@@ -108,13 +109,11 @@ function PatientReception(props: PatientReceptinPros) {
            
           </div>
 
+          {props.patient?.file?.patients.some((p)=>p.totalRemainig > 0 )&& <Waves/>}
           {props.patient.patient.name}
         </Item>
         
-          <Badge   anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "bottom",
-        }} color={props.patient.file?.patients?.length >1 ? 'secondary' :  undefined} badgeContent={props.patient.file?.patients?.length >1 ? props.patient.file?.patients?.length :  undefined}>
+          {/* <Badge   color={props.patient.file?.patients?.length >1 ? 'secondary' :  undefined} badgeContent={props.patient.file?.patients?.length >1 ? props.patient.file?.patients?.length :  undefined}> */}
           <Item
            
           onDoubleClick={() => {
@@ -140,7 +139,7 @@ function PatientReception(props: PatientReceptinPros) {
            
    
         </Item>
-          </Badge>
+          {/* </Badge> */}
           
       </Stack>
     </Badge>

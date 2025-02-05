@@ -686,7 +686,19 @@ function Reception() {
 
           }}
         >
-         
+            {actviePatient && (
+          <div key={actviePatient?.id}>
+              <EditPatientDialog
+            doctorVisitId={actviePatient.id}
+            open={openEdit}
+            setOpen={setOpenEdit}
+            update={update}
+            patient={actviePatient}
+            // setPatients={setPatients}
+          />
+          </div>
+        
+        )}
             <div
               style={{ overflowX: "hidden", overflowY: "auto", padding: "5px" }}
             >
@@ -742,6 +754,7 @@ function Reception() {
               ""
             ) : (
               <ReceptionForm
+              setShowDetails={setShowDetails}
                 socket={socket}
                 settings={settings}
                 hideForm={hideForm}
@@ -766,16 +779,7 @@ function Reception() {
         <ServiceMoneyDialog />
         <ErrorDialog />
         <ReceptionDoctorsDialog />
-        {actviePatient && (
-          <EditPatientDialog
-            doctorVisitId={actviePatient.id}
-            open={openEdit}
-            setOpen={setOpenEdit}
-            update={update}
-            patient={actviePatient}
-            // setPatients={setPatients}
-          />
-        )}
+     
       </div>
     </>
   );

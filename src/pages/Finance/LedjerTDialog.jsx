@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
+import { formatNumber } from "../constants";
 
 function LedjerTDialog({ account, debits, credits }) {
   const { dialog, setDialog } = useOutletContext();
@@ -61,7 +62,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   return (
                     <div key={debitEntry.id}>
                    
-                      {`   من ح / ${credit.account.name} OMR ${debitEntry.amount}  `}{" "}
+                      {`   من ح / ${credit.account.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
                     </div>
                   );
                 }
@@ -77,7 +78,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   return (
                     <div key={debitEntry.id}>
                    
-                      {`   الي ح / ${credit.account.name} OMR ${debitEntry.amount}  `}{" "}
+                      {`   الي ح / ${credit.account.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
                     </div>
                   );
                 }
@@ -93,7 +94,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   marginTop: "1px",
                 }}
               >
-                {largerNumber}
+                {formatNumber(largerNumber)}
               </div>
               <div
                 style={{
@@ -112,7 +113,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   marginTop: "1px",
                 }}
               >
-                {largerNumber}
+                {formatNumber(largerNumber)}
               </div>
               <div
                 style={{
