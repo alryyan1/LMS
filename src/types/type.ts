@@ -182,6 +182,37 @@ interface Unit {
   id: number;
   name: string;
 }
+export interface Account {
+  id: number;
+  name: string;
+  account_category_id: number;
+  debit: number;
+  description: null;
+  created_at: string;
+  updated_at: string;
+  code: string;
+  account_category: null;
+  credits: any[];
+  debits: Debit[];
+  children: Account[];
+}
+
+
+
+export interface Debit {
+  id: number;
+  finance_account_id: number;
+  finance_entry_id: number;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Pivot {
+  parent_id: number;
+  child_id: number;
+  level: number;
+}
 
 export interface Settings {
   id: number;

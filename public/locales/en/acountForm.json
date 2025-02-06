@@ -1,0 +1,12 @@
+{
+  "code": "Code",
+  "name": "Name",
+  "description": "Description",
+  "parent": "Parent",
+  "noParent": "None",
+  "addAccount": "Add Account",
+  "updateAccount": "Update Account",
+  "cancel": "Cancel",
+  "submitError": "Error submitting account:",
+  "fetchError": "Error fetching accounts:"
+}

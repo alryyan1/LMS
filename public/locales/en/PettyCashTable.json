@@ -1,0 +1,19 @@
+
+{
+  "permission_number": "Permission Number",
+  "date": "Date",
+  "amount": "Amount",
+  "beneficiary": "Beneficiary",
+  "description": "Description",
+  "pdf_file": "PDF File",
+  "actions": "Actions",
+  "edit": "Edit",
+  "delete": "Delete",
+  "view_pdf": "View PDF",
+  "confirm_delete": "Confirm Delete",
+  "are_you_sure_delete": "Are you sure you want to delete this permission?",
+  "cancel": "Cancel",
+  "permission_deleted_successfully": "Permission deleted successfully!",
+  "error_deleting_permission": "Error deleting permission.",
+  "error_fetching_permissions": "Error fetching permissions."
+}

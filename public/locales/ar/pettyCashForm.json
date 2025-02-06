@@ -1,0 +1,18 @@
+{
+    "permission_number": "رقم الإذن",
+    "date": "التاريخ",
+    "amount": "المبلغ",
+    "beneficiary": "المستفيد",
+    "description": "الوصف",
+    "account": "الحساب",
+    "submit": "إرسال",
+    "permission_number_required": "رقم الإذن مطلوب",
+    "date_required": "التاريخ مطلوب",
+    "amount_required": "المبلغ مطلوب",
+    "amount_invalid": "المبلغ غير صالح",
+    "beneficiary_required": "اسم المستفيد مطلوب",
+    "account_required": "الحساب مطلوب",
+    "permission_created_successfully": "تم إنشاء الإذن بنجاح!",
+    "error_creating_permission": "حدث خطأ أثناء إنشاء الإذن.",
+    "error_fetching_accounts": "خطأ في جلب الحسابات."
+  }

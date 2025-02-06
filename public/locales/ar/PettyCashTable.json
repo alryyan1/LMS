@@ -1,0 +1,19 @@
+
+{
+    "permission_number": "رقم الإذن",
+    "date": "التاريخ",
+    "amount": "المبلغ",
+    "beneficiary": "المستفيد",
+    "description": "الوصف",
+    "pdf_file": "ملف PDF",
+    "actions": "الإجراءات",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view_pdf": "عرض ملف PDF",
+    "confirm_delete": "تأكيد الحذف",
+    "are_you_sure_delete": "هل أنت متأكد من أنك تريد حذف هذا الإذن؟",
+    "cancel": "إلغاء",
+    "permission_deleted_successfully": "تم حذف الإذن بنجاح!",
+    "error_deleting_permission": "خطأ في حذف الإذن.",
+    "error_fetching_permissions": "خطأ في جلب الأذونات."
+  }

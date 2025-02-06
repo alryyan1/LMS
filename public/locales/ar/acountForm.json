@@ -1,0 +1,12 @@
+{
+    "code": "الرقم",
+    "name": "الاسم",
+    "description": "الوصف",
+    "parent": "الأب",
+    "noParent": "لا يوجد",
+    "addAccount": "إضافة حساب",
+    "updateAccount": "تحديث حساب",
+    "cancel": "إلغاء",
+    "submitError": "خطأ في إرسال الحساب:",
+    "fetchError": "خطأ في جلب الحسابات:"
+  }

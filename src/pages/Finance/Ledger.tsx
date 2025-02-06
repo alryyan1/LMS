@@ -19,14 +19,15 @@ import AddEntryForm from "./AddEntryForm.jsx";
 import TitleIcon from '@mui/icons-material/Title';
 import LedjerTDialog from "./LedjerTDialog.jsx";
 import { formatNumber } from "../constants.js";
+import { Account, Debit } from "../../types/type.js";
   function Ledger() {
     //create state variable to store all Accounts
     const {dialog, setDialog }=  useOutletContext()
-    const [accounts, setAccounts] = useState([]);
+    const [accounts, setAccounts] = useState<Account[]>([]);
     const [accountLedger, setAccountLedger] = useState([]);
-    const [selectedAccount, setSelectedAccount] = useState(null);
+    const [selectedAccount, setSelectedAccount] = useState<Account|null>(null);
     const [entries, setEntries] = useState([]);
-    const [debits, setDebits] = useState([]);
+    const [debits, setDebits] = useState<Debit[]>([]);
     const [credits, setCredits] = useState([]);
 
     useEffect(() => {
@@ -120,7 +121,7 @@ import { formatNumber } from "../constants.js";
           </Paper>
   
         </Grid>
-        <Grid item xs={4}>
+        <Grid sx={{height:window.innerHeight -100,overflow:'auto'}} style={{direction:'rtl'}} item xs={4}>
                <Table size="small">
                 <TableHead>
                     <TableRow>
@@ -132,13 +133,13 @@ import { formatNumber } from "../constants.js";
                 </TableHead>
                 <TableBody>
                     {accounts.map((account) => (
-                        <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id ? theme.palette.warning.light:''}} key={account.id}>
+                        <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id || account?.debits?.length > 0 || account?.credits?.length > 0 ? theme.palette.warning.light:''}} key={account.id}>
                             <TableCell>{account.id}</TableCell>
                             <TableCell>{account.name}</TableCell>
                             <TableCell>{account.description}</TableCell>
                             <TableCell><Button onClick={()=>{
                                 setSelectedAccount(account);
-                            }}>كشف الحساب</Button></TableCell>
+                            }}>كشف </Button></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

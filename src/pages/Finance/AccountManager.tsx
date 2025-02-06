@@ -5,6 +5,7 @@ import AccountTree from './AccountTree';
 import axiosClient from '../../../axios-client';
 import AccountCard from './AccountCard';
 import { Grid, Stack } from '@mui/material';
+import { formatNumber } from '../constants';
 
 function AccountManager() {
     const [accounts, setAccounts] = useState([]);
@@ -51,14 +52,42 @@ function AccountManager() {
 
 
      const convertToTreeData = (accounts) => {
-            const accountMap = new Map(accounts.map((account) => [account.id, {
-                name: account.name,
-                id:account.id,
-                code:account.code,
-                 description:account.description,
-                parent: account.parents.length > 0 ? {id:account.parents[0].id , name:account.parents[0].name} : null,
-                children: [],
-            }]));
+            const accountMap = new Map(accounts.map((account) => {
+                let totalCreditSum = 0;
+                let totalDebitSum = 0;
+                let totalCredits = account.credits.reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  );
+                  let totalDebits = account.debits.reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  );
+                  totalCreditSum += totalCredits;
+                  totalDebitSum += totalDebits;
+                  console.log(
+                    totalCredits,
+                    "total credits",
+                    totalDebits,
+                    "total dedits"
+                  );
+                  let largerNumber = Math.max(totalCredits, totalDebits);
+                  let creditBalance = 0;
+                  let debitBalance = 0;
+                  if (totalCredits > totalDebits) {
+                    creditBalance = totalCredits - totalDebits;
+                  } else {
+                    debitBalance = totalDebits - totalCredits;
+                  }
+                return [account.id, {
+                    name: `${account.name} (${creditBalance > 0 ? formatNumber(creditBalance)  :formatNumber(debitBalance) }) `,
+                    id:account.id,
+                    code:account.code,
+                     description:account.description,
+                    parent: account.parents.length > 0 ? {id:account.parents[0].id , name:account.parents[0].name} : null,
+                    children: [],
+                }]
+            }));
 
             const treeData = [];
 
@@ -91,8 +120,8 @@ function AccountManager() {
 
     const treeData = convertToTreeData(accounts)
     return (
-        <Grid  container >
-            <Grid item xs={3}>
+        <Stack direction='row' gap={1}>
+            <div style={{width:'300px'}}>
             <h1>Account Tree</h1>
               {selectedAccount && !editMode && (
                <AccountCard handleEditAccount={handleEditAccount} selectedAccount={selectedAccount} />
@@ -114,17 +143,17 @@ function AccountManager() {
                         onAccountUpdated={handleAccountUpdated}
                       />
                   }
-            </Grid>
+            </div>
 
         
-            <Grid  xs={9}>
+            <div style={{display:'flex'}} className='cent' >
                 <AccountTree
                     data={treeData}
                     onNodeClick={handleNodeClick}
                 />
-             </Grid >
+             </div >
 
-        </Grid>
+        </Stack>
     );
 }
 

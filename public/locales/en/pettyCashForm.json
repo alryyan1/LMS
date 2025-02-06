@@ -1,0 +1,18 @@
+{
+    "permission_number": "Permission Number",
+    "date": "Date",
+    "amount": "Amount",
+    "beneficiary": "Beneficiary",
+    "description": "Description",
+    "account": "Account",
+    "submit": "Submit",
+    "permission_number_required": "Permission number is required",
+    "date_required": "Date is required",
+    "amount_required": "Amount is required",
+    "amount_invalid": "Amount is invalid",
+    "beneficiary_required": "Beneficiary is required",
+    "account_required": "Account is required",
+    "permission_created_successfully": "Permission created successfully!",
+    "error_creating_permission": "There was an error creating the permission.",
+    "error_fetching_accounts": "Error fetching accounts."
+  }

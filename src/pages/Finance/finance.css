@@ -18,3 +18,10 @@
     /* text-anchor: middle; Ensures the text is centered */
     /* Add any other styles you want for the text (font, color, etc.) */
 /* }  */
+.cent{
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex
+;
+}

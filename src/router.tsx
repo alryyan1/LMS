@@ -85,6 +85,7 @@ import SalesTable from "./pages/inventory/SalesTable";
 import AllReports from "./AllReports";
 import PhramacyReclaim from "./PhramacyReclaim";
 import Error from "./pages/Error";
+import Expense from "./pages/Finance/Expense";
 
 
 const  guest:RouteObject =    {
@@ -263,6 +264,10 @@ const finance:RouteObject =   {
           {
             path: "section",
             element: <FinanceSection />,
+          },
+          {
+            path: "expense",
+            element: <Expense />,
           },
         ],
       };

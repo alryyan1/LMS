@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axiosClient from '../../../axios-client';
+import { useTranslation } from 'react-i18next';
 import {
     TextField,
     Button,
@@ -12,6 +13,8 @@ import {
 } from '@mui/material';
 
 function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
+    const { t } = useTranslation('acountForm');  // Get the translation function
+
     const [code, setCode] = useState(account ? account.code : '');
     const [name, setName] = useState(account ? account.name : '');
     const [description, setDescription] = useState(account ? account.description : '');
@@ -25,7 +28,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
                 const response = await axiosClient.get('accounts');
                 setParents(response.data);
             } catch (error) {
-                console.error("Error fetching accounts:", error);
+                console.error(t("fetchError"), error);
             }
         };
         fetchParents();
@@ -34,7 +37,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
         }
 
 
-    }, [account]);
+    }, [account, t]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,7 +72,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
 
 
         } catch (error) {
-            console.error("Error submitting account:", error);
+            console.error(t("submitError"), error);
         }
     };
 
@@ -78,7 +81,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
             <Grid container spacing={2} >
                 <Grid item xs={12}>
                     <TextField
-                        label="Code"
+                        label={t("code")}
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         fullWidth
@@ -87,7 +90,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
-                        label="Name"
+                        label={t("name")}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         fullWidth
@@ -96,7 +99,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
-                        label="Description"
+                        label={t("description")}
                         multiline
                         rows={3}
                         value={description}
@@ -107,15 +110,15 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
 
                 <Grid item xs={12}>
                     <FormControl fullWidth>
-                        <InputLabel id="parent-select-label">Parent</InputLabel>
+                        <InputLabel id="parent-select-label">{t("parent")}</InputLabel>
                         <Select
                             labelId="parent-select-label"
                             id="parent-select"
                             value={parentId}
-                            label="Parent"
+                            label={t("parent")}
                             onChange={(e) => setParentId(e.target.value)}
                         >
-                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="">{t("noParent")}</MenuItem>
                             {parents.map(parent => (
                                 <MenuItem key={parent.id} value={parent.id}>
                                     {parent.name}
@@ -127,11 +130,11 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                     <Button type="submit" variant="contained" color="primary">
-                        {account ? 'Update' : 'Add'} Account
+                        {account ? t("updateAccount") : t("addAccount")}
                     </Button>
                     {onCancel && (
                         <Button type="button" variant="outlined" color="secondary" onClick={onCancel}>
-                            Cancel
+                            {t("cancel")}
                         </Button>
                     )}
                 </Grid>
