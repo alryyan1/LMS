@@ -21,6 +21,7 @@ import LedjerTDialog from "./LedjerTDialog.jsx";
 import { formatNumber, webUrl } from "../constants.js";
 
 import { Account, Debit } from "../../types/type.js";
+import DateComponent from "./DateComponent.js";
   function Ledger() {
     //create state variable to store all Accounts
     const {dialog, setDialog }=  useOutletContext()
@@ -61,7 +62,7 @@ import { Account, Debit } from "../../types/type.js";
     return (
      <>
 
-     <DateComponent api={`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`} setData={setEntries}  setFirstDate={setFirstDate} setSecondDate={setSecondDate} firstDate={firstDate} secondDate={secondDate} accounts={accounts} setAccounts={setAccounts}/>
+     <DateComponent  api={`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`} setData={setEntries}  setFirstDate={setFirstDate} setSecondDate={setSecondDate} firstDate={firstDate} secondDate={secondDate} accounts={accounts} setAccounts={setAccounts}/>
      <Grid container spacing={2}>
       
       <Grid item xs={8}>
