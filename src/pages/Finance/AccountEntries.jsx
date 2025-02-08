@@ -17,7 +17,7 @@ import {
 import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.jsx";
 import { formatNumber, webUrl } from "../constants.js";
-import DateComponent from "./DateComponent.js";
+import DateComponent from "./DateComponent.tsx";
   
   function AccountEntries() {
     const [loading, setLoading] = useState(false);
