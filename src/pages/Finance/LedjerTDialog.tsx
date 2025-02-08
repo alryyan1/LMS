@@ -14,8 +14,11 @@ import {
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import { formatNumber } from "../constants";
+import { Debit } from "../../types/type";
+import { useEffect, useState } from "react";
+import axiosClient from "../../../axios-client";
 
-function LedjerTDialog({ account, debits, credits }) {
+function LedjerTDialog({ account }) {
   const { dialog, setDialog } = useOutletContext();
   console.log(account, "selected account");
   let largerNumber = 0;
@@ -30,7 +33,23 @@ function LedjerTDialog({ account, debits, credits }) {
   console.log(totalCredits, "total credits", totalDebits, "total dedits");
   largerNumber = Math.max(totalCredits, totalDebits);
 
+  const [debits, setDebits] = useState<Debit[]>([]);
+  const [credits, setCredits] = useState([]);
 
+  useEffect(() => {
+    //fetch all Accounts
+  
+      axiosClient(`debits`)
+      .then(({data}) => {
+          setDebits(data);
+        console.log(data,'debits');
+      });
+      axiosClient(`credits`)
+      .then(({data}) => {
+          setCredits(data);
+        console.log(data,'credits');
+      });
+  }, []);
 
 
   return (
@@ -62,7 +81,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   return (
                     <div key={debitEntry.id}>
                    
-                      {`   من ح / ${credit.account.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
+                      {`   من ح / ${credit?.account?.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
                     </div>
                   );
                 }
@@ -78,7 +97,7 @@ function LedjerTDialog({ account, debits, credits }) {
                   return (
                     <div key={debitEntry.id}>
                    
-                      {`   الي ح / ${credit.account.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
+                      {`   الي ح / ${credit?.account?.name} ٍSDG ${formatNumber(debitEntry.amount)}  `}{" "}
                     </div>
                   );
                 }

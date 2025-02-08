@@ -19,7 +19,7 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
     const [name, setName] = useState(account ? account.name : '');
     const [description, setDescription] = useState(account ? account.description : '');
     const [parents, setParents] = useState([]);
-    const [parentId, setParentId] = useState(account?.parent?.id || '');
+    const [parentId, setParentId] = useState(account?.parents[0]?.id || '');
 
 
     useEffect(() => {

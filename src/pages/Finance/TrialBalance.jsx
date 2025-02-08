@@ -20,6 +20,7 @@ import AddEntryForm from "./AddEntryForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
+import { formatNumber } from "../constants.js";
 
 function Ledger() {
   //create state variable to store all Accounts
@@ -164,10 +165,10 @@ function Ledger() {
                 <TableCell>{account.id}</TableCell>
                 <TableCell>{account.name}</TableCell>
                 <TableCell>{account.description}</TableCell>
-                <TableCell>{totalDebits}</TableCell>
-                <TableCell>{totalCredits}</TableCell>
-                <TableCell>{debitBalance}</TableCell>
-                <TableCell>{creditBalance}</TableCell>
+                <TableCell>{formatNumber(totalDebits)}</TableCell>
+                <TableCell>{formatNumber(totalCredits)}</TableCell>
+                <TableCell>{formatNumber(debitBalance)}</TableCell>
+                <TableCell>{formatNumber(creditBalance)}</TableCell>
               </TableRow>
             );
           })}

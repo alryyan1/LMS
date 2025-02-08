@@ -1,4 +1,5 @@
 import {
+  Button,
     Grid,
     IconButton,
     Paper,
@@ -15,7 +16,8 @@ import {
   import axiosClient from "../../../axios-client.js";
 import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.jsx";
-import { formatNumber } from "../constants.js";
+import { formatNumber, webUrl } from "../constants.js";
+import DateComponent from "./DateComponent.js";
   
   function AccountEntries() {
     const [loading, setLoading] = useState(false);
@@ -37,11 +39,17 @@ import { formatNumber } from "../constants.js";
           console.log(data,'accounts');
         });
     }, []);
+        const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+      
+        const [secondDate, setSecondDate] = useState(dayjs(new Date()));
     return (
       <Grid container spacing={2}>
       
         <Grid item xs={8}>
           <Paper sx={{p:1}}>
+     <DateComponent api={`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`} setData={setEntries}  setFirstDate={setFirstDate} setSecondDate={setSecondDate} firstDate={firstDate} secondDate={secondDate} accounts={[]} setAccounts={()=>{}}/>
+
+            <Button href={`${webUrl}entries`}>PDF</Button>
   
           {/* create table with all clients */}
           <TableContainer>
