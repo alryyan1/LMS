@@ -45,6 +45,15 @@
      "finance":"المالية",
     "denos":"سندات",
     "salesTable":"المبيعات والارباح",
-    "pharmacy":"صيدلية" 
+    "pharmacy":"صيدلية" ,
+    "accountsList":"دليل الحسابات",
+    "entries":"قيود اليوميه",
+    "ledger":"دفتر الاستاذ",
+    "trialbalance":"ميزان المراجعه",
+    "section":"الاقسام",
+    "tree":"شجره الحسابات",
+    "expense":"اذن الصروف"
+
+
     
   }

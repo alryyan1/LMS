@@ -47,6 +47,16 @@
   "finance": "Finance",
   "denos": "Denos",
 
-  "salesTable":"Sales & Profits"
-
+  "salesTable":"Sales & Profits",
+  
+    "pharmacy": "Pharmacy",
+    "accountsList": "Chart of Accounts",
+    "entries": "Journal Entries",
+    "ledger": "General Ledger",
+    "trialbalance": "Trial Balance",
+    "section": "Segments",  
+    "tree": "Account Hierarchy",
+     "expense" :"Expense",
+     
+    
 }

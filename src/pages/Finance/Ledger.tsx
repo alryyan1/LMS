@@ -92,6 +92,18 @@ import DateComponent from "./DateComponent.js";
 
             <TableBody>
               {entries.map((entry) => {
+                  let totalCreditSum = 0;
+                  let totalDebitSum = 0;
+                  let totalCredits = selectedAccount.credits.reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  );
+                  let totalDebits = selectedAccount.debits.reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  );
+                  totalCreditSum += totalCredits;
+                  totalDebitSum += totalDebits;
                 if (entry.credit[0].finance_account_id == selectedAccount.id || entry.debit[0].finance_account_id == selectedAccount.id) {
                   // alert('s')
                   return    (

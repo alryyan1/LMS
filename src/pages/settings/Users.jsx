@@ -40,7 +40,7 @@ import MyTableCell from "../inventory/MyTableCell";
 function Users() {
   const { setDialog, doctors } = useOutletContext();
   const [selectedUser, setSelectedUser] = useState(null);
-  const {t} = useTranslation('users')
+  const {t} = useTranslation('sidebar')
   const [users, setUsers] = useState([]);
   const [updater, setUpdater] = useState(0);
   const [roles, setRoles] = useState([]);

@@ -62,9 +62,8 @@ import dayjs from "dayjs";
         });
     }, []);
     return (
-      <Grid container spacing={2}>
       
-        <Grid item xs={8}>
+  
           <Paper sx={{p:1}}>
   
           {/* create table with all clients */}
@@ -75,7 +74,7 @@ import dayjs from "dayjs";
                   <TableCell>رقم</TableCell>
                   <TableCell>الاسم</TableCell>
                   <TableCell>الكود</TableCell>
-                  <TableCell>طبيعه الحساب</TableCell>
+                  {/* <TableCell>طبيعه الحساب</TableCell> */}
                   <TableCell> تاريخ انشاء الحساب</TableCell>
                   <TableCell>حذف</TableCell>
                 </TableRow>
@@ -87,7 +86,7 @@ import dayjs from "dayjs";
                     <TableCell>{account.id}</TableCell>
                     <TableCell>{account.name}</TableCell>
                     <TableCell>{account.code}</TableCell>
-                    <TableCell>{account.debit  ==  0 ? 'debit' : 'credit'}</TableCell>
+                    {/* <TableCell>{account.debit  ==  0 ? 'debit' : 'credit'}</TableCell> */}
                     <TableCell>{dayjs(new Date(Date.parse(account.created_at))).format('YYYY-MM-DD')}</TableCell>
                     <TableCell>
                       <IconButton
@@ -105,12 +104,8 @@ import dayjs from "dayjs";
           </TableContainer>
           </Paper>
   
-        </Grid>
-        <Grid item xs={4}>
-                <AddAcountForm loading={loading} setAccounts={setAccounts} setDialog={setDialog} setLoading={setLoading}/>
-        </Grid>
-                
-      </Grid>
+     
+    
     );
   }
   

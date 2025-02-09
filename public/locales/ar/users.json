@@ -11,4 +11,37 @@
   "roles": "المهام",
   "routes": "النوافذ",
   "subRoutes": "النوافذ الفرعيه"
+  ,
+    "pharmacy": "صيدلية",
+    "audit": "تدقيق",
+    "lab": "مختبر",
+    "clinic": "عيادة",
+    "insurance": "تأمين",
+    "settings": "إعدادات",
+    "dashboard": "لوحة التحكم",
+    "moneyIncome": "دخل المال",
+    "finance": "المالية",
+    "patients": "المرضى",
+    "doctor": "طبيب",
+    "allReports": "كل التقارير",
+    "denos": "دينوس"
+    ,
+    "define": "تعريف",
+    "pos": "نقاط البيع",
+    "items": "العناصر",
+    "sales": "المبيعات",
+    "quantities": "الكميات",
+    "income": "الدخل",
+    "supplier": "المورد",
+    "clients": "العملاء",
+    "salesTable": "جدول المبيعات"
+  ,"register_lab_patient": "تسجيل مريض المختبر",
+  "result_entry": "إدخال النتيجة",
+  "sample_collection": "جمع العينات",
+  "test_management": "إدارة الاختبارات",
+  "price_list": "قائمة الأسعار",
+  "CBC LIS": "نظام معلومات المختبر لتعداد الدم الكامل",
+  "Chemistry LIS": "نظام معلومات المختبر للكيمياء",
+  "Hormone LIS": "نظام معلومات المختبر للهرمونات"
+  
 }

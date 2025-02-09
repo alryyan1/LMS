@@ -21,6 +21,7 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
 import { formatNumber } from "../constants.js";
+import DateComponent from "./DateComponent.tsx";
 
 function Ledger() {
   //create state variable to store all Accounts
@@ -71,39 +72,7 @@ function Ledger() {
     <Grid container spacing={2}>
       <Grid item xs={8}>
         <Box sx={{ p: 1 }}>
-          <Stack direction={"row"} justifyContent={"space-between"}>
-            <Box>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateField
-                  onChange={(val) => {
-                    setFirstDate(val);
-                  }}
-                  defaultValue={dayjs(new Date())}
-                  sx={{ m: 1 }}
-                  label="From"
-                />
-              </LocalizationProvider>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateField
-                  onChange={(val) => {
-                    setSecondDate(val);
-                  }}
-                  defaultValue={dayjs(new Date())}
-                  sx={{ m: 1 }}
-                  label="To"
-                />
-              </LocalizationProvider>
-              <LoadingButton
-                onClick={searchHandler}
-                loading={loading}
-                sx={{ mt: 2 }}
-                size="medium"
-                variant="contained"
-              >
-                Go
-              </LoadingButton>
-            </Box>
-          </Stack>
+          ,<DateComponent setAccounts={setAccounts} accounts={accounts} firstDate={firstDate} secondDate={secondDate} />
         </Box>
       </Grid>
 
@@ -187,9 +156,9 @@ function Ledger() {
             <TableCell> </TableCell>
             <TableCell sx={{ borderTop: "1px solid", color: "green" }}>
               {" "}
-              {totalDebitSum}{" "}
+              {formatNumber(totalDebitSum)}{" "}
             </TableCell>
-            <TableCell> {totalCreditSum} </TableCell>
+            <TableCell> {formatNumber(totalCreditSum)} </TableCell>
             <TableCell> </TableCell>
             <TableCell> </TableCell>
           </TableRow>

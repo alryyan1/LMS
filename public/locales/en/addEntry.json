@@ -1,0 +1,19 @@
+{
+  "newEntry": "New Entry",
+  "amount": "Amount",
+  "amountRequired": "Amount is required",
+  "description": "Description",
+  "descriptionRequired": "Description is required",
+  "debits": "Debits",
+  "credits": "Credits",
+  "debitAccount": "Debit Account",
+  "creditAccount": "Credit Account",
+  "debitAccountRequired": "Debit account is required",
+  "creditAccountRequired": "Credit account is required",
+  "addDebitAccount": "Add Debit Account",
+  "addCreditAccount": "Add Credit Account",
+  "save": "Save",
+  "balanceError": "The sum of debits must equal the sum of credits.",
+  "additionSuccess": "Addition was successful",
+  "entryDescription": "Entry Description"
+}

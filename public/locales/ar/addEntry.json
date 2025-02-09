@@ -1,0 +1,19 @@
+{
+    "newEntry": "قيد جديد",
+    "amount": "المبلغ",
+    "amountRequired": "يجب إدخال المبلغ",
+    "description": "البيان",
+    "descriptionRequired": "يجب إدخال البيان",
+    "debits": "المدين",
+    "credits": "الدائن",
+    "debitAccount": "حساب مدين",
+    "creditAccount": "حساب دائن",
+    "debitAccountRequired": "حساب المدين مطلوب",
+    "creditAccountRequired": "حساب الدائن مطلوب",
+    "addDebitAccount": "إضافة حساب مدين",
+    "addCreditAccount": "إضافة حساب دائن",
+    "save": "حفظ",
+    "balanceError": "يجب أن يتساوى مجموع المدين مع مجموع الدائن",
+    "additionSuccess": "تمت الإضافة بنجاح",
+    "entryDescription": "وصف القيد"
+  }

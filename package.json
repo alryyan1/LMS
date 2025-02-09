@@ -83,6 +83,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
+    "uuid": "^11.0.5",
     "websocket": "^1.0.35",
     "xlsx": "^0.18.5",
     "zod": "^3.23.8",

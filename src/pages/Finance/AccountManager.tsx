@@ -138,6 +138,9 @@ function AccountManager() {
 
     return result;
   };
+  useEffect(() => {
+    document.title = 'شجره الحسابات ' ;
+  }, []);
 
   const treeData = convertToTreeData(accounts);
   return (
