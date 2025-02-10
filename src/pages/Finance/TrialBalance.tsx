@@ -21,16 +21,17 @@ import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
 import { formatNumber } from "../constants.js";
-import DateComponent from "./DateComponent.tsx";
+import DateComponent from "./DateComponent.js";
+import { Account } from "../../types/type.js";
 
 function Ledger() {
   //create state variable to store all Accounts
   const [firstDate, setFirstDate] = useState(dayjs(new Date()));
   const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   const [loading, setLoading] = useState(null);
-  const [accounts, setAccounts] = useState([]);
-  const [accountLedger, setAccountLedger] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accountLedger, setAccountLedger] = useState<Account[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<Account|null>(null);
 
   useEffect(() => {
     document.title = "دفتر الاستاذ ";
@@ -72,9 +73,10 @@ function Ledger() {
     <Grid container spacing={2}>
       <Grid item xs={8}>
         <Box sx={{ p: 1 }}>
-          ,<DateComponent setAccounts={setAccounts} accounts={accounts} firstDate={firstDate} secondDate={secondDate} />
+          <DateComponent setAccounts={setAccounts} accounts={accounts} firstDate={firstDate} secondDate={secondDate} />
         </Box>
       </Grid>
+      <Typography variant="h3">ميزان المراجعه   </Typography>
 
       <Table style={{ direction: "rtl" }} size="small">
         <TableHead>

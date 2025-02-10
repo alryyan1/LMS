@@ -670,6 +670,7 @@ function SellDrug() {
                       Discount
                     </TableCell>
                     <MyTableCell
+                     key={activeSell?.id}
                       colName={"discount"}
                       sx={{ width: "80px" }}
                       table="deduct"

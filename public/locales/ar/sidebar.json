@@ -52,8 +52,19 @@
     "trialbalance":"ميزان المراجعه",
     "section":"الاقسام",
     "tree":"شجره الحسابات",
-    "expense":"اذن الصروف"
-
+    "expense":"اذن الصروف",
+    
+    "usersPageTitle": "المستخدمين",
+    "addUser": "إضافة مستخدم",
+    "id": "رقم",
+    "name": "اسم",
+    "username": "اسم المستخدم",
+    "isNurse": "ممرض؟",
+    "isDoctor": "طبيب؟",
+    "changePassword": "تغيير كلمة المرور",
+    "roles": "المهام",
+    "routes": "النوافذ",
+    "subRoutes": "النوافذ الفرعيه"
 
     
   }

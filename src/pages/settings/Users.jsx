@@ -50,7 +50,7 @@ function Users() {
    const [openPasswordFrom,setOpenPasswordFrom] = useState(false)
   console.log(selectedRoute, "selected Route");
   useEffect(() => {
-    document.title = t("usersPageTitle");
+    document.title = 'الاعدادات'
   }, []);
   const {
     formState: { isSubmitSuccessful },

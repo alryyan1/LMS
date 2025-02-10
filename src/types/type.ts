@@ -192,10 +192,45 @@ export interface Account {
   updated_at: string;
   code: string;
   account_category: null;
-  credits: any[];
+  credits: Credit[];
   debits: Debit[];
   children: Account[];
 }
+export interface Entry {
+  id: number;
+  description: string;
+  transfer: number;
+  created_at: string;
+  updated_at: string;
+  debit: Debit[];
+  credit: Credit[];
+}
+
+
+
+
+
+
+
+interface Pivot {
+  parent_id: number;
+  child_id: number;
+  level: number;
+}
+
+
+
+interface Credit {
+  id: number;
+  finance_account_id: number;
+  finance_entry_id: number;
+  entry:Entry;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  account: Account;
+}
+
 
 
 
@@ -206,6 +241,8 @@ export interface Debit {
   amount: number;
   created_at: string;
   updated_at: string;
+  account:Account;
+  entry: Entry;
 }
 
 interface Pivot {

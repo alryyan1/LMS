@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Grid,
   IconButton,
@@ -73,17 +74,12 @@ function AccountEntries() {
               </thead>
 
               <TableBody>
-               
-              
-
                 {entries.map((entry, i) => (
                   <>
                     <TableRow>
                       <TableCell
                         rowSpan={
-                          entry.debit.length >= 2 || entry.credit.length >= 2
-                            ? 4
-                            : 3
+                          Math.max( entry.debit.length,entry.credit.length) + 2
                         }
                       >
                         {dayjs(new Date(Date.parse(entry.created_at))).format(
@@ -92,19 +88,17 @@ function AccountEntries() {
                       </TableCell>
                       <TableCell
                         rowSpan={
-                          entry.debit.length >= 2 || entry.credit.length >= 2
-                            ? 4
-                            : 3
+                          Math.max( entry.debit.length,entry.credit.length) + 2
                         }
                         style={{ textAlign: "right", color: "lightblue" }}
                       >
-                       {entry.id}
+                        {entry.id}
                       </TableCell>
-                      <TableCell>  </TableCell>
+                      <TableCell> </TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                     </TableRow>
-                    {entry.debit.map((e) => {
+                    {entry.debit.map((e,debitIndex) => {
                       return (
                         <TableRow
                           sx={{
@@ -112,17 +106,27 @@ function AccountEntries() {
                           }}
                           key={e.id}
                         >
+                         {debitIndex == 0 && entry.debit.length > 1  ? <Badge anchorOrigin={{horizontal:'left',vertical:'top'}} badgeContent='من مذكورين' color="primary">
                           <TableCell>
-                            {` من ح / ${e?.account?.name}
+                            {`  ح / ${e?.account?.name}
                          
                           `}
                           </TableCell>
-                          <TableCell></TableCell>
+                          </Badge> : 
+                          <TableCell>
+                          {entry.debit.length > 1  ? `  ح / ${e?.account?.name}
+                         
+                          `: ` من ح / ${e?.account?.name}
+                         
+                          `}  
+                          </TableCell>
+                         } 
                           <TableCell>{formatNumber(e?.amount)}</TableCell>
+                          <TableCell></TableCell>
                         </TableRow>
                       );
                     })}
-                    {entry.credit.map((e) => {
+                    {entry.credit.map((e,creditIndex) => {
                       return (
                         <TableRow
                           sx={{
@@ -130,17 +134,47 @@ function AccountEntries() {
                           }}
                           key={e.id}
                         >
+                          
+                         {creditIndex == 0 && entry.credit.length > 1  ? <Badge anchorOrigin={{horizontal:'left',vertical:'top'}} badgeContent='الي مذكورين' color="primary">
                           <TableCell>
-                            {`  ....... الي ح / ${e?.account?.name}
+                            {`  .......  ح  / ${e?.account?.name}
                          
                           `}
                           </TableCell>
+                          </Badge> : 
+                          <TableCell>
+                         { entry.credit.length > 1 ? `  .......  ح / ${e?.account?.name}
+                         
+                         `:`  ....... الي ح / ${e?.account?.name}
+                         
+                         `}
+                          </TableCell>
+                         } 
+                          
+                          
                           <TableCell></TableCell>
                           <TableCell>{formatNumber(e?.amount)}</TableCell>
                         </TableRow>
                       );
                     })}
-               
+                    <TableRow
+                      sx={{
+                        backgroundColor: i % 2 == 0 ? "#8080800f" : "",
+                      }}
+                      key={entry.id}
+                    >
+                      <TableCell
+                        sx={{
+                          fontWeight:'bold',
+                          textAlign: "center",
+                          color: i % 2 == 0 ? "blue" : "",
+                          fontSize:'10pz'
+                        }}
+                        colSpan={5}
+                      >
+                        {entry.description}
+                      </TableCell>
+                    </TableRow>
                   </>
                 ))}
               </TableBody>

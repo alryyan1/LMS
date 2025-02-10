@@ -20,15 +20,15 @@ import TitleIcon from '@mui/icons-material/Title';
 import LedjerTDialog from "./LedjerTDialog.jsx";
 import { formatNumber, webUrl } from "../constants.js";
 
-import { Account, Debit } from "../../types/type.js";
+import { Account, Debit, Entry } from "../../types/type.js";
 import DateComponent from "./DateComponent.js";
   function Ledger() {
     //create state variable to store all Accounts
     const {dialog, setDialog }=  useOutletContext()
     const [accounts, setAccounts] = useState<Account[]>([]);
-    const [accountLedger, setAccountLedger] = useState([]);
+    const [accountLedger, setAccountLedger] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState<Account|null>(null);
-    const [entries, setEntries] = useState([]);
+    const [entries, setEntries] = useState<Entry[]>([]);
     const [firstDate, setFirstDate] = useState(dayjs(new Date()));
   
     const [secondDate, setSecondDate] = useState(dayjs(new Date()));
@@ -77,7 +77,7 @@ import DateComponent from "./DateComponent.js";
               return {...prev, showDialog: true};
             })
            }} title=" T الاستاذ حرف "><TitleIcon/></IconButton>
-           <Button href={`${webUrl}ledger/${selectedAccount?.id}`}>PDF</Button>
+           <Button href={`${webUrl}ledger/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
           <Table key={selectedAccount?.id} dir="rtl" size="small">
             <thead>
               <TableRow>
@@ -102,17 +102,18 @@ import DateComponent from "./DateComponent.js";
                     (accum, current) => accum + current.amount,
                     0
                   );
+                  
                   totalCreditSum += totalCredits;
                   totalDebitSum += totalDebits;
-                if (entry.credit[0].finance_account_id == selectedAccount.id || entry.debit[0].finance_account_id == selectedAccount.id) {
+                if (entry.credit.map((c)=>c.finance_account_id).includes(selectedAccount?.id ) ||entry.debit.map((c)=>c.finance_account_id).includes(selectedAccount?.id )) {
                   // alert('s')
                   return    (
                     <TableRow key={entry.id}>
                       <TableCell>{dayjs(new Date(Date.parse(entry.created_at))).format('YYYY-MM-DD')}</TableCell>
                       <TableCell>{entry.id}</TableCell>
                       <TableCell>{entry.description}</TableCell>
-                      <TableCell>{entry.debit[0].finance_account_id == selectedAccount.id ? formatNumber(entry.credit[0].amount) :0}</TableCell>
-                      <TableCell>{entry.credit[0].finance_account_id == selectedAccount.id ? formatNumber(entry.credit[0].amount) :0}</TableCell>
+                      <TableCell>{ formatNumber(entry.debit.filter((d)=>d.finance_account_id == selectedAccount.id).reduce((prev,curr)=>prev+curr.amount,0)) }</TableCell>
+                      <TableCell>{ formatNumber(entry.credit.filter((d)=>d.finance_account_id == selectedAccount.id).reduce((prev,curr)=>prev+curr.amount,0)) }</TableCell>
                       <TableCell>{0}</TableCell>
                     
               
@@ -139,7 +140,7 @@ import DateComponent from "./DateComponent.js";
               </TableHead>
               <TableBody>
                   {accounts.map((account) => (
-                      <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id || account?.debits?.length > 0 || account?.credits?.length > 0 ? theme.palette.warning.light:''}} key={account.id}>
+                      <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id || account?.debits?.length > 0 || account?.credits?.length > 0 ? '#ff980026':''}} key={account.id}>
                           <TableCell>{account.id}</TableCell>
                           <TableCell>{account.name}</TableCell>
                           <TableCell>{account.description}</TableCell>
