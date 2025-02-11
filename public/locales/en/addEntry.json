@@ -15,5 +15,7 @@
   "save": "Save",
   "balanceError": "The sum of debits must equal the sum of credits.",
   "additionSuccess": "Addition was successful",
-  "entryDescription": "Entry Description"
+  "entryDescription": "Entry Description",
+  "date": "Date"
+
 }

@@ -86,6 +86,8 @@ import AllReports from "./AllReports";
 import PhramacyReclaim from "./PhramacyReclaim";
 import Error from "./pages/Error";
 import Expense from "./pages/Finance/Expense";
+import Gallary from "./pages/Finance/Gallary";
+import IncomeStatement from "./pages/Finance/IncomeStatement";
 
 
 const  guest:RouteObject =    {
@@ -268,6 +270,14 @@ const finance:RouteObject =   {
           {
             path: "expense",
             element: <Expense />,
+          },
+          {
+            path: "gallary",
+            element: <Gallary />,
+          },
+          {
+            path: "incomeStatement",
+            element: <IncomeStatement />,
           },
         ],
       };

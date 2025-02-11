@@ -64,7 +64,9 @@
     "changePassword": "تغيير كلمة المرور",
     "roles": "المهام",
     "routes": "النوافذ",
-    "subRoutes": "النوافذ الفرعيه"
+    "subRoutes": "النوافذ الفرعيه",
+    "gallary": "مذكرات ",
+    "incomeStatement":"قائمه الدخل"
 
     
   }

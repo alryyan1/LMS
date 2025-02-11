@@ -5,6 +5,11 @@ import { LoadingButton } from "@mui/lab";
 import axiosClient from "../../../axios-client";
 import { v4 as uuidv4 } from 'uuid'; // Import UUID
 import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs'; // Import dayjs
+import DynamicTable from "./IncomeStatement";
 
 const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
 
@@ -18,12 +23,15 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
     control,
     reset,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors },
     trigger, // Import trigger
   } = useForm({
     defaultValues: {
       amount: '',
       description: '',
+      date: dayjs(), // Set default date to today
       debits: [initialDebitCreditEntry], // Initialize with one debit entry
       credits: [initialDebitCreditEntry], // Initialize with one credit entry
     },
@@ -46,6 +54,9 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
 
     setLoading(true);
     try {
+      // Format the date to send to the backend (YYYY-MM-DD)
+      const formattedDate = dayjs(formData.date).format('YYYY-MM-DD');
+
       // Transform debit and credit arrays to send objects with account ID and amount
       const transformedDebits = formData.debits.map(debit => ({
         account: debit.account?.id,
@@ -60,6 +71,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
 
       const { data } = await axiosClient.post("createFinanceEntries", {
         ...formData,
+        date: formattedDate, // Send the formatted date
         debits: transformedDebits,
         credits: transformedCredits,
       });
@@ -71,6 +83,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
         reset({
           amount: '',
           description: '',
+          date: dayjs(), // Reset to today's date
           debits: [initialDebitCreditEntry],
           credits: [initialDebitCreditEntry],
         });
@@ -111,7 +124,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
   };
 
   const addCreditAccount = () => {
-    setCreditAccounts([...creditAccounts, initialDebitCreditEntry]);
+    setCreditAccounts([...creditAccounts, initialCreditEntry]);
   };
 
   // Function to get selected debit account IDs
@@ -141,18 +154,35 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
       </Typography>
       <form noValidate onSubmit={handleSubmit(submitHandler)}>
         <Stack gap={1}>
-          {/* <TextField
-            fullWidth
-            error={errors.description != null}
-            {...register("amount", {
-              required: { value: true, message: t('amountRequired') }, // Use translation
-            })}
-            type="number"
-            id="outlined-basic"
-            label={t('amount')}
-            variant="filled"
-            helperText={errors.amount && errors.amount.message}
-          /> */}
+
+          {/* Date Picker */}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Controller
+              name="date"
+              control={control}
+              defaultValue={dayjs()} // Initial value if needed
+              render={({ field }) => (
+                <DatePicker
+                format="YYYY-MM-DD"
+                  label={t('date')} // Use translation
+                  value={field.value}
+                  onChange={(newValue) => {
+                    field.onChange(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="filled"
+                      error={!!errors.date}
+                      helperText={errors.date?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+          </LocalizationProvider>
+
           <TextField
             multiline
             rows={4}
@@ -162,7 +192,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
               required: { value: true, message: t('descriptionRequired') }, // Use translation
             })}
             id="outlined-basic"
-            label={t('entryDescription')} 
+            label={t('entryDescription')}
             variant="filled"
             helperText={errors.description && errors.description.message}
           />
@@ -286,6 +316,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
           </LoadingButton>
         </Stack>
       </form>
+      <DynamicTable/>
     </Paper>
   );
 }

@@ -67,6 +67,8 @@
      "changePassword": "change Password",
      "roles": "Roles",
      "routes": "Routes",
-     "subRoutes": "Sub Routes"
+     "subRoutes": "Sub Routes",
+    "gallary": "Accounant Notes",
+    "incomeStatement":"income Statement"
     
 }

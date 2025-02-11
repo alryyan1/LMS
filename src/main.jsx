@@ -11,6 +11,8 @@ import MyCacheProvider from "./MyCacheProvider";
 import App from "./App";
 import { Suspense } from "react";
 import { CircularProgress } from "@mui/material";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 // console.log = function() {}
 
@@ -29,7 +31,8 @@ createRoot(document.querySelector("#root")).render(
         <CircularProgress />
       </div>
     }
-  >
+  >    <DndProvider backend={HTML5Backend}>
+
     <UserContextProvider>
       <ThemeContextProvider>
         <CacheProvider value={cacheRtl}>
@@ -39,5 +42,6 @@ createRoot(document.querySelector("#root")).render(
         </CacheProvider>
       </ThemeContextProvider>
     </UserContextProvider>
+    </DndProvider>
   </Suspense>
 );

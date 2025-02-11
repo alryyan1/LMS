@@ -15,5 +15,6 @@
     "save": "حفظ",
     "balanceError": "يجب أن يتساوى مجموع المدين مع مجموع الدائن",
     "additionSuccess": "تمت الإضافة بنجاح",
-    "entryDescription": "وصف القيد"
+    "entryDescription": "وصف القيد",
+    "date": "التاريخ"
   }
