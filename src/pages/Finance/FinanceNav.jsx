@@ -29,14 +29,7 @@ function FinanceNav() {
     openLabReport: false,
     message: "Addition was successfull",
   });
-  useEffect(() => {
-    axiosClient
-      .get("items/all")
-      .then(({ data }) => {
-        setItems(data);
-      })
-      .catch((error) => {});
-  }, []);
+
   const handleClose = () => {
     setDialog((prev) => ({ ...prev, open: false }));
   };

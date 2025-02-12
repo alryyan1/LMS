@@ -195,6 +195,7 @@ export interface Account {
   credits: Credit[];
   debits: Debit[];
   children: Account[];
+  balance:number
 }
 export interface Entry {
   id: number;

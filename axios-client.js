@@ -27,13 +27,13 @@ axiosClient.interceptors.response.use((res)=>{
     console.log(response.data)
     console.log(response.status)
     if (response.status == 411) {
-      toast.error(response?.data?.message ?? "هنالك خطا", {
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      // toast.error(response?.data?.message ?? "هنالك خطا", {
+      //   autoClose: 2000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      // });
         console.log('removing access token')
         localStorage.removeItem('ACCESS_TOKEN')
         useAuthStore.setState({

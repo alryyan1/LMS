@@ -95,7 +95,7 @@ function LedjerTDialog({ account }:{account:Account}) {
                     <ListItem secondaryAction={`SDG ${formatNumber(debitEntry.amount)}`}  key={debitEntry.id}>
 
                         <ListItemText>
-                        {debitEntry.entry.debit.length > 1 ? `من مذكورين` : `   من ح / ${credit?.account?.name}` } 
+                        {debitEntry.entry?.debit?.length > 1 ? `من مذكورين` : `   من ح / ${credit?.account?.name}` } 
 
                         </ListItemText>
                     </ListItem>
@@ -126,7 +126,7 @@ function LedjerTDialog({ account }:{account:Account}) {
                   return (
                     <ListItem secondaryAction={`SDG ${formatNumber(debitEntry.amount)}`}  key={debitEntry.id}>
                     <ListItemText>
-                   {debitEntry.entry.credit.length > 1   ? `الي مذكورين` : `   الي ح / ${credit?.account?.name}` } 
+                   {debitEntry.entry?.credit?.length > 1   ? `الي مذكورين` : `   الي ح / ${credit?.account?.name}` } 
                     </ListItemText>
                 </ListItem>
                     // <div key={debitEntry.id}>

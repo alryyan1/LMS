@@ -316,7 +316,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
           </LoadingButton>
         </Stack>
       </form>
-      <DynamicTable/>
+      {/* <DynamicTable/> */}
     </Paper>
   );
 }

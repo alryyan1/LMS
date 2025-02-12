@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.jsx";
 import { formatNumber, webUrl } from "../constants.js";
 import DateComponent from "./DateComponent.tsx";
+import GeminiImageUploader from "./Gemini.tsx";
 
 function AccountEntries() {
   const [loading, setLoading] = useState(false);
@@ -58,8 +59,8 @@ function AccountEntries() {
             setAccounts={() => {}}
           />
 
-          <Button href={`${webUrl}entries`}>PDF</Button>
-
+          <Button href={`${webUrl}entries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
+          <GeminiImageUploader/>
           {/* create table with all clients */}
           <TableContainer>
             <Table dir="rtl" size="small">

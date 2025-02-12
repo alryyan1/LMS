@@ -42,7 +42,7 @@ function AccountManager() {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axiosClient.get("accounts");
+      const response = await axiosClient.get("accounts?parents=1");
       setAccounts(response.data);
     } catch (error) {
       console.error("Error fetching accounts:", error);
