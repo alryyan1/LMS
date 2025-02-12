@@ -69,6 +69,8 @@
      "routes": "Routes",
      "subRoutes": "Sub Routes",
     "gallary": "Accounant Notes",
-    "incomeStatement":"income Statement"
+    "incomeStatement":"income Statement",
+    "BalanceSheet":"Balance Sheet"
+
     
 }

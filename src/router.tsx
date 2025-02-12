@@ -88,6 +88,7 @@ import Error from "./pages/Error";
 import Expense from "./pages/Finance/Expense";
 import Gallary from "./pages/Finance/Gallary";
 import IncomeStatement from "./pages/Finance/IncomeStatement";
+import BalanceSheet from "./pages/Finance/BalanceSheet";
 
 
 const  guest:RouteObject =    {
@@ -278,6 +279,10 @@ const finance:RouteObject =   {
           {
             path: "incomeStatement",
             element: <IncomeStatement />,
+          },
+          {
+            path: "balanceSheet",
+            element: <BalanceSheet />,
           },
         ],
       };

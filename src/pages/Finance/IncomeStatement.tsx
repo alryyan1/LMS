@@ -21,17 +21,27 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Sync } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { formatNumber, webUrl } from "../constants";
 import { Account } from "../../types/type";
 import dayjs from "dayjs";
+import { EyeIcon, Import, Plus, Printer, Rows } from "lucide-react";
+import TestCalendar from "./TestCalendar";
+import EmptyDialog from "../Dialogs/EmptyDialog";
 
 function DynamicTable() {
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [incomeStatement, setIncomeStatement] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState<Account|null>(null)
   const [accounts, setAccounts] = useState<Account[]>([]);
+  useEffect(() => {
+    document.title = "قائمه الدخل ";
+  }, []);
   const [rows, setRows] = useState([
     {
       useAutocomplete: true,
@@ -56,10 +66,13 @@ function DynamicTable() {
   }, []);
   const updateTable = async () => {
     try {
-      const response = await axiosClient.patch(`updateIncomeStatement/${incomeStatement?.id}`, {
-        name: "Income Statement", // You can add a name input
-        data: rows, // Send the table data
-      });
+      const response = await axiosClient.patch(
+        `updateIncomeStatement/${incomeStatement?.id}`,
+        {
+          name: "Income Statement", // You can add a name input
+          data: rows, // Send the table data
+        }
+      );
       console.log(response.data.message); // Success message
     } catch (error) {
       console.error("Error saving table:", error);
@@ -127,12 +140,13 @@ function DynamicTable() {
   const handleAccountChange = (index, value) => {
     console.log(value, "val");
     const newRows = [...rows];
-    newRows[index].account = value;
+     newRows[index].account  = value;
     newRows[index].textValue = value.balance ? value.name : "";
-    if (value.debit == 0) {
-      newRows[index].value1 = Math.abs(value.balance);
+
+    if (value.childrenBalance > 0) {
+      newRows[index].value1 = Math.abs(value.childrenBalance);
     } else {
-      newRows[index].value2 = Math.abs(value.balance);
+      newRows[index].value1 = Math.abs(value.balance);
     }
 
     setRows(newRows);
@@ -183,225 +197,224 @@ function DynamicTable() {
   const handleChange = (event) => {
     setIncomeStatement(event.target.value);
   };
- 
+  const handleShowDetails = (row,index)=>{
+    console.log(row,index)
+    setSelectedAccount(row.account)
+    setShow(true)
+    // console.log(row[index].account ,'row[index].account ')
+  }
+  const [show,setShow] = useState(false)
+
   return (
-    <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={12} md={8}>
-        <Paper sx={{ p: 2 }}>
-          <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
-            {" "}
-            <Stack direction={"row"} gap={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNewStatement}
-              >
-                انشاء قائمه جديده
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddRow}
-              >
-                إضافة صف
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={updateTable}
-              >
-           تحديث القائمه
-              </Button>
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={() => {
-                  handleLoadTable();
-                }}
-              >
-                جلب الجدول
-              </Button>
-              <Button href={`${webUrl}incomeStatement/${incomeStatement?.id}`} variant="contained" color="success" >
-                     معاينه التقرير
-                  </Button>
-            </Stack>
-            {/* /render select mui element for incomeStatements */}
-            <FormControl>
-              <InputLabel id="income-statement-label">
-                القوائم الماليه
-              </InputLabel>
-              <Select
-                size="small"
-                sx={{ width: "300px" }}
-                labelId="income-statement-label"
-                value={incomeStatement}
-                onChange={handleChange}
-              >
-                {incomeStatements.map((statement) => (
-                  <MenuItem key={statement.id} value={statement}>
-                    {`${dayjs(statement.created_at).format("YYYY-MM-DD")} (${statement.id})`}
-                    {/* Adjust based on your API response */}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+    <Stack direction={"row"} gap={1}>
+      <Paper  sx={{ p: 2 ,flex:1 }}>
+        <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
+          {" "}
+          <Stack direction={"row"} gap={1}>
+            <Button
+              title="قائمه جديده"
+              variant="contained"
+              color="primary"
+              onClick={handleNewStatement}
+            >
+              <Plus />
+            </Button>
+            <Button
+              title="صف جديد"
+              variant="contained"
+              color="primary"
+              onClick={handleAddRow}
+            >
+              <Rows />
+            </Button>
+            <Button
+              title="تحديث القائمه"
+              variant="contained"
+              color="success"
+              onClick={updateTable}
+            >
+              <Sync />
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                handleLoadTable();
+              }}
+            >
+              <Import />
+            </Button>
+            <Button
+              href={`${webUrl}incomeStatement/${incomeStatement?.id}`}
+              variant="contained"
+              color="success"
+            >
+              <Printer />
+            </Button>
           </Stack>
-          <Typography variant="h3" textAlign={"center"} gutterBottom>
-            ( {incomeStatement?.id} ) قائمه الدخل
-          </Typography>
-          <TableContainer>
-            <Table style={{ direction: "rtl" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>الحساب</TableCell>
-                  <TableCell>مصروفات</TableCell>
-                  <TableCell>ايرادات</TableCell>
-                  <TableCell>اجمالي</TableCell>
-                  <TableCell></TableCell> {/* Empty cell for Delete button */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                      {/* Switch and Input Container */}
-                      <Box
+          {/* /render select mui element for incomeStatements */}
+          <FormControl>
+            <InputLabel id="income-statement-label">القوائم الماليه</InputLabel>
+            <Select
+              size="small"
+              sx={{ width: "300px" }}
+              labelId="income-statement-label"
+              value={incomeStatement}
+              onChange={handleChange}
+            >
+              {incomeStatements.map((statement) => (
+                <MenuItem key={statement.id} value={statement}>
+                  {`${dayjs(statement.created_at).format("YYYY-MM-DD")} (${statement.id})`}
+                  {/* Adjust based on your API response */}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+        <Typography variant="h4" textAlign={"center"} gutterBottom>
+          ( {incomeStatement?.id} ) قائمه الدخل
+        </Typography>
+        <TableContainer>
+          <Table style={{ direction: "rtl" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>الحساب</TableCell>
+                <TableCell>مصروفات</TableCell>
+                <TableCell>ايرادات</TableCell>
+                <TableCell>اجمالي</TableCell>
+                <TableCell></TableCell> {/* Empty cell for Delete button */}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell sx={{ display: "flex", alignItems: "center" }}>
+                    {/* Switch and Input Container */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "400px",
+                      }}
+                    >
+                      {row.useAutocomplete ? (
+                        <Autocomplete
+                          options={accounts}
+                          getOptionLabel={(option) => option.name || ""}
+                          value={row.account || null}
+                          onChange={(event, newValue) =>
+                            handleAccountChange(index, newValue)
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="اختر حساب"
+                              variant="outlined"
+                              size="small"
+                            />
+                          )}
+                          sx={{ flexGrow: 1, mr: 1 }} // Take remaining space, margin for spacing
+                        />
+                      ) : (
+                        <TextField
+                          value={row.textValue}
+                          onChange={(e) =>
+                            handleTextValueChange(index, e.target.value)
+                          }
+                          variant="outlined"
+                          label="ادخل حساب"
+                          size="small"
+                          sx={{ flexGrow: 1, mr: 1 }} // Take remaining space, margin for spacing
+                        />
+                      )}
+                      <Switch
+                        checked={row.useAutocomplete}
+                        onChange={() => handleToggleInputType(index)}
+                        name="useAutocomplete"
+                      />
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <TextField
+                        value={row.value1}
+                        onChange={(e) =>
+                          handleValueChange(index, "value1", e.target.value)
+                        }
+                        variant="outlined"
+                        size="small"
+                        fullWidth
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "400px",
+                          flexGrow: 1,
+                          mr: 1,
+                          border: row.value1Selected ? "2px solid aqua" : "",
                         }}
+                        onDoubleClick={() => handleDoubleClick(index, "value1")}
+                      />
+                      <Button
+                        onClick={() => handleSelectValue(index, "value1")}
+                        variant={row.value1Selected ? "contained" : "outlined"}
+                        size="small"
                       >
-                        {row.useAutocomplete ? (
-                          <Autocomplete
-                            options={accounts}
-                            getOptionLabel={(option) => option.name || ""}
-                            value={row.account || null}
-                            onChange={(event, newValue) =>
-                              handleAccountChange(index, newValue)
-                            }
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="اختر حساب"
-                                variant="outlined"
-                                size="small"
-                              />
-                            )}
-                            sx={{ flexGrow: 1, mr: 1 }} // Take remaining space, margin for spacing
-                          />
-                        ) : (
-                          <TextField
-                            value={row.textValue}
-                            onChange={(e) =>
-                              handleTextValueChange(index, e.target.value)
-                            }
-                            variant="outlined"
-                            label="ادخل حساب"
-                            size="small"
-                            sx={{ flexGrow: 1, mr: 1 }} // Take remaining space, margin for spacing
-                          />
-                        )}
-                        <Switch
-                          checked={row.useAutocomplete}
-                          onChange={() => handleToggleInputType(index)}
-                          name="useAutocomplete"
-                        />
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <TextField
-                          value={row.value1}
-                          onChange={(e) =>
-                            handleValueChange(index, "value1", e.target.value)
-                          }
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          sx={{
-                            flexGrow: 1,
-                            mr: 1,
-                            border: row.value1Selected ? "2px solid aqua" : "",
-                          }}
-                          onDoubleClick={() =>
-                            handleDoubleClick(index, "value1")
-                          }
-                        />
-                        <Button
-                          onClick={() => handleSelectValue(index, "value1")}
-                          variant={
-                            row.value1Selected ? "contained" : "outlined"
-                          }
-                          size="small"
-                        >
-                          تحديد
-                        </Button>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <TextField
-                          value={row.value2}
-                          onChange={(e) =>
-                            handleValueChange(index, "value2", e.target.value)
-                          }
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          onDoubleClick={() =>
-                            handleDoubleClick(index, "value2")
-                          }
-                          sx={{
-                            flexGrow: 1,
-                            mr: 1,
-                            border: row.value2Selected ? "2px solid aqua" : "",
-                          }}
-                        />
-                        <Button
-                          onClick={() => handleSelectValue(index, "value2")}
-                          variant={
-                            row.value2Selected ? "contained" : "outlined"
-                          }
-                          size="small"
-                        >
-                          تحديد
-                        </Button>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <TextField
-                          value={row.value3}
-                          onChange={(e) =>
-                            handleValueChange(index, "value3", e.target.value)
-                          }
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          onDoubleClick={() =>
-                            handleDoubleClick(index, "value3")
-                          }
-                          sx={{
-                            flexGrow: 1,
-                            mr: 1,
-                            border: row.value3Selected ? "2px solid aqua" : "",
-                          }}
-                        />
-                        <Button
-                          onClick={() => handleSelectValue(index, "value3")}
-                          variant={
-                            row.value3Selected ? "contained" : "outlined"
-                          }
-                          size="small"
-                        >
-                          تحديد
-                        </Button>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      {/* Delete Button */}
+                        تحديد
+                      </Button>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <TextField
+                        value={row.value2}
+                        onChange={(e) =>
+                          handleValueChange(index, "value2", e.target.value)
+                        }
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        onDoubleClick={() => handleDoubleClick(index, "value2")}
+                        sx={{
+                          flexGrow: 1,
+                          mr: 1,
+                          border: row.value2Selected ? "2px solid aqua" : "",
+                        }}
+                      />
+                      <Button
+                        onClick={() => handleSelectValue(index, "value2")}
+                        variant={row.value2Selected ? "contained" : "outlined"}
+                        size="small"
+                      >
+                        تحديد
+                      </Button>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction={"row"} gap={1}>
+                      <TextField
+                        value={row.value3}
+                        onChange={(e) =>
+                          handleValueChange(index, "value3", e.target.value)
+                        }
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        onDoubleClick={() => handleDoubleClick(index, "value3")}
+                        sx={{
+                          flexGrow: 1,
+                          mr: 1,
+                          border: row.value3Selected ? "2px solid aqua" : "",
+                        }}
+                      />
+                      <Button
+                        onClick={() => handleSelectValue(index, "value3")}
+                        variant={row.value3Selected ? "contained" : "outlined"}
+                        size="small"
+                      >
+                        تحديد
+                      </Button>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction={"row"} gap={1}>
                       <IconButton
                         onClick={() => handleDeleteRow(index)}
                         aria-label="delete"
@@ -409,15 +422,45 @@ function DynamicTable() {
                       >
                         <DeleteIcon />
                       </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Grid>
-    </Grid>
+                      <IconButton
+                        onClick={() => handleShowDetails(row,index)}
+               
+                        size="small"
+                      >
+                        <EyeIcon />
+                      </IconButton>
+                    </Stack>
+                    {/* Delete Button */}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <EmptyDialog show={show} setShow={setShow}>
+          <Box sx={{width:'400px'}}>
+            <Typography variant="h5" textAlign={'center'}> {selectedAccount?.name} </Typography>
+              <List>
+              {selectedAccount?.children.map((account)=>{
+                return(
+                  <ListItem secondaryAction={formatNumber(account.balance)} key={account.id}>
+                    <ListItemText primary={account.name}  />
+                  </ListItem>
+                )
+              })}
+          </List>
+          </Box>
+        
+        </EmptyDialog>
+      </Paper>
+      {incomeStatements.length > 0 && (
+        <TestCalendar
+          setRows={setRows}
+          setIncomeStatement={setIncomeStatement}
+          statements={incomeStatements}
+        />
+      )}
+    </Stack>
   );
 }
 

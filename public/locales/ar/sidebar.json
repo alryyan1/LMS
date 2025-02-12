@@ -66,7 +66,8 @@
     "routes": "النوافذ",
     "subRoutes": "النوافذ الفرعيه",
     "gallary": "مذكرات ",
-    "incomeStatement":"قائمه الدخل"
+    "incomeStatement":"قائمه الدخل",
+    "BalanceSheet":"قائمه الميزانيه"
 
     
   }
