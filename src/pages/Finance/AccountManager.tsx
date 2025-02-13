@@ -33,7 +33,7 @@ function AccountManager() {
       const [editMode, setEditMode] = useState(false);
       const [treeDataSortable, setTreeDataSortable] = useState([]);
 
-      const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+      const [firstDate, setFirstDate] = useState(dayjs().startOf('month'));
     
       const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   useEffect(() => {

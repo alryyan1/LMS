@@ -26,6 +26,7 @@ function DateComponent({
 }) {
   // const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(firstDate,'datecompnonent');
 
   const searchHandler = () => {
     setLoading(true);
@@ -68,7 +69,7 @@ function DateComponent({
             onChange={(val) => {
               setFirstDate(val);
             }}
-            defaultValue={dayjs(new Date())}
+            defaultValue={dayjs(firstDate)}
             sx={{ m: 1 }}
             label="From"
           />
@@ -93,7 +94,7 @@ function DateComponent({
         >
           Go
         </LoadingButton>
-        <Button
+        {/* <Button
           onClick={() => {
           axiosClient.post('incomeStatement/16').then(({data})=>{
            const datapdf = data.slice(data.indexOf("JVB"))
@@ -102,7 +103,7 @@ function DateComponent({
           }}
         >
           ai
-        </Button>
+        </Button> */}
       </Box>
     </Stack>
   );

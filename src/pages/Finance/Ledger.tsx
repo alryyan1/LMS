@@ -29,7 +29,8 @@ import DateComponent from "./DateComponent.js";
     const [accountLedger, setAccountLedger] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState<Account|null>(null);
     const [entries, setEntries] = useState<Entry[]>([]);
-    const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+    const [firstDate, setFirstDate] = useState(dayjs().startOf('month'));
+    console.log(firstDate,'first date')
   
     const [secondDate, setSecondDate] = useState(dayjs(new Date()));
     useEffect(() => {

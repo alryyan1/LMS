@@ -41,7 +41,7 @@ function AccountEntries() {
       console.log(data, "accounts");
     });
   }, [update]);
-  const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+  const [firstDate, setFirstDate] = useState(dayjs().startOf('month'));
 
   const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   return (
@@ -60,10 +60,10 @@ function AccountEntries() {
           />
 
           <Button href={`${webUrl}entries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
-          <GeminiImageUploader/>
+          {/* <GeminiImageUploader/> */}
           {/* create table with all clients */}
-          <TableContainer>
-            <Table dir="rtl" size="small">
+          <TableContainer sx={{height:`${window.innerHeight - 200}px`,overflow:'auto'}}>
+            <Table  dir="rtl" size="small">
               <thead>
                 <TableRow>
                   <TableCell>التاريخ</TableCell>

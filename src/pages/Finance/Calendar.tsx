@@ -14,7 +14,7 @@ const MyCalendar = ({ datesToMark,setIncomeStatement ,statements,setRows}) => {
     const stmt = statements.find((s)=> dayjs(date).format('YYYY-MM-DD') == dayjs(s.created_at).format('YYYY-MM-DD'))
     setIncomeStatement(stmt)
     console.log(stmt);   
-    setRows([])
+    setRows(stmt.data)
   };
 
 
