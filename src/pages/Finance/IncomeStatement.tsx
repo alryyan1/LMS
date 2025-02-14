@@ -488,7 +488,7 @@ function DynamicTable() {
               <List>
               {selectedAccount?.children.map((account)=>{
                 return(
-                  <ListItem secondaryAction={formatNumber(account.balance)} key={account.id}>
+                  <ListItem secondaryAction={formatNumber(account.children.length > 0 ? account.totalBalance: account.balance)} key={account.id}>
                     <ListItemText primary={account.name}  />
                   </ListItem>
                 )
