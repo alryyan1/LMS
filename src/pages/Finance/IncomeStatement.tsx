@@ -484,12 +484,21 @@ function DynamicTable() {
         </TableContainer>
         <EmptyDialog show={show} setShow={setShow}>
           <Box sx={{width:'400px'}}>
-            <Typography variant="h5" textAlign={'center'}> {selectedAccount?.name} </Typography>
+            <Typography variant="h5" textAlign={'center'}> <Button href={`${webUrl}accountChildren/${selectedAccount?.id}`}>{selectedAccount?.name}</Button> </Typography>
               <List>
               {selectedAccount?.children.map((account)=>{
                 return(
-                  <ListItem secondaryAction={formatNumber(account.children.length > 0 ? account.totalBalance: account.balance)} key={account.id}>
-                    <ListItemText primary={account.name}  />
+                  <ListItem secondaryAction={ <IconButton
+                    onClick={() => {
+                      setSelectedAccount(account)
+                      setShow(true)
+                    }}
+           
+                    size="small"
+                  >
+                    <EyeIcon />
+                  </IconButton>} key={account.id}>
+                    <ListItemText secondary={formatNumber(account.children.length > 0 ? account.totalBalance: account.balance)} primary={account.name}  />
                   </ListItem>
                 )
               })}

@@ -12,6 +12,7 @@ import dayjs from 'dayjs'; // Import dayjs
 import DynamicTable from "./IncomeStatement";
 
 const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
+const initialCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
 
 function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate }) {
   const [accounts, setAccounts] = useState([]);

@@ -98,10 +98,17 @@ function AccountManager() {
         } else {
           debitBalance = totalDebits - totalCredits;
         }
+        let label ;
+        if(account.children.length > 0 ){
+           label = `${account.name} ${account.totalBalance} `
+        }else{
+           label = `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `
+        }
+       
         return [
           account.id,
           {
-            name: `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `,
+            name: label,
             id: account.id,
             code: account.code,
             description: account.description,
