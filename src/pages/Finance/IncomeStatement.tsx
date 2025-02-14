@@ -147,8 +147,8 @@ function DynamicTable() {
      newRows[index].account  = value;
     newRows[index].textValue = value.balance ? value.name : "";
 
-    if (value.childrenBalance > 0) {
-      newRows[index].value1 = Math.abs(value.childrenBalance);
+    if (value.children.length > 0) {
+      newRows[index].value1 = Math.abs(value.totalBalance);
     } else {
       newRows[index].value1 = Math.abs(value.balance);
     }
@@ -311,7 +311,7 @@ function DynamicTable() {
           <Table style={{ direction: "rtl" }}>
             <TableHead>
               <TableRow>
-                <TableCell>الحساب</TableCell>
+                <TableCell>البيان</TableCell>
                 <TableCell>مصروفات</TableCell>
                 <TableCell>ايرادات</TableCell>
                 <TableCell>اجمالي</TableCell>
