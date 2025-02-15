@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
 import dayjs from "dayjs";
-import AddEntryForm from "./AddEntryForm.jsx";
+import AddEntryForm from "./AddEntryForm.tsx";
 import { formatNumber, webUrl } from "../constants.js";
 import DateComponent from "./DateComponent.tsx";
 import GeminiImageUploader from "./Gemini.tsx";

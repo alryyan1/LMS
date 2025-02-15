@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs'; // Import dayjs
 import DynamicTable from "./IncomeStatement";
+import { Account } from "../../types/type";
 
 const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
 const initialCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
@@ -18,7 +19,7 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
   const [accounts, setAccounts] = useState([]);
   const [balanceError, setBalanceError] = useState(''); // State for balance error message
   const { t } = useTranslation('addEntry'); // Initialize translation hook
-
+const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
   const {
     register,
     control,
@@ -140,12 +141,13 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
 
   const isDebitOptionDisabled = (option) => {
     const selectedDebitIds = getSelectedDebitAccountIds();
-    return selectedDebitIds.includes(option.id);
+    console.log(debitAccounts,' selected')
+    return selectedAccounts.map((a)=>a.id).includes(option.id) || option.children.length > 0;
   };
 
   const isCreditOptionDisabled = (option) => {
     const selectedCreditIds = getSelectedCreditAccountIds();
-    return selectedCreditIds.includes(option.id);
+    return selectedAccounts.map((a)=>a.id).includes(option.id) || option.children.length > 0;
   };
 
   return (
@@ -213,6 +215,9 @@ function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate })
                     <Autocomplete
                       value={field.value || null}
                       onChange={(e, newVal) => {
+                        setSelectedAccounts((prev)=>{
+                          return [...prev , newVal]
+                        })
                         field.onChange(newVal);
                       }}
                       getOptionKey={(op) => op.id}

@@ -183,7 +183,7 @@ function AccountManager() {
           )}
         </div>
 
-        <div style={{ display: "flex" }} className="cent">
+        <div style={{ display: "flex",padding:'10px' }} className="cent">
           <AccountTree data={treeData} onNodeClick={handleNodeClick} />
         </div>
       </Stack>
