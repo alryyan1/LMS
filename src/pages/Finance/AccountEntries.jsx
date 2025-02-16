@@ -91,7 +91,7 @@ function AccountEntries() {
                         rowSpan={
                           Math.max( entry.debit.length,entry.credit.length) + 2
                         }
-                        style={{ textAlign: "right", color: "lightblue" }}
+                        // style={{ textAlign: "right", color: "lightblue" }}
                       >
                         {entry.id}
                       </TableCell>

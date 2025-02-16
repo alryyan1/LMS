@@ -78,7 +78,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
                   <TableCell>الكود</TableCell>
                   <TableCell>طبيعه الحساب</TableCell>
                   <TableCell> تاريخ انشاء الحساب</TableCell>
-                  <TableCell>حذف</TableCell>
+                  {/* <TableCell>حذف</TableCell> */}
                 </TableRow>
               </thead>
   
@@ -90,7 +90,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
                     <TableCell>{account.code}</TableCell>
                     <MySelectTableCellAccount  item={account} myVal={account.debit} table="editAccount" colName={'debit'}></MySelectTableCellAccount>
                     <TableCell>{dayjs(new Date(Date.parse(account.created_at))).format('YYYY-MM-DD')}</TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <IconButton
                         onClick={() => {
                           deleteAccountHandler(account.id);
@@ -98,7 +98,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
                       >
                         <Delete></Delete>
                       </IconButton>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>

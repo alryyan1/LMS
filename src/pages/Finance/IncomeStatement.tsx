@@ -28,7 +28,7 @@ import {
 import { Delete as DeleteIcon, Sync } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { formatNumber, webUrl } from "../constants";
-import { Account } from "../../types/type";
+import { Account } from '../../types/type';
 import dayjs from "dayjs";
 import { EyeIcon, Import, Plus, Printer, Rows } from "lucide-react";
 import TestCalendar from "./TestCalendar";
@@ -141,16 +141,16 @@ function DynamicTable() {
     setRows(newRows);
   };
 
-  const handleAccountChange = (index, value) => {
+  const handleAccountChange = (index, value:Account) => {
     // console.log(value, "val");
     const newRows = [...rows];
      newRows[index].account  = value;
-    newRows[index].textValue = value.balance ? value.name : "";
+    newRows[index].textValue = value.debits.reduce((prev,curr)=>prev+curr.amount,0) ? value.name : "";
 
     if (value.children.length > 0) {
       newRows[index].value1 = Math.abs(value.totalBalance);
     } else {
-      newRows[index].value1 = Math.abs(value.balance);
+      newRows[index].value1 = Math.abs(value.debits.reduce((prev,curr)=>prev+curr.amount,0));
     }
 
     setRows(newRows);
