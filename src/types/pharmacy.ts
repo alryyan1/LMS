@@ -1,5 +1,4 @@
 import { User } from "./Patient";
-import { Deduct, Shift } from "./Shift";
 
 export interface DrugItem {
     id: number;
@@ -102,9 +101,7 @@ export interface PharmacyLayoutPros {
   setDepositItemsSearch:(search:string)=>void;
   depositItemsLinks : string[];
   setDepositItemsLinks: (data:string[])=>void;
-  setDeduct:()=>void;
-  activeSell:Deduct;
-  shift:Shift
+
 }
 
 
