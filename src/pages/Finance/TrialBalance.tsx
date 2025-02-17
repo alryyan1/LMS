@@ -84,7 +84,7 @@ function Ledger() {
       <Stack alignItems={'center'} justifyContent={'center'} direction='row' gap={1}>
       <Typography variant="h3">ميزان المراجعه </Typography>
       <Button href={`${webUrl}trial-balance`}>PDF</Button>
-      {/* <Button href={`${webUrl}ledger-excel`}>Excell</Button> */}
+      <Button href={`${webUrl}trial-balance-excel`}>Excell</Button>
       </Stack>
 
       <Table style={{ direction: "rtl" }} className="table" size="small">
