@@ -738,14 +738,14 @@ function SellDrug() {
                     fullWidth
                     loading={loading}
                     onClick={() => {
-                      //   printHandler()
+                        printHandler()
                       setLoading(true);
                       axiosClient
                         .get(
                           `inventory/deduct/complete/${activeSell.id}?is_sell=1`
                         )
                         .then(({ data }) => {
-                          printHandler();
+                          // printHandler();
                           try {
                             setDialog((prev) => {
                               return {

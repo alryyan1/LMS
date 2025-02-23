@@ -1,7 +1,7 @@
 import "./addPatient.css";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import { newImage, notifyMe, sendResult, updateHandler, webUrl } from "../constants";
+import { newImage, notifyMe, sendFinshedResult, sendMsg, sendResult, updateHandler, webUrl } from "../constants";
 
 import {
   List,
@@ -256,14 +256,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                <Button
+                {/* <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button>
+                </Button> */}
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}
@@ -289,15 +289,16 @@ function Result() {
                       axiosClient
                         .get(`result?pid=${actviePatient.id}&base64=1`)
                         .then(({ data }) => {
-                          form.append("data", data);
+                          // form.append("data", data);
+                          // console.log(data)
 
                           printJS({
-                            printable: data.data.slice(data.data.indexOf("JVB")),
+                            printable: data.data,
                             base64: true,
                             type: "pdf",
                           });
                           if(settings.send_result_after_auth){
-                            sendResult(actviePatient,setLoading)
+                            sendFinshedResult(actviePatient,setLoading)
                           }
 
                         setActivePatient(data.patient)                          
@@ -322,20 +323,22 @@ function Result() {
                     onClick={() => {
                       //authentication event
                       setLoading(true);
-                      updateHandler(
-                        1,
-                        "result_auth",
-                        actviePatient,
-                        setActivePatient
-                      ).then((data) => {
-                        console.log("after update", data);
-                        setActivePatient(data);
-                        setLoading(false);
-                        if(settings.send_result_after_result){
-                          sendResult(actviePatient,setLoading)
-                        }
+                      sendFinshedResult(actviePatient,setLoading)
 
-                      });
+                      // updateHandler(
+                      //   1,
+                      //   "result_auth",
+                      //   actviePatient,
+                      //   setActivePatient
+                      // ).then((data) => {
+                      //   console.log("after update", data);
+                      //   setActivePatient(data);
+                      //   setLoading(false);
+                      //   if(settings.send_result_after_result){
+                      //     // sendResult(actviePatient,setLoading)
+                      //   }
+
+                      // });
                     }}
                     sx={{ mt: 1 }}
                     color="warning"

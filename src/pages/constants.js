@@ -80,6 +80,11 @@ export const sendResult = (actviePatient,setLoading)=>{
       .finally(() => setLoading(false));
   });
 }
+export const sendFinshedResult = (actviePatient,setLoading)=>{
+  axiosClient
+  .post(`sendFinshedResult/${actviePatient.id}`)
+  .finally(() => setLoading(false));
+}
 export const updateHandler = (
   val,
   colName,
