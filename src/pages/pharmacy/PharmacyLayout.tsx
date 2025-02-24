@@ -43,6 +43,7 @@ function PharmacyLayout() {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [excelLoading, setExeclLoading] = useState(false);
   const [links, setLinks] = useState([]);
+  const [invoicesLinks, setInvoicesLinks] = useState([]);
   const [updateSummery, setUpdateSummery] = useState(0);
   const [depositItems, setDepositItems] = useState<DepositItem[]>([]);
   const [depositItemsSearch, setDepositItemsSearch] = useState("");
@@ -51,10 +52,14 @@ function PharmacyLayout() {
     setDepositLoading(true);
     axiosClient
       .get<Deposit[]>("inventory/deposit/all")
-      .then(({ data }) => {
-        setInvoices(data.map((d)=>{
-          return {...d, items: [] };
-        }));
+      // .then(({ data }) => {
+      //   setInvoices(data.map((d)=>{
+      //     return {...d, items: [] };
+      //   }));
+      // })
+      .then(({ data: { data, links } }) => {
+        setInvoices(data);
+        setInvoicesLinks(links);
       })
       .finally(() => setDepositLoading(false));
   }, []);
@@ -67,26 +72,26 @@ function PharmacyLayout() {
     });
   }, []);
   useEffect(() => {
-    setShiftIsLoading(true);
-    axiosClient
-      .get(`shiftWith?with=deducts`)
-      .then(({ data: data }) => {
-        setShift(data);
-      })
-      .finally(() => setShiftIsLoading(false));
+    // setShiftIsLoading(true);
+    // axiosClient
+    //   .get(`shiftWith?with=deducts`)
+    //   .then(({ data: data }) => {
+    //     setShift(data);
+    //   })
+    //   .finally(() => setShiftIsLoading(false));
 
-    setItemsIsLoading(true);
-    axiosClient
-      .get(`items/all`)
-      .then(({ data: data }) => {
-        setItems(data);
-        if (data.status == false) {
-          setDialog((prev) => {
-            return { ...prev, open: true, msg: data.message };
-          });
-        }
-      })
-      .finally(() => setItemsIsLoading(false));
+    // setItemsIsLoading(true);
+    // axiosClient
+    //   .get(`items/all`)
+    //   .then(({ data: data }) => {
+    //     setItems(data);
+    //     if (data.status == false) {
+    //       setDialog((prev) => {
+    //         return { ...prev, open: true, msg: data.message };
+    //       });
+    //     }
+    //   })
+    //   .finally(() => setItemsIsLoading(false));
 
     axiosClient.get("drugCategory").then(({ data }) => {
       setDrugCategory(data);
@@ -149,6 +154,10 @@ function PharmacyLayout() {
             setDepositItemsSearch,
             depositItemsLinks,
             setDepositItemsLinks,
+            invoicesLinks,
+            setInvoicesLinks,
+    
+
           }}
         />
       }

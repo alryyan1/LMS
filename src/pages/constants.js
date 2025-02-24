@@ -11,7 +11,7 @@ export function onlyAdmin(user, action) {
 }
 // export const host = 'sahara-pharma.com'
 export const schema = "http";
-export const host = "127.0.0.1";
+export const host = "192.168.100.70";
 // export const host = 'server1'مركز النعيم
 
 export function blurForNoramlUsers() {
@@ -62,12 +62,23 @@ export const notifyMe = (title, data, address, action) => {
 };
 export const getDoctorVisit = (pid) => {
   return new Promise((resolve, reject) => {
+
     axiosClient.get(`doctorvisit/find?pid=${pid}`).then(({ data }) => {
       resolve(data);
     });
   });
 };
+export const getDoctorVisitById = (pid,controller) => {
+  return new Promise((resolve, reject) => {
+    axiosClient.post(`doctorvisitById?id=${pid}`,{},{
+      signal:controller.signal
+    }).then(({ data }) => {
+      console.log(data,'data')
 
+      resolve(data);
+    });
+  });
+};
 export const sendResult = (actviePatient,setLoading)=>{
   axiosClient
   .get(`result?pid=${actviePatient.id}&base64=1`)

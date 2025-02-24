@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../axios-client";
-import { newImage, notifyMe } from "../constants";
+import { getDoctorVisit, getDoctorVisitById, newImage, notifyMe } from "../constants";
 import { socket } from "../../socket";
 import { Shift } from "../../types/Shift";
 import { ResultProps } from "../../types/CutomTypes";
@@ -14,8 +14,10 @@ export default function useResult(): ResultProps {
   const [resultUpdated, setResultUpdated] = useState(0);
   const [shift, setShift] = useState<Shift | null>(null);
   const [patients, setPatients] = useState<DoctorVisit[]>([]);
-  const [selectedTest, setSelectedTest] = useState<Labrequest|null>(null);
-  const [selectedReslult, setSelectedResult] = useState<RequestedResult|null>(null);
+  const [selectedTest, setSelectedTest] = useState<Labrequest | null>(null);
+  const [selectedReslult, setSelectedResult] = useState<RequestedResult | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [actviePatient, setActivePatient] = useState<DoctorVisit | null>(null);
@@ -29,21 +31,22 @@ export default function useResult(): ResultProps {
     setIsConnected(false);
   }
 
-  const update = (actviePatient:DoctorVisit)=>{
-    setPatients((prev)=>{
-      if(actviePatient.patient.shift_id == shift?.id){
-        //هنا اذا كان البشين في نفس الورديه بنضاف عن طريق socket 
+  const update = (actviePatient: DoctorVisit) => {
+    setPatients((prev) => {
+      if (actviePatient.patient.shift_id == shift?.id) {
+        //هنا اذا كان البشين في نفس الورديه بنضاف عن طريق socket
         //المشكله كانت لما كان يعمل سيرش لبيشن قديم كان بنضاف في الورديه الاسي
-        if(!prev.find((p)=>p.id == actviePatient.id)) return [actviePatient,...prev]
+        if (!prev.find((p) => p.id == actviePatient.id))
+          return [actviePatient, ...prev];
       }
-      return prev.map((p)=>{
-        if(p.id === actviePatient?.id){
-          return {...actviePatient }
+      return prev.map((p) => {
+        if (p.id === actviePatient?.id) {
+          return { ...actviePatient };
         }
-        return p
-      })
-    })
-  }
+        return p;
+      });
+    });
+  };
   useEffect(() => {
     if (actviePatient) {
       // setShift((prev) => {
@@ -57,8 +60,8 @@ export default function useResult(): ResultProps {
       //     }),
       //   };
       // });
-             
-      update(actviePatient)
+
+      update(actviePatient);
     }
   }, [actviePatient]);
   const [layOut, setLayout] = useState({
@@ -122,7 +125,20 @@ export default function useResult(): ResultProps {
       setPatientsLoading(false);
     });
   }, []);
+  useEffect(() => {
+    // alert(value)
 
+    //update latest patients for doctor
+    const controller = new AbortController();
+    if (actviePatient) {
+      getDoctorVisitById(actviePatient?.id,controller).then((data)=>{
+        console.log(data,'dd')
+        setActivePatient(data)
+      })
+    }
+
+    return () => controller.abort(); // Clean up the abort controller when component unmounts.
+  }, [actviePatient?.id]);
   const setActivePatientHandler = (pat) => {
     setSelectedResult(null);
     setActivePatient({ ...pat });
@@ -132,7 +148,7 @@ export default function useResult(): ResultProps {
   const patientsUpdateSocketHandler = (doctorVisit) => {
     console.log(doctorVisit, "doctorVisit from socket handler");
     //  setActivePatient(doctorVisit,false)
-    update(doctorVisit)
+    update(doctorVisit);
   };
 
   return {
@@ -154,9 +170,8 @@ export default function useResult(): ResultProps {
     setActivePatient,
     setSelectedResult,
     patients,
-    setPatients
-    
-    ,
+    setPatients,
+
     showSearch,
   };
 }

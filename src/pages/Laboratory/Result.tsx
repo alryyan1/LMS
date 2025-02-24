@@ -256,14 +256,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-                {/* <Button
+             <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button> */}
+                </Button> 
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}
@@ -325,20 +325,20 @@ function Result() {
                       setLoading(true);
                       sendFinshedResult(actviePatient,setLoading)
 
-                      // updateHandler(
-                      //   1,
-                      //   "result_auth",
-                      //   actviePatient,
-                      //   setActivePatient
-                      // ).then((data) => {
-                      //   console.log("after update", data);
-                      //   setActivePatient(data);
-                      //   setLoading(false);
-                      //   if(settings.send_result_after_result){
-                      //     // sendResult(actviePatient,setLoading)
-                      //   }
+                      updateHandler(
+                        1,
+                        "result_auth",
+                        actviePatient,
+                        setActivePatient
+                      ).then((data) => {
+                        console.log("after update", data);
+                        setActivePatient(data);
+                        setLoading(false);
+                        if(settings.send_result_after_result){
+                          // sendResult(actviePatient,setLoading)
+                        }
 
-                      // });
+                      });
                     }}
                     sx={{ mt: 1 }}
                     color="warning"

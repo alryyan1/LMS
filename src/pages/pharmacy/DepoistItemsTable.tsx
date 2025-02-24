@@ -28,7 +28,7 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   blurForNoramlUsers,
   onlyAdmin,
@@ -51,20 +51,22 @@ import ExcelReader from "../../ExcelReader";
 import InvoiceSummary from "./InvoiceSummary";
 import { Deposit, PharmacyLayoutPros } from "../../types/pharmacy";
 
-interface deleteZeroQuantityProps {
+interface DeleteZeroQuantityProps {
   deposit: Deposit;
   count: number;
 }
 
-interface DepoistItemsTableProps {
+interface DepositItemsTableProps {
   data: { items: Deposit[] };
   setData: (data: { items: Deposit[] }) => void;
   setLayout: (layout) => void;
   setSelectedDeposit: (deposit: Deposit) => void;
   invoiceItems: Deposit[];
   setInvoiceItems: (items: Deposit[]) => void;
-  depositItemId: number|null;
+  depositItemId: number | null;
+  change: (deposit: Deposit) => void; // Added the change prop
 }
+
 function DepoistItemsTable({
   data,
   setData,
@@ -73,8 +75,8 @@ function DepoistItemsTable({
   setSelectedDeposit,
   invoiceItems,
   setInvoiceItems,
-  depositItemId
-}:DepoistItemsTableProps) {
+  depositItemId,
+}: DepositItemsTableProps) {
   const {
     setDialog,
     selectedInvoice: selectedDeposit,
@@ -85,89 +87,202 @@ function DepoistItemsTable({
     updateSummery,
   } = useOutletContext<PharmacyLayoutPros>();
   const { user } = useStateContext();
-  console.log(selectedDeposit, "deposit items table rendereed ");
+
   const [ld, setLd] = useState(false);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [summeryIsLoading, setSummeryIsLoading] = useState(false);
-  const [page, setPage] = useState(0);
- 
+  const [page, setPage] = useState(10);
 
-  const updateItemsTable = (link, setLoading) => {
-    console.log(search);
-    setLoading(true);
-    axiosClient(`${link.url}&word=${search}`)
-      .then(({ data }) => {
-        console.log(data, "pagination data");
-        setInvoiceItems(data.data);
-        setLinks(data.links);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  // Memoized function to update the items table
+  const updateItemsTable = useCallback(
+    (link, setLoading) => {
+      setLoading(true);
+      axiosClient(`${link.url}&word=${search}`)
+        .then(({ data }) => {
+          setInvoiceItems(data.data);
+          setLinks(data.links);
+        })
+        .catch((error) => {
+          console.error("Error updating items table:", error); // More descriptive error message
+          setDialog((prev) => ({
+            ...prev,
+            open: true,
+            color: "error",
+            message: "Failed to fetch data.", // User-friendly message
+          }));
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [search, setInvoiceItems, setLinks, setDialog]
+  );
 
-  useEffect(() => {
-    const filterByDepositItemId = depositItemId != null ? `&depositItemId=${depositItemId}` : '';
-    setLoading(true);
-    const timer = setTimeout(() => {
+  // Memoized function to fetch the invoice items
+  const fetchInvoiceItems = useCallback(
+    (selectedDepositId: number | undefined, search: string, page: number, depositItemId: number | null) => {
+      if (!selectedDepositId) return;
+
+      const filterByDepositItemId = depositItemId != null ? `&depositItemId=${depositItemId}` : '';
+
+      setLoading(true);
       axiosClient
         .get(
-          `deposit/items/all/pagination/${selectedDeposit?.id}?word=${search}&rows=${page}${filterByDepositItemId.trim()}`
+          `deposit/items/all/pagination/${selectedDepositId}?word=${search}&rows=${page}${filterByDepositItemId.trim()}`
         )
         .then(({ data: { data, links } }) => {
-          console.log(data);
-          console.log(links, "links");
           setInvoiceItems(data);
-          // console.log(links)
           setLinks(links);
         })
         .catch(({ response: { data } }) => {
-          setDialog((prev) => {
-            return {
-              ...prev,
-              open: true,
-              color: "error",
-              message: data.message,
-            };
-          });
-        }).finally(() => {
+          console.error("Error fetching invoice items:", data); // More descriptive error message
+          setDialog((prev) => ({
+            ...prev,
+            open: true,
+            color: "error",
+            message: data.message || "Failed to fetch invoice items.", // User-friendly message with fallback
+          }));
+        })
+        .finally(() => {
           setLoading(false);
         });
+    },
+    [setInvoiceItems, setLinks, setDialog]
+  );
+
+  useEffect(() => {
+    // Debounce the fetchInvoiceItems function
+    const timer = setTimeout(() => {
+      fetchInvoiceItems(selectedDeposit?.id, search, page, depositItemId);
     }, 300);
+
     return () => clearTimeout(timer);
-  }, [search,page]);
+  }, [selectedDeposit?.id, search, page, depositItemId, fetchInvoiceItems]);
 
+  // Memoized function to delete an income item
+  const deleteIncomeItemHandler = useCallback(
+    (id: number) => {
+      setLoading(true);
+      axiosClient
+        .delete(`depositItem/${id}`)
+        .then(() => {
+          setInvoiceItems((prev) => prev.filter((item) => item.id !== id));
+          setDialog({
+            open: true,
+            message: "Item deleted successfully.", // User-friendly message
+          });
+        })
+        .catch((error) => {
+          console.error("Error deleting income item:", error); // More descriptive error message
+          setDialog((prev) => ({
+            ...prev,
+            open: true,
+            color: "error",
+            message: "Failed to delete item.", // User-friendly message
+          }));
+        })
+        .finally(() => setLoading(false));
+    },
+    [setInvoiceItems, setDialog]
+  );
 
-  const deleteIncomeItemHandler = (id) => {
-    setLoading(true);
-    axiosClient.delete(`depositItem/${id}`).then((data) => {
-      if (data.status) {
-        setLoading(false);
-        setInvoiceItems((prev) => {
-          return prev.filter((item) => item.id !== id);
-        });
-        //delete supplier by id
-        setDialog({
-          open: true,
-          message: "Delete was successfull",
-        });
-      }
-    });
+  const handleDefineInvoice = () => {
+    setLd(true);
+    const result = confirm("Are you sure you want to define all items for this invoice?");
+    if (result) {
+      axiosClient
+        .post(`income-item/bulk/${selectedDeposit?.id}`)
+        .then(({ data }) => {
+          change(data.deposit);
+          setData(data);
+        })
+        .catch((error) => {
+          console.error("Error defining invoice:", error); // More descriptive error message
+          setDialog((prev) => ({
+            ...prev,
+            open: true,
+            color: "error",
+            message: "Failed to define invoice.", // User-friendly message
+          }));
+        })
+        .finally(() => setLd(false));
+    } else {
+      setLd(false); // Reset loading state if the user cancels the action
+    }
   };
+
+  const handleToggleShowAll = () => {
+    setLoading(true);
+    if (!selectedDeposit?.id) {
+      setLoading(false);
+      return;
+    }
+
+    axiosClient
+      .patch(`inventory/deposit/update/${selectedDeposit.id}`, {
+        colName: "showAll",
+        val: !selectedDeposit.showAll,
+      })
+      .then(({ data }) => {
+        setSelectedDeposit(data.data);
+        return axiosClient
+          .get(
+            `deposit/items/all/pagination/${selectedDeposit.id}?rows=${page}`
+          );
+      })
+      .then(({ data: { data, links } }) => {
+        setInvoiceItems(data);
+        setLinks(links);
+      })
+      .catch((error) => {
+        console.error("Error toggling showAll:", error); // More descriptive error message
+        setDialog((prev) => ({
+          ...prev,
+          open: true,
+          color: "error",
+          message: "Failed to toggle visibility.", // User-friendly message
+        }));
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleDeleteZeroQuantity = () => {
+    const confirmDelete = confirm("Are you sure you want to delete all items with zero quantity from this invoice?");
+    if (confirmDelete) {
+      setLoading(true);
+      if (!selectedDeposit?.id) {
+        setLoading(false);
+        return;
+      }
+      axiosClient
+        .get<DeleteZeroQuantityProps>(`deleteZeroQuantity/${selectedDeposit.id}`)
+        .then(({ data }) => {
+          setSelectedDeposit(data.deposit);
+          toast(`Deleted ${data.count} items with zero quantity.`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          fetchInvoiceItems(selectedDeposit.id, search, page, depositItemId); // Refresh invoice items
+        })
+        .catch((error) => {
+          console.error("Error deleting zero quantity items:", error); // More descriptive error message
+          setDialog((prev) => ({
+            ...prev,
+            open: true,
+            color: "error",
+            message: "Failed to delete zero quantity items.", // User-friendly message
+          }));
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+
   return (
     <TableContainer sx={{ height: "80vh", overflow: "auto", p: 1 }}>
       <div>
         <ToastContainer />
       </div>
-      <InvoiceSummary 
-        summeryIsLoading={summeryIsLoading}
-        user={user}
-      />
-      {/* <a href={`${webUrl}pdf?id=${selectedDeposit.id}`}></a> */}
+      <InvoiceSummary summeryIsLoading={summeryIsLoading} user={user} />
 
       <Stack
         alignItems={"center"}
@@ -176,18 +291,17 @@ function DepoistItemsTable({
         gap={1}
       >
         <Typography align="center">
-          {`${selectedDeposit.supplier.name} /  ${selectedDeposit.bill_number}`}
+          {selectedDeposit?.supplier?.name || "No Supplier"} / {selectedDeposit?.bill_number || "No Bill Number"}
         </Typography>
-        {loading && <CircularProgress/>}
+        {loading && <CircularProgress />}
         <select
           onChange={(val) => {
-            setPage(val.target.value);
+            setPage(Number(val.target.value));
           }}
+          defaultValue={page}
         >
           <option value="5">5</option>
-          <option selected value="10">
-            10
-          </option>
+          <option value="10">10</option>
           <option value="20">20</option>
           <option value="30">30</option>
           <option value="50">50</option>
@@ -195,13 +309,11 @@ function DepoistItemsTable({
         </select>
         <IconButton
           onClick={() => {
-            setLayout((prev) => {
-              return {
-                ...prev,
-                showAddtoDeposit: true,
-                addToDepositForm: "1fr",
-              };
-            });
+            setLayout((prev) => ({
+              ...prev,
+              showAddtoDeposit: true,
+              addToDepositForm: "1fr",
+            }));
           }}
           title="add item"
           color="success"
@@ -210,13 +322,11 @@ function DepoistItemsTable({
         </IconButton>
         <IconButton
           onClick={() => {
-            setLayout((prev) => {
-              return {
-                ...prev,
-                showAddtoDeposit: false,
-                addToDepositForm: "0fr",
-              };
-            });
+            setLayout((prev) => ({
+              ...prev,
+              showAddtoDeposit: false,
+              addToDepositForm: "0fr",
+            }));
           }}
           title="expand"
           color="success"
@@ -233,30 +343,17 @@ function DepoistItemsTable({
         <Button
           variant="contained"
           sx={{ m: 1 }}
-          href={`${webUrl}pdf?id=${selectedDeposit.id}`}
+          href={selectedDeposit?.id ? `${webUrl}pdf?id=${selectedDeposit.id}` : undefined}
+          disabled={!selectedDeposit?.id}
         >
           pdf
         </Button>
         <LoadingButton
           variant="contained"
           loading={ld}
-          onClick={() => {
-            setLd(true);
-            const result = confirm(
-              "هل انت متاكد من اضافه كل الاصناف لهذه الفاتوره"
-            );
-            if (result) {
-              axiosClient
-                .post(`income-item/bulk/${selectedDeposit.id}`)
-                .then(({ data }) => {
-                  change(data.deposit);
-                  setData(data);
-                })
-                .finally(() => setLd(false));
-            }
-          }}
+          onClick={handleDefineInvoice}
         >
-          تعريف
+          Define
         </LoadingButton>
         <LoadingButton
           loading={loading}
@@ -264,33 +361,10 @@ function DepoistItemsTable({
           color="inherit"
           title="show only quantity"
           size="small"
-          onClick={() => {
-            setLoading(true);
-            axiosClient
-              .patch(`inventory/deposit/update/${selectedDeposit.id}`, {
-                colName: "showAll",
-                val: !selectedDeposit.showAll,
-              })
-              .then(({ data }) => {
-                setSelectedDeposit(data.data);
-                axiosClient
-                  .get(
-                    `deposit/items/all/pagination/${selectedDeposit.id}?rows=${page}`
-                  )
-                  .then(({ data: { data, links } }) => {
-                    console.log(data, "items");
-                    console.log(links);
-                    setInvoiceItems(data);
-                    console.log(links);
-                    setLinks(links);
-                  })
-                  .catch(({ response: { data } }) => {})
-                  .finally(() => setLoading(false));
-              });
-          }}
+          onClick={handleToggleShowAll}
           variant="contained"
         >
-          {selectedDeposit.showAll ? <RemoveRedEye /> : <VisibilityOff />}
+          {selectedDeposit?.showAll ? <RemoveRedEye /> : <VisibilityOff />}
         </LoadingButton>
         <LoadingButton
           loading={loading}
@@ -298,23 +372,7 @@ function DepoistItemsTable({
           color="inherit"
           title="Delete Zero Quantity"
           size="small"
-          onClick={() => {
-            let r = confirm(
-              "سيتم حذف كل الكميات التي كميتها صفر من هذه الفاتوره"
-            );
-            if (r) {
-              setLoading(true);
-              axiosClient
-                .get<deleteZeroQuantityProps>(
-                  `deleteZeroQuantity/${selectedDeposit.id}`
-                )
-                .then(({ data }) => {
-                  setSelectedDeposit(data.deposit);
-                  toast(`تم حذف عدد ${data.count}`, {});
-                })
-                .finally(() => setLoading(false));
-            }
-          }}
+          onClick={handleDeleteZeroQuantity}
           variant="contained"
         >
           <DeleteForeverSharp />
@@ -325,9 +383,9 @@ function DepoistItemsTable({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           size="small"
-          label="بحث"
+          label="Search"
           type="search"
-        ></TextField>
+        />
       </Stack>
       {excelLoading ? (
         <Skeleton width={"100%"} height={"80vh"} />
@@ -351,149 +409,148 @@ function DepoistItemsTable({
               </thead>
 
               <TableBody>
-                {invoiceItems.map((depositItem, i) => {
-                  return (
-                    <TableRow key={depositItem.id}>
-                      <TableCell>
-                        <span
-                       
-                        >
-                          {depositItem?.item?.market_name.toUpperCase()}
-                        </span>
-                      </TableCell>
-                      <MyTableCell
-                        stateUpdater={setUpdateSummery}
-                        setDialog={setDialog}
-                        sx={{ width: "60px", textAlign: "center" }}
-                        show
-                        item={depositItem}
-                        table="depositItems/update"
-                        colName={"quantity"}
-                      >
-                        {depositItem.quantity}
-                      </MyTableCell>
-                      <MyTableCell
-                        setDialog={setDialog}
-                        stateUpdater={setUpdateSummery}
-                        show
-                        sx={{ width: "60px", textAlign: "center" }}
-                        item={depositItem}
-                        table="depositItems/update"
-                        colName={"cost"}
-                      >
-                        {depositItem.cost}
-                      </MyTableCell>
+                {invoiceItems.map((depositItem, i) => (
+                  <TableRow key={depositItem.id}>
+                    <TableCell>
+                      <span>
+                        {depositItem?.item?.market_name?.toUpperCase()}
+                      </span>
+                    </TableCell>
+                    <MyTableCell
+                      stateUpdater={setUpdateSummery}
+                      setDialog={setDialog}
+                      sx={{ width: "60px", textAlign: "center" }}
+                      show
+                      item={depositItem}
+                      table="depositItems/update"
+                      colName={"quantity"}
+                    >
+                      {depositItem.quantity}
+                    </MyTableCell>
+                    <MyTableCell
+                      setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
+                      show
+                      sx={{ width: "60px", textAlign: "center" }}
+                      item={depositItem}
+                      table="depositItems/update"
+                      colName={"cost"}
+                    >
+                      {depositItem.cost}
+                    </MyTableCell>
 
-                      <MyTableCell
-                        setDialog={setDialog}
-                        stateUpdater={setUpdateSummery}
-                        show
-                        sx={{ width: "60px", textAlign: "center" }}
-                        item={depositItem}
-                        table="depositItems/update"
-                        colName={"vat_cost"}
-                      >
-                        {depositItem.vat_cost}
-                      </MyTableCell>
+                    <MyTableCell
+                      setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
+                      show
+                      sx={{ width: "60px", textAlign: "center" }}
+                      item={depositItem}
+                      table="depositItems/update"
+                      colName={"vat_cost"}
+                    >
+                      {depositItem.vat_cost}
+                    </MyTableCell>
 
-                      <MyTableCell
-                        setDialog={setDialog}
-                        stateUpdater={setUpdateSummery}
-                        sx={{ width: "60px", textAlign: "center" }}
-                        show
-                        item={depositItem}
-                        table="depositItems/update"
-                        colName={"sell_price"}
-                      >
-                        {depositItem.sell_price}
-                      </MyTableCell>
-                      <MyTableCell
-                        setDialog={setDialog}
-                        stateUpdater={setUpdateSummery}
-                        sx={{ width: "60px", textAlign: "center" }}
-                        item={depositItem}
-                        table="depositItems/update"
-                        colName={"vat_sell"}
-                      >
-                        {toFixed(depositItem.vat_sell, 3)}
-                      </MyTableCell>
-                      <TableCell>
-                        {toFixed(depositItem.finalSellPrice, 3)}
-                      </TableCell>
+                    <MyTableCell
+                      setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
+                      sx={{ width: "60px", textAlign: "center" }}
+                      show
+                      item={depositItem}
+                      table="depositItems/update"
+                      colName={"sell_price"}
+                    >
+                      {depositItem.sell_price}
+                    </MyTableCell>
+                    <MyTableCell
+                      setDialog={setDialog}
+                      stateUpdater={setUpdateSummery}
+                      sx={{ width: "60px", textAlign: "center" }}
+                      item={depositItem}
+                      table="depositItems/update"
+                      colName={"vat_sell"}
+                    >
+                      {toFixed(depositItem.vat_sell, 3)}
+                    </MyTableCell>
+                    <TableCell>
+                      {toFixed(depositItem.finalSellPrice, 3)}
+                    </TableCell>
 
-                      <TableCell>
-                        <ButtonOptions
-                          loading={loading}
-                          deleteIncomeItemHandler={deleteIncomeItemHandler}
-                          item={depositItem}
-                          change={change}
-                        />
-                      </TableCell>
+                    <TableCell>
+                      <ButtonOptions
+                        loading={loading}
+                        deleteIncomeItemHandler={deleteIncomeItemHandler}
+                        item={depositItem}
+                        change={change}
+                      />
+                    </TableCell>
 
-                      <TableCell>
-                        <MyDateField2
-                          val={depositItem.expire}
-                          item={depositItem}
-                        />
-                      </TableCell>
-                      <MyTableCell
-                        show
-                        colName={"barcode"}
-                        item={depositItem.item}
-                        table="items"
-                      >
-                        {depositItem?.item?.barcode}
-                      </MyTableCell>
-                    </TableRow>
-                  );
-                })}
+                    <TableCell>
+                      <MyDateField2
+                        val={depositItem.expire}
+                        item={depositItem}
+                      />
+                    </TableCell>
+                    <MyTableCell
+                      show
+                      colName={"barcode"}
+                      item={depositItem.item}
+                      table="items"
+                    >
+                      {depositItem?.item?.barcode}
+                    </MyTableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Card>
 
           <Grid sx={{ gap: "4px", mt: 1 }} container>
             {links.map((link, i) => {
-              if (i == 0) {
+              if (i === 0) {
                 return (
                   <Grid item xs={1} key={i}>
                     <MyLoadingButton
                       onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
+                        if (link.url) updateItemsTable(link, setLoading);
                       }}
                       variant="contained"
-                      key={i}
+                      disabled={!link.url}
                     >
                       <ArrowBack />
                     </MyLoadingButton>
                   </Grid>
                 );
-              } else if (links.length - 1 == i) {
+              } else if (links.length - 1 === i) {
                 return (
                   <Grid item xs={1} key={i}>
                     <MyLoadingButton
                       onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
+                        if (link.url) updateItemsTable(link, setLoading);
                       }}
                       variant="contained"
-                      key={i}
+                      disabled={!link.url}
                     >
                       <ArrowForward />
                     </MyLoadingButton>
                   </Grid>
                 );
-              } else
+              } else {
+                const label = link.label === 'pagination.previous' ? '<' : link.label === 'pagination.next' ? '>' : link.label;
                 return (
                   <Grid item xs={1} key={i}>
                     <MyLoadingButton
                       active={link.active}
                       onClick={(setLoading) => {
-                        updateItemsTable(link, setLoading);
+                        if (link.url) updateItemsTable(link, setLoading);
                       }}
+                      disabled={!link.url}
                     >
-                      {link.label}
+                      {label}
                     </MyLoadingButton>
                   </Grid>
                 );
+              }
             })}
           </Grid>
         </>
