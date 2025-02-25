@@ -360,3 +360,6 @@ body {
       opacity: 0;
     }
   }
+  .vertical-tree .node-group {
+    margin: 20px; /* Adjust this value to add space around nodes */
+  }

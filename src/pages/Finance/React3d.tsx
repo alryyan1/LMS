@@ -28,22 +28,24 @@ import { LoadingButton } from "@mui/lab";
 import { formatNumber } from "../constants.js";
 import DateComponent from "./DateComponent";
 
-import SortableTree from 'react-sortable-tree';
-import 'react-sortable-tree/style.css'; // Import react-sortable-tree styles
-import { v4 as uuidv4 } from 'uuid'; // Import a UUID generator
+import SortableTree from "react-sortable-tree";
+import "react-sortable-tree/style.css"; // Import react-sortable-tree styles
+import { v4 as uuidv4 } from "uuid"; // Import a UUID generator
 
 //import AccountTree from "./AccountTree"; // Assuming you still have this
-import Tree from 'react-d3-tree'; // Import react-d3-tree
+import Tree from "react-d3-tree"; // Import react-d3-tree
 
 function AccountManager() {
-    const [accounts, setAccounts] = useState([]);
-    const [treeDataSortable, setTreeDataSortable] = useState([]); // react-sortable-tree data
-    const [selectedAccount, setSelectedAccount] = useState(null);
-    const [editMode, setEditMode] = useState(false);
-    const [tabValue, setTabValue] = useState(0); // 0 for react-tree-graph, 1 for react-sortable-tree
-  
-    const [firstDate, setFirstDate] = useState(dayjs(new Date()));
-    const [secondDate, setSecondDate] = useState(dayjs(new Date()));
+  const [accounts, setAccounts] = useState([]);
+  const [treeDataSortable, setTreeDataSortable] = useState([]); // react-sortable-tree data
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [collapsedNodes, setCollapsedNodes] = useState([]);
+
+  const [editMode, setEditMode] = useState(false);
+  const [tabValue, setTabValue] = useState(0); // 0 for react-tree-graph, 1 for react-sortable-tree
+
+  const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+  const [secondDate, setSecondDate] = useState(dayjs(new Date()));
 
   useEffect(() => {
     fetchAccounts();
@@ -86,9 +88,15 @@ function AccountManager() {
   const convertToTreeData = (accounts) => {
     const accountMap = new Map(
       accounts.map((account) => {
-          const totalCredits = account.credits.reduce((acc, curr) => acc + curr.amount, 0);
-          const totalDebits = account.debits.reduce((acc, curr) => acc + curr.amount, 0);
-          const balance = totalCredits - totalDebits;
+        const totalCredits = account.credits.reduce(
+          (acc, curr) => acc + curr.amount,
+          0
+        );
+        const totalDebits = account.debits.reduce(
+          (acc, curr) => acc + curr.amount,
+          0
+        );
+        const balance = totalCredits - totalDebits;
         return [
           account.id,
           {
@@ -96,7 +104,7 @@ function AccountManager() {
             id: account.id,
             code: account.code,
             description: account.description,
-             balance: formatNumber(Math.abs(balance)),
+            balance: formatNumber(Math.abs(balance)),
             children: [],
           },
         ];
@@ -118,7 +126,7 @@ function AccountManager() {
       }
     });
 
-       return [{ name: "Accounts", children: treeData }];
+    return [{ name: "Accounts", children: treeData }];
   };
 
   const convertToTreeDataSortable = (accounts) => {
@@ -151,6 +159,9 @@ function AccountManager() {
             id: account.id, // IMPORTANT: Add a unique ID!
             title: `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `,
             name: account.name, //Keep track of Account Name
+            attributes:{
+                balance:account.balance
+            },
             code: account.code,
             description: account.description,
             parent:
@@ -176,50 +187,69 @@ function AccountManager() {
           treeData.push(node);
         }
       } else {
-          treeData.push(node);
+        treeData.push(node);
       }
     });
-     return treeData; // Return the array of root nodes
+    return treeData; // Return the array of root nodes
   };
 
   useEffect(() => {
-    document.title = 'شجره الحسابات ';
+    document.title = "شجره الحسابات ";
   }, []);
 
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
- const renderCustomNodeElement = ({ nodeDatum }) => {
-    console.log(nodeDatum,'nodeDatum')
-   return (
-        <g>
-            <circle r="10" fill="lightsteelblue"></circle>
-            <text style={{ fontSize: '12px' }} x="15" y="0px">
-                {nodeDatum.name} ({nodeDatum.balance})
-            </text>
-        </g>
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+  const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+    const isCollapsed = collapsedNodes.includes(nodeDatum.id);
+    return (
+      <g 
+        onClick={() => {
+        //   toggleNodeExpansion(nodeDatum);
+          handleNodeClick(nodeDatum.id);
+          toggleNode();
+
+        }}
+      >
+        <circle r="10" fill="lightsteelblue" />
+        <text style={{ fontSize: "12px" }} x="15" y="0px">
+          {nodeDatum.name} ({formatNumber(nodeDatum.balance)})
+        </text>
+      </g>
     );
- }
-    const onNodeClick = (node) => {
-          setSelectedAccount(node.node); // Here, we extract the account data from node.data
-    };
-    const treeData = convertToTreeData(accounts);
-    console.log(treeData)
+  };
+  const toggleNodeExpansion = (node) => {
+    const nodeId = node.id;
+    setCollapsedNodes((prevState) => {
+      if (prevState.includes(nodeId)) {
+        return prevState.filter((id) => id !== nodeId); // Remove ID to expand
+      } else {
+        return [...prevState, nodeId]; // Add ID to collapse
+      }
+    });
+  };
+  const onNodeClick = (node) => {
+    // alert("ssssssss");
+    console.log(node, "node clicked");
+    setSelectedAccount(node.node); // Here, we extract the account data from node.data
+  };
+  const treeData = convertToTreeData(accounts);
 
+  useEffect(() => {
+    // When accounts are fetched, convert them to tree data
+    if (accounts.length > 0) {
+      // When accounts are fetched, convert them to tree data
+      const convertedTree = convertToTreeData(accounts);
+      convertedTree[0].collapsed = false;
+      setCollapsedNodes([convertedTree[0].id]);
+    }
+  }, [accounts]);
 
-      useEffect(() => {
-        // When accounts are fetched, convert them to tree data
-        if (accounts.length > 0) {
-          const convertedTree = convertToTreeDataSortable(accounts);
-          setTreeDataSortable(convertedTree);
-        }
-      }, [accounts]);
+  const getNodeKey = (node) => node.id; // Use node.id as the key
 
-      const getNodeKey = (node) => node.id; // Use node.id as the key
-
-      const onTreeChange = (newTreeData) => {
-          setTreeDataSortable(newTreeData); // Update the treeData state when the tree changes
-      };
+  const onTreeChange = (newTreeData) => {
+    setTreeDataSortable(newTreeData); // Update the treeData state when the tree changes
+  };
 
   return (
     <>
@@ -231,24 +261,49 @@ function AccountManager() {
         accounts={accounts}
         setAccounts={setAccounts}
       />
-   
 
-         
+      <Stack direction={'row'} gap={1}>
+        <div style={{ width: "300px" }}>
+          <h1>Account Tree</h1>
+          {selectedAccount && !editMode && (
+            <AccountCard
+              handleEditAccount={handleEditAccount}
+              selectedAccount={selectedAccount}
+              first={firstDate.format("YYYY/MM/DD")}
+              second={secondDate.format("YYYY/MM/DD")}
+            />
+          )}
+
+          {editMode && (
+            <AccountForm
+              account={selectedAccount}
+              onAccountAdded={handleAccountAdded}
+              onAccountUpdated={handleAccountUpdated}
+              onCancel={handleCancelEdit}
+            />
+          )}
+
+          {!selectedAccount && !editMode && (
+            <AccountForm
+              onAccountAdded={handleAccountAdded}
+              onAccountUpdated={handleAccountUpdated}
+            />
+          )}
+        </div>
+        <div style={{ height: `${window.innerHeight - 100}px`, flex: 1 }}>
+          <Tree
+          collapsible={true}
+          separation={{ siblings :2,nonSiblings:2}} // Adjust these values
+
         
-
-              <div style={{ height: `${window.innerHeight -100}px` }}>
-                    <Tree
-                        data={treeData}
-                      orientation="vertical" // or "horizontal"
-                      renderCustomNodeElement={renderCustomNodeElement} // Use custom node rendering
-                      //onNodeClick={handleNodeClick} //Adjust to work with react-d3-tree data
-                   />
-              </div>
-            
-
-       
-      
-      
+            onNodeClick={onNodeClick}
+            data={treeData}
+            orientation="vertical" // or "horizontal"
+            renderCustomNodeElement={renderCustomNodeElement} // Use custom node rendering
+            //onNodeClick={handleNodeClick} //Adjust to work with react-d3-tree data
+          />
+        </div>
+      </Stack>
     </>
   );
 }
