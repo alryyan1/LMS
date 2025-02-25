@@ -266,7 +266,7 @@ function SellDrug() {
           gap: "15px",
           marginTop: "5px",
           transition: "0.3s all ease-in-out",
-          height: "75vh",
+          height: `${window.innerHeight}px`,
           display: "grid",
           gridTemplateColumns: `0.1fr  0.3fr  2fr 0.5fr 0.1fr      `,
         }}
@@ -305,7 +305,7 @@ function SellDrug() {
         <Card
           sx={{
             p: 1,
-            height: "80vh",
+            height: `${window.innerHeight - 100}px`,
             overflow: "auto",
             backgroundColor: "#ffffff73",
           }}

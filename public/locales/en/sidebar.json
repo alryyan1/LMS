@@ -70,7 +70,8 @@
      "subRoutes": "Sub Routes",
     "gallary": "Accounant Notes",
     "incomeStatement":"income Statement",
-    "BalanceSheet":"Balance Sheet"
+    "BalanceSheet":"Balance Sheet",
+    "financeTree2":"Account Tree 2"
 
     
 }

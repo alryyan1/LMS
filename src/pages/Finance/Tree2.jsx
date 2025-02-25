@@ -8,7 +8,7 @@ import {
 import AccountManager from "./AccountManager";
 import Tree3d from "./React3d";
 
-function TreeOne() {
+function TreeTwo() {
   const handleDrop = (newTree) => {
     console.log("Dropped", newTree);
     setTreeData(newTree)
@@ -27,10 +27,10 @@ function TreeOne() {
     setTreeData(updatedTree);
   };
   return (
-    <div className="TreeOne">
-      <AccountManager/>
+    <div className="TreeTwo">
+      <Tree3d/>
     </div>
   );
 }
 
-export default TreeOne;
+export default TreeTwo;

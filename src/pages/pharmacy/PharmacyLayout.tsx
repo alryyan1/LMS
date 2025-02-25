@@ -72,13 +72,13 @@ function PharmacyLayout() {
     });
   }, []);
   useEffect(() => {
-    // setShiftIsLoading(true);
-    // axiosClient
-    //   .get(`shiftWith?with=deducts`)
-    //   .then(({ data: data }) => {
-    //     setShift(data);
-    //   })
-    //   .finally(() => setShiftIsLoading(false));
+    setShiftIsLoading(true);
+    axiosClient
+      .get(`shiftWith?with=deducts`)
+      .then(({ data: data }) => {
+        setShift(data);
+      })
+      .finally(() => setShiftIsLoading(false));
 
     // setItemsIsLoading(true);
     // axiosClient

@@ -89,6 +89,7 @@ import Expense from "./pages/Finance/Expense";
 import Gallary from "./pages/Finance/Gallary";
 import IncomeStatement from "./pages/Finance/IncomeStatement";
 import BalanceSheet from "./pages/Finance/BalanceSheet";
+import TreeTwo from "./pages/Finance/Tree2";
 
 
 const  guest:RouteObject =    {
@@ -263,6 +264,10 @@ const finance:RouteObject =   {
           {
             path: "tree",
             element: <MyTree />,
+          },
+          {
+            path: "tree2",
+            element: <TreeTwo />,
           },
           {
             path: "section",
