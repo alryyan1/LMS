@@ -66,6 +66,7 @@ import AutocompleteSearchPatientInsurance from "../../components/AutocompleteSea
 import { PharmacyLayoutPros } from "../../types/pharmacy";
 import { Barcode, Plus, Printer } from "lucide-react";
 import { useStateContext } from "../../appContext";
+import { socket } from "../../socket";
 // import Calculator from "../../components/calculator/Calculator";
 
 function SellDrug() {
@@ -207,6 +208,42 @@ function SellDrug() {
         }
       });
   };
+
+  //socket
+    const [isConnected, setIsConnected] = useState(socket.connected);
+  
+    function onConnect() {
+      setIsConnected(true);
+      console.log("connected succfully");
+    }
+  
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+    useEffect(() => {
+      //  const socket =  io('ws://localhost:3000')
+  
+      socket.on("connect", onConnect);
+      socket.on("disconnect", onDisconnect);
+      socket.on("disconnect", () => {
+        console.log("socket disconnected");
+      });
+      socket.on("connect", (args) => {
+        console.log("doctor connected succfully with id" + socket.id, args);
+      });
+      socket.on("new deduct recieved", (args) => {
+        console.log(args,'new deduct');
+        update(args);
+      });
+  
+  
+  
+      return () => {
+        socket.off("connect", onConnect);
+        socket.off("disconnect", onDisconnect);
+        socket.off("new deduct recieved", onDisconnect);
+      };
+    }, []);
   return (
     <>
       <Stack direction={"row"} gap={1}>

@@ -19,8 +19,8 @@ export default function useResult(): ResultProps {
     null
   );
   const [loading, setLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState(socket.connected);
   const [actviePatient, setActivePatient] = useState<DoctorVisit | null>(null);
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
   function onConnect() {
     setIsConnected(true);
@@ -30,7 +30,35 @@ export default function useResult(): ResultProps {
   function onDisconnect() {
     setIsConnected(false);
   }
+  useEffect(() => {
+    //  const socket =  io('ws://localhost:3000')
 
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("disconnect", () => {
+      console.log("socket disconnected");
+    });
+    socket.on("connect", (args) => {
+      console.log("doctor connected succfully with id" + socket.id, args);
+    });
+
+    socket.on("labrRquestConfirmFromServer", (pid) => {
+      console.log("labrRquestConfirmFromServer " + pid);
+      notifyMe(`New Lab Request '`, null, newImage, null);
+      patientsUpdateSocketHandler(pid);
+    });
+    socket.on("labPaymentFromServer", (pid) => {
+      console.log("newEvent from Server");
+      patientsUpdateSocketHandler(pid);
+    });
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("labrRquestConfirmFromServer");
+      socket.off("labPaymentFromServer");
+    };
+  }, []);
   const update = (actviePatient: DoctorVisit) => {
     setPatients((prev) => {
       if (actviePatient.patient.shift_id == shift?.id) {
@@ -88,35 +116,7 @@ export default function useResult(): ResultProps {
       document.removeEventListener("keydown", SearchHandler);
     };
   }, []);
-  useEffect(() => {
-    //  const socket =  io('ws://localhost:3000')
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("disconnect", () => {
-      console.log("socket disconnected");
-    });
-    socket.on("connect", (args) => {
-      console.log("doctor connected succfully with id" + socket.id, args);
-    });
-
-    socket.on("labrRquestConfirmFromServer", (pid) => {
-      console.log("labrRquestConfirmFromServer " + pid);
-      notifyMe(`New Lab Request '`, null, newImage, null);
-      patientsUpdateSocketHandler(pid);
-    });
-    socket.on("labPaymentFromServer", (pid) => {
-      console.log("newEvent from Server");
-      patientsUpdateSocketHandler(pid);
-    });
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("labrRquestConfirmFromServer");
-      socket.off("labPaymentFromServer");
-    };
-  }, []);
   useEffect(() => {
     setPatientsLoading(true);
     axiosClient.get(`shiftWith?with=patients`).then(({ data: data }) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./finance.css";
 import AccountForm from "./AccountForm";
 import AccountCard from "./AccountCard";
@@ -18,6 +18,9 @@ import {
   Typography,
   Tabs, // Import Tabs and Tab
   Tab,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
 import dayjs from "dayjs";
@@ -25,7 +28,7 @@ import AddEntryForm from "./AddEntryForm.jsx";
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LoadingButton } from "@mui/lab";
-import { formatNumber } from "../constants.js";
+import { formatNumber, webUrl } from "../constants.js";
 import DateComponent from "./DateComponent";
 
 import SortableTree from "react-sortable-tree";
@@ -34,9 +37,15 @@ import { v4 as uuidv4 } from "uuid"; // Import a UUID generator
 
 //import AccountTree from "./AccountTree"; // Assuming you still have this
 import Tree from "react-d3-tree"; // Import react-d3-tree
+const NonRerenderingComponent = React.memo(({ someProp }) => {
+  console.log("Rendered!");
 
+  return <div>This part will NOT re-render when `someState` changes.</div>;
+});
 function AccountManager() {
   const [accounts, setAccounts] = useState([]);
+  const selectedAccountRef = useRef(null);
+
   const [treeDataSortable, setTreeDataSortable] = useState([]); // react-sortable-tree data
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [collapsedNodes, setCollapsedNodes] = useState([]);
@@ -44,7 +53,7 @@ function AccountManager() {
   const [editMode, setEditMode] = useState(false);
   const [tabValue, setTabValue] = useState(0); // 0 for react-tree-graph, 1 for react-sortable-tree
 
-  const [firstDate, setFirstDate] = useState(dayjs(new Date()));
+  const [firstDate, setFirstDate] = useState(dayjs(new Date()).startOf('month'));
   const [secondDate, setSecondDate] = useState(dayjs(new Date()));
 
   useEffect(() => {
@@ -61,9 +70,11 @@ function AccountManager() {
   };
 
   const handleNodeClick = (accountId) => {
-    const account = accounts.find((a) => a.id === accountId);
-    console.log(account);
-    setSelectedAccount(account);
+    console.log(accountId)
+    // const account = accounts.find((a) => a.id === accountId);
+    // console.log(accountId);
+
+    // setSelectedAccount(account);
   };
 
   const handleAccountAdded = () => {
@@ -103,8 +114,13 @@ function AccountManager() {
             name: account.name,
             id: account.id,
             code: account.code,
+            credits: account.credits,
+            debits: account.debits,
             description: account.description,
             balance: formatNumber(Math.abs(balance)),
+            totalCredits: formatNumber(totalCredits),
+            totalDebits: formatNumber(totalDebits),
+
             children: [],
           },
         ];
@@ -115,6 +131,13 @@ function AccountManager() {
 
     accounts.forEach((account) => {
       const node = accountMap.get(account.id);
+      //   console.log(node,'node in foreach')
+
+      node.attributes = {
+        balance: account.balance,
+        credits: account.totalCredits,
+        debits: account.balance,
+      };
 
       if (account.parents.length > 0) {
         const parentNode = accountMap.get(account.parents[0].id);
@@ -159,8 +182,8 @@ function AccountManager() {
             id: account.id, // IMPORTANT: Add a unique ID!
             title: `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `,
             name: account.name, //Keep track of Account Name
-            attributes:{
-                balance:account.balance
+            attributes: {
+              balance: account.balance,
             },
             code: account.code,
             description: account.description,
@@ -192,7 +215,7 @@ function AccountManager() {
     });
     return treeData; // Return the array of root nodes
   };
-
+  console.log("page rendered");
   useEffect(() => {
     document.title = "شجره الحسابات ";
   }, []);
@@ -200,21 +223,63 @@ function AccountManager() {
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
-  const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
-    const isCollapsed = collapsedNodes.includes(nodeDatum.id);
+  const renderCustomNodeElement2 = ({ nodeDatum, toggleNode }) => {
     return (
-      <g 
-        onClick={() => {
-        //   toggleNodeExpansion(nodeDatum);
-          handleNodeClick(nodeDatum.id);
-          toggleNode();
-
-        }}
-      >
+      <g transform="translate(-10,-10)">
+        {/* Circle for the node */}
         <circle r="10" fill="lightsteelblue" />
-        <text style={{ fontSize: "12px" }} x="15" y="0px">
+
+        {/* Node Text */}
+        <text x="15" y="0px" style={{ fontSize: "12px" }}>
           {nodeDatum.name} ({formatNumber(nodeDatum.balance)})
         </text>
+
+        {/* Button inside the node */}
+        <foreignObject x="50" y="-10" width="100" height="30">
+          <button
+            style={{ width: "100%", height: "100%" }}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering tree collapse
+              alert(`Clicked on ${nodeDatum.name}`);
+            }}
+          >
+            Click Me
+          </button>
+        </foreignObject>
+      </g>
+    );
+  };
+  const renderCustomNodeElement = ({ nodeDatum, toggleNode }) => {
+    // console.log(nodeDatum,'nodeDatum',)
+    const isCollapsed = collapsedNodes.includes(nodeDatum.id);
+    
+    return (
+      <g
+        onClick={() => {
+          //   toggleNodeExpansion(nodeDatum);
+          handleNodeClick(nodeDatum);
+          toggleNode();
+        }}
+      >
+        <circle r="20" />
+        <text style={{ fontWeight: "normal" }} x="0" y="0px">
+          {nodeDatum.name} ({formatNumber(nodeDatum.balance)})
+        </text>
+        <foreignObject x="50" y="-10" width="100" height="100">
+          <Stack direction={"column"}>
+            <Button
+              target="_blank"
+              href={`${webUrl}ledger/${nodeDatum?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}
+            >
+              PDF
+            </Button>
+            <label>Credit {nodeDatum.totalCredits}</label>
+            <label>Debits {nodeDatum.totalDebits}</label>
+         
+
+          </Stack>
+        
+        </foreignObject>
       </g>
     );
   };
@@ -231,7 +296,12 @@ function AccountManager() {
   const onNodeClick = (node) => {
     // alert("ssssssss");
     console.log(node, "node clicked");
-    setSelectedAccount(node.node); // Here, we extract the account data from node.data
+    if (node.parent) {
+      console.log(node.data, "node account");
+      // selectedAccountRef.current = node.data; // Updating without re-render
+
+      // setSelectedAccount(node.data); // Here, we extract the account data from node.data
+    }
   };
   const treeData = convertToTreeData(accounts);
 
@@ -262,45 +332,53 @@ function AccountManager() {
         setAccounts={setAccounts}
       />
 
-      <Stack direction={'row'} gap={1}>
-        <div style={{ width: "300px" }}>
-          <h1>Account Tree</h1>
-          {selectedAccount && !editMode && (
-            <AccountCard
-              handleEditAccount={handleEditAccount}
-              selectedAccount={selectedAccount}
-              first={firstDate.format("YYYY/MM/DD")}
-              second={secondDate.format("YYYY/MM/DD")}
-            />
-          )}
+      <Stack
+        direction={"row"}
+        gap={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        {selectedAccount && (
+          <div style={{ width: "300px" }}>
+            <h1>Account Tree</h1>
+            {selectedAccount && !editMode && (
+              <AccountCard
+                handleEditAccount={handleEditAccount}
+                selectedAccount={selectedAccount}
+                first={firstDate.format("YYYY/MM/DD")}
+                second={secondDate.format("YYYY/MM/DD")}
+              />
+            )}
 
-          {editMode && (
-            <AccountForm
-              account={selectedAccount}
-              onAccountAdded={handleAccountAdded}
-              onAccountUpdated={handleAccountUpdated}
-              onCancel={handleCancelEdit}
-            />
-          )}
+            {editMode && (
+              <AccountForm
+                account={selectedAccount}
+                onAccountAdded={handleAccountAdded}
+                onAccountUpdated={handleAccountUpdated}
+                onCancel={handleCancelEdit}
+              />
+            )}
 
-          {!selectedAccount && !editMode && (
-            <AccountForm
-              onAccountAdded={handleAccountAdded}
-              onAccountUpdated={handleAccountUpdated}
-            />
-          )}
-        </div>
+            {!selectedAccount && !editMode && (
+              <AccountForm
+                onAccountAdded={handleAccountAdded}
+                onAccountUpdated={handleAccountUpdated}
+              />
+            )}
+          </div>
+        )}
         <div style={{ height: `${window.innerHeight - 100}px`, flex: 1 }}>
           <Tree
-          collapsible={true}
-          separation={{ siblings :2,nonSiblings:2}} // Adjust these values
-
-        
+            //    key={selectedAccountRef}
+            //   enableLegacyTransitions
+            collapsible={true}
+            separation={{ siblings: 2, nonSiblings: 2 }} // Adjust these values
+            initialDepth={0}
             onNodeClick={onNodeClick}
             data={treeData}
             orientation="vertical" // or "horizontal"
             renderCustomNodeElement={renderCustomNodeElement} // Use custom node rendering
-            //onNodeClick={handleNodeClick} //Adjust to work with react-d3-tree data
+            // onNodeClick={handleNodeClick} //Adjust to work with react-d3-tree data
           />
         </div>
       </Stack>

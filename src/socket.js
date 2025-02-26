@@ -5,4 +5,4 @@ import { host, schema } from './pages/constants';
 // const URL =  'http://localhost:3000';
 const URL =  `${schema}://${host}:3000`;
 
-export const socket = io(URL,{autoConnect:false});
+export const socket = io(URL,{autoConnect:true});
