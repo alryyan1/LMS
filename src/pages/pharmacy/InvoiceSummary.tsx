@@ -1,6 +1,6 @@
 import { Card, CircularProgress, Skeleton, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { blurForNoramlUsers, onlyAdmin, toFixed } from "../constants";
+import { blurForNoramlUsers, formatNumber, onlyAdmin, toFixed } from "../constants";
 import counting from "./../../assets/images/counting.png";
 import reduction from "./../../assets/images/reduction.png";
 import vat from "./../../assets/images/vat.png";
@@ -142,7 +142,7 @@ function InvoiceSummary({
                   top: "45px",
                 }}
               >
-                {toFixed(CalcCostBefore() ?? 0, 3)}
+                {formatNumber( CalcCostBefore()) }
               </span>
               <span
                 style={{
@@ -157,8 +157,8 @@ function InvoiceSummary({
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
-            <Stack
+          {/* <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}> */}
+            {/* <Stack
               justifyContent={"center"}
               alignItems={"center"}
               className={` hover:bg-sky-700`}
@@ -193,9 +193,9 @@ function InvoiceSummary({
                 {" "}
                 ج.ضريبه
               </span>
-            </Stack>
-          </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
+            </Stack> */}
+          {/* </Card> */}
+          {/* <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -232,7 +232,7 @@ function InvoiceSummary({
                 التكلفه بعد
               </span>
             </Stack>
-          </Card>
+          </Card> */}
           <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
@@ -259,7 +259,7 @@ function InvoiceSummary({
                   top: "45px",
                 }}
               >
-                {toFixed(CalcRetail(), 3)}
+                {formatNumber( CalcRetail())}
               </span>
               <span
                 style={{
@@ -300,7 +300,7 @@ function InvoiceSummary({
                   top: "45px",
                 }}
               >
-                {toFixed(CalcRetail() - CalcCostBefore(), 3)}
+                {formatNumber( CalcRetail() - CalcCostBefore())}
               </span>
               <span
                 style={{
@@ -315,7 +315,7 @@ function InvoiceSummary({
               </span>
             </Stack>
           </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
+          {/* <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -352,8 +352,8 @@ function InvoiceSummary({
                 الخصم نسبه
               </span>
             </Stack>
-          </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
+          </Card> */}
+          {/* <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -390,8 +390,8 @@ function InvoiceSummary({
                 الخصم
               </span>
             </Stack>
-          </Card>
-          <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
+          </Card> */}
+          {/* <Card sx={{ backgroundColor: "#ffffff73", height: 87, width: 87 }}>
             <Stack
               justifyContent={"center"}
               alignItems={"center"}
@@ -430,7 +430,7 @@ function InvoiceSummary({
               {loading && <CircularProgress/>}
 
             </Stack>
-          </Card>
+          </Card> */}
         </>
       )}
     </Stack>

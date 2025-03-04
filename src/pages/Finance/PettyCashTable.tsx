@@ -26,6 +26,7 @@ import {
   MenuItem,
   Box,
   Typography,
+  Stack,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -42,7 +43,7 @@ import moment from "moment";
 import "moment/locale/ar";
 import axiosClient from "../../../axios-client";
 import { webUrl } from "../constants";
-import { Plus } from "lucide-react";
+import { Plus, Printer } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import PettyCashPermissionForm from "./PettyCashPermissionForm";
 
@@ -142,13 +143,10 @@ function PettyCashPermissionsTable() {
     console.log(data,'data')
     try {
         const formData = new FormData();
-        formData.append('id', String(data.id)); // Ensure the ID is sent
-        formData.append('permission_number', data.permission_number);
         formData.append('date', moment(data.date).format('YYYY-MM-DD'));
         formData.append('amount', String(data.amount));
         formData.append('beneficiary', data.beneficiary);
         formData.append('description', data.description || '');  // Handle null description
-        formData.append('finance_account_id', String(data.finance_account_id));
 
         // Handle the PDF file (if a new file is selected)
         const pdfFile = control._formValues.pdf_file?.[0];
@@ -223,19 +221,20 @@ function PettyCashPermissionsTable() {
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <Typography variant="h3" textAlign={'center'}>اذن الصرف</Typography>
         <TableContainer>
-            <Button
+            {/* <Button
             onClick={()=>{
                 setShow(true)
   
             }}
-            ><Plus /></Button>
-          <Table size="small"
+            ><Plus /></Button> */}
+          <Table  size="small"
           className="table"
-            sx={{ minWidth: 650 }}
+            sx={{ minWidth: 650 ,direction:'ltr'}}
             aria-label="petty cash permissions table"
           >
             <TableHead>
               <TableRow>
+                <TableCell>{t("id")}</TableCell>
                 <TableCell>{t("permission_number")}</TableCell>
                 <TableCell>{t("date")}</TableCell>
                 <TableCell>{t("amount")}</TableCell>
@@ -248,13 +247,15 @@ function PettyCashPermissionsTable() {
             <TableBody>
               {permissions.map((permission) => (
                 <TableRow key={permission.id}>
-                  <TableCell>{permission.permission_number}</TableCell>
+                  <TableCell>{permission.id}</TableCell>
+                  <TableCell>{permission.finance_entry_id}</TableCell>
                   <TableCell>{permission.date}</TableCell>
                   <TableCell>{permission.amount}</TableCell>
                   <TableCell>{permission.beneficiary}</TableCell>
                   <TableCell>{permission.description}</TableCell>
                   <TableCell>
-                    {permission.pdf_file && (
+                    <Stack gap={1} direction='row'>
+ {permission.pdf_file && (
                       <Tooltip title={t("view_pdf")}>
                         <IconButton
                           onClick={() => handleViewPdf(permission.pdf_file)}
@@ -263,6 +264,15 @@ function PettyCashPermissionsTable() {
                         </IconButton>
                       </Tooltip>
                     )}
+                    <Tooltip title={t("view_pdf")}>
+                        <IconButton
+                        href={`${webUrl}pettycash`}
+                        >
+                          <Printer />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                   
                   </TableCell>
                   <TableCell>
                     <Tooltip title={t("edit")}>
@@ -313,10 +323,11 @@ function PettyCashPermissionsTable() {
                 sx={{ mt: 1 }}
               >
                 <TextField
+                 disabled
                   margin="normal"
                   fullWidth
-                  label={t("permission_number")}
-                  {...register("permission_number")}
+                  label={t("finance_entry")}
+                  {...register("finance_entry")}
                 />
                 <FormControl fullWidth margin="normal">
                   <Controller
@@ -357,27 +368,7 @@ function PettyCashPermissionsTable() {
                   {...register("description")}
                 />
 
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="account-label">{t("account")}</InputLabel>
-                  <Controller
-                    name="finance_account_id"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        labelId="account-label"
-                        label={t("account")}
-                      >
-                        {accounts.map((account) => (
-                          <MenuItem key={account.id} value={account.id}>
-                            {account.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
-                  />
-                </FormControl>
+                
                 {/* PDF File Upload */}
                 <FormControl fullWidth margin="normal">
                   <InputLabel id="pdf-file-label">{t("pdf_file")}</InputLabel>

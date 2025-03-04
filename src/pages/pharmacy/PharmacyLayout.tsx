@@ -80,18 +80,18 @@ function PharmacyLayout() {
       })
       .finally(() => setShiftIsLoading(false));
 
-    // setItemsIsLoading(true);
-    // axiosClient
-    //   .get(`items/all`)
-    //   .then(({ data: data }) => {
-    //     setItems(data);
-    //     if (data.status == false) {
-    //       setDialog((prev) => {
-    //         return { ...prev, open: true, msg: data.message };
-    //       });
-    //     }
-    //   })
-    //   .finally(() => setItemsIsLoading(false));
+    setItemsIsLoading(true);
+    axiosClient
+      .get(`items/all`)
+      .then(({ data: data }) => {
+        setItems(data);
+        if (data.status == false) {
+          setDialog((prev) => {
+            return { ...prev, open: true, msg: data.message };
+          });
+        }
+      })
+      .finally(() => setItemsIsLoading(false));
 
     axiosClient.get("drugCategory").then(({ data }) => {
       setDrugCategory(data);

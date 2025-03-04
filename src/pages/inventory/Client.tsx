@@ -61,7 +61,7 @@ function ClientPage() {
   };
   useEffect(() => {
     //fetch all clients
-    axiosClient(`client/all`)
+    axiosClient(`client/all?load=deducts`)
       .then(({data}) => {
         setClients(data);
         console.log(data);

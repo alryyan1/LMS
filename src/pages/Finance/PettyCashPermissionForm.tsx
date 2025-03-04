@@ -83,25 +83,7 @@ function PettyCashPermissionForm() {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
-                            <Controller
-                                name="permission_number"
-                                control={control}
-                                defaultValue=""
-                                // REMOVED RULES!
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        label={t('permission_number')}
-                                        variant="outlined"
-                                        fullWidth
-                                        //error={!!errors.permission_number}  REMOVED
-                                        //helperText={errors.permission_number?.message} REMOVED
-                                    />
-                                )}
-                            />
-                        </Grid>
-
+                    
                         <Grid item xs={12} md={6}>
                             <FormControl fullWidth>
                                 <Controller
@@ -180,32 +162,7 @@ function PettyCashPermissionForm() {
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth>
-                                <InputLabel id="account-label">{t('account')}</InputLabel>
-                                <Controller
-                                    name="finance_account_id"
-                                    control={control}
-                                    defaultValue=""
-                                     // REMOVED RULES!
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            labelId="account-label"
-                                            label={t('account')}
-                                            //error={!!errors.finance_account_id}  REMOVED
-                                        >
-                                            {accounts.map((account) => (
-                                                <MenuItem key={account.id} value={account.id}>
-                                                    {account.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    )}
-                                />
-                                {/*errors.finance_account_id && <div style={{ color: 'red' }}>{errors.finance_account_id.message}</div>*/}  {/* REMOVED */}
-                            </FormControl>
-                        </Grid>
+                   
 
                         <Grid item xs={12} md={6}>
                             <Controller

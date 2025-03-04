@@ -363,16 +363,75 @@ export interface Patient {
   deposits: Deposit[];
 }
 
-interface Deposit {
+export interface Deposit {
   id: number;
-  requested_service_id: number;
-  amount: number;
+  supplier_id: number;
+  bill_number: string;
+  bill_date: string;
+  complete: number;
+  paid: number;
   user_id: number;
   created_at: string;
   updated_at: string;
+  payment_method: string;
+  discount: number;
+  vat_sell: number;
+  vat_cost: number;
+  is_locked: number;
+  showAll: number;
+  total_price: number;
+  total_cost: number;
+  supplier: Supplier;
   user: User;
+  
 }
 
+interface Subroute2 {
+  id: number;
+  sub_route_id: number;
+  user_id: number;
+  sub_route: Subroute;
+}
+
+interface Route2 {
+  id: number;
+  user_id: number;
+  route_id: number;
+  created_at: null;
+  updated_at: null;
+  route: Route;
+}
+
+interface Route {
+  id: number;
+  name: string;
+  path: string;
+  created_at: string;
+  updated_at: string;
+  icon: string;
+  is_multi: number;
+  sub_routes: Subroute[];
+}
+
+interface Subroute {
+  id: number;
+  route_id: number;
+  name: string;
+  path: string;
+  icon: string;
+}
+
+
+
+interface Supplier {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
 
 
 

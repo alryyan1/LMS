@@ -118,10 +118,19 @@ function SellDrug() {
 
   useEffect(() => {
     if (activeSell) {
-      const timer = setTimeout(() => {}, 300);
-      return () => {
-        clearTimeout(timer);
-      };
+      const controller = new AbortController();
+      axiosClient(`inventory/deduct/showDeductById/${activeSell.id}`,{
+        signal:controller.signal
+      }).then(({ data }) => {
+        // console.log(data, "active sell");
+        setActiveSell(data.data);
+        // setItems(data.items);
+        setUpdater((prev)=>prev+1)
+      });
+      return ()=>{
+        controller.abort();
+      }
+      
     }
   }, [activeSell?.id]);
 
@@ -236,12 +245,19 @@ function SellDrug() {
         update(args);
       });
   
+      socket.on("update deduct recieved", (args) => {
+        console.log(args,'update deduct');
+        update(args);
+        setUpdater((prev)=>prev+1)
+      });
+  
   
   
       return () => {
         socket.off("connect", onConnect);
         socket.off("disconnect", onDisconnect);
         socket.off("new deduct recieved", onDisconnect);
+        socket.off("update deduct recieved", onDisconnect);
       };
     }, []);
   return (
@@ -386,7 +402,7 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Stack direction={"row"} alignContent={"right"}>
+              <Stack direction={"row"} key={activeSell?.id} alignContent={"right"}>
                 {/* <input ref={ref}></input> */}
                 <Autocomplete
                   value={activeSell.client}
@@ -464,8 +480,9 @@ function SellDrug() {
                 />
               ) : (
                 <Table
+                  
                   className="white"
-                  key={activeSell.update_at}
+                  key={updater}
                   size="small"
                 >
                   <thead>
@@ -487,7 +504,7 @@ function SellDrug() {
                         sx={{
                           background: (theme) => {
                             return !dayjs(
-                              deductedItem?.item?.lastDepositItem?.expire
+                              deductedItem?.item?.last_deposit_item?.expire
                             ).isAfter(dayjs())
                               ? "#ef535087"
                               : "theme.palette.background.defaultLight";
@@ -498,7 +515,7 @@ function SellDrug() {
                       >
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
-                          <Link to={`/pharmacy/items/${deductedItem.item.id}`}>
+                          <Link to={`/pharmacy/items/${deductedItem.item_id}`}>
                             {deductedItem.item?.market_name}
                           </Link>
                         </TableCell>
@@ -508,6 +525,7 @@ function SellDrug() {
                           </TableCell>
                         ) : (
                           <MyTableCell
+
                             setData={setActiveSell}
                             update={update}
                             sx={{ width: "70px" }}
@@ -542,6 +560,7 @@ function SellDrug() {
                             show
                             setData={setActiveSell}
                             update={update}
+
                             sx={{ width: "70px" }}
                             type={"number"}
                             item={deductedItem}
@@ -581,8 +600,8 @@ function SellDrug() {
 
                         <TableCell>
                           <MyDateField2
-                            val={deductedItem?.item.lastDepositItem?.expire}
-                            item={deductedItem?.item.lastDepositItem}
+                            val={deductedItem?.item.last_deposit_item?.expire}
+                            item={deductedItem?.item.last_deposit_item}
                           />
                         </TableCell>
                         <TableCell>
@@ -670,7 +689,7 @@ function SellDrug() {
                     </TableCell>
                     <TableCell>
                       {formatNumber(
-                        Number(activeSell?.total_price_unpaid).toFixed(1)
+                        Number(activeSell?.total_price).toFixed(1)
                       )}
                     </TableCell>
                   </TableRow>
@@ -695,8 +714,8 @@ function SellDrug() {
                     <TableCell sx={{ fontSize: "27px" }}>
                       {formatNumber(
                         toFixed(
-                          activeSell?.total_price_unpaid +
-                            activeSell?.calculateTax,
+                          activeSell?.total_price 
+                            ,
                           1
                         )
                       )}

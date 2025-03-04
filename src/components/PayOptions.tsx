@@ -1,42 +1,44 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Grow from '@mui/material/Grow';
-import Paper from '@mui/material/Paper';
-import Popper from '@mui/material/Popper';
-import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
-import { useOutletContext } from 'react-router-dom';
-import axiosClient from '../../axios-client';
-import { LoadingButton } from '@mui/lab';
-import { PharmacyLayoutPros } from '../types/pharmacy';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import { useOutletContext } from "react-router-dom";
+import axiosClient from "../../axios-client";
+import { LoadingButton } from "@mui/lab";
+import { PharmacyLayoutPros } from "../types/pharmacy";
 
-const options = [{ id:1 ,name:'Cash'}
-  ,{ id:2,name:'Transfer'}
-  
-  , {id:3,name:'Bank'}];
+const options = [
+  { id: 1, name: "Cash" },
+  { id: 2, name: "Bankak" },
+];
 
-export default function PayOptions({update}) {
+export default function PayOptions({ update }) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const {activeSell} =useOutletContext<PharmacyLayoutPros>()
+  const { activeSell } = useOutletContext<PharmacyLayoutPros>();
   const [payment, setPayment] = React.useState(activeSell.payment_type_id);
-  const [loading , setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
   // console.log(payment,'payment')
   // console.log(activeSell,'activeSell')
-  const handleClick = () => {
-  };
+  const handleClick = () => {};
 
   const handleMenuItemClick = (event, paymentId) => {
     setPayment(paymentId);
-    setLoading(true)
+    setLoading(true);
     setOpen(false);
-    axiosClient.patch(`deduct/payment/${activeSell.id}`,{payment:paymentId}).then(({data})=>{
-        console.log(data,'data sss')
-      update(data.data)
-    }).finally(()=>setLoading(false))
+    axiosClient
+      .patch(`deduct/payment/${activeSell.id}`, { payment_method: paymentId })
+      .then(({ data }) => {
+        console.log(data, "data sss");
+        update(data.data);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleToggle = () => {
@@ -53,18 +55,16 @@ export default function PayOptions({update}) {
 
   return (
     <React.Fragment>
-      <ButtonGroup  sx={{m:1}}
-      
+      <ButtonGroup
+        sx={{ m: 1 }}
         variant="contained"
         ref={anchorRef}
         aria-label="Button group with a nested menu"
       >
-        <LoadingButton loading={loading} fullWidth onClick={handleClick}>{activeSell.payment_type.name}</LoadingButton>
-        <Button
-         
-          size="small"
-          onClick={handleToggle}
-        >
+        <LoadingButton loading={loading} fullWidth onClick={handleClick}>
+          {activeSell.payment_method}
+        </LoadingButton>
+        <Button size="small" onClick={handleToggle}>
           <ArrowDropDownIcon />
         </Button>
       </ButtonGroup>
@@ -83,7 +83,7 @@ export default function PayOptions({update}) {
             {...TransitionProps}
             style={{
               transformOrigin:
-                placement === 'bottom' ? 'center top' : 'center bottom',
+                placement === "bottom" ? "center top" : "center bottom",
             }}
           >
             <Paper>
@@ -91,9 +91,8 @@ export default function PayOptions({update}) {
                 <MenuList id="split-button-menu" autoFocusItem>
                   {options.map((option) => (
                     <MenuItem
-                    
                       key={option.id}
-                    //   disabled={index === 2}
+                      //   disabled={index === 2}
                       selected={option.id === payment}
                       onClick={(event) => handleMenuItemClick(event, option.id)}
                     >

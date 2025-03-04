@@ -93,7 +93,15 @@ function AccountEntries() {
                         }
                         // style={{ textAlign: "right", color: "lightblue" }}
                       >
-                        {entry.id}
+                        <Button onClick={()=>{
+                          // alert('s')
+                          console.log('s')
+                          axiosClient.post('createPettyCash',{
+                            amount: entry.credit.reduce((prev,curr)=>prev+curr.amount,0),
+                            finance_entry_id: entry.id,
+                            description: entry.description,
+                          })
+                        }}>{entry.id}</Button>
                       </TableCell>
                       <TableCell> </TableCell>
                       <TableCell></TableCell>

@@ -51,8 +51,9 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
       alert('يجب الغاء السداد اولا')
       return;
     }
+    console.log(selectedDrugs,'selected')
     selectedDrugs.map((d)=>{
-      if (d.lastDepositItem == null) {
+      if (d.last_deposit_item == null) {
         setDialog((prev)=>{
           return {...prev, open: true, message:`Item (${d.market_name}) is not available in store `,color:'error'}
         })
@@ -67,7 +68,7 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
      
    setShiftIsLoading(true);
      setLoading(true)
-    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.lastDepositItem!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
+    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.last_deposit_item!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
         // console.log(data,'data')
         
         update(data.data)
@@ -142,21 +143,21 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
                               alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
                               return
                             }
-                            if (itemFounded.lastDepositItem == null) {
+                            if (itemFounded.last_deposit_item == null) {
                               setDialog((prev)=>{
                                 return {...prev, open: true, message:`Item (${itemFounded.market_name}) is not available in store `,color:'error'}
                               })
                               return
                             }
-                            // alert(itemFounded.lastDepositItem.expire)
+                            // alert(itemFounded.last_deposit_item.expire)
                             // console.log(itemFounded.expire,'expire')
                             // console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
-                            if (!dayjs(itemFounded.lastDepositItem.expire).isAfter(dayjs())) {
+                            if (!dayjs(itemFounded.last_deposit_item.expire).isAfter(dayjs())) {
                               setDialog((prev)=>{
                                 return {...prev, open: true, message:'Item is expire',color:'error'}
                               })
                             }
-                            if ( itemFounded.lastDepositItem.totalRemaining <= 0) {
+                            if ( itemFounded.last_deposit_item.totalRemaining <= 0) {
                               setDialog((prev)=>{
                                 return {...prev, open: true, message:'This product is Unavailable In Store',color:'error'}
                               })

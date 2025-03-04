@@ -83,9 +83,9 @@ function SellBox({
         <Box
           onClick={() => {
             onClick(sell);
-            axiosClient(`sells/find/${sell.id}`).then(({ data }) => {
-              setActiveSell(data);
-            });
+            // axiosClient(`sells/find/${sell.id}`).then(({ data }) => {
+            //   setActiveSell(data);
+            // });
           }}
           sx={
             activeSell?.id == sell.id
