@@ -42,7 +42,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment from "moment";
 import "moment/locale/ar";
 import axiosClient from "../../../axios-client";
-import { webUrl } from "../constants";
+import { formatNumber, webUrl } from "../constants";
 import { Plus, Printer } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import PettyCashPermissionForm from "./PettyCashPermissionForm";
@@ -234,7 +234,7 @@ function PettyCashPermissionsTable() {
           >
             <TableHead>
               <TableRow>
-                <TableCell>{t("id")}</TableCell>
+                <TableCell>رقم الاذن</TableCell>
                 <TableCell>{t("permission_number")}</TableCell>
                 <TableCell>{t("date")}</TableCell>
                 <TableCell>{t("amount")}</TableCell>
@@ -250,7 +250,7 @@ function PettyCashPermissionsTable() {
                   <TableCell>{permission.id}</TableCell>
                   <TableCell>{permission.finance_entry_id}</TableCell>
                   <TableCell>{permission.date}</TableCell>
-                  <TableCell>{permission.amount}</TableCell>
+                  <TableCell>{formatNumber(permission.amount)}</TableCell>
                   <TableCell>{permission.beneficiary}</TableCell>
                   <TableCell>{permission.description}</TableCell>
                   <TableCell>
@@ -266,7 +266,7 @@ function PettyCashPermissionsTable() {
                     )}
                     <Tooltip title={t("view_pdf")}>
                         <IconButton
-                        href={`${webUrl}pettycash`}
+                        href={`${webUrl}pettycash2/${permission.id}`}
                         >
                           <Printer />
                         </IconButton>

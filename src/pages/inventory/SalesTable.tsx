@@ -175,7 +175,7 @@ function SalesTable() {
               </TableCell>
               <TableCell>{formatNumber(item.total_price)}</TableCell>
               <TableCell>{item.user.username}</TableCell>
-              <TableCell>{item.payment_type.name}</TableCell>
+              <TableCell>{item.payment_method}</TableCell>
               <TableCell>
                 {item.deducted_items.map(
                   (deducted) => `${deducted.item.market_name}-`

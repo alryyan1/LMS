@@ -90,6 +90,7 @@ import Gallary from "./pages/Finance/Gallary";
 import IncomeStatement from "./pages/Finance/IncomeStatement";
 import BalanceSheet from "./pages/Finance/BalanceSheet";
 import TreeTwo from "./pages/Finance/Tree2";
+import DoctorScheduleManager from "./pages/booking/book";
 
 
 const  guest:RouteObject =    {
@@ -226,6 +227,14 @@ const income:RouteObject = {
     </ProtectedRoute>
   ),
   path: "/moneyIncome",
+}
+const doctorSchedule:RouteObject = {
+  element: (
+    <ProtectedRoute>
+      <DoctorScheduleManager />
+    </ProtectedRoute>
+  ),
+  path: "/doctorSchedule",
 }
 const audit:RouteObject =    {
   element: (
@@ -502,7 +511,7 @@ const Authorized: RouteObject = {
     contracts,income,
     audit,
     finance,pharmacy
-    ,insurance,lab,clinic
+    ,insurance,lab,clinic,doctorSchedule
     
     
   ]

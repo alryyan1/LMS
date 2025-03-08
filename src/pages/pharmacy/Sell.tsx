@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { act, useEffect, useRef, useState } from "react";
 import { formatNumber, Item, toFixed, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import { useSymbologyScanner } from "@use-symbology-scanner/react";
@@ -640,14 +640,16 @@ function SellDrug() {
                 )}
 
               </Typography> */}
-              <MyDateField2
+              {/* <MyDateField2
+              //  key={activeSell?.id}
                 label="تاريخ البيع"
                 path="deduct"
                 colName="created_at"
-                disabled={true}
+                // disabled={true}
                 val={activeSell.created_at}
                 item={activeSell}
-              />
+              /> */}
+              {dayjs(activeSell.created_at).format('YYYY-MM-DD')}
               <Divider />
               {activeSell.doctorvisit ? (
                 <TextField
@@ -683,7 +685,7 @@ function SellDrug() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" }}>
                       Sub Total
                     </TableCell>
@@ -692,7 +694,7 @@ function SellDrug() {
                         Number(activeSell?.total_price).toFixed(1)
                       )}
                     </TableCell>
-                  </TableRow>
+                  </TableRow> */}
 
                   {/* <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" }}>

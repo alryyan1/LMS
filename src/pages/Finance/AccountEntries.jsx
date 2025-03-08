@@ -60,6 +60,7 @@ function AccountEntries() {
           />
 
           <Button href={`${webUrl}entries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
+          <Button href={`${webUrl}entries-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>Excel</Button>
           {/* <GeminiImageUploader/> */}
           {/* create table with all clients */}
           <TableContainer sx={{height:`${window.innerHeight - 200}px`,overflow:'auto'}}>
@@ -71,6 +72,7 @@ function AccountEntries() {
                   <TableCell>البيان</TableCell>
                   <TableCell>Debit </TableCell>
                   <TableCell> Credit </TableCell>
+                  <TableCell> انشاء اذن الصرف </TableCell>
                 </TableRow>
               </thead>
 
@@ -93,15 +95,8 @@ function AccountEntries() {
                         }
                         // style={{ textAlign: "right", color: "lightblue" }}
                       >
-                        <Button onClick={()=>{
-                          // alert('s')
-                          console.log('s')
-                          axiosClient.post('createPettyCash',{
-                            amount: entry.credit.reduce((prev,curr)=>prev+curr.amount,0),
-                            finance_entry_id: entry.id,
-                            description: entry.description,
-                          })
-                        }}>{entry.id}</Button>
+                        
+                      {entry.id}
                       </TableCell>
                       <TableCell> </TableCell>
                       <TableCell></TableCell>
@@ -132,6 +127,24 @@ function AccountEntries() {
                          } 
                           <TableCell>{formatNumber(e?.amount)}</TableCell>
                           <TableCell></TableCell>
+                          <TableCell rowSpan={3}>
+                          <Button onClick={()=>{
+                          // alert('s')
+                          //CONFIRM USE ALERT
+                          let result = confirm('هل تريد انشاء اذن الصرف')
+                          if(result){
+                            axiosClient.post('createPettyCash',{
+                              amount: entry.credit.reduce((prev,curr)=>prev+curr.amount,0),
+                              finance_entry_id: entry.id,
+                              description: entry.description,
+                            })
+                          }
+
+
+                       
+                        }}>انشاء اذن الصرف</Button>
+                          </TableCell>
+
                         </TableRow>
                       );
                     })}

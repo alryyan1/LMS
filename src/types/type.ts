@@ -123,25 +123,9 @@ interface Maintest {
   price: number;
   firstChildId: number;
   container: Container;
-  one_child: Onechild;
+  one_child: Childtest;
 }
 
-interface Onechild {
-  id: number;
-  child_test_name: string;
-  low: number;
-  upper: number;
-  main_test_id: number;
-  defval: string;
-  unit_id: number;
-  normalRange: string;
-  max: string;
-  lowest: string;
-  test_order: null;
-  child_group_id: null;
-  unit: Unit;
-  child_group: null;
-}
 
 interface Container {
   id: number;

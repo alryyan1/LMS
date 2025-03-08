@@ -14,8 +14,8 @@ import { LoadingButton } from "@mui/lab";
 import { PharmacyLayoutPros } from "../types/pharmacy";
 
 const options = [
-  { id: 1, name: "Cash" },
-  { id: 2, name: "Bankak" },
+  { id: 'cash', name: "Cash" },
+  { id: 'bankak', name: "Bankak" },
 ];
 
 export default function PayOptions({ update }) {
