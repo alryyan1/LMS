@@ -78,9 +78,9 @@ import DateComponent from "./DateComponent.js";
               return {...prev, showDialog: true};
             })
            }} title=" T الاستاذ حرف "><TitleIcon/></IconButton>
-      <Button href={`${webUrl}ledger-excel/${selectedAccount?.id}`}>Excell</Button>
 
            <Button href={`${webUrl}ledger/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
+           <Button href={`${webUrl}ledger-excel/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>Excell</Button>
           <Table key={selectedAccount?.id} dir="rtl" size="small">
             <thead>
               <TableRow>

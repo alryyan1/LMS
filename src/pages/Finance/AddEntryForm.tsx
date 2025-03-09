@@ -89,6 +89,7 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
           debits: [initialDebitCreditEntry],
           credits: [initialDebitCreditEntry],
         });
+        setSelectedAccounts([]);
 
         // Reset the local debit and credit account states
         setDebitAccounts([initialDebitCreditEntry]);

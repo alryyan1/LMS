@@ -11,7 +11,7 @@ export function onlyAdmin(user, action) {
 }
 // export const host = 'sahara-pharma.com'
 export const schema = "http";
-export const host = "127.0.0.1";
+export const host = "192.168.100.70";
 // export const host = 'server1'مركز النعيم
 
 export function blurForNoramlUsers() {

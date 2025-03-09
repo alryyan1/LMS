@@ -1,6 +1,6 @@
 // src/components/PettyCashPermissionsTable.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import {
   Table,
@@ -27,11 +27,22 @@ import {
   Box,
   Typography,
   Stack,
+  Grid,
 } from "@mui/material";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
+} from "@mui/icons-material";
+import {
+  Add,
+  ArrowBack,
+  ArrowForward,
+  Delete,
+  DeleteForeverSharp,
+  RemoveRedEye,
+  SwapHoriz,
+  VisibilityOff,
 } from "@mui/icons-material";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
@@ -46,6 +57,7 @@ import { formatNumber, webUrl } from "../constants";
 import { Plus, Printer } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import PettyCashPermissionForm from "./PettyCashPermissionForm";
+import MyLoadingButton from "../../components/MyLoadingButton";
 
 // Define the type for a single petty cash permission
 interface PettyCashPermission {
@@ -70,8 +82,10 @@ interface SnackbarState {
 
 function PettyCashPermissionsTable() {
   const { t } = useTranslation("PettyCashTable");
+  const [page, setPage] = useState(10);
 
   const [permissions, setPermissions] = useState<PettyCashPermission[]>([]);
+  const [links, setLinks] = useState([]);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState<number | null>(
     null
@@ -81,7 +95,21 @@ function PettyCashPermissionsTable() {
     message: "",
     severity: "success",
   });
-
+  const updateItemsTable = useCallback((link, setLoading) => {
+    setLoading(true);
+    axiosClient(`${link.url}&rows=${page}`)
+      .then(({ data }) => {
+        setPermissions(data.data);
+        setLinks(data.links);
+      })
+      .catch((error) => {
+        console.error("Error updating items table:", error); // More descriptive error message
+     
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [permissionToEdit, setPermissionToEdit] =
     useState<PettyCashPermission | null>(null);
@@ -102,7 +130,8 @@ function PettyCashPermissionsTable() {
       const response = await axiosClient.get<PettyCashPermission[]>(
         "/petty-cash-permissions"
       );
-      setPermissions(response.data);
+      setPermissions(response.data.data);
+      setLinks(response.data.links);
     } catch (error: any) {
       console.error("Error fetching permissions:", error);
       showSnackbar(t("error_fetching_permissions"), "error");
@@ -218,8 +247,8 @@ function PettyCashPermissionsTable() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} locale={t("locale")}>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <Typography variant="h3" textAlign={'center'}>اذن الصرف</Typography>
+      {/* <Paper sx={{ width: "100%", overflow: "hidden" }}> */}
+        <Typography variant="h5" textAlign={'center'}>اذن الصرف</Typography>
         <TableContainer>
             {/* <Button
             onClick={()=>{
@@ -290,6 +319,59 @@ function PettyCashPermissionsTable() {
               ))}
             </TableBody>
           </Table>
+          <Grid sx={{ gap: "4px", mt: 1 }} container>
+          {links.map((link, i) => {
+            if (i === 0) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      if (link.url) updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    disabled={!link.url}
+                  >
+                    <ArrowBack />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else if (links.length - 1 === i) {
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    onClick={(setLoading) => {
+                      if (link.url) updateItemsTable(link, setLoading);
+                    }}
+                    variant="contained"
+                    disabled={!link.url}
+                  >
+                    <ArrowForward />
+                  </MyLoadingButton>
+                </Grid>
+              );
+            } else {
+              const label =
+                link.label === "pagination.previous"
+                  ? "<"
+                  : link.label === "pagination.next"
+                    ? ">"
+                    : link.label;
+              return (
+                <Grid item xs={1} key={i}>
+                  <MyLoadingButton
+                    active={link.active}
+                    onClick={(setLoading) => {
+                      if (link.url) updateItemsTable(link, setLoading);
+                    }}
+                    disabled={!link.url}
+                  >
+                    {label}
+                  </MyLoadingButton>
+                </Grid>
+              );
+            }
+          })}
+        </Grid>
           <EmptyDialog show={show} setShow={setShow}>
             <PettyCashPermissionForm/>
           </EmptyDialog>
@@ -410,7 +492,7 @@ function PettyCashPermissionsTable() {
             {snackbar.message}
           </Alert>
         </Snackbar>
-      </Paper>
+      {/* </Paper> */}
     </LocalizationProvider>
   );
 }

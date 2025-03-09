@@ -34,7 +34,7 @@ const daysOfWeek = [
 ];
 
 function DoctorScheduleManager() {
-  const [doctorId, setDoctorId] = useState('');  // Replace with actual doctor selection logic
+  const [doctorId, setDoctorId] = useState(null);  // Replace with actual doctor selection logic
   const [schedules, setSchedules] = useState(
     daysOfWeek.map((day, index) => ({
       dayOfWeek: index + 1,  // 1-based indexing for days
@@ -94,7 +94,7 @@ function DoctorScheduleManager() {
       // Prepare data for the API
       const scheduleData = schedules.flatMap(schedule => {
         const dayOfWeek = schedule.dayOfWeek;
-        const doctorId = doctorId;
+      
 
         const slots = [];
 
@@ -117,7 +117,7 @@ function DoctorScheduleManager() {
             end_time: schedule.evening.endTime ? dayjs(schedule.evening.endTime).format('HH:mm:ss') : null,
           });
         }
-
+        console.log(slots);
         return slots;
       });
 
@@ -134,6 +134,8 @@ function DoctorScheduleManager() {
       console.log('Form has errors');
     }
   };
+
+  console.log(doctorId,'doctroid')
 
 
   return (
