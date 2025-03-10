@@ -54,8 +54,8 @@ function SalesTable() {
   }, []);
   const searchHandler = () => {
     setLoading(true);
-    const firstDayjs = firstDate.format("YYYY/MM/DD");
-    const secondDayjs = secondDate.format("YYYY/MM/DD");
+    const firstDayjs = firstDate.format("YYYY-MM-DD");
+    const secondDayjs = secondDate.format("YYYY-MM-DD");
     axiosClient
       .post(`searchDeductsByDate`, {
         first: firstDayjs,
