@@ -1,96 +1,98 @@
 import React, { useState, useEffect } from 'react';
+import axiosClient from '../../../axios-client'; // Adjust path as needed
 import {
   Container,
   Typography,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  FormControlLabel,
   Checkbox,
-  ListItemText,
   Button,
-  TextField,
-  FormHelperText,
-  Card,
-  CardContent,
   Box,
   Stack,
+  Autocomplete,
+  TextField,
+  Paper,
+  Divider,
+  Grid, // Added Grid
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import axiosClient from '../../../axios-client';
+import { green, blue, grey } from '@mui/material/colors';  // Import Material UI colors
+import { Doctor } from '../../types/Patient';
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
+import { toast } from 'react-toastify';
 
 const daysOfWeek = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
+  'الاثنين',
+  'الثلاثاء',
+  'الأربعاء',
+  'الخميس',
+  'الجمعة',
+  'السبت',
+  'الأحد',
 ];
 
 function DoctorScheduleManager() {
-  const [doctorId, setDoctorId] = useState(null);  // Replace with actual doctor selection logic
+  const [loading, setLoading] = useState(false);
+  const [doctorId, setDoctorId] = useState(null);
+  const [doctors, setDoctors] = useState<Doctor[]>([]); // Use types here.
+
+  // Structure for managing individual time slots
   const [schedules, setSchedules] = useState(
     daysOfWeek.map((day, index) => ({
-      dayOfWeek: index + 1,  // 1-based indexing for days
-      morning: {enabled: false, startTime:null, endTime:null,},
-      evening: {enabled: false, startTime:null, endTime:null,},
+      dayOfWeek: index + 1,
+      morning: { enabled: false, },
+      evening: { enabled: false, },
     }))
   );
 
-  // Replace with your actual list of doctors (fetch from API, etc.)
-  const [doctors, setDoctors] = useState([
-    { id: 1, name: 'Dr. Smith' },
-    { id: 2, name: 'Dr. Jones' },
-    { id: 3, name: 'Dr. Doe' },
-  ]);
-  const [formErrors, setFormErrors] = useState({});
-
-    // Add validation logic to validate each time slot (morning/evening)
-    const validateForm = () => {
-        const errors = {};
-        let isValid = true;
-
-        schedules.forEach((schedule, index) => {
-            if (schedule.morning.enabled) {
-                if (!schedule.morning.startTime || !schedule.morning.endTime) {
-                    errors[index] = 'Morning time must have start and end time';
-                    isValid = false;
-                }
-            }
-            if (schedule.evening.enabled) {
-                if (!schedule.evening.startTime || !schedule.evening.endTime) {
-                    errors[index] = 'Evening time must have start and end time';
-                    isValid = false;
-                }
-            }
-        });
-
-        setFormErrors(errors);
-        return isValid;
-    };
+  useEffect(() => {
+    setLoading(true);
+    axiosClient.get('doctors')
+      .then(({ data }) => {
+        setDoctors(data);
+      })
+      .catch(error => console.error("Error fetching doctors:", error))
+      .finally(() => setLoading(false));
+  }, []);
 
 
-  const handleTimeChange = (index, slot, timeType, time) => {
-        const newSchedules = [...schedules];
-        newSchedules[index][slot][timeType] = time;
-        setSchedules(newSchedules);
-    };
+
+  const handleSelectedDoctorSchedule = async (doctor) => {
+  
+
+          //Transform the way this setschedule
+          const newSchedules = daysOfWeek.map((day, index) => {
+              const dayOfWeek = index + 1;
+              const morningSchedule = doctor.schedules?.find(s => s.day_of_week === dayOfWeek && s.time_slot === 'morning');
+              const eveningSchedule = doctor.schedules?.find(s => s.day_of_week === dayOfWeek && s.time_slot === 'evening');
+
+              return {
+                  dayOfWeek: dayOfWeek,
+                  morning: {
+                      enabled: !!morningSchedule,
+                   
+                  },
+                  evening: {
+                      enabled: !!eveningSchedule,
+                  },
+              };
+          });
+          setSchedules(newSchedules);
+          console.log('Schedules have been loaded for doctor:', doctor.name);
+
+      
+  };
 
   const handleSlotToggle = (index, slot) => {
-        const newSchedules = [...schedules];
-        newSchedules[index][slot].enabled = !newSchedules[index][slot].enabled;
-        setSchedules(newSchedules);
-    };
+    const newSchedules = [...schedules];
+    newSchedules[index][slot].enabled = !newSchedules[index][slot].enabled;
+    setSchedules(newSchedules);
+  };
 
 
   const handleSubmit = async () => {
-    if (validateForm()) {
+   
       // Prepare data for the API
       const scheduleData = schedules.flatMap(schedule => {
         const dayOfWeek = schedule.dayOfWeek;
@@ -103,8 +105,7 @@ function DoctorScheduleManager() {
             doctor_id: doctorId,
             day_of_week: dayOfWeek,
             time_slot: 'morning',
-            start_time: schedule.morning.startTime ? dayjs(schedule.morning.startTime).format('HH:mm:ss') : null,
-            end_time: schedule.morning.endTime ? dayjs(schedule.morning.endTime).format('HH:mm:ss') : null,
+          
           });
         }
 
@@ -113,8 +114,7 @@ function DoctorScheduleManager() {
             doctor_id: doctorId,
             day_of_week: dayOfWeek,
             time_slot: 'evening',
-            start_time: schedule.evening.startTime ? dayjs(schedule.evening.startTime).format('HH:mm:ss') : null,
-            end_time: schedule.evening.endTime ? dayjs(schedule.evening.endTime).format('HH:mm:ss') : null,
+            
           });
         }
         console.log(slots);
@@ -124,117 +124,155 @@ function DoctorScheduleManager() {
       try {
         const response = await axiosClient.post(`doctors/${doctorId}/schedules`, scheduleData); // Relative URL
         console.log('Schedule saved successfully:', response.data); // Log success
+        toast.success(response.data.message)
 
         // Optionally, show a success message to the user
       } catch (error) {
         console.error('Error saving schedule:', error);
         // Handle errors more gracefully (display to user, log, etc.)
       }
-    } else {
-      console.log('Form has errors');
-    }
+  
   };
-
-  console.log(doctorId,'doctroid')
 
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Container maxWidth="md">
         <Typography variant="h4" gutterBottom>
-          Manage Doctor Schedule
+          إدارة جدول الطبيب
         </Typography>
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            <Autocomplete
+              onChange={(e, newVal) => {
+                newVal ? setDoctorId(newVal.id) : setDoctorId(null)
+                handleSelectedDoctorSchedule(newVal);
+              }} //Important set the docotr ID
+              getOptionLabel={(option) => option ? option.name : ''}
+              options={doctors}
+              loading={loading}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="اختر الطبيب"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
+                />
+              )}
+            />
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="doctor-select-label">Select Doctor</InputLabel>
-          <Select
-            labelId="doctor-select-label"
-            id="doctor-select"
-            value={doctorId}
-            label="Select Doctor"
-            onChange={(event) => setDoctorId(event.target.value)}
-          >
-            {doctors.map((doctor) => (
-              <MenuItem key={doctor.id} value={doctor.id}>
-                {doctor.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            <Grid container spacing={3} mt={2}>
+              {/* Column 1 */}
+              <Grid item xs={12} md={6}>
+                {daysOfWeek.slice(0, Math.ceil(daysOfWeek.length / 2)).map((day, index) => (
+                  <Paper key={index} elevation={2} style={{ marginBottom: '10px', padding: '10px' }}>
+                    <Box display="flex" flexDirection="column" alignItems="flex-start">
+                      <Typography variant="subtitle1">{day}</Typography>
+                      <Divider sx={{ width: '100%', mb: 1 }} />
+                      <Stack direction="row" alignItems="center" justifyContent="space-around" width="100%">
+                        {/* Morning Slot */}
+                        <Box>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Typography textAlign={'center'} variant="body2" color={grey[700]}>الفترة الصباحية</Typography>
+                            <Checkbox
+                              checked={schedules[index].morning.enabled}
+                              onChange={() => handleSlotToggle(index, 'morning')}
+                              sx={{
+                                color: green[500],
+                                '& .MuiSvgIcon-root': { fontSize: 20 },
+                              }}
+                            />
+                          </Stack>
+                       
+                        </Box>
 
-        <Grid container spacing={3}>
-          {schedules.map((schedule, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle1">{daysOfWeek[index]}</Typography>
+                        {/* Evening Slot */}
+                        <Box>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Typography variant="body2" color={grey[700]}>الفترة المسائية</Typography>
+                            <Checkbox
+                              checked={schedules[index].evening.enabled}
+                              onChange={() => handleSlotToggle(index, 'evening')}
+                              sx={{
+                                color: blue[500],
+                                '& .MuiSvgIcon-root': { fontSize: 20 },
+                              }}
+                            />
+                          </Stack>
+                
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </Paper>
+                ))}
+              </Grid>
 
-                  <Box mt={2}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                      <Typography variant="body2">Morning</Typography>
-                      <Checkbox
-                        checked={schedule.morning.enabled}
-                        onChange={() => handleSlotToggle(index, 'morning')}
-                      />
-                    </Stack>
-                    {schedule.morning.enabled && (
-                      <>
-                        <TimePicker
-                          label="Start Time"
-                          value={schedule.morning.startTime}
-                          onChange={(time) => handleTimeChange(index, 'morning', 'startTime', time)}
-                          renderInput={(params) => <TextField {...params} margin="dense" fullWidth size="small" />}
-                        />
+              {/* Column 2 */}
+              <Grid item xs={12} md={6}>
+                {daysOfWeek.slice(Math.ceil(daysOfWeek.length / 2)).map((day, index) => {
+                  const actualIndex = index + Math.ceil(daysOfWeek.length / 2); // adjust index from first column 
+                  return (
+                    <Paper key={actualIndex} elevation={2} style={{ marginBottom: '10px', padding: '10px' }}>
+                      <Box display="flex" flexDirection="column" alignItems="flex-start">
+                        <Typography variant="subtitle1">{day}</Typography>
+                        <Divider sx={{ width: '100%', mb: 1 }} />
+                        <Stack direction="row" alignItems="center" justifyContent="space-around" width="100%">
+                          {/* Morning Slot */}
+                          <Box>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Typography variant="body2" color={grey[700]}>الفترة الصباحية</Typography>
+                              <Checkbox
+                                checked={schedules[actualIndex].morning.enabled}
+                                onChange={() => handleSlotToggle(actualIndex, 'morning')}
+                                sx={{
+                                  color: green[500],
+                                  '& .MuiSvgIcon-root': { fontSize: 20 },
+                                }}
+                              />
+                            </Stack>
+                       
+                          </Box>
 
-                        <TimePicker
-                          label="End Time"
-                          value={schedule.morning.endTime}
-                          onChange={(time) => handleTimeChange(index, 'morning', 'endTime', time)}
-                          renderInput={(params) => <TextField {...params} margin="dense" fullWidth size="small" />}
-                        />
-                      </>
-                    )}
-                  </Box>
-
-                  <Box mt={2}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                      <Typography variant="body2">Evening</Typography>
-                      <Checkbox
-                        checked={schedule.evening.enabled}
-                        onChange={() => handleSlotToggle(index, 'evening')}
-                      />
-                    </Stack>
-                    {schedule.evening.enabled && (
-                      <>
-                        <TimePicker
-                          label="Start Time"
-                          value={schedule.evening.startTime}
-                          onChange={(time) => handleTimeChange(index, 'evening', 'startTime', time)}
-                          renderInput={(params) => <TextField {...params} margin="dense" fullWidth size="small" />}
-                        />
-                        <TimePicker
-                          label="End Time"
-                          value={schedule.evening.endTime}
-                          onChange={(time) => handleTimeChange(index, 'evening', 'endTime', time)}
-                          renderInput={(params) => <TextField {...params} margin="dense" fullWidth size="small" />}
-                        />
-                      </>
-                    )}
-                  </Box>
-                  {formErrors[index] && (
-                    <FormHelperText error>
-                      {formErrors[index]}
-                    </FormHelperText>
-                  )}
-                </CardContent>
-              </Card>
+                          {/* Evening Slot */}
+                          <Box>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Typography variant="body2" color={grey[700]}>الفترة المسائية</Typography>
+                              <Checkbox
+                                checked={schedules[actualIndex].evening.enabled}
+                                onChange={() => handleSlotToggle(actualIndex, 'evening')}
+                                sx={{
+                                  color: blue[500],
+                                  '& .MuiSvgIcon-root': { fontSize: 20 },
+                                }}
+                              />
+                            </Stack>
+                         
+                          </Box>
+                        </Stack>
+                      </Box>
+                    </Paper>
+                  );
+                })}
+              </Grid>
             </Grid>
-          ))}
-        </Grid>
 
-        <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '20px' }}>
-          Save Schedule
-        </Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '20px' }}>
+              حفظ الجدول
+            </Button>
+          </>
+        )}
       </Container>
     </LocalizationProvider>
   );
