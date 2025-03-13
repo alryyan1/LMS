@@ -61,12 +61,12 @@ function MySelectTableCellAccount({
              paddingBottom: 0.5,
           }
         }} >
-          <MenuItem value = {1}>دائن</MenuItem>
-          <MenuItem value={0}>مدين</MenuItem>
+          <MenuItem value = {'ايراد'}>ايراد</MenuItem>
+          <MenuItem value={'مصروف'}>مصروف</MenuItem>
 
         </Select>
       ) : (
-        iniVal ? 'دائن' :"مدين"
+        iniVal 
       )}
     </TableCell>
   );

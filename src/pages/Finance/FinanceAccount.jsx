@@ -30,7 +30,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
   
    
     useEffect(() => {
-      document.title = 'اضافه حساب' ;
+      document.title = ' الحسابات' ;
     }, []);
   
     const deleteAccountHandler = (id) => {
@@ -76,7 +76,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
                   <TableCell>رقم</TableCell>
                   <TableCell>الاسم</TableCell>
                   <TableCell>الكود</TableCell>
-                  <TableCell>طبيعه الحساب</TableCell>
+                  <TableCell>نوع الحساب</TableCell>
                   <TableCell> تاريخ انشاء الحساب</TableCell>
                   {/* <TableCell>حذف</TableCell> */}
                 </TableRow>
@@ -88,7 +88,7 @@ import MySelectTableCellAccount from "./FinanceSelect.tsx";
                     <TableCell>{account.id}</TableCell>
                     <TableCell>{account.name}</TableCell>
                     <TableCell>{account.code}</TableCell>
-                    <MySelectTableCellAccount  item={account} myVal={account.debit} table="editAccount" colName={'debit'}></MySelectTableCellAccount>
+                    <MySelectTableCellAccount  item={account} myVal={account.type} table="editAccount" colName={'type'}></MySelectTableCellAccount>
                     <TableCell>{dayjs(new Date(Date.parse(account.created_at))).format('YYYY-MM-DD')}</TableCell>
                     {/* <TableCell>
                       <IconButton

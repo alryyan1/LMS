@@ -28,6 +28,7 @@ import {
   Typography,
   Stack,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -46,7 +47,7 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -58,7 +59,12 @@ import { Plus, Printer } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import PettyCashPermissionForm from "./PettyCashPermissionForm";
 import MyLoadingButton from "../../components/MyLoadingButton";
-
+import { Card, CardContent } from "@mui/material";
+import { DateField } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LoadingButton } from "@mui/lab";
+import dayjs from "dayjs";
+import { Account, Entry } from "../../types/type";
 // Define the type for a single petty cash permission
 interface PettyCashPermission {
   id: number;
@@ -72,6 +78,8 @@ interface PettyCashPermission {
   department_id: number | null;
   created_at: string;
   updated_at: string;
+  entry:Entry;
+  creditAccountNames:string
 }
 
 interface SnackbarState {
@@ -83,7 +91,11 @@ interface SnackbarState {
 function PettyCashPermissionsTable() {
   const { t } = useTranslation("PettyCashTable");
   const [page, setPage] = useState(10);
+  const [beneficiary, setBeneficiary] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [firstDate, setFirstDate] = useState(dayjs().startOf("month"));
 
+  const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   const [permissions, setPermissions] = useState<PettyCashPermission[]>([]);
   const [links, setLinks] = useState([]);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
@@ -104,7 +116,6 @@ function PettyCashPermissionsTable() {
       })
       .catch((error) => {
         console.error("Error updating items table:", error); // More descriptive error message
-     
       })
       .finally(() => {
         setLoading(false);
@@ -168,35 +179,41 @@ function PettyCashPermissionsTable() {
     setPermissionToEdit(null);
   };
 
-  const onSubmit: SubmitHandler<PettyCashPermission> = async (data: PettyCashPermission) => {
-    console.log(data,'data')
+  const onSubmit: SubmitHandler<PettyCashPermission> = async (
+    data: PettyCashPermission
+  ) => {
+    console.log(data, "data");
     try {
-        const formData = new FormData();
-        formData.append('date', moment(data.date).format('YYYY-MM-DD'));
-        formData.append('amount', String(data.amount));
-        formData.append('beneficiary', data.beneficiary);
-        formData.append('description', data.description || '');  // Handle null description
+      const formData = new FormData();
+      formData.append("date", moment(data.date).format("YYYY-MM-DD"));
+      formData.append("amount", String(data.amount));
+      formData.append("beneficiary", data.beneficiary);
+      formData.append("description", data.description || ""); // Handle null description
 
-        // Handle the PDF file (if a new file is selected)
-        const pdfFile = control._formValues.pdf_file?.[0];
-        if (pdfFile) {
-            formData.append('pdf_file', pdfFile);
+      // Handle the PDF file (if a new file is selected)
+      const pdfFile = control._formValues.pdf_file?.[0];
+      if (pdfFile) {
+        formData.append("pdf_file", pdfFile);
+      }
+
+      await axiosClient.post(
+        `/update-petty-cash-permissions/${data.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
+      );
 
-        await axiosClient.post(`/update-petty-cash-permissions/${data.id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-
-        fetchPermissions();
-        showSnackbar(t('permission_updated_successfully'), 'success');
-        handleCloseEditDialog();
+      fetchPermissions();
+      showSnackbar(t("permission_updated_successfully"), "success");
+      handleCloseEditDialog();
     } catch (error: any) {
-        console.error('Error updating permission:', error);
-        showSnackbar(t('error_updating_permission'), 'error');
+      console.error("Error updating permission:", error);
+      showSnackbar(t("error_updating_permission"), "error");
     }
-};
+  };
 
   const handleDelete = (id: number) => {
     setPermissionToDelete(id);
@@ -243,48 +260,154 @@ function PettyCashPermissionsTable() {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  const [show,setShow] = useState(false)
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  console.log(firstDate, "datecompnonent");
 
+  const searchHandler = () => {
+    setLoading(true);
+    const firstDayjs = firstDate.format("YYYY/MM/DD");
+    const secondDayjs = secondDate.format("YYYY/MM/DD");
+    axiosClient
+      .post(`petty-cash-permissions-filter`, {
+        filter: true,
+        first: firstDayjs,
+        second: secondDayjs,
+      })
+      .then(({ data }) => {
+        console.log(data, "data");
+        setPermissions(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  useEffect(() => {
+    if(beneficiary != null || selectedAccount) { 
+      axiosClient
+      .post(`petty-cash-permissions-filter`, {
+        filter: true,
+        beneficiary,
+        account:selectedAccount?.id
+      })
+      .then(({ data }) => {
+        console.log(data, "data");
+        setPermissions(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    }
+    
+  }, [beneficiary,selectedAccount?.id]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} locale={t("locale")}>
       {/* <Paper sx={{ width: "100%", overflow: "hidden" }}> */}
-        <Typography variant="h5" textAlign={'center'}>اذن الصرف</Typography>
-        <TableContainer>
-            {/* <Button
+      <Paper>
+        <Stack
+          className="p-1"
+          alignItems={"center"}
+          alignContent={"center"}
+          gap={1}
+          direction={"row"}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateField
+              format="DD-MM-YYYY"
+              onChange={(val) => {
+                setFirstDate(val);
+              }}
+              defaultValue={dayjs(firstDate)}
+              sx={{ m: 1 }}
+              label="From"
+            />
+          </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateField
+              format="DD-MM-YYYY"
+              onChange={(val) => {
+                setSecondDate(val);
+              }}
+              defaultValue={dayjs(new Date())}
+              sx={{ m: 1 }}
+              label="To"
+            />
+          </LocalizationProvider>
+          <LoadingButton
+            onClick={searchHandler}
+            loading={loading}
+            size="medium"
+            variant="contained"
+          >
+            Go
+          </LoadingButton>
+          <TextField
+            onChange={(e) => setBeneficiary(e.target.value)}
+            label="بحث بالمتسفيد"
+          />
+          <Autocomplete
+            sx={{ width: "300px" }}
+            onChange={(e, newVal) => {
+              console.log(newVal)
+              setSelectedAccount(newVal)
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.name}
+            options={accounts}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"بحث الدائن"} // Use translation
+              />
+            )}
+          />
+
+          <IconButton href={`${webUrl}pettyAll-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}>Excel</IconButton>
+          <IconButton href={`${webUrl}pettycashAllReport?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}>PDF</IconButton>
+        </Stack>
+      </Paper>
+      <Typography variant="h5" textAlign={"center"}>
+        اذن الصرف
+      </Typography>
+      <TableContainer>
+        {/* <Button
             onClick={()=>{
                 setShow(true)
   
             }}
             ><Plus /></Button> */}
-          <Table  size="small"
+        <Table
+          size="small"
           className="table"
-            sx={{ minWidth: 650 ,direction:'ltr'}}
-            aria-label="petty cash permissions table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>رقم الاذن</TableCell>
-                <TableCell>{t("permission_number")}</TableCell>
-                <TableCell>{t("date")}</TableCell>
-                <TableCell>{t("amount")}</TableCell>
-                <TableCell>{t("beneficiary")}</TableCell>
-                <TableCell>{t("description")}</TableCell>
-                <TableCell>{t("pdf_file")}</TableCell>
-                <TableCell>{t("actions")}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {permissions.map((permission) => (
-                <TableRow key={permission.id}>
-                  <TableCell>{permission.id}</TableCell>
-                  <TableCell>{permission.finance_entry_id}</TableCell>
-                  <TableCell>{permission.date}</TableCell>
-                  <TableCell>{formatNumber(permission.amount)}</TableCell>
-                  <TableCell>{permission.beneficiary}</TableCell>
-                  <TableCell>{permission.description}</TableCell>
-                  <TableCell>
-                    <Stack gap={1} direction='row'>
- {permission.pdf_file && (
+          sx={{ minWidth: 650, direction: "ltr" }}
+          aria-label="petty cash permissions table"
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>رقم الاذن</TableCell>
+              <TableCell>{t("permission_number")}</TableCell>
+              <TableCell>{t("date")}</TableCell>
+              <TableCell>{t("amount")}</TableCell>
+              <TableCell>{t("beneficiary")}</TableCell>
+              <TableCell>{t("description")}</TableCell>
+              <TableCell>الحساب</TableCell>
+              <TableCell>{t("pdf_file")}</TableCell>
+              <TableCell>{t("actions")}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {permissions.map((permission) => (
+              <TableRow key={permission.id}>
+                <TableCell>{permission.id}</TableCell>
+                <TableCell>{permission.finance_entry_id}</TableCell>
+                <TableCell sx={{textWrap:'nowrap'}}>{permission.date}</TableCell>
+                <TableCell>{formatNumber(permission.amount)}</TableCell>
+                <TableCell>{permission.beneficiary}</TableCell>
+                <TableCell>{permission.description}</TableCell>
+                <TableCell>{permission.creditAccountNames}</TableCell>
+                <TableCell>
+                  <Stack gap={1} direction="row">
+                    {permission.pdf_file && (
                       <Tooltip title={t("view_pdf")}>
                         <IconButton
                           onClick={() => handleViewPdf(permission.pdf_file)}
@@ -294,32 +417,29 @@ function PettyCashPermissionsTable() {
                       </Tooltip>
                     )}
                     <Tooltip title={t("view_pdf")}>
-                        <IconButton
-                        href={`${webUrl}pettycash2/${permission.id}`}
-                        >
-                          <Printer />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                   
-                  </TableCell>
-                  <TableCell>
-                    <Tooltip title={t("edit")}>
-                      <IconButton onClick={() => handleEdit(permission.id)}>
-                        <EditIcon />
+                      <IconButton href={`${webUrl}pettycash2/${permission.id}`}>
+                        <Printer />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={t("delete")}>
-                      <IconButton onClick={() => handleDelete(permission.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <Grid sx={{ gap: "4px", mt: 1 }} container>
+                  </Stack>
+                </TableCell>
+                <TableCell>
+                  <Tooltip title={t("edit")}>
+                    <IconButton onClick={() => handleEdit(permission.id)}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={t("delete")}>
+                    <IconButton onClick={() => handleDelete(permission.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Grid sx={{ gap: "4px", mt: 1 }} container>
           {links.map((link, i) => {
             if (i === 0) {
               return (
@@ -372,126 +492,125 @@ function PettyCashPermissionsTable() {
             }
           })}
         </Grid>
-          <EmptyDialog show={show} setShow={setShow}>
-            <PettyCashPermissionForm/>
-          </EmptyDialog>
-        </TableContainer>
+        <EmptyDialog show={show} setShow={setShow}>
+          <PettyCashPermissionForm />
+        </EmptyDialog>
+      </TableContainer>
 
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={deleteConfirmationOpen} onClose={cancelDelete}>
-          <DialogTitle>{t("confirm_delete")}</DialogTitle>
-          <DialogContent>{t("are_you_sure_delete")}</DialogContent>
-          <DialogActions>
-            <Button onClick={cancelDelete}>{t("cancel")}</Button>
-            <Button onClick={confirmDelete} color="error">
-              {t("delete")}
-            </Button>
-          </DialogActions>
-        </Dialog>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmationOpen} onClose={cancelDelete}>
+        <DialogTitle>{t("confirm_delete")}</DialogTitle>
+        <DialogContent>{t("are_you_sure_delete")}</DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete}>{t("cancel")}</Button>
+          <Button onClick={confirmDelete} color="error">
+            {t("delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        {/* Edit Dialog */}
-        <Dialog
-          open={editDialogOpen}
-          onClose={handleCloseEditDialog}
-          fullWidth
-          maxWidth="md"
-        >
-          <DialogTitle>{t("edit_permission")}</DialogTitle>
-          <DialogContent>
-            {permissionToEdit && (
-              <Box
-                component="form"
-                onSubmit={handleSubmit(onSubmit)}
-                sx={{ mt: 1 }}
+      {/* Edit Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onClose={handleCloseEditDialog}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>{t("edit_permission")}</DialogTitle>
+        <DialogContent>
+          {permissionToEdit && (
+            <Box
+              component="form"
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                disabled
+                margin="normal"
+                fullWidth
+                label={t("finance_entry")}
+                {...register("finance_entry")}
+              />
+              <FormControl fullWidth margin="normal">
+                <Controller
+                  control={control}
+                  name="date"
+                  defaultValue={null}
+                  render={({ field }) => (
+                    <DatePicker
+                      label={t("date")}
+                      value={field.value ? moment(field.value) : null}
+                      onChange={(date) => {
+                        setValue("date", date); // Update the form value
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  )}
+                />
+              </FormControl>
+              <TextField
+                margin="normal"
+                fullWidth
+                label={t("amount")}
+                {...register("amount", { valueAsNumber: true })}
+                type="number"
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label={t("beneficiary")}
+                {...register("beneficiary")}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label={t("description")}
+                multiline
+                rows={4}
+                {...register("description")}
+              />
+
+              {/* PDF File Upload */}
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="pdf-file-label">{t("pdf_file")}</InputLabel>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  {...register("pdf_file")}
+                  id="pdf-file"
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
               >
-                <TextField
-                 disabled
-                  margin="normal"
-                  fullWidth
-                  label={t("finance_entry")}
-                  {...register("finance_entry")}
-                />
-                <FormControl fullWidth margin="normal">
-                  <Controller
-                    control={control}
-                    name="date"
-                    defaultValue={null}
-                    render={({ field }) => (
-                      <DatePicker
-                        label={t("date")}
-                        value={field.value ? moment(field.value) : null}
-                        onChange={(date) => {
-                          setValue("date", date); // Update the form value
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    )}
-                  />
-                </FormControl>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  label={t("amount")}
-                  {...register("amount", { valueAsNumber: true })}
-                  type="number"
-                />
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  label={t("beneficiary")}
-                  {...register("beneficiary")}
-                />
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  label={t("description")}
-                  multiline
-                  rows={4}
-                  {...register("description")}
-                />
+                {t("save")}
+              </Button>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditDialog}>{t("cancel")}</Button>
+        </DialogActions>
+      </Dialog>
 
-                
-                {/* PDF File Upload */}
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="pdf-file-label">{t("pdf_file")}</InputLabel>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    {...register("pdf_file")}
-                    id="pdf-file"
-                  />
-                </FormControl>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  {t("save")}
-                </Button>
-              </Box>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseEditDialog}>{t("cancel")}</Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Snackbar for notifications */}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
           onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {/* </Paper> */}
     </LocalizationProvider>
   );

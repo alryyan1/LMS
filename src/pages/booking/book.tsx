@@ -178,8 +178,8 @@ function DoctorScheduleManager() {
               <Grid item xs={12} md={6}>
                 {daysOfWeek.slice(0, Math.ceil(daysOfWeek.length / 2)).map((day, index) => (
                   <Paper key={index} elevation={2} style={{ marginBottom: '10px', padding: '10px' }}>
-                    <Box display="flex" flexDirection="column" alignItems="flex-start">
-                      <Typography variant="subtitle1">{day}</Typography>
+                    <Box display="flex"  flexDirection="column"  alignItems="flex-center">
+                      <Typography variant='h4' textAlign={'center'} >{day}</Typography>
                       <Divider sx={{ width: '100%', mb: 1 }} />
                       <Stack direction="row" alignItems="center" justifyContent="space-around" width="100%">
                         {/* Morning Slot */}
@@ -225,8 +225,8 @@ function DoctorScheduleManager() {
                   const actualIndex = index + Math.ceil(daysOfWeek.length / 2); // adjust index from first column 
                   return (
                     <Paper key={actualIndex} elevation={2} style={{ marginBottom: '10px', padding: '10px' }}>
-                      <Box display="flex" flexDirection="column" alignItems="flex-start">
-                        <Typography variant="subtitle1">{day}</Typography>
+                      <Box display="flex" flexDirection="column" alignItems="flex-center">
+                        <Typography textAlign={'center'} variant="h4">{day}</Typography>
                         <Divider sx={{ width: '100%', mb: 1 }} />
                         <Stack direction="row" alignItems="center" justifyContent="space-around" width="100%">
                           {/* Morning Slot */}

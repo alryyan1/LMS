@@ -11,6 +11,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs'; // Import dayjs
 import DynamicTable from "./IncomeStatement";
 import { Account } from "../../types/type";
+import { host, schema } from "../constants";
 
 const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
 const initialCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
@@ -90,6 +91,8 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
           credits: [initialDebitCreditEntry],
         });
         setSelectedAccounts([]);
+        //send notification
+   
 
         // Reset the local debit and credit account states
         setDebitAccounts([initialDebitCreditEntry]);

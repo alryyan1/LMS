@@ -53,6 +53,14 @@ function PaperConfig() {
 
   const image2 = new Image(100,100)
   image2.src = settings?.footer_base64;
+
+  
+  const managerStamp = new Image(100,100)
+  managerStamp.src = settings?.footer_base64;
+
+    
+  const auditorStamp = new Image(100,100)
+  auditorStamp.src = settings?.auditor_stamp;
   console.log(image1)
   return (
     <Grid gap={4} container>
@@ -359,6 +367,37 @@ function PaperConfig() {
           </section>
         )}
            <img width={100} src={image2.src} alt="" />
+
+             <Divider />
+        <Typography textAlign={'center'} variant="h3">Manager Stamp</Typography>
+
+        <input onChange={(e)=>{
+          handleFileChange(e,'manager_stamp')
+        }} type="file"></input>
+        {file && (
+          <section>
+            File details:
+            <ul>
+              <li>Name: {file.name}</li>
+            </ul>
+          </section>
+        )}
+           <img width={100} src={managerStamp.src} alt="" />
+           <Divider />
+        <Typography textAlign={'center'} variant="h3">Financial Auditor Stamp</Typography>
+
+        <input onChange={(e)=>{
+          handleFileChange(e,'auditor_stamp')
+        }} type="file"></input>
+        {file && (
+          <section>
+            File details:
+            <ul>
+              <li>Name: {file.name}</li>
+            </ul>
+          </section>
+        )}
+           <img width={100} src={auditorStamp.src} alt="" />
           <Box sx={{p:1}}>
            <TextField defaultValue={settings?.header_contentr} sx={{mb:1}}  rows={3} label='محتوي الترويسه' multiline fullWidth onChange={(e)=>{
              axiosClient.post("settings", {
