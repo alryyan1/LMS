@@ -29,6 +29,7 @@ import {
   Stack,
   Grid,
   Autocomplete,
+  Badge,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -78,8 +79,8 @@ interface PettyCashPermission {
   department_id: number | null;
   created_at: string;
   updated_at: string;
-  entry:Entry;
-  creditAccountNames:string
+  entry: Entry;
+  creditAccountNames: string;
 }
 
 interface SnackbarState {
@@ -283,23 +284,22 @@ function PettyCashPermissionsTable() {
       });
   };
   useEffect(() => {
-    if(beneficiary != null || selectedAccount) { 
+    if (beneficiary != null || selectedAccount) {
       axiosClient
-      .post(`petty-cash-permissions-filter`, {
-        filter: true,
-        beneficiary,
-        account:selectedAccount?.id
-      })
-      .then(({ data }) => {
-        console.log(data, "data");
-        setPermissions(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        .post(`petty-cash-permissions-filter`, {
+          filter: true,
+          beneficiary,
+          account: selectedAccount?.id,
+        })
+        .then(({ data }) => {
+          console.log(data, "data");
+          setPermissions(data);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-    
-  }, [beneficiary,selectedAccount?.id]);
+  }, [beneficiary, selectedAccount?.id]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} locale={t("locale")}>
       {/* <Paper sx={{ width: "100%", overflow: "hidden" }}> */}
@@ -348,8 +348,8 @@ function PettyCashPermissionsTable() {
           <Autocomplete
             sx={{ width: "300px" }}
             onChange={(e, newVal) => {
-              console.log(newVal)
-              setSelectedAccount(newVal)
+              console.log(newVal);
+              setSelectedAccount(newVal);
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.name}
@@ -362,8 +362,16 @@ function PettyCashPermissionsTable() {
             )}
           />
 
-          <IconButton href={`${webUrl}pettyAll-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}>Excel</IconButton>
-          <IconButton href={`${webUrl}pettycashAllReport?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}>PDF</IconButton>
+          <IconButton
+            href={`${webUrl}pettyAll-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}
+          >
+            Excel
+          </IconButton>
+          <IconButton
+            href={`${webUrl}pettycashAllReport?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}
+          >
+            PDF
+          </IconButton>
         </Stack>
       </Paper>
       <Typography variant="h5" textAlign={"center"}>
@@ -391,6 +399,7 @@ function PettyCashPermissionsTable() {
               <TableCell>{t("beneficiary")}</TableCell>
               <TableCell>{t("description")}</TableCell>
               <TableCell>الحساب</TableCell>
+              <TableCell>الاعتماد</TableCell>
               <TableCell>{t("pdf_file")}</TableCell>
               <TableCell>{t("actions")}</TableCell>
             </TableRow>
@@ -400,11 +409,21 @@ function PettyCashPermissionsTable() {
               <TableRow key={permission.id}>
                 <TableCell>{permission.id}</TableCell>
                 <TableCell>{permission.finance_entry_id}</TableCell>
-                <TableCell sx={{textWrap:'nowrap'}}>{permission.date}</TableCell>
+                <TableCell sx={{ textWrap: "nowrap" }}>
+                  {permission.date}
+                </TableCell>
                 <TableCell>{formatNumber(permission.amount)}</TableCell>
                 <TableCell>{permission.beneficiary}</TableCell>
                 <TableCell>{permission.description}</TableCell>
                 <TableCell>{permission.creditAccountNames}</TableCell>
+                <TableCell>
+                  <Stack direction="column" gap={1}>
+                    
+                  <Badge content="أكرم عبد الوهاب"/>
+                  {permission.user_approved_time  && <Card>أكرم عبد الوهاب</Card>}
+                  {permission.auditor_approved_time  && <Card>محمد بشير</Card>}
+                  </Stack>
+                </TableCell>
                 <TableCell>
                   <Stack gap={1} direction="row">
                     {permission.pdf_file && (

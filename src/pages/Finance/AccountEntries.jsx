@@ -136,6 +136,7 @@ function AccountEntries() {
                                       "Content-Type": "application/json",
                                     },
                                     body: JSON.stringify({
+                                      id:data.data.id,
                                       amount: `${data.data.amount}`,
                                       description: `${data.data.description}`,
                                     }),

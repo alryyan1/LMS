@@ -61,8 +61,8 @@ function MySelectTableCellAccount({
              paddingBottom: 0.5,
           }
         }} >
-          <MenuItem value = {'ايراد'}>ايراد</MenuItem>
-          <MenuItem value={'مصروف'}>مصروف</MenuItem>
+          <MenuItem value = {'revenue'}>ايراد</MenuItem>
+          <MenuItem value={'cost'}>مصروف</MenuItem>
 
         </Select>
       ) : (

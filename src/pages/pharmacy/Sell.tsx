@@ -442,7 +442,7 @@ function SellDrug() {
                     Invoice PDF
                   </a>
                 )}
-                {activeSell.client && (
+                {/* {activeSell.client && (
                   <FormGroup>
                     <FormControlLabel
                       label="Postpaid"
@@ -457,11 +457,11 @@ function SellDrug() {
                       }
                     ></FormControlLabel>
                   </FormGroup>
-                )}
-                <AutocompleteSearchPatientInsurance
+                )} */}
+                {/* <AutocompleteSearchPatientInsurance
                   setActiveSell={setActiveSell}
                   selectedDeduct={activeSell}
-                />
+                /> */}
                 <Box sx={{ flex: 1, textAlign: "center" }}>
                   {activeSell.doctorvisit && (
                     <Typography variant="h4">
@@ -490,27 +490,27 @@ function SellDrug() {
                       <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      <TableCell>Strips</TableCell>
+                      {/* <TableCell>Strips</TableCell> */}
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
-                      <TableCell>Expire</TableCell>
+                      {/* <TableCell>Expire</TableCell> */}
                       <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
                   <TableBody>
                     {activeSell?.deducted_items?.map((deductedItem, index) => (
                       <TableRow
-                        sx={{
-                          background: (theme) => {
-                            return !dayjs(
-                              deductedItem?.item?.last_deposit_item?.expire
-                            ).isAfter(dayjs())
-                              ? "#ef535087"
-                              : "theme.palette.background.defaultLight";
-                          },
-                          fontWeight: "500",
-                        }}
+                        // sx={{
+                        //   background: (theme) => {
+                        //     return !dayjs(
+                        //       deductedItem?.item?.last_deposit_item?.expire
+                        //     ).isAfter(dayjs())
+                        //       ? "#ef535087"
+                        //       : "theme.palette.background.defaultLight";
+                        //   },
+                        //   fontWeight: "500",
+                        // }}
                         key={deductedItem.id}
                       >
                         <TableCell>{index + 1}</TableCell>
@@ -521,7 +521,7 @@ function SellDrug() {
                         </TableCell>
                         {activeSell.complete ? (
                           <TableCell>
-                            {formatNumber(toFixed(deductedItem.price, 1))}
+                            {formatNumber(toFixed(deductedItem.price, 3))}
                           </TableCell>
                         ) : (
                           <MyTableCell
@@ -534,11 +534,11 @@ function SellDrug() {
                             table="deductedItem"
                             colName={"price"}
                           >
-                            {toFixed(deductedItem.price, 1)}
+                            {toFixed(deductedItem.price, 3)}
                           </MyTableCell>
                         )}
 
-                        {activeSell.complete ? (
+                        {/* {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -552,9 +552,9 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )}
+                        )} */}
                         {activeSell.complete ? (
-                          <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
+                          <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
                         ) : (
                           <MyTableCell
                             show
@@ -567,7 +567,7 @@ function SellDrug() {
                             table="deductedItem"
                             colName={"box"}
                           >
-                            {toFixed(deductedItem.box, 1)}
+                            {toFixed(deductedItem.box, 3)}
                           </MyTableCell>
                         )}
                         <TableCell>
@@ -598,12 +598,12 @@ function SellDrug() {
                           </LoadingButton>
                         </TableCell>
 
-                        <TableCell>
+                        {/* <TableCell>
                           <MyDateField2
                             val={deductedItem?.item.last_deposit_item?.expire}
                             item={deductedItem?.item.last_deposit_item}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
@@ -718,7 +718,7 @@ function SellDrug() {
                         toFixed(
                           activeSell?.total_price 
                             ,
-                          1
+                          3
                         )
                       )}
                     </TableCell>
@@ -735,7 +735,7 @@ function SellDrug() {
                       item={activeSell}
                       disabled={activeSell.complete == 1}
                     >
-                      {Number(activeSell?.discount).toFixed(1)}
+                      {Number(activeSell?.discount).toFixed(3)}
                     </MyTableCell>
                   </TableRow>
 
@@ -747,7 +747,7 @@ function SellDrug() {
                       Paid
                     </TableCell>
                     <TableCell sx={{ fontSize: "27px" }}>
-                      {formatNumber(Number(activeSell?.paid).toFixed(0))}
+                      {formatNumber(Number(activeSell?.paid).toFixed(3))}
                     </TableCell>
                   </TableRow>
                 </TableBody>

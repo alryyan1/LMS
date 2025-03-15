@@ -52,23 +52,23 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
       return;
     }
     console.log(selectedDrugs,'selected')
-    selectedDrugs.map((d)=>{
-      if (d.last_deposit_item == null) {
-        setDialog((prev)=>{
-          return {...prev, open: true, message:`Item (${d.market_name}) is not available in store `,color:'error'}
-        })
-      }
-    })
-     selectedDrugs.forEach((drug)=>{
-       if (drug.strips == 0) {
-         alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
-       }
-       return 
-     })
+    // selectedDrugs.map((d)=>{
+    //   if (d.last_deposit_item == null) {
+    //     setDialog((prev)=>{
+    //       return {...prev, open: true, message:`Item (${d.market_name}) is not available in store `,color:'error'}
+    //     })
+    //   }
+    // })
+    //  selectedDrugs.forEach((drug)=>{
+    //    if (drug.strips == 0) {
+    //      alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
+    //    }
+    //    return 
+    //  })
      
    setShiftIsLoading(true);
      setLoading(true)
-    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.filter((d)=>d.last_deposit_item!=null).filter((d)=>d.strips !=0).map((d)=>d.id)}).then(({data})=>{
+    axiosClient.post('addDrugForSell',{deduct_id:activeSell.id, 'selectedDrugs': selectedDrugs.map((d)=>d.id)}).then(({data})=>{
         // console.log(data,'data')
         
         update(data.data)
@@ -139,16 +139,13 @@ function AddDrugAutocomplete({setUpdater,update,searchOption}) {
                           itemFounded = data
                           console.log(itemFounded,'founed')
                           if (itemFounded ) {
-                            if (itemFounded.strips == 0) {
-                              alert('يجب ان يحتوي الدواء علي شريط واحد علي الاقل')
-                              return
-                            }
-                            if (itemFounded.last_deposit_item == null) {
-                              setDialog((prev)=>{
-                                return {...prev, open: true, message:`Item (${itemFounded.market_name}) is not available in store `,color:'error'}
-                              })
-                              return
-                            }
+                          
+                            // if (itemFounded.deposit_items_sum_quantity == null || itemFounded.deposit_items_sum_quantity == 0) {
+                            //   setDialog((prev)=>{
+                            //     return {...prev, open: true, message:`Item (${itemFounded.market_name}) is not available in store `,color:'error'}
+                            //   })
+                            //   return
+                            // }
                             // alert(itemFounded.last_deposit_item.expire)
                             // console.log(itemFounded.expire,'expire')
                             // console.log(dayjs(itemFounded.expire).isAfter(dayjs()),'expire')
