@@ -130,7 +130,7 @@ function AccountEntries() {
                                   description: entry.description,
                                 })
                                 .then(({data}) => {
-                                  fetch(`${schema}://${host}:3000/msg`, {
+                                  fetch(`${schema}://${host}:8000/msg`, {
                                     method: "POST",
                                     headers: {
                                       "Content-Type": "application/json",
