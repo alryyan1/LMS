@@ -130,6 +130,10 @@ function AccountEntries() {
                                   description: entry.description,
                                 })
                                 .then(({data}) => {
+                                  console.log(data)
+                                  setEntries((prev)=>{
+                                    return prev.map((item)=>item.id === entry.id? data.data.entry:item)
+                                  })
                                   fetch(`${schema}://${host}:8000/msg`, {
                                     method: "POST",
                                     headers: {

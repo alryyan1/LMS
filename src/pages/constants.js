@@ -11,22 +11,23 @@ export function onlyAdmin(user, action) {
 }
 // export const host = 'sahara-pharma.com'
 export const schema = "http";
-export const host = "127.0.0.1";
+export const host = "192.168.100.70";
+export const projectFolder = "laravel-react-app";
 // export const host = 'server1'مركز النعيم
 
 export function blurForNoramlUsers() {
   // return classname has filter properties
   return "blurForNormalUsers";
 }
-// export const url = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/api/"
-export const url = `${schema}://${host}/laravel-react-app/public/api/`;
-//  export const url = "http://192.168.1.5/laravel-react-app/public/api/"
-// export const url = "https://om-pharmacy.com/laravel-react-app/public/api/"
-// export const webUrl = "https://intaj-starstechnology.com/jawda1/laravel-react-app/public/"
-//  export const webUrl = "http://192.168.1.5/laravel-react-app/public/"
-export const webUrl = `${schema}://${host}/laravel-react-app/public/`;
-export const imagesUrl = `${schema}://${host}/laravel-react-app/public/storage/images`;
-// export const webUrl = "https://om-pharmacy.com/laravel-react-app/public/"
+// export const url = "https://intaj-starstechnology.com/jawda1/${projectFolder}/public/api/"
+export const url = `${schema}://${host}/${projectFolder}/public/api/`;
+//  export const url = "http://192.168.1.5/${projectFolder}/public/api/"
+// export const url = "https://om-pharmacy.com/${projectFolder}/public/api/"
+// export const webUrl = "https://intaj-starstechnology.com/jawda1/${projectFolder}/public/"
+//  export const webUrl = "http://192.168.1.5/${projectFolder}/public/"
+export const webUrl = `${schema}://${host}/${projectFolder}/public/`;
+export const imagesUrl = `${schema}://${host}/${projectFolder}/public/storage/images`;
+// export const webUrl = "https://om-pharmacy.com/${projectFolder}/public/"
 export const notifyMe = (title, data, address, action) => {
   // alert(Notification.permission)
   if (!("Notification" in window)) {
