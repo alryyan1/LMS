@@ -93,6 +93,7 @@ function PettyCashPermissionsTable() {
   const { t } = useTranslation("PettyCashTable");
   const [page, setPage] = useState(10);
   const [beneficiary, setBeneficiary] = useState(null);
+  const [entries, setEntires] = useState<Entry[]>([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [firstDate, setFirstDate] = useState(dayjs().startOf("month"));
 
@@ -300,6 +301,12 @@ function PettyCashPermissionsTable() {
         });
     }
   }, [beneficiary, selectedAccount?.id]);
+
+  useEffect(()=>{
+        axiosClient.get('financeEntries').then(({data})=>{
+          setEntires(data)
+        })
+    },[])
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} locale={t("locale")}>
       {/* <Paper sx={{ width: "100%", overflow: "hidden" }}> */}
@@ -363,7 +370,7 @@ function PettyCashPermissionsTable() {
           />
 
           <IconButton
-            href={`${webUrl}pettyAll-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}&account=${selectedAccount?.id}`}
+            href={`${webUrl}pettyAll-excel?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}${selectedAccount?.id != null ? `&account=${selectedAccount.id}`:''}`}
           >
             Excel
           </IconButton>
@@ -408,7 +415,25 @@ function PettyCashPermissionsTable() {
             {permissions.map((permission) => (
               <TableRow key={permission.id}>
                 <TableCell>{permission.id}</TableCell>
-                <TableCell>{permission.finance_entry_id}</TableCell>
+                <TableCell>{permission?.finance_entry_id == null ?  <Autocomplete
+                size="small"
+            sx={{ width: "100px" }}
+            onChange={(e, newVal) => {
+              console.log(newVal);
+              axiosClient.patch(`setFinanceEntry/${permission.id}`,{
+                finance_entry_id: newVal?.id,
+              })
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.id}
+            options={entries.filter((e)=>e.hasPetty == true)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"بحث الدائن"} // Use translation
+              />
+            )}
+          /> : permission?.finance_entry_id }</TableCell>
                 <TableCell sx={{ textWrap: "nowrap" }}>
                   {permission.date}
                 </TableCell>
@@ -420,8 +445,32 @@ function PettyCashPermissionsTable() {
                   <Stack direction="column" gap={1}>
                     
                   <Badge content="أكرم عبد الوهاب"/>
-                  {permission.user_approved_time  && <Card>أكرم عبد الوهاب</Card>}
-                  {permission.auditor_approved_time  && <Card>محمد بشير</Card>}
+                  {permission.user_approved_time  ? <Card sx={{background:'green',color:'white'}}>أكرم عبد الوهاب</Card> :<Button variant="outlined" size="small" onClick={()=>{
+                    let result =   confirm('سيتم اعتاد اذن الصرف من قبل المدير ؟')
+                    if(result){
+                      axiosClient.get(`expense-approve/${permission.id}?colName=user_approved_time`).then(({data})=>{
+                        console.log(data)
+                        setPermissions((prev)=>{
+                          return prev.map((p)=>(
+                            p.id === permission.id?  data.data : p
+                          ))
+                        })
+                      })
+                    }
+                  }}>اعتماد المدير</Button>}
+                  {permission.auditor_approved_time  ? <Card sx={{background:'red'}}>محمد بشير</Card>:<Button size="small" variant="outlined" onClick={()=>{
+                    let result =   confirm('سيتم اعتاد اذن الصرف من قبل المراجع ؟')
+                    if(result){
+                      axiosClient.get(`expense-approve/${permission.id}?colName=auditor_approved_time`).then(({data})=>{
+                        console.log(data)
+                        setPermissions((prev)=>{
+                          return prev.map((p)=>(
+                            p.id === permission.id?  data.data : p
+                          ))
+                        })
+                      })
+                    }
+                  }}>اعتماد المراجع</Button>}
                   </Stack>
                 </TableCell>
                 <TableCell>

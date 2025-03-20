@@ -141,8 +141,8 @@ function AccountEntries() {
                                     },
                                     body: JSON.stringify({
                                       id:data.data.id,
-                                      amount: `${data.data.amount}`,
-                                      description: `${data.data.description}`,
+                                      title:'اذن صرف جديد',
+                                      description: `${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `,
                                     }),
                                   });
                                 });
