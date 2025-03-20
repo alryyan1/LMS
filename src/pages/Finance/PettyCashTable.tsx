@@ -55,7 +55,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment from "moment";
 import "moment/locale/ar";
 import axiosClient from "../../../axios-client";
-import { formatNumber, webUrl } from "../constants";
+import { formatNumber, sendNotifications, webUrl } from "../constants";
 import { Plus, Printer } from "lucide-react";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import PettyCashPermissionForm from "./PettyCashPermissionForm";
@@ -422,15 +422,21 @@ function PettyCashPermissionsTable() {
               console.log(newVal);
               axiosClient.patch(`setFinanceEntry/${permission.id}`,{
                 finance_entry_id: newVal?.id,
+              }).then(({data})=>{
+                setPermissions((prev)=>{
+                  return prev.map((p)=>(
+                    p.id === permission.id?  data.data : p
+                  ))
+                })
               })
             }}
             getOptionKey={(op) => op.id}
             getOptionLabel={(option) => option.id}
-            options={entries.filter((e)=>e.hasPetty == true)}
+            options={entries.filter((e)=>e.hasPetty == false)}
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={"بحث الدائن"} // Use translation
+                label={"رقم القيد"} // Use translation
               />
             )}
           /> : permission?.finance_entry_id }</TableCell>
@@ -450,6 +456,8 @@ function PettyCashPermissionsTable() {
                     if(result){
                       axiosClient.get(`expense-approve/${permission.id}?colName=user_approved_time`).then(({data})=>{
                         console.log(data)
+             sendNotifications(data.data.id,' اعتماد المدير' ,`${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `)
+
                         setPermissions((prev)=>{
                           return prev.map((p)=>(
                             p.id === permission.id?  data.data : p
@@ -463,6 +471,8 @@ function PettyCashPermissionsTable() {
                     if(result){
                       axiosClient.get(`expense-approve/${permission.id}?colName=auditor_approved_time`).then(({data})=>{
                         console.log(data)
+             sendNotifications(data.data.id,' اعتماد المراجع ',`${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `)
+                        
                         setPermissions((prev)=>{
                           return prev.map((p)=>(
                             p.id === permission.id?  data.data : p

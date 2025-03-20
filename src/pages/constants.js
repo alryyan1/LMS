@@ -69,33 +69,48 @@ export const getDoctorVisit = (pid) => {
     });
   });
 };
-export const getDoctorVisitById = (pid,controller) => {
+
+export const sendNotifications = (id,title,description) => {
+  fetch(`${schema}://${host}:8000/msg`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+      title,
+      description
+    }),
+  });
+
+}
+export const getDoctorVisitById = (pid, controller) => {
   return new Promise((resolve, reject) => {
-    axiosClient.post(`doctorvisitById?id=${pid}`,{},{
-      signal:controller.signal
+    axiosClient.post(`doctorvisitById?id=${pid}`, {}, {
+      signal: controller.signal
     }).then(({ data }) => {
-      console.log(data,'data')
+      console.log(data, 'data')
 
       resolve(data);
     });
   });
 };
-export const sendResult = (actviePatient,setLoading)=>{
+export const sendResult = (actviePatient, setLoading) => {
   axiosClient
-  .get(`result?pid=${actviePatient.id}&base64=1`)
-  .then(({ data }) => {
-    const pdfData = data.data.slice(data.data.indexOf("JVB"));
-    axiosClient
-      .post(`sendPdf/${actviePatient.id}`, {
-        pdfData,
-      })
-      .finally(() => setLoading(false));
-  });
+    .get(`result?pid=${actviePatient.id}&base64=1`)
+    .then(({ data }) => {
+      const pdfData = data.data.slice(data.data.indexOf("JVB"));
+      axiosClient
+        .post(`sendPdf/${actviePatient.id}`, {
+          pdfData,
+        })
+        .finally(() => setLoading(false));
+    });
 }
-export const sendFinshedResult = (actviePatient,setLoading)=>{
+export const sendFinshedResult = (actviePatient, setLoading) => {
   axiosClient
-  .post(`sendFinshedResult/${actviePatient.id}`)
-  .finally(() => setLoading(false));
+    .post(`sendFinshedResult/${actviePatient.id}`)
+    .finally(() => setLoading(false));
 }
 export const updateHandler = (
   val,
@@ -104,10 +119,10 @@ export const updateHandler = (
   setActiveDoctorVisit,
   changeURl = false,
   otherUrl = null
-  
+
 ) => {
   console.log("called update handler");
-  let api = changeURl ?  `${otherUrl}`  : `patients/${patient.patient.id}`
+  let api = changeURl ? `${otherUrl}` : `patients/${patient.patient.id}`
   return new Promise((resolve, reject) => {
     axiosClient
       .patch(api, {
@@ -117,15 +132,15 @@ export const updateHandler = (
         console.log(data);
         if (data.status) {
           if (setActiveDoctorVisit) {
-            console.log(data,'data')
+            console.log(data, 'data')
             setActiveDoctorVisit(data.data);
           }
           resolve(data.data);
-       
-       
+
+
         }
       })
-      .catch((error)=>{
+      .catch((error) => {
         console.log(error)
         reject(error)
       });
@@ -181,35 +196,35 @@ export function formatNumber(number) {
   );
 }
 
-export function printBarcodeRaw (actviePatient){
+export function printBarcodeRaw(actviePatient) {
 
-  return new Promise((resolve)=>{
+  return new Promise((resolve) => {
     fetch("http://127.0.0.1:5000/", {
       method: "POST",
       headers: {
         "Content-Type": "APPLICATION/JSON",
       },
-  
+
       body: JSON.stringify(actviePatient),
-    }).then(({data})=>{
+    }).then(({ data }) => {
       resolve(data)
     })
   })
-  
+
 }
 
-export function printBarcodeOldWay (actviePatient){
+export function printBarcodeOldWay(actviePatient) {
 
-  return new Promise((resolve)=>{
-   axiosClient.get(`patient/barcode/${actviePatient.id}`)
-    .then(({data})=>{
-      resolve(data)
-    })
+  return new Promise((resolve) => {
+    axiosClient.get(`patient/barcode/${actviePatient.id}`)
+      .then(({ data }) => {
+        resolve(data)
+      })
   })
-  
+
 }
 
-export function PrintLab (actviePatient,userSettings){
+export function PrintLab(actviePatient, userSettings) {
   const form = new URLSearchParams();
   axiosClient
     .get(`printLab/${actviePatient.id}?base64=1`)
@@ -232,7 +247,7 @@ export function PrintLab (actviePatient,userSettings){
           },
 
           body: form,
-        }).then(() => {});
+        }).then(() => { });
       }
     });
 }

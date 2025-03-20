@@ -17,7 +17,7 @@ import { useOutletContext } from "react-router-dom";
 import axiosClient from "../../../axios-client.js";
 import dayjs from "dayjs";
 import AddEntryForm from "./AddEntryForm.tsx";
-import { formatNumber, host, schema, webUrl } from "../constants.js";
+import { formatNumber, host, schema, sendNotifications, webUrl } from "../constants.js";
 import DateComponent from "./DateComponent.tsx";
 import GeminiImageUploader from "./Gemini.tsx";
 
@@ -134,18 +134,21 @@ function AccountEntries() {
                                   setEntries((prev)=>{
                                     return prev.map((item)=>item.id === entry.id? data.data.entry:item)
                                   })
-                                  fetch(`${schema}://${host}:8000/msg`, {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      id:data.data.id,
-                                      title:'اذن صرف جديد',
-                                      description: `${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `,
-                                    }),
-                                  });
+                                  sendNotifications(data.data.id,'اذن صرف جديد',`${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `)
+
+                                  // fetch(`${schema}://${host}:8000/msg`, {
+                                  //   method: "POST",
+                                  //   headers: {
+                                  //     "Content-Type": "application/json",
+                                  //   },
+                                  //   body: JSON.stringify({
+                                  //     id:data.data.id,
+                                  //     title:'اذن صرف جديد',
+                                  //     description: `${data.data.description} \n  المبلغ  ${formatNumber(data.data.amount)}   `,
+                                  //   }),
+                                  // });
                                 });
+
                             }
                           }}
                         >
