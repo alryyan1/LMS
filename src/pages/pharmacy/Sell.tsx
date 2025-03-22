@@ -402,7 +402,7 @@ function SellDrug() {
         >
           {activeSell && (
             <>
-              <Stack direction={"row"} key={activeSell?.id} alignContent={"right"}>
+              <Stack direction={"row"} alignContent={"right"}>
                 {/* <input ref={ref}></input> */}
                 <Autocomplete
                   value={activeSell.client}
@@ -617,6 +617,7 @@ function SellDrug() {
         </Card>
 
         <Card
+        key={activeSell?.id}
           sx={{
             backgroundColor: "#ffffff73",
             p: 1,
@@ -639,8 +640,9 @@ function SellDrug() {
                   "YYYY/MM/DD H:m A"
                 )}
 
+                
               </Typography> */}
-              {/* <MyDateField2
+              <MyDateField2
               //  key={activeSell?.id}
                 label="تاريخ البيع"
                 path="deduct"
@@ -648,8 +650,8 @@ function SellDrug() {
                 // disabled={true}
                 val={activeSell.created_at}
                 item={activeSell}
-              /> */}
-              {dayjs(activeSell.created_at).format('YYYY-MM-DD')}
+              />
+              {/* {dayjs(activeSell.created_at).format('YYYY-MM-DD')} */}
               <Divider />
               {activeSell.doctorvisit ? (
                 <TextField
