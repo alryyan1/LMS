@@ -78,7 +78,7 @@ function SalesTable() {
 
   return (
     <Box>
-      <Stack direction={"row"} justifyContent={"space-between"}>
+      <Stack direction={"row"} justifyContent={"space-between"} alignItems='center'>
         <Box>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateField
@@ -145,6 +145,11 @@ function SalesTable() {
         >
           PDF
         </a>
+        <Button variant='contained' href={`${webUrl}client-statement?first=${firstDate.format(
+            "YYYY/MM/DD"
+          )}&second=${secondDate.format("YYYY/MM/DD")}&client_id=${
+            selectedClient?.id ?? null
+          }`}>تقرير تجميعي</Button>
       </Stack>
 
       <Table size="small">
