@@ -91,6 +91,7 @@ import IncomeStatement from "./pages/Finance/IncomeStatement";
 import BalanceSheet from "./pages/Finance/BalanceSheet";
 import TreeTwo from "./pages/Finance/Tree2";
 import DoctorScheduleManager from "./pages/booking/book";
+import DoctorFinanceLink from "./pages/Finance/DocotrAccountingLink";
 
 
 const  guest:RouteObject =    {
@@ -277,6 +278,10 @@ const finance:RouteObject =   {
           {
             path: "tree2",
             element: <TreeTwo />,
+          },
+          {
+            path: "doctor-accounting-link",
+            element: <DoctorFinanceLink />,
           },
           {
             path: "section",

@@ -3,11 +3,13 @@ import axiosClient from "../../../axios-client";
 import {
   Button,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import dayjs from "dayjs";
 import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
@@ -19,7 +21,11 @@ import { formatNumber } from "../constants";
 import { Shift } from "../../types/Shift";
 
 function DoctorsCredits({ setAllMoneyUpdatedLab }) {
+  
+  const [cashAmount, setCashAmount] = useState(0);
+  const [bankAmount, setBankAmount] = useState(0);
   const [doctorShifts, setDoctorShifts] = useState([]);
+  const [showCashReclaimDialog, setShowCashReclaimDialog] = useState(false);
   const [update, setUpdate] = useState(0);
   const [showAdditonalCosts, setShowAdditonalCosts] = useState(false);
   const [selectedDoctorShift, setSelectedDoctorShift] = useState(null);
@@ -48,6 +54,11 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       .post(`costForDoctor/${id}`, { shiftId: id })
       .then(({ data }) => {
         console.log(data);
+        setDoctorShifts((prev)=>{
+          return prev.map((item) =>
+            item.id === id?  data.data : item
+          );
+        })
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -55,6 +66,47 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
         setAllMoneyUpdatedLab((prev) => prev + 1);
       })
       .finally(() => setIsLoading(false));
+  };
+  const prooveRevenue = (id, setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .get(`prooveRevenue/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+        // setDoctorShifts((prev)=>{
+        //   return prev.map((item) =>
+        //     item.id === id?  data.data : item
+        //   );
+        // })
+      })
+      .catch((err) => console.log(err))
+    
+      .finally(() => setIsLoading(false));
+  };
+     useEffect(()=>{
+      if(selectedDoctorShift){
+        axiosClient.get(`doctor/moneyCash/${selectedDoctorShift?.id}`).then(({data})=>{
+          setCashAmount(data)
+       })
+      }
+    
+     },[selectedDoctorShift?.id])
+  const prooveCashReclaim = () => {
+    axiosClient
+      .post(`prooveCashReclaim/${selectedDoctorShift?.id}`,{
+        cash: cashAmount,
+        bank: bankAmount,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        // setDoctorShifts((prev)=>{
+        //   return prev.map((item) =>
+        //     item.id === id?  data.data : item
+        //   );
+        // })
+      })
+      .catch((err) => console.log(err))
+    
   };
   return (
     <Paper elevation={2}>
@@ -69,6 +121,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             <TableCell>استحقاق التامين</TableCell>
             <TableCell>الزمن</TableCell>
             <TableCell>خصم استحقاق</TableCell>
+            <TableCell> اثبات الايراد النقدي</TableCell>
             <TableCell>اخري </TableCell>
           </TableRow>
         </TableHead>
@@ -87,13 +140,35 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                    disabled={unifiedShift?.cost.map((c)=>c.doctor_shift_id).includes(shift.id)}
+                    disabled={shift.cost}
                     onClick={(setIsLoading) => {
                       addCost(shift.id, setIsLoading);
                     }}
                     variant="contained"
                   >
                     خصم
+                  </MyCustomLoadingButton>
+                </TableCell>
+                <TableCell>
+                  <MyCustomLoadingButton
+                    onClick={(setIsLoading) => {
+                      prooveRevenue(shift.id, setIsLoading);
+                    }}
+                    variant="contained"
+                  >
+                    اثبات الايراد النقدي
+                  </MyCustomLoadingButton>
+                </TableCell>
+                <TableCell>
+                  <MyCustomLoadingButton
+                    onClick={(setIsLoading) => {
+                      setShowCashReclaimDialog(true)
+                      setSelectedDoctorShift(shift)
+
+                    }}
+                    variant="contained"
+                  >
+                    اثبات الاستحقاق النقدي
                   </MyCustomLoadingButton>
                 </TableCell>
                 <TableCell>
@@ -112,6 +187,18 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       {selectedDoctorShift && <EmptyDialog setShow={setShowAdditonalCosts} show={showAdditonalCosts}>
         <DoctorShiftAddictionalCosts doctorShift={selectedDoctorShift} />
       </EmptyDialog>}
+
+      <EmptyDialog show={showCashReclaimDialog} setShow={setShowCashReclaimDialog}>
+          <Stack direction={'column'} gap={1} sx={{p:1}}>
+              <TextField sx={{fontSize:'19px'}} value={cashAmount} onChange={(e)=>{
+                setCashAmount(e.target.value)
+              }} label='الصندوق'/>
+              <TextField onChange={(e)=>{
+                setBankAmount(e.target.value)
+              }} label='البنك'/>
+              <Button onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</Button>
+          </Stack>
+      </EmptyDialog>
     </Paper>
   );
 }
