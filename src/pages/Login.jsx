@@ -14,7 +14,7 @@ import {
 import { Label } from "/src/components/ui/label"
 import { Button } from "../components/ui/button";
 import { useAuthStore } from "../AuthStore";
-import back from "../assets/images/dental.jpg"
+import back from "../assets/images/calc.jpg"
 
 function Login() {
   console.log("login page");
