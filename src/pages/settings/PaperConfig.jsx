@@ -287,7 +287,7 @@ function PaperConfig() {
               label={"العلامه المائيه"}
             />
           </FormGroup>
-          {cashAccount != null && <Box key={cashAccount !=null}>
+          {/* {cashAccount != null && <Box key={cashAccount !=null}> */}
           <Autocomplete
             value={cashAccount}
             size="small"
@@ -368,7 +368,7 @@ function PaperConfig() {
               />
             )}
           />
-          </Box>}
+          {/* </Box>} */}
           
           <FormGroup>
             <FormControlLabel
