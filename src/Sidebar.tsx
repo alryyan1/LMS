@@ -38,14 +38,10 @@ import { IconButton, Tooltip } from "@mui/material";
 import { useStateContext } from "./appContext";
 import { useTranslation } from "react-i18next";
 
-
 function SidebarNav() {
-  const {t} = useTranslation("sidebar")
+  const { t } = useTranslation("sidebar");
   const [collapsed, setCollapsed] = useState(true);
-  const {
-    user,
-  
-  } = useStateContext();
+  const { user } = useStateContext();
   console.log(user, "user in sidebar");
   const [selected, setSelected] = useState(""); // Track the selected menu item
 
@@ -61,7 +57,7 @@ function SidebarNav() {
     { id: 1, title: "المشتروات ", icon: <StairsOutlined /> },
     { id: 1, title: "تسجيل", icon: <Pencil /> },
     { id: 1, title: "عينات ", icon: <Syringe /> },
-    { id: 1, title: "نتائج", icon: <ReceiptLong /> },//8
+    { id: 1, title: "نتائج", icon: <ReceiptLong /> }, //8
     { id: 1, title: "الاسعار", icon: <PriceChange /> },
     { id: 1, title: "الاعدادات ", icon: <Settings /> },
     { id: 1, title: "الربط ", icon: <DeviceHub /> },
@@ -78,22 +74,29 @@ function SidebarNav() {
   ];
 
   return (
-
-    <Sidebar  collapsed={collapsed}>
-      <div  style={{ padding: "10px", textAlign: "center" }}>
-        <IconButton color={user?.isAdmin ? "primary" :''} onClick={() => setCollapsed(!collapsed)}>
+    <Sidebar collapsed={collapsed}>
+      <div style={{ padding: "10px", textAlign: "center" }}>
+        <IconButton
+          color={user?.isAdmin ? "primary" : ""}
+          onClick={() => setCollapsed(!collapsed)}
+        >
           <FormatListBulleted />
         </IconButton>
       </div>
-      <Menu >
-        <SubMenu style={{justifyContent: 'center'}} icon={<People />} label={t("Clinic")}>
+      <Menu>
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<People />}
+          label={t("Clinic")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 5;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -103,15 +106,20 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-        
-        <SubMenu style={{justifyContent: 'center'}} icon={<BiotechIcon />} label={t("Lab")}>
+
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<BiotechIcon />}
+          label={t("Lab")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 4;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -121,14 +129,19 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-         <SubMenu style={{justifyContent: 'center'}} icon={<Pill />} label={t("Pharmacy")}>
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<Pill />}
+          label={t("Pharmacy")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 2;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -137,16 +150,21 @@ function SidebarNav() {
                 </MenuItem>
               );
             })}
-        </SubMenu> 
+        </SubMenu>
 
-        <SubMenu style={{justifyContent: 'center'}} icon={<Settings />} label={t("Settings")}>
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<Settings />}
+          label={t("Settings")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 8;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -156,15 +174,20 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-        
-        <SubMenu style={{justifyContent: 'center'}} icon={<CardMembership />} label={t("Insurance")}>
+
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<CardMembership />}
+          label={t("Insurance")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 6;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -174,14 +197,19 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-        <SubMenu style={{justifyContent: 'center'}} icon={<DollarSign />} label={t("finance")}>
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<DollarSign />}
+          label={t("finance")}
+        >
           {user?.sub_routes
             ?.filter((s) => {
               return s.sub_route.route_id == 12;
             })
             .map((r) => {
               return (
-                <MenuItem style={{justifyContent: 'center'}}
+                <MenuItem
+                  style={{ justifyContent: "center" }}
                   icon={menuItems[r.sub_route.icon].icon}
                   component={<Link to={r.sub_route.path}></Link>}
                   key={r.sub_route.id}
@@ -191,28 +219,32 @@ function SidebarNav() {
               );
             })}
         </SubMenu>
-        <SubMenu style={{justifyContent: 'center'}} icon={<CircleGauge />} label={t("Main")}>
-        {user?.routes
-          ?.filter((s) => {
-            return s.route.is_multi == 0;
-          })
-          .map((r) => {
-            return (
-
-              <MenuItem style={{justifyContent: 'center'}}
-              onClick={() => handleMenuItemClick(r.route.name)}
-
-                className={selected === r.route.name ? "active-menu-item" : ""}
-                icon={menuItems[r.route.icon].icon}
-                component={<Link to={r.route.path}></Link>}
-                key={r.id}
-              >
-                {t(`${r.route.name}`)}
-              </MenuItem>
-            );
-          })}
+        <SubMenu
+          style={{ justifyContent: "center" }}
+          icon={<CircleGauge />}
+          label={t("Main")}
+        >
+          {user?.routes
+            ?.filter((s) => {
+              return s.route.is_multi == 0;
+            })
+            .map((r) => {
+              return (
+                <MenuItem
+                  style={{ justifyContent: "center" }}
+                  onClick={() => handleMenuItemClick(r.route.name)}
+                  className={
+                    selected === r.route.name ? "active-menu-item" : ""
+                  }
+                  icon={menuItems[r.route.icon].icon}
+                  component={<Link to={r.route.path}></Link>}
+                  key={r.id}
+                >
+                  {t(`${r.route.name}`)}
+                </MenuItem>
+              );
+            })}
         </SubMenu>
-       
       </Menu>
     </Sidebar>
   );

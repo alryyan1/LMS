@@ -29,22 +29,33 @@ const saveToDb = (colName, data) => {
 };
 function PaperConfig() {
   const [file, setFile] = useState(null);
+  const [cashAccount, setCashAccount] = useState(null);
+  const [companyAccount, setCompanyAccount] = useState(null);
+  const [bankAccount, setBankAccount] = useState(null);
+  const [enduranceAccount, setEnduranceAccount] = useState(null);
   const [src, setSrc] = useState(null);
   const [settings, setSettings] = useState(null);
+  const [accounts, setAccounts] = useState([]);
   useEffect(() => {
     axiosClient.get("settings").then(({ data }) => {
-      console.log(data, "data see");
+      console.log(data, "settings see");
+      let settingsData = data;
       setSettings(data);
-    });
+      axiosClient.get("financeAccounts").then(({ data }) => {
+        setAccounts(data);
+        console.log(data,'daaaaaaaaaaaaaat')
+        let cashA = data.find((s)=> s.id == settingsData.finance_account_id)
+        console.log(cashA,'cashA')
+        setCashAccount(cashA)
+        setCompanyAccount(data.find((s)=> s.id == settingsData.company_account_id))
+        setBankAccount(data.find((s)=> s.id == settingsData.bank_id))
+        setEnduranceAccount(data.find((s)=> s.id == settingsData.endurance_account_id))
+      });
+    })
   }, []);
-  const [accounts, setAccounts] = useState([]);
 
-  useEffect(() => {
-    axiosClient.get("financeAccounts").then(({ data }) => {
-      setAccounts(data);
-    });
-  }, []);
-  console.log(settings, "settings are set");
+
+
   const handleFileChange = (e, colName) => {
     encodeImageFileAsURL(e.target.files[0], colName);
     const url = URL.createObjectURL(e.target.files[0]);
@@ -55,6 +66,8 @@ function PaperConfig() {
       setFile(e.target.files[0]);
     }
   };
+
+  // console.log(accounts.find((s)=> s.id == settings.finance_account_id) ,'setting cash acount')
   const image1 = new Image(100, 100);
   image1.src = settings?.header_base64;
 
@@ -274,7 +287,9 @@ function PaperConfig() {
               label={"العلامه المائيه"}
             />
           </FormGroup>
+          {cashAccount != null && <Box key={cashAccount !=null}>
           <Autocomplete
+            value={cashAccount}
             size="small"
             onChange={(e, newVal) => {
               console.log(newVal);
@@ -293,7 +308,48 @@ function PaperConfig() {
               />
             )}
           />
+                <Autocomplete
+            size="small"
+            value={companyAccount}
+            onChange={(e, newVal) => {
+              console.log(newVal);
+              axiosClient.post("settings", {
+                colName: "company_account_id",
+                data: newVal.id,
+              });
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.name}
+            options={accounts}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"حساب التامين"} // Use translation
+              />
+            )}
+          />
+                <Autocomplete
+                value={enduranceAccount}
+            size="small"
+            onChange={(e, newVal) => {
+              console.log(newVal);
+              axiosClient.post("settings", {
+                colName: "endurance_account_id",
+                data: newVal.id,
+              });
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.name}
+            options={accounts}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"حساب التحمل"} // Use translation
+              />
+            )}
+          />
              <Autocomplete
+             value={bankAccount}
             size="small"
             onChange={(e, newVal) => {
               console.log(newVal);
@@ -312,6 +368,8 @@ function PaperConfig() {
               />
             )}
           />
+          </Box>}
+          
           <FormGroup>
             <FormControlLabel
               control={

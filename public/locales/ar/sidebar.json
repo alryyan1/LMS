@@ -68,7 +68,8 @@
     "subRoutes": "النوافذ الفرعيه",
     "gallary": "مذكرات ",
     "incomeStatement":"قائمه الدخل",
-    "BalanceSheet":"قائمه الميزانيه"
-
+    "BalanceSheet":"قائمه الميزانيه",
+"doctor-accounting-link":" ربط الاطباء ",
+"company-accounting-link":" ربط الشركات "
     
   }

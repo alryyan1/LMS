@@ -251,7 +251,7 @@ function AccountEntries() {
                         }}
                         colSpan={5}
                       >
-                        {entry.description}
+                       {entry.doctor_shift_id != null ? <Button variant="outlined" target='_blank' href={`${webUrl}clinics/doctor/report?doctorshift=${entry.doctor_shift_id}`}>{entry.description}</Button> : entry.description}
                       </TableCell>
                     </TableRow>
                   </>

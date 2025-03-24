@@ -9,8 +9,8 @@ function MyDateField2({ val, item ,disabled, label='تاريخ الانتهاء'
   // console.log(item , val,'date filed ')
   // console.log(dayjs(val), "date filed ", val, "val");
   const [date, setDate] = useState(val);
-  console.log(dayjs(val))
-  console.log(val,'val')
+  // console.log(dayjs(val))
+  // console.log(val,'val')
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateField

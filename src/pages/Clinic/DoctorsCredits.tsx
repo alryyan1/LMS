@@ -23,6 +23,7 @@ import { Shift } from "../../types/Shift";
 function DoctorsCredits({ setAllMoneyUpdatedLab }) {
   
   const [cashAmount, setCashAmount] = useState(0);
+  const [temp, setTemp] = useState(0);
   const [bankAmount, setBankAmount] = useState(0);
   const [doctorShifts, setDoctorShifts] = useState([]);
   const [showCashReclaimDialog, setShowCashReclaimDialog] = useState(false);
@@ -73,11 +74,27 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       .get(`prooveRevenue/${id}`)
       .then(({ data }) => {
         console.log(data);
-        // setDoctorShifts((prev)=>{
-        //   return prev.map((item) =>
-        //     item.id === id?  data.data : item
-        //   );
-        // })
+        setDoctorShifts((prev)=>{
+          return prev.map((item) =>
+            item.id === id?  data.data : item
+          );
+        })
+      })
+      .catch((err) => console.log(err))
+    
+      .finally(() => setIsLoading(false));
+  };
+  const prooveCompanyRevenue = (id, setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .post(`prooveCompanyRevenue/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+        setDoctorShifts((prev)=>{
+          return prev.map((item) =>
+            item.id === id?  data.data : item
+          );
+        })
       })
       .catch((err) => console.log(err))
     
@@ -87,6 +104,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       if(selectedDoctorShift){
         axiosClient.get(`doctor/moneyCash/${selectedDoctorShift?.id}`).then(({data})=>{
           setCashAmount(data)
+          setTemp(data)
        })
       }
     
@@ -99,11 +117,30 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       })
       .then(({ data }) => {
         console.log(data);
-        // setDoctorShifts((prev)=>{
-        //   return prev.map((item) =>
-        //     item.id === id?  data.data : item
-        //   );
-        // })
+        setShowCashReclaimDialog(false);
+        setDoctorShifts((prev)=>{
+          return prev.map((item) =>
+            item.id == selectedDoctorShift?.id ?  data.data : item
+          );
+        })
+      })
+      .catch((err) => console.log(err))
+    
+  };
+  const prooveCompanyReclaim = () => {
+    axiosClient
+      .post(`prooveDoctorCompanyReclaim/${selectedDoctorShift?.id}`,{
+        cash: cashAmount,
+        bank: bankAmount,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        setShowCashReclaimDialog(false);
+        setDoctorShifts((prev)=>{
+          return prev.map((item) =>
+            item.id == selectedDoctorShift?.id ?  data.data : item
+          );
+        })
       })
       .catch((err) => console.log(err))
     
@@ -120,8 +157,12 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             <TableCell>استحقاق النقدي</TableCell>
             <TableCell>استحقاق التامين</TableCell>
             <TableCell>الزمن</TableCell>
-            <TableCell>خصم استحقاق</TableCell>
+            {/* <TableCell>خصم استحقاق</TableCell> */}
             <TableCell> اثبات الايراد النقدي</TableCell>
+            <TableCell> اثبات الاستحقاق النقدي</TableCell>
+            <TableCell> اثبات الايراد من التامين</TableCell>
+            <TableCell> اثبات الاستحقاق من التامين</TableCell>
+
             <TableCell>اخري </TableCell>
           </TableRow>
         </TableHead>
@@ -138,7 +179,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 <TableCell>
                   {dayjs(Date.parse(shift.created_at)).format("H:m A")}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <MyCustomLoadingButton
                     disabled={shift.cost}
                     onClick={(setIsLoading) => {
@@ -148,9 +189,10 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   >
                     خصم
                   </MyCustomLoadingButton>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <MyCustomLoadingButton
+                  disabled={shift.is_cash_revenue_prooved}
                     onClick={(setIsLoading) => {
                       prooveRevenue(shift.id, setIsLoading);
                     }}
@@ -161,6 +203,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
+                  disabled={shift.is_cash_reclaim_prooved}
+
                     onClick={(setIsLoading) => {
                       setShowCashReclaimDialog(true)
                       setSelectedDoctorShift(shift)
@@ -169,6 +213,30 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                     variant="contained"
                   >
                     اثبات الاستحقاق النقدي
+                  </MyCustomLoadingButton>
+                </TableCell>
+                <TableCell>
+                  <MyCustomLoadingButton
+                  disabled={shift.is_company_revenue_prooved}
+                    onClick={(setIsLoading) => {
+                      prooveCompanyRevenue(shift.id, setIsLoading);
+                    }}
+                    variant="contained"
+                  >
+                    اثبات الايراد من التامين
+                  </MyCustomLoadingButton>
+                </TableCell>
+          
+                <TableCell>
+                  <MyCustomLoadingButton
+                  disabled={shift.is_company_reclaim_prooved}
+                    onClick={(setIsLoading) => {
+                      setSelectedDoctorShift(shift)
+                      prooveCompanyReclaim();
+                    }}
+                    variant="contained"
+                  >
+                    اثبات الاستحقاق من التامين
                   </MyCustomLoadingButton>
                 </TableCell>
                 <TableCell>
@@ -192,8 +260,9 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
           <Stack direction={'column'} gap={1} sx={{p:1}}>
               <TextField sx={{fontSize:'19px'}} value={cashAmount} onChange={(e)=>{
                 setCashAmount(e.target.value)
+                setBankAmount(temp - e.target.value)
               }} label='الصندوق'/>
-              <TextField onChange={(e)=>{
+              <TextField value={bankAmount} onChange={(e)=>{
                 setBankAmount(e.target.value)
               }} label='البنك'/>
               <Button onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</Button>

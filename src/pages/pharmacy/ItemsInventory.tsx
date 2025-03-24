@@ -213,7 +213,8 @@ function ItemsInventory() {
           </thead>
           <TableBody>
             {paginateObj?.data.map((item) => {
-              const expire = item?.lastDepositItem?.expire ?? null;
+              console.log(item,'item')
+              const expire = item?.last_deposit_item?.expire ?? null;
               let is_expired = false;
               if (expire != null && !dayjs(expire).isAfter(dayjs())) {
                 is_expired = true;
@@ -226,8 +227,8 @@ function ItemsInventory() {
                   <TableCell>{item.sc_name}</TableCell>
                   <TableCell>
                     <MyDateField2 setDialog={setDialog}
-                      val={item?.lastDepositItem?.expire}
-                      item={item?.lastDepositItem}
+                      val={item?.last_deposit_item?.expire}
+                      item={item?.last_deposit_item}
                     />
                   </TableCell>
                   <TableCell><BasicPopover route="item/deposits" item={item} title={item.totaldeposit} /></TableCell>

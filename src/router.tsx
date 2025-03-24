@@ -92,6 +92,7 @@ import BalanceSheet from "./pages/Finance/BalanceSheet";
 import TreeTwo from "./pages/Finance/Tree2";
 import DoctorScheduleManager from "./pages/booking/book";
 import DoctorFinanceLink from "./pages/Finance/DocotrAccountingLink";
+import CompanyAccountingLink from "./pages/Finance/ComanyiesAccounting";
 
 
 const  guest:RouteObject =    {
@@ -282,6 +283,10 @@ const finance:RouteObject =   {
           {
             path: "doctor-accounting-link",
             element: <DoctorFinanceLink />,
+          },
+          {
+            path: "company-accounting-link",
+            element: <CompanyAccountingLink />,
           },
           {
             path: "section",
