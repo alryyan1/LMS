@@ -110,6 +110,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
     
      },[selectedDoctorShift?.id])
   const prooveCashReclaim = () => {
+   let r =  confirm('هل انت متاكد من اثبات استحقاق الطبيب')
+   if(!r) return
     axiosClient
       .post(`prooveCashReclaim/${selectedDoctorShift?.id}`,{
         cash: cashAmount,
@@ -123,6 +125,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             item.id == selectedDoctorShift?.id ?  data.data : item
           );
         })
+        addCost(selectedDoctorShift?.id,()=>{})
       })
       .catch((err) => console.log(err))
     
@@ -153,7 +156,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             <TableCell>الاسم</TableCell>
             <TableCell>اجمالي الاستحقاق</TableCell>
             <TableCell>عدد المرضي</TableCell>
-            <TableCell>الثابت</TableCell>
+            {/* <TableCell>الثابت</TableCell> */}
             <TableCell>استحقاق النقدي</TableCell>
             <TableCell>استحقاق التامين</TableCell>
             <TableCell>الزمن</TableCell>
@@ -172,7 +175,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
               <TableRow key={shift.id}>
                 <TableCell>{shift.doctor.name}</TableCell>
                 <TdLoader api={`doctor/totalMoney/${shift.id}`} />
-                <TableCell>{shift.visits.length}</TableCell>
+                {/* <TableCell>{shift.visits.length}</TableCell> */}
                 <TableCell>{formatNumber(shift.doctor.static_wage)}</TableCell>
                 <TdLoader api={`doctor/moneyCash/${shift.id}`} />
                 <TdLoader api={`doctor/moneyInsu/${shift.id}`} />
@@ -194,7 +197,10 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   <MyCustomLoadingButton
                   disabled={shift.is_cash_revenue_prooved}
                     onClick={(setIsLoading) => {
-                      prooveRevenue(shift.id, setIsLoading);
+                      let result = confirm('هل انت متاكد من اثبات الايراد النقدي')
+                      if(result){
+                        prooveRevenue(shift.id, setIsLoading);
+                      }
                     }}
                     variant="contained"
                   >
@@ -203,9 +209,12 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                  disabled={shift.is_cash_reclaim_prooved}
+                  disabled={shift.is_cash_revenue_prooved == false || shift.is_cash_reclaim_prooved}
 
                     onClick={(setIsLoading) => {
+
+                      //confirm
+                      
                       setShowCashReclaimDialog(true)
                       setSelectedDoctorShift(shift)
 
@@ -217,7 +226,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                  disabled={shift.is_company_revenue_prooved}
+                  disabled={ shift.is_company_revenue_prooved }
                     onClick={(setIsLoading) => {
                       prooveCompanyRevenue(shift.id, setIsLoading);
                     }}
@@ -229,7 +238,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
           
                 <TableCell>
                   <MyCustomLoadingButton
-                  disabled={shift.is_company_reclaim_prooved}
+                  disabled={shift.is_company_revenue_prooved  == false ||shift.is_company_reclaim_prooved}
                     onClick={(setIsLoading) => {
                       setSelectedDoctorShift(shift)
                       prooveCompanyReclaim();
