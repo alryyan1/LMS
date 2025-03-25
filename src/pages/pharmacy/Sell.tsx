@@ -687,23 +687,23 @@ function SellDrug() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* <TableRow>
+                  <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" }}>
                       Sub Total
                     </TableCell>
                     <TableCell>
                       {formatNumber(
-                        Number(activeSell?.total_price).toFixed(1)
+                        Number(activeSell?.total_price).toFixed(3)
                       )}
                     </TableCell>
-                  </TableRow> */}
+                  </TableRow>
 
                   {/* <TableRow>
                     <TableCell align="right" sx={{ textAlign: "right" }}>
                       Tax
                     </TableCell>
                     <TableCell>
-                      {Number(activeSell?.calculateTax).toFixed(1)}
+                      {Number(activeSell?.calculateTax).toFixed(3)}
                     </TableCell>
                   </TableRow> */}
 
@@ -798,14 +798,14 @@ function SellDrug() {
                     fullWidth
                     loading={loading}
                     onClick={() => {
-                        printHandler()
+                        // printHandler()
                       setLoading(true);
                       axiosClient
                         .get(
                           `inventory/deduct/complete/${activeSell.id}?is_sell=1`
                         )
                         .then(({ data }) => {
-                          // printHandler();
+                          printHandler();
                           try {
                             setDialog((prev) => {
                               return {

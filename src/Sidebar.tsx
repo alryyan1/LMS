@@ -83,8 +83,8 @@ function SidebarNav() {
           <FormatListBulleted />
         </IconButton>
       </div>
-      <Menu>
-        <SubMenu
+       <Menu>
+        {/* <SubMenu 
           style={{ justifyContent: "center" }}
           icon={<People />}
           label={t("Clinic")}
@@ -105,9 +105,9 @@ function SidebarNav() {
                 </MenuItem>
               );
             })}
-        </SubMenu>
+        </SubMenu> */}
 
-        <SubMenu
+        {/* <SubMenu
           style={{ justifyContent: "center" }}
           icon={<BiotechIcon />}
           label={t("Lab")}
@@ -128,7 +128,7 @@ function SidebarNav() {
                 </MenuItem>
               );
             })}
-        </SubMenu>
+        </SubMenu> */}
         <SubMenu
           style={{ justifyContent: "center" }}
           icon={<Pill />}
@@ -175,7 +175,7 @@ function SidebarNav() {
             })}
         </SubMenu>
 
-        <SubMenu
+        {/* <SubMenu
           style={{ justifyContent: "center" }}
           icon={<CardMembership />}
           label={t("Insurance")}
@@ -196,7 +196,7 @@ function SidebarNav() {
                 </MenuItem>
               );
             })}
-        </SubMenu>
+        </SubMenu> */}
         <SubMenu
           style={{ justifyContent: "center" }}
           icon={<DollarSign />}

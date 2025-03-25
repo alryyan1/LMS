@@ -15,8 +15,8 @@ import { PharmacyLayoutPros } from "../types/pharmacy";
 
 const options = [
   { id: 'cash', name: "Cash" },
-  { id: 'bankak', name: "bankak" },
-  // { id: 'transfer', name: "transfer" },
+  { id: 'bank', name: "bank" },
+  { id: 'transfer', name: "transfer" },
 ];
 
 export default function PayOptions({ update }) {

@@ -67,7 +67,7 @@ function Login() {
         <Card style={{borderRadius:'10px',minWidth:'400px' }} className="rtl text-right rounded-md shadow-md  p-6 text-gray-800">
           <CardHeader>
             <Typography variant="h5" className="text-center  ">
-              نظام جوده الطبي
+              نظام جوده 
             </Typography>
           </CardHeader>
           <CardContent>
