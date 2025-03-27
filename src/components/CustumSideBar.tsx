@@ -98,7 +98,7 @@ function CustumSideBar({
         {user && (
           <IconButton
             title=" التقرير العام"
-            href={`${webUrl}clinics/all`}
+            href={`${webUrl}clinics/all?user_id=${user?.id}`}
             variant="contained"
           >
             <Book />

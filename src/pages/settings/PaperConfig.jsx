@@ -30,6 +30,8 @@ const saveToDb = (colName, data) => {
 function PaperConfig() {
   const [file, setFile] = useState(null);
   const [cashAccount, setCashAccount] = useState(null);
+  const [mainCashAccount, setMainCashAccount] = useState(null);
+  const [mainBankAccount, setMainBankAccount] = useState(null);
   const [companyAccount, setCompanyAccount] = useState(null);
   const [bankAccount, setBankAccount] = useState(null);
   const [enduranceAccount, setEnduranceAccount] = useState(null);
@@ -50,6 +52,8 @@ function PaperConfig() {
         setCompanyAccount(data.find((s)=> s.id == settingsData.company_account_id))
         setBankAccount(data.find((s)=> s.id == settingsData.bank_id))
         setEnduranceAccount(data.find((s)=> s.id == settingsData.endurance_account_id))
+        setMainBankAccount(data.find((s)=> s.id == settingsData.main_bank))
+        setMainCashAccount(data.find((s)=> s.id == settingsData.main_cash))
       });
     })
   }, []);
@@ -365,6 +369,46 @@ function PaperConfig() {
               <TextField
                 {...params}
                 label={"حساب البنك"} // Use translation
+              />
+            )}
+          />
+               <Autocomplete
+             value={mainBankAccount}
+            size="small"
+            onChange={(e, newVal) => {
+              console.log(newVal);
+              axiosClient.post("settings", {
+                colName: "main_bank",
+                data: newVal.id,
+              });
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.name}
+            options={accounts}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"حساب البنك الرئيسي"} // Use translation
+              />
+            )}
+          />
+               <Autocomplete
+             value={mainCashAccount}
+            size="small"
+            onChange={(e, newVal) => {
+              console.log(newVal);
+              axiosClient.post("settings", {
+                colName: "main_cash",
+                data: newVal.id,
+              });
+            }}
+            getOptionKey={(op) => op.id}
+            getOptionLabel={(option) => option.name}
+            options={accounts}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={"حساب الخزينه الرئيسي"} // Use translation
               />
             )}
           />

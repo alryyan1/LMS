@@ -32,6 +32,7 @@ import { LoadingButton } from "@mui/lab";
 import { Shift } from "../../types/Shift";
 import { useStateContext } from "../../appContext";
 import ShiftCostsTable from "../../components/ShiftCostsTable";
+import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
 
 function AllMoneyDetails({
   allMoneyUpdated,
@@ -273,6 +274,21 @@ function AllMoneyDetails({
           <ListItemText primary="صافي بنكك" />
         </ListItem>
       </List>}
+      <MyCustomLoadingButton onClick={(setLoading)=>{
+        setLoading(true)
+        let r = confirm('هل انت متأكد من انشاء قيد صافي الورديه')
+        if(r){
+            axiosClient.post('createFinalShiftEntry',{
+                user:user?.id,
+                bank:shiftSummary?.bank - shiftSummary?.totalCostBankak,
+                cash:shiftSummary?.cash - shiftSummary?.totalCostCash
+            }).then(({data})=>{
+
+            }).finally(()=>{
+              setLoading(false)
+            })
+        }
+      }}>انشاء قيد صافي الورديه </MyCustomLoadingButton>
     </div>
   );
 }

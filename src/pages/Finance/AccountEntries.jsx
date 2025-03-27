@@ -87,12 +87,22 @@ function AccountEntries() {
               </thead>
 
               <TableBody>
-                {entries.map((entry, i) => (
-                  <>
+                {entries.map((entry, i) => {
+                  
+                 let showLink = false;
+                 let link = ''
+                 if(entry.doctor_shift_id != null || entry.user_net != null) showLink = true;
+                 if(entry.doctor_shift_id != null){
+                  link = `${webUrl}clinics/doctor/report?doctorshift=${entry.doctor_shift_id}`
+                 }
+                 if(entry.user_net != null){
+       link = `${webUrl}clinics/all?user_id=${entry.user_net}`
+                 }
+                 return <>
                     <TableRow >
                       <TableCell
                         rowSpan={
-                          Math.max(entry.debit.length, entry.credit.length) + 2
+                          entry.debit.length+entry.credit.length +2
                         }
                       >
                         {dayjs(new Date(Date.parse(entry.created_at))).format(
@@ -101,7 +111,7 @@ function AccountEntries() {
                       </TableCell>
                       <TableCell
                         rowSpan={
-                          Math.max(entry.debit.length, entry.credit.length) + 2
+                          entry.debit.length+ entry.credit.length + 2
                         }
                         // style={{ textAlign: "right", color: "lightblue" }}
                       >
@@ -110,7 +120,9 @@ function AccountEntries() {
                       <TableCell> </TableCell>
                       <TableCell> </TableCell>
                       <TableCell> </TableCell>
-                      <TableCell rowSpan={3}>
+                      <TableCell rowSpan={
+                        entry.debit.length+ entry.credit.length + 2
+                      }>
                         <Button
                         disabled={entry.hasPetty}
                         variant="contained"
@@ -251,11 +263,11 @@ function AccountEntries() {
                         }}
                         colSpan={5}
                       >
-                       {entry.doctor_shift_id != null ? <Button variant="outlined" target='_blank' href={`${webUrl}clinics/doctor/report?doctorshift=${entry.doctor_shift_id}`}>{entry.description}</Button> : entry.description}
+                       {showLink ? <Button variant="outlined" target='_blank' href={link}>{entry.description}</Button> : entry.description}
                       </TableCell>
                     </TableRow>
                   </>
-                ))}
+})}
               </TableBody>
             </Table>
           </TableContainer>

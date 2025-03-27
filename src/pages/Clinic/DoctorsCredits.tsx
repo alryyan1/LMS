@@ -233,9 +233,12 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   <MyCustomLoadingButton
                   disabled={ shift.is_company_revenue_prooved }
                     onClick={(setIsLoading) => {
+                      let result = confirm('هل انت متاكد من اثبات ايراد   التامين ')
+                      if(result){
                       setIsLoading(true)
 
                       prooveCompanyRevenue(shift.id, setIsLoading);
+                      }
                     }}
                     variant="contained"
                   >
@@ -249,8 +252,11 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                     onClick={(setIsLoading) => {
                       // setIsLoading(true)
 
+                      let result = confirm('هل انت متاكد من اثبات استحقاق الطبيب من التامين ')
+                      if(result){
                       setSelectedDoctorShift(shift)
                       prooveCompanyReclaim(setIsLoading);
+                      }
                     }}
                     variant="contained"
                   >
@@ -282,6 +288,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
               }} label='الصندوق'/>
               <TextField value={bankAmount} onChange={(e)=>{
                 setBankAmount(e.target.value)
+                setCashAmount(temp - e.target.value)
+
               }} label='البنك'/>
               <MyCustomLoadingButton onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</MyCustomLoadingButton>
           </Stack>
