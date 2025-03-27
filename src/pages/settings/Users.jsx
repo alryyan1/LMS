@@ -36,6 +36,7 @@ import EmptyDialog from "../Dialogs/EmptyDialog";
 import { useTranslation } from "react-i18next";
 import PasswordChangeForm from "../../components/ChangePassword";
 import MyTableCell from "../inventory/MyTableCell";
+import UserMoneyCollectorTypeSelect from "../Clinic/UserTypeSelector";
 
 function Users() {
   const { setDialog, doctors } = useOutletContext();
@@ -102,6 +103,7 @@ function Users() {
               <TableCell>{t("username")}</TableCell>
                 <TableCell>{t("isNurse")}</TableCell>
                 <TableCell>{t("isDoctor")}</TableCell>
+                <TableCell>نوع  المستخدم</TableCell>
             </TableRow>
             <TableBody>
               {users.map((user,i) => {
@@ -134,6 +136,11 @@ function Users() {
                       //open change pasword form
                       setOpenPasswordFrom(true)
                     }}>{t('changePassword')}</Button></TableCell>
+                    <TableCell> 
+                      <UserMoneyCollectorTypeSelect  id={user.id} onChange={()=>{
+                      
+                      }} value={user.user_money_collector_type}/>
+                    </TableCell>
                   </TableRow>
                 );
               })}

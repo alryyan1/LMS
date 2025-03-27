@@ -81,24 +81,24 @@ function CustumSideBar({
           <Calculate />
         </IconButton>
       </Item> */}
-
+{/* 
       <Item>
         {user && (
           <IconButton
             title="العيادات تفصيلي"
-            href={`${webUrl}clinics/report?user=${user.id}`}
+            href={`${webUrl}clinics/all?user=$`}
             variant="contained"
           >
             <Print />
           </IconButton>
         )}
-      </Item>
+      </Item> */}
 
       <Item>
         {user && (
           <IconButton
             title=" التقرير العام"
-            href={`${webUrl}userClinicReport?user=${user.id}`}
+            href={`${webUrl}clinics/all`}
             variant="contained"
           >
             <Book />

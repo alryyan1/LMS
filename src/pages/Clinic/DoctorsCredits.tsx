@@ -49,10 +49,10 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       console.log(data);
     });
   }, [update]);
-  const addCost = (id, setIsLoading) => {
+  const addCost = (id, setIsLoading,bankAmount) => {
     setIsLoading(true);
     axiosClient
-      .post(`costForDoctor/${id}`, { shiftId: id })
+      .post(`costForDoctor/${id}`, { shiftId: id ,bankAmount})
       .then(({ data }) => {
         console.log(data);
         setDoctorShifts((prev)=>{
@@ -125,7 +125,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             item.id == selectedDoctorShift?.id ?  data.data : item
           );
         })
-        addCost(selectedDoctorShift?.id,()=>{})
+        addCost(selectedDoctorShift?.id,()=>{},bankAmount)
       })
       .catch((err) => console.log(err))
     

@@ -408,6 +408,7 @@ function Reception() {
               ) : (
                 <div style={{ width: "300px" }}>
                   <AllMoneyDetails
+                   user={user}
                   setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
                     allMoneyUpdated={allMoneyUpdated}
                     allMoneyUpdatedLab={allMoneyUpdatedLab}

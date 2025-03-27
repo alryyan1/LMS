@@ -46,6 +46,8 @@ function ShiftCostsTable({setAllMoneyUpdatedLab}) {
         <TableCell>وصف المنصرف</TableCell>
         <TableCell>قسم </TableCell>
         <TableCell>المبلغ</TableCell>
+        <TableCell>نقدي</TableCell>
+        <TableCell>بنكك</TableCell>
         <TableCell>حذف</TableCell>
       </TableRow>
     </TableHead>
@@ -56,6 +58,8 @@ function ShiftCostsTable({setAllMoneyUpdatedLab}) {
             <TableCell>{cost.description}</TableCell>
             <TableCell>{cost?.cost_category?.name}</TableCell>
             <TableCell>{formatNumber( cost.amount)}</TableCell>
+            <TableCell>{formatNumber( cost.amount -  cost.amount_bankak)}</TableCell>
+            <TableCell>{formatNumber( cost.amount_bankak)}</TableCell>
             <TableCell>
               <LoadingButton
                 onClick={() => {

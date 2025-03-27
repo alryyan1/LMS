@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -32,23 +33,28 @@ import { Shift } from "../../types/Shift";
 import { useStateContext } from "../../appContext";
 import ShiftCostsTable from "../../components/ShiftCostsTable";
 
-function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdatedLab}) {
+function AllMoneyDetails({
+  allMoneyUpdated,
+  allMoneyUpdatedLab,
+  setAllMoneyUpdatedLab,
+  user,
+}) {
   const { dialog, setDialog } = useOutletContext();
-  const {t} =useTranslation('allMoneyDetails')
+  const { t } = useTranslation("allMoneyDetails");
   const [money, setMoney] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingLab, setLoadingLab] = useState(false);
   const [bank, setBank] = useState();
-    const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
-  useEffect(()=>{
+  const [shiftSummary, setShiftSummary] = useState<ShiftDetails | null>(null);
+  useEffect(() => {
     axiosClient.get("shift/last").then(({ data: { data } }) => {
-        // setShift(data);
-        axiosClient.get(`shift/summary/${data.id}`).then(({ data }) => {
-          console.log(data, "shift summary");
-          setShiftSummary(data);
-        });
+      // setShift(data);
+      axiosClient.get(`shift/summary/${data.id}`).then(({ data }) => {
+        console.log(data, "shift summary");
+        setShiftSummary(data);
       });
-  },[ allMoneyUpdated, allMoneyUpdatedLab])
+    });
+  }, [allMoneyUpdated, allMoneyUpdatedLab]);
   // console.log(dialog);
   useEffect(() => {
     setLoading(true);
@@ -88,92 +94,185 @@ function AllMoneyDetails({ allMoneyUpdated, allMoneyUpdatedLab ,setAllMoneyUpdat
       .finally(() => setLoadingLab(false));
   }, [allMoneyUpdatedLab]);
 
-
   return (
     <div style={{ textAlign: "center" }}>
-      <Typography className="text-center" variant="h5">
-       {t("clinics")}
-      </Typography>
+        {user?.user_money_collector_type == "all" ||
+      user?.user_money_collector_type == "clinic" ? (    <Box>
+        <Typography className="text-center" variant="h5">
+          {t("clinics")}
+        </Typography>
 
-      {loading ? (
-        <CircularProgress />
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Table className="table" size="small">
+            <TableHead className="thead">
+              <TableRow>
+                <TableCell>{t("total")}</TableCell>
+                <TableCell>{t("bank")}</TableCell>
+                <TableCell>{t("cash")}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell> {formatNumber(money)}</TableCell>
+                <TableCell> {formatNumber(bank)}</TableCell>
+                <TableCell> {formatNumber(money - bank)}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        )}
+      </Box>) :''}
+
+      {user?.user_money_collector_type == "all" ||
+      user?.user_money_collector_type == "lab" ? (
+        <Box>
+          <Divider />
+          <Typography className="text-center" variant="h5">
+            {t("lab")}
+          </Typography>
+          <Table className="table" size="small">
+            <TableHead className="thead">
+              <TableRow>
+                <TableCell>{t("total")}</TableCell>
+                <TableCell>{t("bank")}</TableCell>
+                <TableCell>{t("cash")}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loadingLab ? (
+                <CircularProgress />
+              ) : (
+                <TableRow>
+                  <TableCell>{formatNumber(labUserMoney?.total)}</TableCell>
+                  <TableCell>{formatNumber(labUserMoney?.bank)}</TableCell>
+                  <TableCell>
+                    {formatNumber(labUserMoney?.total - labUserMoney?.bank)}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Box>
       ) : (
-        <Table className="table" size="small">
-          <TableHead className="thead">
-            <TableRow>
-              <TableCell>{t("total")}</TableCell>
-              <TableCell>{t("bank")}</TableCell>
-              <TableCell>{t("cash")}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell> {formatNumber(money)}</TableCell>
-              <TableCell> {formatNumber(bank)}</TableCell>
-              <TableCell> {formatNumber(money - bank)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        ""
       )}
+
       <Divider />
-      <Typography className="text-center" variant="h5">
-       {t("lab")}
-      </Typography>
-      {loadingLab ? (
-        <CircularProgress />
-      ) : (
-        <Table className="table" size="small">
-          <TableHead className="thead">
-            <TableRow>
-            <TableCell>{t("total")}</TableCell>
-              <TableCell>{t("bank")}</TableCell>
-              <TableCell>{t("cash")}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>{formatNumber(labUserMoney?.total)}</TableCell>
-              <TableCell>{formatNumber(labUserMoney?.bank)}</TableCell>
-              <TableCell>
-                {formatNumber(labUserMoney?.total - labUserMoney?.bank)}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      )}
-      <Divider />
-      <List>
-        <ListItem secondaryAction={<div>{formatNumber(Number(shiftSummary?.total )+ Number(shiftSummary?.lab))}</div>} key="1">
-      
-          <ListItemText  primary={t("all_total")} />
+        {user?.user_money_collector_type == 'all' ? <List>
+        <ListItem
+          secondaryAction={
+            <div>
+              {formatNumber(
+                Number(shiftSummary?.total) + Number(shiftSummary?.lab)
+              )}
+            </div>
+          }
+          key="1"
+        >
+          <ListItemText primary={t("all_total")} />
         </ListItem>
 
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.bank)}</div>} key="2">
-        
+        <ListItem
+          secondaryAction={<div>{formatNumber(shiftSummary?.bank)}</div>}
+          key="2"
+        >
           <ListItemText primary={t("bank")} />
         </ListItem>
 
-
-        <ListItem secondaryAction={<div>{formatNumber(shiftSummary?.cash)}</div>}  key="3">
-         
+        <ListItem
+          secondaryAction={<div>{formatNumber(shiftSummary?.cash)}</div>}
+          key="3"
+        >
           <ListItemText primary={t("cash")} />
         </ListItem>
 
-    
-           <ListItem secondaryAction={<BasicPopover  content={<>
-              <ShiftCostsTable setAllMoneyUpdatedLab ={setAllMoneyUpdatedLab}/>
-            </>} title={formatNumber(shiftSummary?.expenses)}></BasicPopover>}  key="4">
-         
+        <ListItem
+          secondaryAction={
+            <BasicPopover
+              content={
+                <>
+                  <ShiftCostsTable
+                    setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
+                  />
+                </>
+              }
+              title={formatNumber(shiftSummary?.expenses)}
+            ></BasicPopover>
+          }
+          key="4"
+        >
           <ListItemText primary={t("expenses")} />
         </ListItem>
-       
-       
 
-        <ListItem sx={{backgroundColor: shiftSummary?.safi < 0 ? 'lightpink' : ''}} secondaryAction={<div>{formatNumber(shiftSummary?.safi)}</div>}  key="5">
-       
+        <ListItem
+          sx={{ backgroundColor: shiftSummary?.safi < 0 ? "lightpink" : "" }}
+          secondaryAction={
+            <div>
+              {formatNumber(shiftSummary?.cash - shiftSummary?.totalCostCash)}
+            </div>
+          }
+          key="5"
+        >
           <ListItemText primary={t("net_cash")} />
         </ListItem>
-      </List>
+
+        <ListItem
+          secondaryAction={
+            <div>
+              {formatNumber(shiftSummary?.bank - shiftSummary?.totalCostBankak)}
+            </div>
+          }
+          key="6"
+        >
+          <ListItemText primary="صافي بنكك" />
+        </ListItem>
+      </List> : <List>
+  
+
+     
+
+        <ListItem
+          secondaryAction={
+            <BasicPopover
+              content={
+                <>
+                  <ShiftCostsTable
+                    setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}
+                  />
+                </>
+              }
+              title={formatNumber(shiftSummary?.expenses)}
+            ></BasicPopover>
+          }
+          key="4"
+        >
+          <ListItemText primary={t("expenses")} />
+        </ListItem>
+
+        <ListItem
+          sx={{ backgroundColor: shiftSummary?.safi < 0 ? "lightpink" : "" }}
+          secondaryAction={
+            <div>
+              {formatNumber(shiftSummary?.cash - shiftSummary?.totalCostCash)}
+            </div>
+          }
+          key="5"
+        >
+          <ListItemText primary={t("net_cash")} />
+        </ListItem>
+
+        <ListItem
+          secondaryAction={
+            <div>
+              {formatNumber(shiftSummary?.bank - shiftSummary?.totalCostBankak)}
+            </div>
+          }
+          key="5"
+        >
+          <ListItemText primary="صافي بنكك" />
+        </ListItem>
+      </List>}
     </div>
   );
 }

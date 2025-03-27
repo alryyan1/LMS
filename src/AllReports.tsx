@@ -1444,7 +1444,7 @@ function AllReports() {
                 setTableElement(null);
               }}
             >
-              ايرادات الصيدليه
+              ايرادات المبيعات
             </ListItemText>
           </ListItem>
           <ListItem
@@ -1464,7 +1464,7 @@ function AllReports() {
                 setTableElement(null);
               }}
             >
-              2 - ايرادات الصيدليه
+              2 - ايرادات المبيعات
             </ListItemText>
           </ListItem>
           <ListItem
