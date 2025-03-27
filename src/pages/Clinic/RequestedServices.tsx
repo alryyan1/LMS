@@ -42,6 +42,7 @@ import dayjs from "dayjs";
 import InvoiceCard from "./InvoiceCard";
 import MyCheckbox from "../../components/MyCheckBox";
 import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
+import DiscountDropdown from "./DiscountDropdown";
 
 interface RequestedServiceProps {
   actviePatient: DoctorVisit;
@@ -195,6 +196,7 @@ function RequestedServices({
                 <TableRow>
                   <TableCell> {t("name")}</TableCell>
                   <TableCell>{t("price")}</TableCell>
+                  <TableCell>التخفيض</TableCell>
                   <TableCell>{t("discount")}</TableCell>
                   {actviePatient.patient.company ? (
                     <TableCell>{t("endurance")}</TableCell>
@@ -291,7 +293,9 @@ function RequestedServices({
                         >
                           {formatNumber(price)}
                         </MyTableCell>
+                        <DiscountDropdown  update={update} value={service.discount_per} id={service.id}/>
                         <MyTableCell
+                          key={service.updated_at}
                           colName={"discount"}
                           disabled={
                             service.is_paid == 1 || service.service.variable

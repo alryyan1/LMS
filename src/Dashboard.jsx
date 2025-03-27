@@ -171,17 +171,7 @@ function Dashboard() {
           </CardContent>
         </Card>
 
-        <>
-      <IncomeInfoGraphic />
-          {/* <LineChart width={600} height={300} data={data}>
-            <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="name" />
-            <YAxis  dataKey={"sales"}/>
-          </LineChart> */}
-             
-          <CountInfoGraphic/>
-        </>
+    
 
         <Grid spacing={2} container sx={{mt:1}}>
           <Grid item xs={12} md={6} lg={3}>
@@ -259,36 +249,7 @@ function Dashboard() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <Card sx={{ borderRadius: 10, flexBasis: "70px" }}>
-              <CardContent>
-                <Stack
-                  direction={"row"}
-                  justifyContent={"space-evenly"}
-                  gap={2}
-                >
-                  <Stack justifyContent={"space-between"} direction={"column"}>
-                    <Typography>المختبر</Typography>
-                    <Divider />
-                    <Typography variant="h4">
-                      {shift &&
-                        toFixed(shift?.totalDeductsPrice, 1) -
-                          shift?.cost?.reduce((p, c) => p + c.amount, 0)}
-                    </Typography>
-                  </Stack>
-                  <Stack direction={"column"} justifyContent={"center"}>
-                    <IconButton>
-                      <Lottie
-                        options={defaultOptions}
-                        height={100}
-                        width={100}
-                      />
-                    </IconButton>
-                  </Stack>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
+      
         </Grid>
         <Grid sx={{ mt: 1 }} spacing={2} container>
           <Grid item xs={12} md={6} lg={3}>

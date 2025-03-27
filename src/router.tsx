@@ -93,6 +93,7 @@ import TreeTwo from "./pages/Finance/Tree2";
 import DoctorScheduleManager from "./pages/booking/book";
 import DoctorFinanceLink from "./pages/Finance/DocotrAccountingLink";
 import CompanyAccountingLink from "./pages/Finance/ComanyiesAccounting";
+import Stats from "./pages/settings/Stats";
 
 
 const  guest:RouteObject =    {
@@ -180,6 +181,14 @@ const dashboard:RouteObject =   {
     </ProtectedRoute>
   ),
   path: "/dashboard",
+}
+const stats:RouteObject =   {
+  element: (
+    <ProtectedRoute>
+      <Stats />
+    </ProtectedRoute>
+  ),
+  path: "/stats",
 }
 const patients:RouteObject =    {
   element: (
@@ -521,7 +530,7 @@ const Authorized: RouteObject = {
     contracts,income,
     audit,
     finance,pharmacy
-    ,insurance,lab,clinic,doctorSchedule
+    ,insurance,lab,clinic,doctorSchedule,stats
     
     
   ]

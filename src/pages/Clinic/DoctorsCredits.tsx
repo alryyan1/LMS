@@ -49,7 +49,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       console.log(data);
     });
   }, [update]);
-  const addCost = (id, setIsLoading,bankAmount) => {
+  const addCost = (id,bankAmount,setIsLoading) => {
     setIsLoading(true);
     axiosClient
       .post(`costForDoctor/${id}`, { shiftId: id ,bankAmount})
@@ -64,6 +64,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       .catch((err) => console.log(err))
       .finally(() => {
         setUpdate((prev) => prev + 1);
+        setIsLoading(false)
         setAllMoneyUpdatedLab((prev) => prev + 1);
       })
       .finally(() => setIsLoading(false));
@@ -109,8 +110,9 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       }
     
      },[selectedDoctorShift?.id])
-  const prooveCashReclaim = () => {
+  const prooveCashReclaim = (setIsLoading) => {
    let r =  confirm('هل انت متاكد من اثبات استحقاق الطبيب')
+   setIsLoading(true)
    if(!r) return
     axiosClient
       .post(`prooveCashReclaim/${selectedDoctorShift?.id}`,{
@@ -125,12 +127,13 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
             item.id == selectedDoctorShift?.id ?  data.data : item
           );
         })
-        addCost(selectedDoctorShift?.id,()=>{},bankAmount)
+        addCost(selectedDoctorShift?.id,bankAmount,setIsLoading)
       })
       .catch((err) => console.log(err))
     
   };
-  const prooveCompanyReclaim = () => {
+  const prooveCompanyReclaim = (setIsLoading) => {
+    setIsLoading(true)
     axiosClient
       .post(`prooveDoctorCompanyReclaim/${selectedDoctorShift?.id}`,{
         cash: cashAmount,
@@ -145,6 +148,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
           );
         })
       })
+      .finally(()=>setIsLoading(false))
       .catch((err) => console.log(err))
     
   };
@@ -197,6 +201,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   <MyCustomLoadingButton
                   disabled={shift.is_cash_revenue_prooved}
                     onClick={(setIsLoading) => {
+                      setIsLoading(true)
                       let result = confirm('هل انت متاكد من اثبات الايراد النقدي')
                       if(result){
                         prooveRevenue(shift.id, setIsLoading);
@@ -228,6 +233,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   <MyCustomLoadingButton
                   disabled={ shift.is_company_revenue_prooved }
                     onClick={(setIsLoading) => {
+                      setIsLoading(true)
+
                       prooveCompanyRevenue(shift.id, setIsLoading);
                     }}
                     variant="contained"
@@ -240,8 +247,10 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                   <MyCustomLoadingButton
                   disabled={shift.is_company_revenue_prooved  == false ||shift.is_company_reclaim_prooved}
                     onClick={(setIsLoading) => {
+                      // setIsLoading(true)
+
                       setSelectedDoctorShift(shift)
-                      prooveCompanyReclaim();
+                      prooveCompanyReclaim(setIsLoading);
                     }}
                     variant="contained"
                   >
@@ -274,7 +283,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
               <TextField value={bankAmount} onChange={(e)=>{
                 setBankAmount(e.target.value)
               }} label='البنك'/>
-              <Button onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</Button>
+              <MyCustomLoadingButton onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</MyCustomLoadingButton>
           </Stack>
       </EmptyDialog>
     </Paper>
