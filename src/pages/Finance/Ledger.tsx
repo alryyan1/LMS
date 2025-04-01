@@ -3,12 +3,14 @@ import {
     Grid,
     IconButton,
     Paper,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
+    TextField,
     Typography,
   } from "@mui/material";
   import { useEffect, useState } from "react";
@@ -22,10 +24,15 @@ import { formatNumber, webUrl } from "../constants.js";
 
 import { Account, Debit, Entry } from "../../types/type.js";
 import DateComponent from "./DateComponent.js";
+import TotalCredits from "./TotalCredits.js";
+import TotalDebits from "./DebitsAndCreditsRow.js";
+import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
   function Ledger() {
     //create state variable to store all Accounts
     const {dialog, setDialog }=  useOutletContext()
-    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [loading ,setLoading] = useState(false)
+    const [filter ,setFilter] = useState('')
+    let [accounts, setAccounts] = useState<Account[]>([]);
     const [accountLedger, setAccountLedger] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState<Account|null>(null);
     const [entries, setEntries] = useState<Entry[]>([]);
@@ -37,12 +44,13 @@ import DateComponent from "./DateComponent.js";
       document.title = 'دفتر الاستاذ ' ;
     }, []);
     useEffect(() => {
+        setLoading(true)
         //fetch all Accounts
         axiosClient(`financeAccounts`)
           .then(({data}) => {
             setAccounts(data);
             console.log(data,'accounts');
-          });
+          }).finally(()=>setLoading(false));
           axiosClient(`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`)
           .then(({data}) => {
             setEntries(data);
@@ -52,13 +60,17 @@ import DateComponent from "./DateComponent.js";
       //
 
       useEffect(()=>{
-        axiosClient(`ledger/${selectedAccount?.id}`)
-        .then(({data}) => {
-          setAccountLedger(data);
-          console.log(data,'ledgers');
-        });
+        if(selectedAccount?.id){
+          axiosClient(`ledger/${selectedAccount?.id}`)
+          .then(({data}) => {
+            setAccountLedger(data);
+            console.log(data,'ledgers');
+          });
+       
+        }
+     
       },[selectedAccount?.id])
-  
+      accounts =   accounts.filter((a)=>a.name.includes(filter))
       console.log(entries,'entries')
     return (
      <>
@@ -70,7 +82,7 @@ import DateComponent from "./DateComponent.js";
         <Paper sx={{p:1}}>
 
         {/* create table with all clients */}
-      {selectedAccount &&   <TableContainer key={selectedAccount.id}>
+      { selectedAccount && selectedAccount.debits.length > 0 || selectedAccount?.credits.length > 0 ? <TableContainer key={selectedAccount?.id}>
          <Typography textAlign={'center'} variant="h3"> {selectedAccount?.name}</Typography>
            
            <IconButton onClick={()=>{
@@ -81,7 +93,7 @@ import DateComponent from "./DateComponent.js";
 
            <Button href={`${webUrl}ledger/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
            <Button href={`${webUrl}ledger-excel/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>Excell</Button>
-          <Table key={selectedAccount?.id} dir="rtl" size="small">
+          <Table dir="rtl" size="small">
             <thead>
               <TableRow>
                 <TableCell>التاريخ</TableCell>
@@ -124,6 +136,40 @@ import DateComponent from "./DateComponent.js";
                   )
                 }
              
+              }) }
+            </TableBody>
+          </Table>
+        </TableContainer>  : <Typography textAlign={'center'} variant="h4">  لا يوجد قيود في هذا الحساب</Typography>}
+        {selectedAccount?.children?.length > 0 &&   <TableContainer >
+         <Typography textAlign={'center'} variant="h3"> {selectedAccount?.name}</Typography>
+           
+           <IconButton onClick={()=>{
+            setDialog((prev)=>{
+              return {...prev, showDialog: true};
+            })
+           }} title=" T الاستاذ حرف "><TitleIcon/></IconButton>
+
+           <Button href={`${webUrl}ledger/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>PDF</Button>
+           <Button href={`${webUrl}ledger-excel/${selectedAccount?.id}?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}>Excell</Button>
+          <Table key={selectedAccount?.id} dir="rtl" size="small">
+            <thead>
+              <TableRow>
+                <TableCell>الحساب</TableCell>
+                <TableCell>Debit </TableCell>
+                <TableCell> Credit  </TableCell>
+                <TableCell>  الرصيد  </TableCell>
+              </TableRow>
+            </thead>
+
+            <TableBody>
+              {selectedAccount?.children.map((account) => {
+             
+                  // alert('s')
+                  return    (
+                      <DebitsAndCreditsRow id={account.id}/>                    
+                  )
+                
+             
               })}
             </TableBody>
           </Table>
@@ -132,7 +178,8 @@ import DateComponent from "./DateComponent.js";
 
       </Grid>
       <Grid sx={{height:window.innerHeight -100,overflow:'auto'}} style={{direction:'rtl'}} item xs={4}>
-             <Table size="small">
+            <TextField value={filter} onChange={(e)=>setFilter(e.target.value)} size="small" sx={{mb:1}} label='الحساب'/>
+            {loading ?  <Skeleton height={window.innerHeight - 300}/> : <Table  size="small">
               <TableHead>
                   <TableRow>
                       <TableCell>رقم الحساب</TableCell>
@@ -145,7 +192,7 @@ import DateComponent from "./DateComponent.js";
                   {accounts.map((account) => (
                       <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id || account?.debits?.length > 0 || account?.credits?.length > 0 ? '#ff980026':''}} key={account.id}>
                           <TableCell>{account.id}</TableCell>
-                          <TableCell>{account.name}</TableCell>
+                          <TableCell>{account.name}{account.children.length > 0 ? ` (رئيسي) ` : ``}</TableCell>
                           <TableCell>{account.description}</TableCell>
                           <TableCell><Button onClick={()=>{
                               setSelectedAccount(account);
@@ -153,7 +200,8 @@ import DateComponent from "./DateComponent.js";
                       </TableRow>
                   ))}
               </TableBody>
-             </Table>
+             </Table>}
+             
       </Grid>
            {selectedAccount &&   <LedjerTDialog account={selectedAccount}  />}
     </Grid>

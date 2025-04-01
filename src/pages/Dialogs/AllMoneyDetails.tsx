@@ -246,7 +246,7 @@ function AllMoneyDetails({
               title={formatNumber(shiftSummary?.expenses)}
             ></BasicPopover>
           }
-          key="4"
+          key="7"
         >
           <ListItemText primary={t("expenses")} />
         </ListItem>
@@ -258,7 +258,7 @@ function AllMoneyDetails({
               {formatNumber(shiftSummary?.cash - shiftSummary?.totalCostCash)}
             </div>
           }
-          key="5"
+          key="8"
         >
           <ListItemText primary={t("net_cash")} />
         </ListItem>
@@ -269,7 +269,7 @@ function AllMoneyDetails({
               {formatNumber(shiftSummary?.bank - shiftSummary?.totalCostBankak)}
             </div>
           }
-          key="5"
+          key="9"
         >
           <ListItemText primary="صافي بنكك" />
         </ListItem>

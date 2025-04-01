@@ -4,6 +4,7 @@ import {
   ListItemButton,
   ListItemText,
   Pagination,
+  Skeleton,
   Table,
   TableCell,
   TableContainer,
@@ -15,6 +16,7 @@ import { useOutletContext } from "react-router-dom";
 import MyTableCell from "../inventory/MyTableCell";
 import MySelectTableCell from "../inventory/MySelectTableCell";
 import { Item, webUrl } from "../constants";
+import axiosClient from "../../../axios-client";
 
 function ServiceList() {
   const { companies } = useOutletContext();
@@ -22,6 +24,8 @@ function ServiceList() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(false);
+  
   console.log(services);
   console.log(activeCompany, "active company", "page = ", page);
   useEffect(() => {
@@ -40,6 +44,7 @@ function ServiceList() {
   return (
     <Grid spacing={2} container>
       <Grid item xs={9}>
+       {loading ? <Skeleton height={window.innerHeight - 200}/> : <>
         {activeCompany && (
           <TableContainer>
             <TextField
@@ -165,6 +170,7 @@ function ServiceList() {
             )}
           </TableContainer>
         )}
+       </>}
       </Grid>
       <Grid item xs={3}>
         <List>
@@ -182,12 +188,13 @@ function ServiceList() {
                     : null
                 }
                 onClick={() => {
-                  const foundedCompany = companies.find(
-                    (c) => company.id === c.id
-                  );
-                  console.log(foundedCompany, "founded");
-                  setActiveCompany(foundedCompany);
-                  setServices(foundedCompany.services);
+                  setLoading(true)
+
+                  axiosClient.get(`company/${company.id}?with=services`).then(({data})=>{
+
+                    setActiveCompany(data.data);
+                    setServices(data.data.services);
+                  }).finally(()=>setLoading(false))
                   console.log(company.id);
                 }}
                 key={company.id}

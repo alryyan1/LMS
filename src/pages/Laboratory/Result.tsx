@@ -1,7 +1,7 @@
 import "./addPatient.css";
 import Patient from "./Patient";
 import PatientDetail from "./PatientDetail";
-import { newImage, notifyMe, sendFinshedResult, sendMsg, sendResult, updateHandler, webUrl } from "../constants";
+import { ltrCache, newImage, notifyMe, sendFinshedResult, sendMsg, sendResult, updateHandler, webUrl } from "../constants";
 
 import {
   List,
@@ -37,6 +37,7 @@ import LabHistory from "./LabHistory";
 import { Settings } from "../../types/type";
 import { User } from "lucide-react";
 import { useStateContext } from "../../appContext";
+import { CacheProvider } from "@emotion/react";
 function Result() {
   const {
     shift,
@@ -92,6 +93,14 @@ function Result() {
   useEffect(()=>{
     setCurrentFocusIndex(0)
   },[selectedTest])
+      const [complains, setComplains] = useState([]);
+      useEffect(() => {
+        // alert('start of use effect')
+        axiosClient.get("complains").then(({ data }) => {
+          // console.log(data);
+          setComplains(data.map((c) => ({ label: c.name, type: c.name })));
+        });
+      }, []);
   return (
     <>
       <Stack className="mb-4" direction={"row"} gap={1}>
@@ -119,7 +128,7 @@ function Result() {
           transition: "0.3s all ease-in-out",
           height:`${ window.innerHeight - 90}px`,
           display: "grid",
-          gridTemplateColumns: ` ${layOut.form}  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  0.2fr  `,
+          gridTemplateColumns: ` 1.5fr  0.7fr    ${layOut.requestedDiv} ${layOut.patientDetails}  70px  `,
         }}
       >
      
@@ -133,7 +142,7 @@ function Result() {
                   minute: "numeric",
                 })}
             </div>
-            <div>
+            <div style={{border:'1px solid lightgray',boxShadow:'4px 5px 5px gray',borderRadius:'5px',padding:'5px'}}>
               {
                 shift?.patients?.filter(
                   (patient) => patient.patient.labrequests.length > 0
@@ -143,7 +152,6 @@ function Result() {
             <div>
               {shift &&
                 shiftDate.toLocaleDateString("en-Eg", {
-                  weekday: "long",
                   day: "numeric",
                   month: "numeric",
                   year: "numeric",
@@ -178,7 +186,7 @@ function Result() {
                     <Patient
                       actviePatient={actviePatient}
                       unfinshed_count={unfinshed_count}
-                      delay={i * 100}
+                      // delay={i * 100}
                       key={p.id}
                       patient={p}
                       onClick={() => {
@@ -191,8 +199,9 @@ function Result() {
             )}
           </div>
         </Card>
-        <Card sx={{ overflow: "auto",'direction':'rtl' }}>
-          <List style={{direction:'rtl'}}>
+        <Card sx={{ overflow: "auto"}}>
+          <CacheProvider value={ltrCache}>
+          <List>
             {actviePatient?.patient.labrequests.map((test) => {
               return (
                 <ListItem title={test.is_paid ? '': "غير مدفوع"}
@@ -230,10 +239,13 @@ function Result() {
               );
             })}
           </List>
+          </CacheProvider>
+          
         </Card>
         <Card key={actviePatient?.id} sx={{  overflow: "auto", p: 1 }}>
           {actviePatient &&(
             <ResultSection
+            complains={complains} setComplains={setComplains}
             handleKeyDown={handleKeyDown}
             addRef={addRef}
              disabled={!user.editResults || (actviePatient.patient.result_auth && !settings.edit_result_after_auth)}
@@ -256,14 +268,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-             <Button
+             {/* <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button> 
+                </Button>  */}
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}

@@ -1,7 +1,7 @@
 import "./addPatient.css";
 import { useEffect, useState } from "react";
 import PatientDetail from "./PatientDetail";
-import {  webUrl } from "../constants";
+import {  getDoctorVisitById, webUrl } from "../constants";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 
 import {
@@ -157,7 +157,20 @@ function AddPatient() {
       };
     });
   };
+//  useEffect(() => {
+//     // alert(value)
 
+//     //update latest patients for doctor
+//     const controller = new AbortController();
+//     if (actviePatient) {
+//       getDoctorVisitById(actviePatient?.id,controller).then((data)=>{
+//         // console.log(data,'dd')
+//         setActivePatient(data)
+//       })
+//     }
+
+//     return () => controller.abort(); // Clean up the abort controller when component unmounts.
+//   }, [actviePatient?.id]);
   return (
     <>
       <Stack gap={1} direction={"row"} justifyContent={"space-between"}>

@@ -114,6 +114,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
    let r =  confirm('هل انت متاكد من اثبات استحقاق الطبيب')
    setIsLoading(true)
    if(!r) return
+   addCost(selectedDoctorShift?.id,bankAmount,setIsLoading)
+
     axiosClient
       .post(`prooveCashReclaim/${selectedDoctorShift?.id}`,{
         cash: cashAmount,
@@ -214,7 +216,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                  disabled={shift.is_cash_revenue_prooved == false || shift.is_cash_reclaim_prooved}
+                  disabled={ shift.is_cash_reclaim_prooved}
 
                     onClick={(setIsLoading) => {
 
@@ -291,7 +293,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 setCashAmount(temp - e.target.value)
 
               }} label='البنك'/>
-              <MyCustomLoadingButton onClick={prooveCashReclaim} >انشاء قيد الاستحقاق النقدي</MyCustomLoadingButton>
+              <MyCustomLoadingButton onClick={prooveCashReclaim} >خصم  الاستحقاق النقدي</MyCustomLoadingButton>
           </Stack>
       </EmptyDialog>
     </Paper>

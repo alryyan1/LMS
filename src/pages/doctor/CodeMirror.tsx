@@ -17,6 +17,7 @@ interface CodeEditorPrps {
   api: string;
   changeUrl?: boolean;
   apiUrl: string;
+  width:string;
 }
 function CodeEditor({
   options,
@@ -28,6 +29,7 @@ function CodeEditor({
   tableName,
   changeUrl = false,
   apiUrl,
+  width='100%'
 }: CodeEditorPrps) {
   const [value, setValue] = React.useState(init);
   const [loading, setLoading] = useState(false);
@@ -51,9 +53,10 @@ function CodeEditor({
   return (
     <>
       <CodeMirror
-        editable={! dayjs(patient.created_at).startOf("day").isBefore(dayjs().startOf("day"))}
+        // editable={! dayjs(patient.created_at).startOf("day").isBefore(dayjs().startOf("day"))}
         height="200px"
-        width="100%"
+        // width={'100%'}
+        width={width}
         dir="ltr"
         value={value}
         // height="200px"

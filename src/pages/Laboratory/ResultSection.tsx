@@ -23,13 +23,16 @@ import {
   import { DoctorVisit, Labrequest, RequestedResult } from "../../types/Patient";
   import EmptyDialog from "../Dialogs/EmptyDialog";
   import DeviceChildNormalRange from "./DeviceChildNormalRange";
+import CodeEditor from "../doctor/CodeMirror";
   interface ResultSectionProps {
     selectedTest: Labrequest;
     setSelectedResult: (prev: any) => void;
     selectedReslult: RequestedResult;
     disabled: boolean;
     resultUpdated: number;
+    patient:DoctorVisit;
     setActivePatient: (patient: DoctorVisit) => void;
+
     is_doctor: boolean; // true for doctor, false for patient
   }
   function ResultSection({
@@ -43,6 +46,8 @@ import {
     patient,
     handleKeyDown,
     setResultUpdated,
+                complains, setComplains,
+
     addRef,
   }: ResultSectionProps) {
     const [value, setValue] = React.useState(0);
@@ -50,7 +55,8 @@ import {
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
-  
+
+    const [showComment, setShowComment] = useState(false);
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
     const [devices, setDivices] = useState([]);
@@ -75,6 +81,10 @@ import {
         >
           <Tab label="Main"></Tab>
           <Tab label="Other"></Tab>
+          <Button onClick={()=>{
+            setShowComment(true)
+          }}>Comment</Button>
+          
         </Tabs>
         <div
           key={patient.id}
@@ -184,21 +194,7 @@ import {
               )}
               <Divider />
   
-              {selectedTest && (
-                <Box sx={{ p: 1, mt: 1 }}>
-                  <Typography>Comment</Typography>
-                  <TextField
-                    onChange={(val) => {
-                      axiosClient.patch(`comment/${selectedTest.id}`, {
-                        val: val.target.value,
-                      });
-                    }}
-                    multiline
-                    fullWidth
-                    defaultValue={selectedTest.comment}
-                  />
-                </Box>
-              )}
+        
             </>
           )}
         </div>
@@ -285,8 +281,27 @@ import {
             </Stack>
           </EmptyDialog>
         )}
+        <EmptyDialog show={showComment} setShow={setShowComment} >
+                     <CodeEditor  changeUrl={true} width="600px" tableName={'chief_complain'} setOptions={setComplains} options={complains} init={patient.patient.labrequests.find((t)=>selectedTest.id == t.id).comment ?? ''} patient={patient} setActiveDoctorVisit={setActivePatient}  colName={'comment'} apiUrl={`comment/${selectedTest.id}`}/>
+          
+        {/* {selectedTest && (
+                <Box sx={{ p: 1, mt: 1 }}>
+                  <Typography>Comment</Typography>
+                  <TextField
+                    onChange={(val) => {
+                      axiosClient.patch(`comment/${selectedTest.id}`, {
+                        val: val.target.value,
+                      });
+                    }}
+                    multiline
+                    fullWidth
+                    defaultValue={selectedTest.comment}
+                  />
+                </Box>
+              )} */}
+        </EmptyDialog>
       </>
     );
   }
   
-  export default ResultSection;
+  export default ResultSection; 

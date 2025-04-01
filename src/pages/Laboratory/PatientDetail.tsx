@@ -55,7 +55,7 @@ function PatientDetail({
         {/** add card body   */}
 
         <Typography
-          sx={{ width: "100%" }}
+          sx={{ width: "100%" ,border:'1px solid gray',borderRadius:'5px' }}
           className="text-center   p-1 mb-1"
           variant="h6"
         >
@@ -63,7 +63,7 @@ function PatientDetail({
         </Typography>
 
         <div className="form-control">
-          <div>Visit Id</div>
+          <div>باركود</div>
           <div>{patient.id}</div>
         </div>
         <Divider />
@@ -129,7 +129,7 @@ function PatientDetail({
           </div>
         </div>
         <Divider />
-        <div className="form-control">
+        {/* <div className="form-control">
           <div>{t("fileId")} </div>
 
           <div>
@@ -138,8 +138,8 @@ function PatientDetail({
               patient?.file_id
             }
           </div>
-        </div>
-        <div className="form-control">
+        </div> */}
+        {/* <div className="form-control">
           <div>{t("visitCount")} </div>
 
           <div>
@@ -147,8 +147,8 @@ function PatientDetail({
               //print iso date
             }
           </div>
-        </div>
-        <div className="form-control">
+        </div> */}
+        {/* <div className="form-control">
           <div>{t("debit")} </div>
 
           <div>
@@ -161,7 +161,7 @@ function PatientDetail({
               )
             }
           </div>
-        </div>
+        </div> */}
         <Divider />
         <div className="form-control">
           <div>{t("age")}</div>
@@ -197,7 +197,7 @@ function PatientDetail({
           ""
         )}
         <Divider />
-        <div className="form-control">
+        {/* <div className="form-control">
           <div>{t("address")}</div>
 
           <div>
@@ -206,7 +206,7 @@ function PatientDetail({
               patient.patient?.address
             }
           </div>
-        </div>
+        </div> */}
         <Divider />
         {settings?.country ? (
           <div className="form-control">

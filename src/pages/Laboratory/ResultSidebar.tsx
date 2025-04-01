@@ -46,6 +46,9 @@ function ResultSidebar({
   update,
 }: ResultSideBarPros) {
   const { setDialog } = useOutletContext();
+
+
+
   return (
     <Stack
       sx={{ mr: 1 }}
@@ -91,7 +94,7 @@ function ResultSidebar({
       <IconButton
         target="_blank"
         href={`http://${host}/server/classes/server.php`}
-        title="Chemistry LIS"
+        title="CBC LIS"
         color="inherit"
       >
         <CableIcon />
@@ -215,6 +218,9 @@ function ResultSidebar({
           title="fetch hormone data"
           loading={loading}
           onClick={() => {
+
+            // socket.emit('cbc','D1U2403290        7622160000S016110363000950028800793202620033000158401410*0000*000000230*0000*000003770015600112003410')
+            
             setLoading(true);
             axiosClient
               .post(`populatePatientHormoneData/${actviePatient?.id}`, {
