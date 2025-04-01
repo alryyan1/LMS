@@ -216,7 +216,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
                 </TableCell>
                 <TableCell>
                   <MyCustomLoadingButton
-                  disabled={ shift.is_cash_reclaim_prooved}
+                  disabled={shift.is_cash_revenue_prooved == false || shift.is_cash_reclaim_prooved}
 
                     onClick={(setIsLoading) => {
 

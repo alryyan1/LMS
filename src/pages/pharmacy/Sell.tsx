@@ -521,7 +521,7 @@ function SellDrug() {
                         </TableCell>
                         {activeSell.complete ? (
                           <TableCell>
-                            {formatNumber(toFixed(deductedItem.price, 3))}
+                            {formatNumber(toFixed(deductedItem.price, 1))}
                           </TableCell>
                         ) : (
                           <MyTableCell
@@ -534,7 +534,7 @@ function SellDrug() {
                             table="deductedItem"
                             colName={"price"}
                           >
-                            {toFixed(deductedItem.price, 3)}
+                            {toFixed(deductedItem.price, 1)}
                           </MyTableCell>
                         )}
 
@@ -554,7 +554,7 @@ function SellDrug() {
                           </MyTableCell>
                         )} */}
                         {activeSell.complete ? (
-                          <TableCell>{toFixed(deductedItem.box, 3)}</TableCell>
+                          <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                         ) : (
                           <MyTableCell
                             show
@@ -567,7 +567,7 @@ function SellDrug() {
                             table="deductedItem"
                             colName={"box"}
                           >
-                            {toFixed(deductedItem.box, 3)}
+                            {toFixed(deductedItem.box, 1)}
                           </MyTableCell>
                         )}
                         <TableCell>
@@ -693,7 +693,7 @@ function SellDrug() {
                     </TableCell>
                     <TableCell>
                       {formatNumber(
-                        Number(activeSell?.total_price).toFixed(3)
+                        Number(activeSell?.total_price).toFixed(1)
                       )}
                     </TableCell>
                   </TableRow>
@@ -703,7 +703,7 @@ function SellDrug() {
                       Tax
                     </TableCell>
                     <TableCell>
-                      {Number(activeSell?.calculateTax).toFixed(3)}
+                      {Number(activeSell?.calculateTax).toFixed(1)}
                     </TableCell>
                   </TableRow> */}
 
@@ -737,7 +737,7 @@ function SellDrug() {
                       item={activeSell}
                       disabled={activeSell.complete == 1}
                     >
-                      {Number(activeSell?.discount).toFixed(3)}
+                      {Number(activeSell?.discount).toFixed(1)}
                     </MyTableCell>
                   </TableRow>
 
@@ -749,7 +749,7 @@ function SellDrug() {
                       Paid
                     </TableCell>
                     <TableCell sx={{ fontSize: "27px" }}>
-                      {formatNumber(Number(activeSell?.paid).toFixed(3))}
+                      {formatNumber(Number(activeSell?.paid).toFixed(1))}
                     </TableCell>
                   </TableRow>
                 </TableBody>

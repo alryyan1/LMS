@@ -11,6 +11,12 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -20,6 +26,8 @@ import { DoctorShift, DoctorVisit } from "../types/Patient";
 import { Shift, Specialist } from "../types/Shift";
 import { Heart, HeartIcon } from "lucide-react";
 import axiosClient from "../../axios-client";
+import MyCustomLoadingButton from "../components/MyCustomLoadingButton";
+import EmptyDialog from "./Dialogs/EmptyDialog";
 interface AuditClincsProps {
   selectedShift: Shift;
   selectedDoctorShift: any;
@@ -27,7 +35,6 @@ interface AuditClincsProps {
   setSelectedDoctorShift: any;
   selectedVisit: DoctorVisit;
   setShowServices: any;
-
 }
 function AuditClinics({
   selectedShift,
@@ -36,34 +43,107 @@ function AuditClinics({
   setSelectedDoctorShift,
   selectedVisit,
   setShowServices,
-  
 }: AuditClincsProps) {
-  console.log(selectedDoctorShift,'selecteddoctorshift')
+  console.log(selectedDoctorShift, "selecteddoctorshift");
   const [selectedSpecialist, setSelectedSpecialist] =
     useState<Specialist | null>(null);
-    const [loading,setLoading] = useState(false);
-    const [patients,setPatients] = useState<DoctorVisit[]>([]);
+  const [cashAmount, setCashAmount] = useState(0);
+  const [temp, setTemp] = useState(0);
+  const [bankAmount, setBankAmount] = useState(0);
+  const [showCashReclaimDialog, setShowCashReclaimDialog] = useState(false);
 
-    useEffect(()=>{
-        setLoading(true)
-      //update latest patients for doctor
-      const controller = new AbortController()
-      if(selectedDoctorShift){
-  
-        axiosClient.get(`getDoctorShiftById?id=${selectedDoctorShift?.id}`,{
+  const [loading, setLoading] = useState(false);
+  const [patients, setPatients] = useState<DoctorVisit[]>([]);
+  const addCost = (id, bankAmount, setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .post(`costForDoctor/${id}`, { shiftId: id, bankAmount })
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setIsLoading(false);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    //update latest patients for doctor
+    const controller = new AbortController();
+    if (selectedDoctorShift) {
+      axiosClient
+        .get(`getDoctorShiftById?id=${selectedDoctorShift?.id}`, {
           signal: controller.signal,
-        }).then(({data})=>{
-          console.log(data,'getDoctorShiftById')
-       
-          setSelectedDoctorShift(data)
-          setPatients(data.visits)
-        }).finally(()=>{
-          setLoading(false)
         })
-      }
-      return () => controller.abort() // Clean up the abort controller when component unmounts.
-     
-    },[selectedDoctorShift?.id])
+        .then(({ data }) => {
+          console.log(data, "getDoctorShiftById");
+
+          setSelectedDoctorShift(data);
+          setPatients(data.visits);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    return () => controller.abort(); // Clean up the abort controller when component unmounts.
+  }, [selectedDoctorShift?.id]);
+  const prooveRevenue = (id, setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .get(`prooveRevenue/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err))
+
+      .finally(() => setIsLoading(false));
+  };
+  const prooveCompanyRevenue = (id, setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .post(`prooveCompanyRevenue/${id}`)
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err))
+
+      .finally(() => setIsLoading(false));
+  };
+  const prooveCashReclaim = (setIsLoading) => {
+    let r = confirm("هل انت متاكد من اثبات استحقاق الطبيب");
+    setIsLoading(true);
+    if (!r) return;
+    addCost(selectedDoctorShift?.id, bankAmount, setIsLoading);
+
+    axiosClient
+      .post(`prooveCashReclaim/${selectedDoctorShift?.id}`, {
+        cash: cashAmount,
+        bank: bankAmount,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        setShowCashReclaimDialog(false);
+
+        addCost(selectedDoctorShift?.id, bankAmount, setIsLoading);
+      })
+      .catch((err) => console.log(err));
+  };
+  const prooveCompanyReclaim = (setIsLoading) => {
+    setIsLoading(true);
+    axiosClient
+      .post(`prooveDoctorCompanyReclaim/${selectedDoctorShift?.id}`, {
+        cash: cashAmount,
+        bank: bankAmount,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        setShowCashReclaimDialog(false);
+      })
+      .finally(() => setIsLoading(false))
+      .catch((err) => console.log(err));
+  };
   return (
     <div
       style={{
@@ -162,63 +242,51 @@ function AuditClinics({
         </Box>
       )}
       <Box>
-  
-          <List dense>
-            {patients.map((visit) => {
-              return (
-                <ListItem
-                  sx={{
-                    backgroundColor: (theme) =>
-                      selectedVisit?.id == visit.id
-                        ? theme.palette.warning.light
-                        : "",
+        <List dense>
+          {patients.map((visit) => {
+            return (
+              <ListItem
+                sx={{
+                  backgroundColor: (theme) =>
+                    selectedVisit?.id == visit.id
+                      ? theme.palette.warning.light
+                      : "",
+                }}
+                secondaryAction={
+                  <Badge color="secondary" content={visit.services.length}>
+                    <Button
+                      onClick={() => {
+                        setSelectedVisit(visit);
+                        setShowServices(true);
+                      }}
+                      variant="contained"
+                    >
+                      الخدمات
+                    </Button>
+                  </Badge>
+                }
+                key={visit.id}
+              >
+                <ListItemButton
+                  onClick={() => {
+                    console.log(visit, "selected visit");
+                    setSelectedVisit(visit);
                   }}
-                  secondaryAction={
-             
-                      <Badge color="secondary" content={visit.services.length}>
-                        <Button
-                          onClick={() => {
-                            setSelectedVisit(visit);
-                            setShowServices(true);
-                          }}
-                          variant="contained"
-                        >
-                          الخدمات
-                        </Button>
-                      </Badge>
-                    
-                        }
-                  key={visit.id}
+                  style={{
+                    marginBottom: "2px",
+                  }}
                 >
-                  <ListItemButton
-                    onClick={() => {
-                      console.log(visit, "selected visit");
-                      setSelectedVisit(visit);
-                    }}
-                    style={{
-                      marginBottom: "2px",
-                    }}
-                  >
-                    <ListItemText>
-                      <Stack
-                        direction={"row"}
-                        justifyContent={"space-between"}
-                      >
-
-                        <div>
-                        {visit.patient.name}
-                        </div>
-                        {
-                          visit.patient.company && <Chip>تامين</Chip>
-                        }
-                      </Stack>
-                    </ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-    
+                  <ListItemText>
+                    <Stack direction={"row"} justifyContent={"space-between"}>
+                      <div>{visit.patient.name}</div>
+                      {visit.patient.company && <Chip>تامين</Chip>}
+                    </Stack>
+                  </ListItemText>
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
       </Box>
       <Box>
         {selectedVisit && (
@@ -228,7 +296,99 @@ function AuditClinics({
             isLab={true}
           />
         )}
+        {selectedDoctorShift && (
+          <Stack direction={"column"} gap={1}>
+            <MyCustomLoadingButton
+              disabled={selectedDoctorShift.is_cash_revenue_prooved}
+              onClick={(setIsLoading) => {
+                setIsLoading(true);
+                let result = confirm("هل انت متاكد من اثبات الايراد النقدي");
+                if (result) {
+                  prooveRevenue(selectedDoctorShift.id, setIsLoading);
+                }
+              }}
+              variant="contained"
+            >
+              اثبات الايراد النقدي
+            </MyCustomLoadingButton>
+            <MyCustomLoadingButton
+              disabled={
+                selectedDoctorShift.is_cash_revenue_prooved == false ||
+                selectedDoctorShift.is_cash_reclaim_prooved
+              }
+              onClick={(setIsLoading) => {
+                //confirm
+
+                setShowCashReclaimDialog(true);
+              }}
+              variant="contained"
+            >
+              اثبات الاستحقاق النقدي
+            </MyCustomLoadingButton>
+            <MyCustomLoadingButton
+              disabled={selectedDoctorShift.is_company_revenue_prooved}
+              onClick={(setIsLoading) => {
+                let result = confirm("هل انت متاكد من اثبات ايراد   التامين ");
+                if (result) {
+                  setIsLoading(true);
+
+                  prooveCompanyRevenue(selectedDoctorShift.id, setIsLoading);
+                }
+              }}
+              variant="contained"
+            >
+              اثبات الايراد من التامين
+            </MyCustomLoadingButton>
+
+            <MyCustomLoadingButton
+              disabled={
+                selectedDoctorShift.is_company_revenue_prooved == false ||
+                selectedDoctorShift.is_company_reclaim_prooved
+              }
+              onClick={(setIsLoading) => {
+                // setIsLoading(true)
+
+                let result = confirm(
+                  "هل انت متاكد من اثبات استحقاق الطبيب من التامين "
+                );
+                if (result) {
+                  prooveCompanyReclaim(setIsLoading);
+                }
+              }}
+              variant="contained"
+            >
+              اثبات الاستحقاق من التامين
+            </MyCustomLoadingButton>
+          </Stack>
+        )}
       </Box>
+      <EmptyDialog
+        show={showCashReclaimDialog}
+        setShow={setShowCashReclaimDialog}
+      >
+        <Stack direction={"column"} gap={1} sx={{ p: 1 }}>
+          <TextField
+            sx={{ fontSize: "19px" }}
+            value={cashAmount}
+            onChange={(e) => {
+              setCashAmount(e.target.value);
+              setBankAmount(temp - e.target.value);
+            }}
+            label="الصندوق"
+          />
+          <TextField
+            value={bankAmount}
+            onChange={(e) => {
+              setBankAmount(e.target.value);
+              setCashAmount(temp - e.target.value);
+            }}
+            label="البنك"
+          />
+          <MyCustomLoadingButton onClick={prooveCashReclaim}>
+            خصم الاستحقاق النقدي
+          </MyCustomLoadingButton>
+        </Stack>
+      </EmptyDialog>
     </div>
   );
 }
