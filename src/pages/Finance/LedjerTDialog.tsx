@@ -26,14 +26,8 @@ function LedjerTDialog({ account }:{account:Account}) {
   const { dialog, setDialog } = useOutletContext();
   console.log(account, "selected account");
   let largerNumber = 0;
-  let totalCredits = account.credits.reduce(
-    (accum, current) => accum + current.amount,
-    0
-  );
-  let totalDebits = account.debits.reduce(
-    (accum, current) => accum + current.amount,
-    0
-  );
+  let totalCredits = 0;
+  let totalDebits = 0;
   console.log(totalCredits, "total credits", totalDebits, "total dedits");
   largerNumber = Math.max(totalCredits, totalDebits);
 
@@ -85,7 +79,7 @@ function LedjerTDialog({ account }:{account:Account}) {
             <Grid sx={{ borderLeft: "1px solid Grey", p: 1 }} item xs={6}>
               <List>
 
-              {account.credits.map((debitEntry) => {
+              {account?.credits?.map((debitEntry) => {
                 if (debitEntry.finance_account_id == account.id) {
                   const credit = debits.find(
                     (ce) => ce.finance_entry_id == debitEntry.finance_entry_id
@@ -117,7 +111,7 @@ function LedjerTDialog({ account }:{account:Account}) {
             </Grid>
             <Grid item sx={{ p: 1 }} xs={6}>
               <List>
-              {account.debits.map((debitEntry) => {
+              {account?.debits?.map((debitEntry) => {
                 if (debitEntry.finance_account_id == account.id) {
                   const credit = credits.find(
                     (ce) => ce.finance_entry_id == debitEntry.finance_entry_id
