@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -6,647 +7,508 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Paper,
   Stack,
   TextField,
   Typography,
+  Card,
+  CardContent,
+  CardHeader,
+  Avatar,
+  IconButton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import {
+  PhotoCamera,
+  Image as ImageIcon,
+  Description,
+} from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
-import CustomCheckBox from "../../components/CustomCheckBox";
-function encodeImageFileAsURL(file, colName) {
-  var reader = new FileReader();
-  reader.onloadend = function () {
-    console.log("RESULT", reader.result);
-    saveToDb(colName, reader.result);
-  };
-  reader.readAsDataURL(file);
-}
-const saveToDb = (colName, data) => {
-  axiosClient.post("settings", { colName, data }).then(({ data }) => {
-    console.log(data);
-  });
-};
-function PaperConfig() {
-  const [file, setFile] = useState(null);
-  const [cashAccount, setCashAccount] = useState(null);
-  const [mainCashAccount, setMainCashAccount] = useState(null);
-  const [mainBankAccount, setMainBankAccount] = useState(null);
-  const [companyAccount, setCompanyAccount] = useState(null);
-  const [bankAccount, setBankAccount] = useState(null);
-  const [enduranceAccount, setEnduranceAccount] = useState(null);
-  const [src, setSrc] = useState(null);
-  const [settings, setSettings] = useState(null);
-  const [accounts, setAccounts] = useState([]);
-  useEffect(() => {
-    axiosClient.get("settings").then(({ data }) => {
-      console.log(data, "settings see");
-      let settingsData = data;
-      setSettings(data);
-      axiosClient.get("financeAccounts").then(({ data }) => {
-        setAccounts(data);
-        console.log(data,'daaaaaaaaaaaaaat')
-        let cashA = data.find((s)=> s.id == settingsData.finance_account_id)
-        console.log(cashA,'cashA')
-        setCashAccount(cashA)
-        setCompanyAccount(data.find((s)=> s.id == settingsData.company_account_id))
-        setBankAccount(data.find((s)=> s.id == settingsData.bank_id))
-        setEnduranceAccount(data.find((s)=> s.id == settingsData.endurance_account_id))
-        setMainBankAccount(data.find((s)=> s.id == settingsData.main_bank))
-        setMainCashAccount(data.find((s)=> s.id == settingsData.main_cash))
-      });
-    })
-  }, []);
+import FinancialYearSelector from "./FinancialYearSelector";
 
+const ImageUploadSection = ({ label, currentImage, onFileChange, colName }) => {
+  const [previewImage, setPreviewImage] = useState(null);
 
-
-  const handleFileChange = (e, colName) => {
-    encodeImageFileAsURL(e.target.files[0], colName);
-    const url = URL.createObjectURL(e.target.files[0]);
-    console.log(url, "path");
-    setSrc(url);
-    console.log("upload", e.target.files[0]);
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+      onFileChange(e, colName);
     }
   };
 
-  // console.log(accounts.find((s)=> s.id == settings.finance_account_id) ,'setting cash acount')
-  const image1 = new Image(100, 100);
-  image1.src = settings?.header_base64;
-
-  const image2 = new Image(100, 100);
-  image2.src = settings?.footer_base64;
-
-  const managerStamp = new Image(100, 100);
-  managerStamp.src = settings?.footer_base64;
-
-  const auditorStamp = new Image(100, 100);
-  auditorStamp.src = settings?.auditor_stamp;
-  console.log(image1);
   return (
-    <Grid gap={4} container>
-      <Grid item xs={4}>
-        <Stack key={settings?.id} gap={1} direction="column">
-          <TextField
-            defaultValue={settings?.hospital_name}
-            sx={{ mb: 1 }}
-            label="اسم المستشفي"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "hospital_name",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.currency}
-            sx={{ mb: 1 }}
-            label="العمله "
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "currency",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.lab_name}
-            sx={{ mb: 1 }}
-            label="اسم المختبر"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "lab_name",
-                data: e.target.value,
-              });
-            }}
-          />
-          <TextField
-            defaultValue={settings?.phone}
-            sx={{ mb: 1 }}
-            label="الهاتف "
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "phone",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.inventory_notification_number}
-            label="رقم هاتف المخزن لارسال الاشعارات"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "inventory_notification_number",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.vatin}
-            label="vat in"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "vatin",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.cr}
-            label="cr"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "cr",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.email}
-            label="email"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "email",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.address}
-            label="address"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "address",
-                data: e.target.value,
-              });
-            }}
-          />
-          <TextField
-            defaultValue={settings?.instance_id}
-            label="instance_id"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "instance_id",
-                data: e.target.value,
-              });
-            }}
-          />
-          <TextField
-            defaultValue={settings?.token}
-            label="token"
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "token",
-                data: e.target.value,
-              });
-            }}
-          />
+    <Card variant="outlined" sx={{ mb: 3 }}>
+      <CardHeader
+        title={label}
+        avatar={
+          <Avatar>
+            <ImageIcon />
+          </Avatar>
+        }
+      />
+      <CardContent>
+        <Stack spacing={2}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <IconButton color="primary" component="label">
+              <PhotoCamera />
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={handleFileSelect}
+              />
+            </IconButton>
+            <Typography variant="body2">رفع صورة جديدة</Typography>
+          </Box>
+
+          {(previewImage || currentImage) && (
+            <Box sx={{ border: "1px dashed #ccc", p: 1, borderRadius: 1 }}>
+              <img
+                src={previewImage || currentImage}
+                alt={label}
+                style={{ maxWidth: "100%", maxHeight: 150 }}
+              />
+            </Box>
+          )}
         </Stack>
+      </CardContent>
+    </Card>
+  );
+};
+
+const SettingsTextField = ({ label, defaultValue, colName, ...props }) => {
+  const [value, setValue] = useState(defaultValue);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+    axiosClient.post("settings", { colName, data: newValue });
+  };
+
+  return (
+    <TextField
+      label={label}
+      value={value || ""}
+      onChange={handleChange}
+      fullWidth
+      margin="normal"
+      {...props}
+    />
+  );
+};
+
+const SettingsCheckbox = ({ label, defaultChecked, colName }) => {
+  const [checked, setChecked] = useState(defaultChecked);
+
+  const handleChange = (e) => {
+    const newValue = e.target.checked;
+    setChecked(newValue);
+    axiosClient.post("settings", { colName, data: newValue });
+  };
+
+  return (
+    <FormControlLabel
+      control={<Checkbox checked={checked} onChange={handleChange} />}
+      label={label}
+    />
+  );
+};
+
+const AccountSelect = ({ label, value, accounts, colName }) => {
+  const handleChange = (e, newVal) => {
+    axiosClient.post("settings", { colName, data: newVal?.id || null });
+  };
+
+  return (
+    <Autocomplete
+      value={value}
+      size="small"
+      onChange={handleChange}
+      getOptionKey={(op) => op.id}
+      getOptionLabel={(option) => option.name}
+      options={accounts}
+      renderInput={(params) => (
+        <TextField {...params} label={label} margin="normal" />
+      )}
+    />
+  );
+};
+
+const encodeImageFileAsURL = (file, colName) => {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    saveToDb(colName, reader.result);
+  };
+  reader.readAsDataURL(file);
+};
+
+const saveToDb = (colName, data) => {
+  axiosClient.post("settings", { colName, data });
+};
+
+function PaperConfig() {
+  const [settings, setSettings] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccounts, setSelectedAccounts] = useState({
+    finance: null,
+    company: null,
+    bank: null,
+    endurance: null,
+    mainBank: null,
+    mainCash: null,
+    pharmacy_cash: null,
+    pharmacy_bank: null,
+    pharmacy_income: null,
+  });
+
+  const handleFinancialYearChange = async (dates) => {
+    console.log(dates, "dates");
+    try {
+      await axiosClient.post("settings", {
+        colName: "financial_year_start",
+        data: dates.financial_year_start,
+      });
+      await axiosClient.post("settings", {
+        colName: "financial_year_end",
+        data: dates.financial_year_end,
+      });
+      setSettings((prev) => ({
+        ...prev,
+        fiscal_year_start: dates.fiscal_year_start,
+        fiscal_year_end: dates.fiscal_year_end,
+      }));
+    } catch (error) {
+      console.error("Error updating fiscal year:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const settingsResponse = await axiosClient.get("settings");
+        const accountsResponse = await axiosClient.get("financeAccounts");
+
+        setSettings(settingsResponse.data);
+        setAccounts(accountsResponse.data);
+
+        const settingsData = settingsResponse.data;
+        setSelectedAccounts({
+          finance: accountsResponse.data.find(
+            (s) => s.id == settingsData.finance_account_id
+          ),
+          company: accountsResponse.data.find(
+            (s) => s.id == settingsData.company_account_id
+          ),
+          bank: accountsResponse.data.find((s) => s.id == settingsData.bank_id),
+          endurance: accountsResponse.data.find(
+            (s) => s.id == settingsData.endurance_account_id
+          ),
+          mainBank: accountsResponse.data.find(
+            (s) => s.id == settingsData.main_bank
+          ),
+          mainCash: accountsResponse.data.find(
+            (s) => s.id == settingsData.main_cash
+          ),
+          pharmacy_cash: accountsResponse.data.find(
+            (s) => s.id == settingsData.pharmacy_cash
+          ),
+          pharmacy_bank: accountsResponse.data.find(
+            (s) => s.id == settingsData.pharmacy_bank
+          ),
+          pharmacy_income: accountsResponse.data.find(
+            (s) => s.id == settingsData.pharmacy_income
+          ),
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleFileChange = (e, colName) => {
+    if (e.target.files && e.target.files[0]) {
+      encodeImageFileAsURL(e.target.files[0], colName);
+    }
+  };
+
+  if (!settings) {
+    return <Typography>جاري تحميل الإعدادات...</Typography>;
+  }
+
+  return (
+    <Grid container spacing={4} direction="row" sx={{ direction: "rtl" }}>
+      {/* General Settings Column */}
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardHeader title="الإعدادات العامة" />
+          <CardContent>
+            <Stack spacing={2}>
+              <FinancialYearSelector
+                settings={settings}
+                handleFinancialYearChange={handleFinancialYearChange}
+              />
+
+              <SettingsTextField
+                label="اسم المستشفى"
+                defaultValue={settings.hospital_name}
+                colName="hospital_name"
+              />
+
+              <SettingsTextField
+                label="العملة"
+                defaultValue={settings.currency}
+                colName="currency"
+              />
+
+              <SettingsTextField
+                label="اسم المختبر"
+                defaultValue={settings.lab_name}
+                colName="lab_name"
+              />
+
+              <SettingsTextField
+                label="الهاتف"
+                defaultValue={settings.phone}
+                colName="phone"
+              />
+
+              <SettingsTextField
+                label="رقم إشعارات المخزن"
+                defaultValue={settings.inventory_notification_number}
+                colName="inventory_notification_number"
+              />
+
+              <SettingsTextField
+                label="الرقم الضريبي"
+                defaultValue={settings.vatin}
+                colName="vatin"
+              />
+
+              <SettingsTextField
+                label="السجل التجاري"
+                defaultValue={settings.cr}
+                colName="cr"
+              />
+
+              <SettingsTextField
+                label="البريد الإلكتروني"
+                defaultValue={settings.email}
+                colName="email"
+              />
+
+              <SettingsTextField
+                label="العنوان"
+                defaultValue={settings.address}
+                colName="address"
+              />
+
+              <SettingsTextField
+                label="معرف المثيل"
+                defaultValue={settings.instance_id}
+                colName="instance_id"
+              />
+
+              <SettingsTextField
+                label="الرمز المميز"
+                defaultValue={settings.token}
+                colName="token"
+              />
+            </Stack>
+          </CardContent>
+        </Card>
       </Grid>
-      <Grid xs={3}>
-        <Box key={settings?.id} sx={{ p: 1 }}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.is_header}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "is_header",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"الترويسه"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.country}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "country",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"الجنسيه"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.gov}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "gov",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"الرقم الوطني"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.show_water_mark}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "show_water_mark",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"العلامه المائيه"}
-            />
-          </FormGroup>
-          {/* {cashAccount != null && <Box key={cashAccount !=null}> */}
-          <Autocomplete
-            value={cashAccount}
-            size="small"
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "finance_account_id",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب التقديه"} // Use translation
-              />
-            )}
-          />
-                <Autocomplete
-            size="small"
-            value={companyAccount}
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "company_account_id",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب التامين"} // Use translation
-              />
-            )}
-          />
-                <Autocomplete
-                value={enduranceAccount}
-            size="small"
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "endurance_account_id",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب التحمل"} // Use translation
-              />
-            )}
-          />
-             <Autocomplete
-             value={bankAccount}
-            size="small"
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "bank_id",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب البنك"} // Use translation
-              />
-            )}
-          />
-               <Autocomplete
-             value={mainBankAccount}
-            size="small"
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "main_bank",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب البنك الرئيسي"} // Use translation
-              />
-            )}
-          />
-               <Autocomplete
-             value={mainCashAccount}
-            size="small"
-            onChange={(e, newVal) => {
-              console.log(newVal);
-              axiosClient.post("settings", {
-                colName: "main_cash",
-                data: newVal.id,
-              });
-            }}
-            getOptionKey={(op) => op.id}
-            getOptionLabel={(option) => option.name}
-            options={accounts}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={"حساب الخزينه الرئيسي"} // Use translation
-              />
-            )}
-          />
-          {/* </Box>} */}
-          
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.edit_result_after_auth}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "edit_result_after_auth",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"تعديل النتائج بعد التحقيق "}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.barcode}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "barcode",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={" طباعه باركود مع الايصال"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.is_footer}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "is_footer",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"فوتر"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.disable_doctor_service_check}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "disable_doctor_service_check",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"تعطيل التحقق من خدمات الطبيب"}
-            />
-          </FormGroup>
-          <Divider />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.is_logo}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "is_logo",
-                      data: e.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={"لوقو"}
-            />
-          </FormGroup>
 
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.send_result_after_auth}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "send_result_after_auth",
-                      data: e.target.checked,
-                    });
-                  }}
+      {/* Options and Accounts Column */}
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardHeader title="خيارات النظام" />
+          <CardContent>
+            <Stack spacing={2}>
+              <FormGroup>
+                <SettingsCheckbox
+                  label="عرض الترويسة"
+                  defaultChecked={settings.is_header}
+                  colName="is_header"
                 />
-              }
-              label={"ارسال النتيجه بعد التحقيق"}
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  defaultChecked={settings?.send_result_after_result}
-                  onChange={(e) => {
-                    axiosClient.post("settings", {
-                      colName: "send_result_after_result",
-                      data: e.target.checked,
-                    });
-                  }}
+                <SettingsCheckbox
+                  label="عرض الجنسية"
+                  defaultChecked={settings.country}
+                  colName="country"
                 />
-              }
-              label={"ارسال النتيجه بعد الطباعه"}
-            />
-          </FormGroup>
-          <Divider />
-        </Box>
+                <SettingsCheckbox
+                  label="عرض الرقم الوطني"
+                  defaultChecked={settings.gov}
+                  colName="gov"
+                />
+                <SettingsCheckbox
+                  label="عرض العلامة المائية"
+                  defaultChecked={settings.show_water_mark}
+                  colName="show_water_mark"
+                />
+                <SettingsCheckbox
+                  label="السماح بتعديل النتائج بعد التحقق"
+                  defaultChecked={settings.edit_result_after_auth}
+                  colName="edit_result_after_auth"
+                />
+                <SettingsCheckbox
+                  label="طباعة باركود مع الإيصال"
+                  defaultChecked={settings.barcode}
+                  colName="barcode"
+                />
+                <SettingsCheckbox
+                  label="عرض التذييل"
+                  defaultChecked={settings.is_footer}
+                  colName="is_footer"
+                />
+                <SettingsCheckbox
+                  label="تعطيل التحقق من خدمات الطبيب"
+                  defaultChecked={settings.disable_doctor_service_check}
+                  colName="disable_doctor_service_check"
+                />
+                <SettingsCheckbox
+                  label="عرض الشعار"
+                  defaultChecked={settings.is_logo}
+                  colName="is_logo"
+                />
+                <SettingsCheckbox
+                  label="إرسال النتيجة بعد التحقق"
+                  defaultChecked={settings.send_result_after_auth}
+                  colName="send_result_after_auth"
+                />
+                <SettingsCheckbox
+                  label="إرسال النتيجة بعد الطباعة"
+                  defaultChecked={settings.send_result_after_result}
+                  colName="send_result_after_result"
+                />
+              </FormGroup>
+
+              <Divider />
+
+              <Typography variant="h6">إعدادات الحسابات</Typography>
+
+              <AccountSelect
+                label="حساب النقدية"
+                value={selectedAccounts.finance}
+                accounts={accounts}
+                colName="finance_account_id"
+              />
+
+              <AccountSelect
+                label="حساب الشركة"
+                value={selectedAccounts.company}
+                accounts={accounts}
+                colName="company_account_id"
+              />
+
+              <AccountSelect
+                label="حساب التحمل"
+                value={selectedAccounts.endurance}
+                accounts={accounts}
+                colName="endurance_account_id"
+              />
+
+              <AccountSelect
+                label="حساب البنك"
+                value={selectedAccounts.bank}
+                accounts={accounts}
+                colName="bank_id"
+              />
+
+              <AccountSelect
+                label="الحساب البنكي الرئيسي"
+                value={selectedAccounts.mainBank}
+                accounts={accounts}
+                colName="main_bank"
+              />
+
+              <AccountSelect
+                label="الحساب النقدي الرئيسي"
+                value={selectedAccounts.mainCash}
+                accounts={accounts}
+                colName="main_cash"
+              />
+
+              <AccountSelect
+                label="الحساب النقدي للصيدليه"
+                value={selectedAccounts.pharmacy_cash}
+                accounts={accounts}
+                colName="pharmacy_cash"
+              />
+
+              <AccountSelect
+                label="الحساب البنك للصيدليه"
+                value={selectedAccounts.pharmacy_bank}
+                accounts={accounts}
+                colName="pharmacy_bank"
+              />
+                 <AccountSelect
+                label="الحساب الايرادات للصيدليه"
+                value={selectedAccounts.pharmacy_income}
+                accounts={accounts}
+                colName="pharmacy_income"
+              />
+            </Stack>
+          </CardContent>
+        </Card>
       </Grid>
-      <Grid xs={3}>
-        <Typography textAlign={"center"} variant="h3">
-          {" "}
-          Header{" "}
-        </Typography>
-        <input
-          onChange={(e) => {
-            handleFileChange(e, "header_base64");
-          }}
-          type="file"
-        ></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-        <img width={100} src={image1.src} alt="" />
 
-        <Divider />
-        <Typography textAlign={"center"} variant="h3">
-          Footer
-        </Typography>
+      {/* Images and Content Column */}
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardHeader title="الصور والمحتوى" />
+          <CardContent>
+            <Stack spacing={3}>
+              <ImageUploadSection
+                label="صورة الترويسة"
+                currentImage={settings.header_base64}
+                onFileChange={handleFileChange}
+                colName="header_base64"
+              />
 
-        <input
-          onChange={(e) => {
-            handleFileChange(e, "footer_base64");
-          }}
-          type="file"
-        ></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-        <img width={100} src={image2.src} alt="" />
+              <ImageUploadSection
+                label="صورة التذييل"
+                currentImage={settings.footer_base64}
+                onFileChange={handleFileChange}
+                colName="footer_base64"
+              />
 
-        <Divider />
-        <Typography textAlign={"center"} variant="h3">
-          Manager Stamp
-        </Typography>
+              <ImageUploadSection
+                label="ختم المدير"
+                currentImage={settings.manager_stamp}
+                onFileChange={handleFileChange}
+                colName="manager_stamp"
+              />
 
-        <input
-          onChange={(e) => {
-            handleFileChange(e, "manager_stamp");
-          }}
-          type="file"
-        ></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-        <img width={100} src={managerStamp.src} alt="" />
-        <Divider />
-        <Typography textAlign={"center"} variant="h3">
-          Financial Auditor Stamp
-        </Typography>
+              <ImageUploadSection
+                label="ختم المراجع المالي"
+                currentImage={settings.auditor_stamp}
+                onFileChange={handleFileChange}
+                colName="auditor_stamp"
+              />
 
-        <input
-          onChange={(e) => {
-            handleFileChange(e, "auditor_stamp");
-          }}
-          type="file"
-        ></input>
-        {file && (
-          <section>
-            File details:
-            <ul>
-              <li>Name: {file.name}</li>
-            </ul>
-          </section>
-        )}
-        <img width={100} src={auditorStamp.src} alt="" />
-        <Box sx={{ p: 1 }}>
-          <TextField
-            defaultValue={settings?.header_contentr}
-            sx={{ mb: 1 }}
-            rows={3}
-            label="محتوي الترويسه"
-            multiline
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "header_content",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-          <TextField
-            defaultValue={settings?.footer_content}
-            rows={3}
-            label="محتوي الفوتر"
-            multiline
-            fullWidth
-            onChange={(e) => {
-              axiosClient.post("settings", {
-                colName: "footer_content",
-                data: e.target.value,
-              });
-            }}
-          />
-          <Divider />
-        </Box>
+              <SettingsTextField
+                label="محتوى الترويسة"
+                defaultValue={settings.header_content}
+                colName="header_content"
+                multiline
+                rows={4}
+              />
+
+              <SettingsTextField
+                label="محتوى التذييل"
+                defaultValue={settings.footer_content}
+                colName="footer_content"
+                multiline
+                rows={4}
+              />
+            </Stack>
+          </CardContent>
+        </Card>
       </Grid>
     </Grid>
   );

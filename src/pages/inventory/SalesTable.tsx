@@ -156,11 +156,10 @@ function SalesTable() {
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
-            <TableCell> No</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Price</TableCell>
-            <TableCell>User</TableCell>
-            <TableCell>Payment</TableCell>
+            <TableCell>location</TableCell>
+            <TableCell>factory_number</TableCell>
             <TableCell>Items</TableCell>
             <TableCell>profit</TableCell>
             <TableCell>Invoice</TableCell>
@@ -172,15 +171,14 @@ function SalesTable() {
           {deducts.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
-              <TableCell>{item.number}</TableCell>
               <TableCell>
                 {dayjs(new Date(Date.parse(item.created_at))).format(
                   "YYYY/MM/DD H;m A"
                 )}
               </TableCell>
               <TableCell>{formatNumber(item.total_price)}</TableCell>
-              <TableCell>{item.user.username}</TableCell>
-              <TableCell>{item.payment_method}</TableCell>
+              <TableCell>{item.location}</TableCell>
+              <TableCell>{item.factory_number}</TableCell>
               <TableCell>
                 {item.deducted_items.map(
                   (deducted) => `${deducted.item.market_name}-`

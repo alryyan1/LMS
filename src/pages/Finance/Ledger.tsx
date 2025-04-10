@@ -51,11 +51,16 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
             setAccounts(data);
             console.log(data,'accounts');
           }).finally(()=>setLoading(false));
-          axiosClient(`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`)
-          .then(({data}) => {
-            setEntries(data);
-            console.log(data,'accounts');
-          });
+              axiosClient.get("settings").then(({data})=>{
+                     setFirstDate(dayjs(data.financial_year_start))
+                          setSecondDate(dayjs(data.financial_year_end))
+                axiosClient(`financeEntries?first=${data.financial_year_start}&second=${data.financial_year_end}`)
+                .then(({data}) => {
+                  setEntries(data);
+                  console.log(data,'accounts');
+                });
+              })
+     
       }, []);
       //
 
@@ -72,6 +77,8 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
       },[selectedAccount?.id])
       accounts =   accounts.filter((a)=>a.name.includes(filter))
       console.log(entries,'entries')
+      let sumDebits = 0;
+      let sumCredits = 0;
     return (
      <>
 
@@ -109,15 +116,26 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
               {entries.map((entry) => {
                   let totalCreditSum = 0;
                   let totalDebitSum = 0;
-                  let totalCredits = selectedAccount.credits.reduce(
+                  let totalCredits = selectedAccount?.credits.reduce(
                     (accum, current) => accum + current.amount,
                     0
                   );
-                  let totalDebits = selectedAccount.debits.reduce(
+                  let totalDebits = selectedAccount?.debits.reduce(
                     (accum, current) => accum + current.amount,
                     0
                   );
-                  
+                  // console.log(first)
+                  let sumEntryCredit = selectedAccount?.credits.filter((e)=>e.finance_entry_id == entry.id).reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  ) ?? 0;
+                  console.log(sumEntryCredit,'sumEntryCredit')
+                  sumCredits+=sumEntryCredit
+                  let sumEntryDebit = selectedAccount?.debits.filter((e)=>e.finance_entry_id == entry.id).reduce(
+                    (accum, current) => accum + current.amount,
+                    0
+                  )?? 0;
+                  sumDebits += sumEntryDebit
                   totalCreditSum += totalCredits;
                   totalDebitSum += totalDebits;
                 if (entry.credit.map((c)=>c.finance_account_id).includes(selectedAccount?.id ) ||entry.debit.map((c)=>c.finance_account_id).includes(selectedAccount?.id )) {
@@ -129,7 +147,7 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
                       <TableCell>{entry.description}</TableCell>
                       <TableCell>{ formatNumber(entry.debit.filter((d)=>d.finance_account_id == selectedAccount.id).reduce((prev,curr)=>prev+curr.amount,0)) }</TableCell>
                       <TableCell>{ formatNumber(entry.credit.filter((d)=>d.finance_account_id == selectedAccount.id).reduce((prev,curr)=>prev+curr.amount,0)) }</TableCell>
-                      <TableCell>{0}</TableCell>
+                      <TableCell>{Math.abs(sumDebits - sumCredits)}</TableCell>
                     
               
                     </TableRow>
@@ -190,7 +208,7 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
               </TableHead>
               <TableBody>
                   {accounts.map((account) => (
-                      <TableRow sx={{background:(theme)=>account.id == selectedAccount?.id || account?.debits?.length > 0 || account?.credits?.length > 0 ? '#ff980026':''}} key={account.id}>
+                      <TableRow  key={account.id}>
                           <TableCell>{account.id}</TableCell>
                           <TableCell>{account.name}{account.children.length > 0 ? ` (رئيسي) ` : ``}</TableCell>
                           <TableCell>{account.description}</TableCell>

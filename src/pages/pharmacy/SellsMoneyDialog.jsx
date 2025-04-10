@@ -13,6 +13,7 @@ import { useOutletContext } from "react-router-dom";
 import { formatNumber, toFixed } from "../constants";
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
+import MyCustomLoadingButton from "../../components/MyCustomLoadingButton";
 
 function SellsMoneyDialog() {
   const { shift, setShift, showDialogMoney, setShowDialogMoney } =
@@ -24,7 +25,7 @@ function SellsMoneyDialog() {
     setLoading(true);
    
       axiosClient
-        .post(`deduct/summary/${shift.id}`)
+        .post(`deduct/summary/${shift?.id}`)
         .then(({ data }) => {
           setDeductsSummary(data);
           setLoading(false);
@@ -119,6 +120,21 @@ function SellsMoneyDialog() {
                 <Typography variant="h4" textAlign={"center"}>
                   {deductsSummary && toFixed(deductsSummary.totalDeductsPostPaid, 3)}
                 </Typography>
+              <MyCustomLoadingButton onClick={(setLoading)=>{
+                    setLoading(true)
+                    let r = confirm('هل انت متأكد من انشاء قيد صافي الورديه')
+                    if(r){
+                        axiosClient.post('createFinalPharmacyEntry',{
+                          
+                            bank:deductsSummary.totalDeductsPriceBank,
+                            cash:deductsSummary.totalDeductsPriceCash
+                        }).then(({data})=>{
+            
+                        }).finally(()=>{
+                          setLoading(false)
+                        })
+                    }
+                  }}>انشاء قيد صافي الورديه </MyCustomLoadingButton>
               </Stack>
             </>
           )}

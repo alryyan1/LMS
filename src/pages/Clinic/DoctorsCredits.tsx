@@ -20,7 +20,7 @@ import DoctorShiftAddictionalCosts from "../../components/DoctorShiftAddictional
 import { formatNumber } from "../constants";
 import { Shift } from "../../types/Shift";
 
-function DoctorsCredits({ setAllMoneyUpdatedLab }) {
+function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
   
   const [cashAmount, setCashAmount] = useState(0);
   const [temp, setTemp] = useState(0);
@@ -102,6 +102,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
       .finally(() => setIsLoading(false));
   };
      useEffect(()=>{
+      setCashAmount(0)
+      setBankAmount(0)
       if(selectedDoctorShift){
         axiosClient.get(`doctor/moneyCash/${selectedDoctorShift?.id}`).then(({data})=>{
           setCashAmount(data)
@@ -176,7 +178,14 @@ function DoctorsCredits({ setAllMoneyUpdatedLab }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {doctorShifts.map((shift) => {
+          {doctorShifts.filter((d)=>{
+            if(!user?.isAdmin){
+              // console.log('is not admin')
+              return d.user_id == user?.id
+            }else{
+              return true
+            }
+          }).map((shift) => {
             return (
               <TableRow key={shift.id}>
                 <TableCell>{shift.doctor.name}</TableCell>

@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  Button,
   Card,
   Chip,
   Divider,
@@ -35,13 +36,13 @@ import { DeleteOutline } from "@mui/icons-material";
 import PatientDetailsDialog from "./pages/Dialogs/PatientDetailsDialog";
 type Report =
   | "Insurance Reclaim"
+  | "Insurance Reclaim from Company"
   | "Lab Statistics"
   | "Lab Income"
   | "Clinics"
   | "Service Statistics"
   | "Costs-1"
   | "Costs-2"
-  | "Pharmacy Income"
   | "Pharmacy Income 2"
   | "Patients"
   | "Discount";
@@ -84,6 +85,10 @@ function AllReports() {
         url = "doctorReclaimFromInsurance";
 
         break;
+        case "Insurance Reclaim from Company":
+          url = `getDoctorReclaimAccordingToCompany?doctor_id=${selectedDoctor?.id}`;
+  
+          break;
       case "Lab Statistics":
         url = "lab-statistics";
         break;
@@ -103,9 +108,7 @@ function AllReports() {
         url = "costs-2";
         break;
 
-      case "Pharmacy Income":
-        url = "searchDeductsByDate";
-        break;
+   
         case "Pharmacy Income 2":
           url = "searchDeductsByDate2";
           break;
@@ -121,8 +124,8 @@ function AllReports() {
     }
     axiosClient
       .post(url, {
-        first: firstDayjs,
-        second: secondDayjs,
+        first: firstDate.toISOString(),
+        second: secondDate.toISOString(),
         doctor: selectedDoctor?.id,
       })
       .then(({ data }) => {
@@ -131,6 +134,9 @@ function AllReports() {
           case "Insurance Reclaim":
             setDoctorReclaimFromInsuranceTable(data);
             break;
+            case "Insurance Reclaim from Company":
+              setDoctorReclaimFromCompanyTable(data);
+              break;
           case "Lab Statistics":
             setLabStatistics(data);
             break;
@@ -256,7 +262,29 @@ function AllReports() {
       </>
     );
   };
-
+  const setDoctorReclaimFromCompanyTable = (data) => {
+    setTableElement(
+      <>
+        <Button href={`${webUrl}generateDoctorReclaimReport?doctor_id=${selectedDoctor?.id}&first=${firstDate.toISOString()}&second=${secondDate.toISOString()}`}>PDF</Button>
+        <Table className="table" style={{ direction: "rtl" }} size="small">
+          <TableHead className="thead">
+            <TableRow>
+              <TableCell>الشركه</TableCell>
+              <TableCell>الاستحقاق</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.company_name}</TableCell>
+                <TableCell>{formatNumber(item.amount)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </>
+    );
+  };
   const setLabStatistics = (data: any[]) => {
     let cut = data.length / 4;
     setTableElement(
@@ -701,7 +729,7 @@ function AllReports() {
             <Typography variant="h5">
               {formatNumber(
                 data.reduce((prev, curr) => {
-                  return prev + curr.total_paid;
+                  return prev + curr.paid;
                 }, 0)
               )}
             </Typography>
@@ -745,11 +773,10 @@ function AllReports() {
           </Stack>
         </Stack>
 
-        <Table size="small">
-          <TableHead>
+        <Table className="table" size="small">
+          <TableHead className="thead">
             <TableRow>
               <TableCell>Id</TableCell>
-              <TableCell> No</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>User</TableCell>
@@ -765,15 +792,14 @@ function AllReports() {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
-                <TableCell>{item.number}</TableCell>
                 <TableCell>
                   {dayjs(new Date(Date.parse(item.created_at))).format(
-                    "YYYY/MM/DD H;m A"
+                    "YYYY/MM/DD HH:MM A"
                   )}
                 </TableCell>
                 <TableCell>{formatNumber(item.total_price)}</TableCell>
                 <TableCell>{item.user.username}</TableCell>
-                <TableCell>{item.payment_type.name}</TableCell>
+                <TableCell>{item.payment_method}</TableCell>
                 <TableCell>
                   {item.deducted_items.map(
                     (deducted) => `${deducted.item.market_name}-`
@@ -847,12 +873,15 @@ function AllReports() {
          
         </Stack>
 
-        <Table style={{direction:'rtl'}} size="small">
-          <TableHead>
+        <Table className="table" style={{direction:'rtl'}} size="small">
+          <TableHead className="thead">
             <TableRow>
               <TableCell>التاريخ</TableCell>
+              <TableCell>اجمالي</TableCell>
+              <TableCell>التخفيض</TableCell>
               <TableCell>المدفوع</TableCell>
-              <TableCell>العدد</TableCell>
+              <TableCell>كاش</TableCell>
+              <TableCell>البنك</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -860,8 +889,11 @@ function AllReports() {
               <TableRow key={item.id}>
                
                 <TableCell>{item.date}</TableCell>
-                <TableCell>{formatNumber(item.totalPaid)}</TableCell>
-                <TableCell>{item.count}</TableCell>
+                <TableCell>{formatNumber(item.total)}</TableCell>
+                <TableCell>{formatNumber(item.discount)}</TableCell>
+                <TableCell>{formatNumber(item.paid)}</TableCell>
+                <TableCell>{formatNumber(item.cash)}</TableCell>
+                <TableCell>{formatNumber(item.bank)}</TableCell>
               </TableRow>
             ))}
 
@@ -1319,6 +1351,25 @@ function AllReports() {
             sx={{
               cursor: "pointer",
               backgroundColor: (theme) => {
+                return report == "Insurance Reclaim from Company"
+                  ? theme.palette.primary.light
+                  : "";
+              },
+            }}
+          >
+            <ListItemText
+              onClick={() => {
+                selectReportHandler("Insurance Reclaim from Company");
+                setTableElement(null);
+              }}
+            >
+               استحقاق الطبيب من الشركات{" "}
+            </ListItemText>
+          </ListItem>
+          <ListItem
+            sx={{
+              cursor: "pointer",
+              backgroundColor: (theme) => {
                 return report == "Lab Statistics"
                   ? theme.palette.primary.light
                   : "";
@@ -1427,7 +1478,7 @@ function AllReports() {
               المصروفات - 2{" "}
             </ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             sx={{
               cursor: "pointer",
               backgroundColor: (theme) => {
@@ -1446,7 +1497,7 @@ function AllReports() {
             >
               ايرادات المبيعات
             </ListItemText>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             sx={{
               cursor: "pointer",

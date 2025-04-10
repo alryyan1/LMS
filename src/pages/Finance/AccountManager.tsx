@@ -44,6 +44,10 @@ function AccountManager() {
     try {
       const response = await axiosClient.get("accounts?parents=1");
       setAccounts(response.data);
+       axiosClient.get("settings").then(({data})=>{
+                // setSettings(data)
+                setFirstDate(dayjs(data.financial_year_start))
+                setSecondDate(dayjs(data.financial_year_end)) })
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
@@ -79,30 +83,32 @@ function AccountManager() {
       accounts.map((account) => {
         let totalCreditSum = 0;
         let totalDebitSum = 0;
-        let totalCredits = account.credits.reduce(
-          (accum, current) => accum + current.amount,
-          0
-        );
-        let totalDebits = account.debits.reduce(
-          (accum, current) => accum + current.amount,
-          0
-        );
-        totalCreditSum += totalCredits;
-        totalDebitSum += totalDebits;
+        // let totalCredits = account.credits.reduce(
+        //   (accum, current) => accum + current.amount,
+        //   0
+        // );
+        // let totalDebits = account.debits.reduce(
+        //   (accum, current) => accum + current.amount,
+        //   0
+        // );
+        // totalCreditSum += totalCredits;
+        // totalDebitSum += totalDebits;
         // console.log(totalCredits, "total credits", totalDebits, "total dedits");
-        let largerNumber = Math.max(totalCredits, totalDebits);
+        // let largerNumber = Math.max(totalCredits, totalDebits);
         let creditBalance = 0;
         let debitBalance = 0;
-        if (totalCredits > totalDebits) {
-          creditBalance = totalCredits - totalDebits;
-        } else {
-          debitBalance = totalDebits - totalCredits;
-        }
+        // if (totalCredits > totalDebits) {
+        //   creditBalance = totalCredits - totalDebits;
+        // } else {
+        //   debitBalance = totalDebits - totalCredits;
+        // }
         let label ;
         if(account.children.length > 0 ){
-           label = `${account.name} ${account.totalBalance} `
+          //  label = `${account.name} ${account.totalBalance} `
+           label = `${account.name}  `
         }else{
-           label = `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `
+          //  label = `${account.name} (${creditBalance > 0 ? `${formatNumber(creditBalance)}+` : formatNumber(debitBalance)}) `
+           label = account.name
         }
        
         return [

@@ -193,36 +193,33 @@ function DrugItems() {
                   <TableCell> code</TableCell>
                   {/* <TableCell>الاسم العلمي</TableCell> */}
                   <TableCell>M.Name </TableCell>
+                  <TableCell>الاسم بالانجليزي </TableCell>
                   {/* <TableCell>Pack size </TableCell> */}
                   {/* <TableCell>Active 1 </TableCell> */}
                   {/* <TableCell>Active 2 </TableCell> */}
                   <TableCell> Cost</TableCell>
                   <TableCell> Retail </TableCell>
-                  <TableCell> Strips </TableCell>
-                  <TableCell> Unit </TableCell>
-                  <TableCell> Category </TableCell>
-                  <TableCell style={{ width: "10%" }}> Expire </TableCell>
-                  <TableCell> Barcode </TableCell>
-                  <TableCell
+                  {/* <TableCell> Strips </TableCell> */}
+                  {/* <TableCell> Unit </TableCell> */}
+                  {/* <TableCell> Category </TableCell> */}
+                  {/* <TableCell style={{ width: "10%" }}> Expire </TableCell> */}
+                  {/* <TableCell> Barcode </TableCell> */}
+                  {/* <TableCell
                     style={{ width: "10%", textOverflow: "ellipsis" }}
                     width={"10%"}
                   >
                     {" "}
                     Supplier
-                  </TableCell>
-                  <TableCell> -</TableCell>
+                  </TableCell> */}
+                  {/* <TableCell> -</TableCell> */}
                 </TableRow>
               </thead>
               <tbody>
                 {items.map((drug) => {
-                  const expire = drug?.lastDepositItem?.expire ?? null;
-                  let is_expired = false;
-                  if (expire != null && !dayjs(expire).isAfter(dayjs())) {
-                    is_expired = true;
-                  }
+                 
                   // console.log(drug, "drug ");
                   return (
-                    <TableRow sx={{backgroundColor:(theme)=> drug?.lastDepositItem == null ? theme.palette.warning.light : ''}} key={drug.id}>
+                    <TableRow key={drug.id}>
                       <TableCell>{drug.id}</TableCell>
 
                       <MyTableCell
@@ -234,6 +231,16 @@ function DrugItems() {
                           drug?.market_name.toUpperCase()[0]
                         }${drug?.market_name.slice(1).toLowerCase()}`}
                       </MyTableCell>
+                      <MyTableCell
+                        colName={"sc_name"}
+                        item={drug}
+                        table="items"
+                      >
+                    
+                          {drug?.sc_name}
+                        
+                      </MyTableCell>
+                      
                       {/* <TableCell>
                       {`${drug?.pack_size}`}
 
@@ -253,37 +260,37 @@ function DrugItems() {
                         {`${drug?.active2}`}
                       </MyTableCell> */}
                       <MyTableCell
-                        disabled={drug?.lastDepositItem == null }
+                        disabled={drug?.last_deposit_item == null }
                         setDialog={setDialog}
                         sx={{ width: "60px", textAlign: "center" }}
                         // change={change}
-                        item={drug?.lastDepositItem}
+                        item={drug?.last_deposit_item}
                         table="depositItems/update"
                         colName={"cost"}
                         isNum
                       >
-                        {drug.lastDepositItem?.finalCostPrice ?? 0}
+                        {drug.last_deposit_item?.finalCostPrice ?? 0}
                       </MyTableCell>
 
                       <MyTableCell
-                       disabled={drug?.lastDepositItem == null }
+                       disabled={drug?.last_deposit_item == null }
                         setDialog={setDialog}
                         sx={{ width: "60px", textAlign: "center" }}
                         // change={change}
-                        item={drug?.lastDepositItem}
+                        item={drug?.last_deposit_item}
                         table="depositItems/update"
                         colName={"sell_price"}
                         isNum
                       >
-                        {drug.lastDepositItem?.finalSellPrice ?? 0}
+                        {drug.last_deposit_item?.finalSellPrice ?? 0}
                       </MyTableCell>
-                      <MyTableCell colName={"strips"} item={drug} table="items">
+                      {/* <MyTableCell colName={"strips"} item={drug} table="items">
                         {drug.strips}
-                      </MyTableCell>
+                      </MyTableCell> */}
 
                    
-          <TableCell>
-          <MyAutoCompeleteTableCell
+          {/* <TableCell> */}
+          {/* <MyAutoCompeleteTableCell
             sections={pharmacyTypes}
             colName={"pharmacy_type_id"}
             val={drug.type}
@@ -291,39 +298,39 @@ function DrugItems() {
             table="items"
           >
             {drug.type?.name}
-          </MyAutoCompeleteTableCell>
-          </TableCell>
-             <MyAutoCompeleteTableCell 
-            sections={drugCategory}
+          </MyAutoCompeleteTableCell> */}
+          {/* </TableCell> */}
+             {/* <MyAutoCompeleteTableCell  */}
+            {/* sections={drugCategory}
             val={drug.category}
             colName="drug_category_id"
             item={drug}
             table="items"
-          >
-            {drug.category?.name}
+          > }
+            {/* {drug.category?.name}
           </MyAutoCompeleteTableCell> 
-                      
+                       }
                       {/* <TableCell>
-            {drug?.lastDepositItem?.expire ?? drug.expire}
+            {drug?.last_deposit_item?.expire ?? drug.expire}
           </TableCell> */}
-                      <TableCell>
-                        <MyDateField2 disabled={drug?.lastDepositItem == null}
-                          val={drug?.lastDepositItem?.expire ?? drug.expire}
-                          item={drug?.lastDepositItem}
+                      {/* <TableCell>
+                        <MyDateField2 disabled={drug?.last_deposit_item == null}
+                          val={drug?.last_deposit_item?.expire ?? drug.expire}
+                          item={drug?.last_deposit_item}
                         />
-                      </TableCell>
-                      <MyTableCell
+                      </TableCell> */}
+                      {/* <MyTableCell
                         show
                         colName={"barcode"}
                         item={drug}
                         table="items"
                       >
                         {drug.barcode}
-                      </MyTableCell>
-                      <TableCell>
+                      </MyTableCell> */}
+                      {/* <TableCell>
                         {drug?.deposit_item?.deposit?.supplier?.name}
-                      </TableCell>
-                      <TableCell>
+                      </TableCell> */}
+                      {/* <TableCell>
                         <LoadingButton
                           loading={loading}
                           onClick={() => {
@@ -354,7 +361,7 @@ function DrugItems() {
                         >
                           <DeleteOutlineOutlined />
                         </LoadingButton>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })}

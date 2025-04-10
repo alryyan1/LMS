@@ -55,6 +55,7 @@ export interface Deduct {
   doctorvisit_id:number;
   doctorvisit:DoctorVisit;
   itemsConcatenated:string;
+  payment_method:string;
 
 }
 

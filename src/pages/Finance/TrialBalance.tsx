@@ -42,30 +42,25 @@ function Ledger() {
       setAccounts(data);
       console.log(data, "accounts");
     });
+
+       axiosClient.get("settings").then(({data})=>{
+              setFirstDate(dayjs(data.financial_year_start))
+              setSecondDate(dayjs(data.financial_year_end))
+       })
   }, []);
 
   useEffect(() => {
-    axiosClient(`ledger/${selectedAccount?.id}`).then(({ data }) => {
+    if(selectedAccount){
+       axiosClient(`ledger/${selectedAccount?.id}`).then(({ data }) => {
       setAccountLedger(data);
       console.log(data, "ledgers");
     });
+
+    
+    }
+   
   }, [selectedAccount?.id]);
-  const searchHandler = () => {
-    setLoading(true);
-    const firstDayjs = firstDate.format("YYYY/MM/DD");
-    const secondDayjs = secondDate.format("YYYY/MM/DD");
-    axiosClient
-      .post(`searchDeductsByDate`, {
-        first: firstDayjs,
-        second: secondDayjs,
-      })
-      .then(({ data }) => {
-        console.log(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+
   let totalCreditSum = 0;
   let totalDebitSum = 0;
 
@@ -74,10 +69,14 @@ function Ledger() {
       <Grid item xs={8}>
         <Box sx={{ p: 1 }}>
           <DateComponent
+              api={`financeAccounts?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}
+                      setData={setAccounts}
             setAccounts={setAccounts}
             accounts={accounts}
             firstDate={firstDate}
             secondDate={secondDate}
+            setFirstDate={setFirstDate}
+            setSecondDate={setSecondDate}
           />
         </Box>
       </Grid>

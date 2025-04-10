@@ -139,7 +139,7 @@ function CustumSideBar({
                <CostDialog setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}  setShift={null} setShow={setShow} show={show} />
 
      <EmptyDialog setShow={setShowDoctorCredit} show={showDoctorCredit}>
-        <DoctorsCredits setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}/>
+        <DoctorsCredits user={user} setAllMoneyUpdatedLab={setAllMoneyUpdatedLab}/>
      </EmptyDialog>
     </Stack>
   );

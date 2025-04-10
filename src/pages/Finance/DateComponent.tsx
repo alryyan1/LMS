@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,6 +17,7 @@ import axiosClient from "../../../axios-client.js";
 function DateComponent({
   accounts,
   setAccounts,
+ 
   firstDate,
   secondDate,
   setFirstDate,
@@ -60,27 +61,30 @@ function DateComponent({
         });
     }
   };
+
+  // console.log(dayjs(settings?.financial_year_start).format('YYYY-MM-DD'),'settings?.financial_year_start')
   return (
     <Stack direction={"row"} justifyContent={"space-between"}>
       <Box>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateField
-            format="DD-MM-YYYY"
+            format="YYYY-MM-DD"
             onChange={(val) => {
               setFirstDate(val);
             }}
-            defaultValue={dayjs(firstDate)}
+            value={dayjs(firstDate)}
             sx={{ m: 1 }}
             label="From"
           />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateField
-            format="DD-MM-YYYY"
+            format="YYYY-MM-DD"
             onChange={(val) => {
               setSecondDate(val);
             }}
-            defaultValue={dayjs(new Date())}
+            value={secondDate}
+            // defaultValue={dayjs(settings?.financial_year_end)}
             sx={{ m: 1 }}
             label="To"
           />

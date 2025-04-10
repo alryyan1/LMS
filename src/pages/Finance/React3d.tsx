@@ -63,6 +63,10 @@ function AccountManager() {
   const fetchAccounts = async () => {
     try {
       const response = await axiosClient.get("accounts?parents=1");
+        axiosClient.get("settings").then(({data})=>{
+                      // setSettings(data)
+                      setFirstDate(dayjs(data.financial_year_start))
+                      setSecondDate(dayjs(data.financial_year_end)) })
       setAccounts(response.data);
     } catch (error) {
       console.error("Error fetching accounts:", error);

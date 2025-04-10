@@ -28,7 +28,7 @@ import {
 import { Delete as DeleteIcon, Sync } from "@mui/icons-material";
 import axiosClient from "../../../axios-client";
 import { formatNumber, webUrl } from "../constants";
-import { Account } from '../../types/type';
+import { Account } from "../../types/type";
 import dayjs from "dayjs";
 import { EyeIcon, Import, Plus, Printer, Rows } from "lucide-react";
 import TestCalendar from "./TestCalendar";
@@ -38,10 +38,10 @@ import DateComponent from "./DateComponent";
 function DynamicTable() {
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [incomeStatement, setIncomeStatement] = useState(null);
-  const [selectedAccount, setSelectedAccount] = useState<Account|null>(null)
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [selectedNumbers,setSelectedNumbers] = useState([])
-  const [operator,setOperator] = useState('+')
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [operator, setOperator] = useState("+");
   useEffect(() => {
     document.title = "قائمه الدخل ";
   }, []);
@@ -61,7 +61,7 @@ function DynamicTable() {
     axiosClient.get("lastIncomeStatment").then(({ data }) => {
       // console.log(data, "data");
       setIncomeStatement(data.data);
-      setRows(data.data.data)
+      setRows(data.data.data);
     });
     axiosClient.get("allIncomeStatment").then(({ data }) => {
       // console.log(data, "data");
@@ -110,6 +110,11 @@ function DynamicTable() {
   };
   useEffect(() => {
     fetchAccounts();
+    axiosClient.get("settings").then(({ data }) => {
+      // setSettings(data)
+      setFirstDate(dayjs(data.financial_year_start));
+      setSecondDate(dayjs(data.financial_year_end));
+    });
   }, []);
 
   const fetchAccounts = async () => {
@@ -141,16 +146,23 @@ function DynamicTable() {
     setRows(newRows);
   };
 
-  const handleAccountChange = (index, value:Account) => {
+  const handleAccountChange = (index, value: Account) => {
     // console.log(value, "val");
     const newRows = [...rows];
-     newRows[index].account  = value;
-    newRows[index].textValue = value.debits.reduce((prev,curr)=>prev+curr.amount,0) ? value.name : "";
+    newRows[index].account = value;
+    newRows[index].textValue = value.debits.reduce(
+      (prev, curr) => prev + curr.amount,
+      0
+    )
+      ? value.name
+      : "";
 
     if (value.children.length > 0) {
       newRows[index].value1 = Math.abs(value.totalBalance);
     } else {
-      newRows[index].value1 = Math.abs(value.debits.reduce((prev,curr)=>prev+curr.amount,0));
+      newRows[index].value1 = Math.abs(
+        value.debits.reduce((prev, curr) => prev + curr.amount, 0)
+      );
     }
 
     setRows(newRows);
@@ -164,7 +176,6 @@ function DynamicTable() {
   };
 
   const handleValueChange = (index, field, value) => {
-    
     const newRows = [...rows];
     newRows[index][field] = value;
     setRows(newRows);
@@ -177,59 +188,64 @@ function DynamicTable() {
   };
 
   const handleSelectValue = (index, field) => {
-    const num =  parseFloat( rows[index][field] ) || 0;
-    setSelectedNumbers((prev)=>{
-      return [...prev,num];
-    })
+    const num = parseFloat(rows[index][field]) || 0;
+    setSelectedNumbers((prev) => {
+      return [...prev, num];
+    });
     // console.log(selectedNumbers,'selected numbers')
-        const newRows = [...rows];
+    const newRows = [...rows];
     newRows[index][field + "Selected"] = !newRows[index][field + "Selected"];
     setRows(newRows);
   };
 
   const handleDoubleClick = (index, field) => {
-     let sum = 0
+    let sum = 0;
 
-    if(operator === "+"){
-
-       sum = selectedNumbers.reduce((prev,curr)=>prev + curr, 0);
-    }else{
-        selectedNumbers.forEach((n)=>{
-          // console.log(n,'n')
-        if(sum > 0) {
+    if (operator === "+") {
+      sum = selectedNumbers.reduce((prev, curr) => prev + curr, 0);
+    } else {
+      selectedNumbers.forEach((n) => {
+        // console.log(n,'n')
+        if (sum > 0) {
           //substract
-          sum -= n
-        }else{
+          sum -= n;
+        } else {
           sum = n;
         }
-       })
+      });
       //  console.log(sum,'sum')
     }
     const newRows = [...rows];
     // console.log(newRows,'new')
     newRows[index][field] = sum; // Apply the formatted result
-    setSelectedNumbers([])
-    setRows(newRows.map((r)=>({...r,value1Selected:false,value2Selected:false,value3Selected:false}))); // Update the state with the new list
-    
+    setSelectedNumbers([]);
+    setRows(
+      newRows.map((r) => ({
+        ...r,
+        value1Selected: false,
+        value2Selected: false,
+        value3Selected: false,
+      }))
+    ); // Update the state with the new list
   };
 
   const handleChange = (event) => {
     setIncomeStatement(event.target.value);
   };
-  const handleShowDetails = (row,index)=>{
+  const handleShowDetails = (row, index) => {
     // console.log(row,index)
-    setSelectedAccount(row.account)
-    setShow(true)
+    setSelectedAccount(row.account);
+    setShow(true);
     // console.log(row[index].account ,'row[index].account ')
-  }
-  const [show,setShow] = useState(false)
-    const [firstDate, setFirstDate] = useState(dayjs().startOf('month'));
-    // console.log(firstDate,'firstDate')
-  
-    const [secondDate, setSecondDate] = useState(dayjs(new Date()));
+  };
+  const [show, setShow] = useState(false);
+  const [firstDate, setFirstDate] = useState(dayjs().startOf("month"));
+  // console.log(firstDate,'firstDate')
+
+  const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   return (
     <Stack direction={"row"} gap={1}>
-      <Paper  sx={{ p: 2 ,flex:1 }}>
+      <Paper sx={{ p: 2, flex: 1 }}>
         <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
           {" "}
           <Stack direction={"row"} gap={1}>
@@ -273,8 +289,14 @@ function DynamicTable() {
             >
               <Printer />
             </Button>
-            <DateComponent setFirstDate={setFirstDate} setSecondDate={setSecondDate} firstDate={firstDate} secondDate={secondDate} accounts={accounts} setAccounts={setAccounts}/>
-
+            <DateComponent
+              setFirstDate={setFirstDate}
+              setSecondDate={setSecondDate}
+              firstDate={firstDate}
+              secondDate={secondDate}
+              accounts={accounts}
+              setAccounts={setAccounts}
+            />
           </Stack>
           {/* /render select mui element for incomeStatements */}
           <FormControl>
@@ -298,15 +320,28 @@ function DynamicTable() {
         <Typography variant="h4" textAlign={"center"} gutterBottom>
           ( {incomeStatement?.id} ) قائمه الدخل
         </Typography>
-        <Stack direction={'row'} gap={1} sx={{mb:1}}>
-               <Button variant={operator == '+' ? 'contained' :'text'} title="عمليه الجمع" sx={{border:'1px solid'}} onClick={()=>{
-          setOperator('+')
-        }}><Plus/></Button>
-        <Button variant={operator == '-' ? 'contained' :'text'} title="عمليه الطرح" onClick={()=>{
-          setOperator('-')
-        }}>-</Button>
+        <Stack direction={"row"} gap={1} sx={{ mb: 1 }}>
+          <Button
+            variant={operator == "+" ? "contained" : "text"}
+            title="عمليه الجمع"
+            sx={{ border: "1px solid" }}
+            onClick={() => {
+              setOperator("+");
+            }}
+          >
+            <Plus />
+          </Button>
+          <Button
+            variant={operator == "-" ? "contained" : "text"}
+            title="عمليه الطرح"
+            onClick={() => {
+              setOperator("-");
+            }}
+          >
+            -
+          </Button>
         </Stack>
-   
+
         <TableContainer>
           <Table style={{ direction: "rtl" }}>
             <TableHead>
@@ -383,9 +418,9 @@ function DynamicTable() {
                           mr: 1,
                           border: row.value1Selected ? "2px solid aqua" : "",
                         }}
-                        onContextMenu={(e)=>{
+                        onContextMenu={(e) => {
                           e.preventDefault();
-                          handleDoubleClick(index, "value1")
+                          handleDoubleClick(index, "value1");
                         }}
                         // onDoubleClick={() => handleDoubleClick(index, "value1")}
                       />
@@ -408,9 +443,9 @@ function DynamicTable() {
                         variant="outlined"
                         size="small"
                         fullWidth
-                        onContextMenu={(e)=>{
+                        onContextMenu={(e) => {
                           e.preventDefault();
-                          handleDoubleClick(index, "value2")
+                          handleDoubleClick(index, "value2");
                         }}
                         // onDoubleClick={() => handleDoubleClick(index, "value2")}
                         sx={{
@@ -438,9 +473,9 @@ function DynamicTable() {
                         variant="outlined"
                         size="small"
                         fullWidth
-                        onContextMenu={(e)=>{
+                        onContextMenu={(e) => {
                           e.preventDefault();
-                          handleDoubleClick(index, "value3")
+                          handleDoubleClick(index, "value3");
                         }}
                         // onDoubleClick={() => handleDoubleClick(index, "value3")}
                         sx={{
@@ -468,8 +503,7 @@ function DynamicTable() {
                         <DeleteIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleShowDetails(row,index)}
-               
+                        onClick={() => handleShowDetails(row, index)}
                         size="small"
                       >
                         <EyeIcon />
@@ -483,28 +517,43 @@ function DynamicTable() {
           </Table>
         </TableContainer>
         <EmptyDialog show={show} setShow={setShow}>
-          <Box sx={{width:'400px'}}>
-            <Typography variant="h5" textAlign={'center'}> <Button href={`${webUrl}accountChildren/${selectedAccount?.id}`}>{selectedAccount?.name}</Button> </Typography>
-              <List>
-              {selectedAccount?.children.map((account)=>{
-                return(
-                  <ListItem secondaryAction={ <IconButton
-                    onClick={() => {
-                      setSelectedAccount(account)
-                      setShow(true)
-                    }}
-           
-                    size="small"
+          <Box sx={{ width: "400px" }}>
+            <Typography variant="h5" textAlign={"center"}>
+              {" "}
+              <Button href={`${webUrl}accountChildren/${selectedAccount?.id}`}>
+                {selectedAccount?.name}
+              </Button>{" "}
+            </Typography>
+            <List>
+              {selectedAccount?.children.map((account) => {
+                return (
+                  <ListItem
+                    secondaryAction={
+                      <IconButton
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setShow(true);
+                        }}
+                        size="small"
+                      >
+                        <EyeIcon />
+                      </IconButton>
+                    }
+                    key={account.id}
                   >
-                    <EyeIcon />
-                  </IconButton>} key={account.id}>
-                    <ListItemText secondary={formatNumber(account.children.length > 0 ? account.totalBalance: account.balance)} primary={account.name}  />
+                    <ListItemText
+                      secondary={formatNumber(
+                        account.children.length > 0
+                          ? account.totalBalance
+                          : account.balance
+                      )}
+                      primary={account.name}
+                    />
                   </ListItem>
-                )
+                );
               })}
-          </List>
+            </List>
           </Box>
-        
         </EmptyDialog>
       </Paper>
       {incomeStatements.length > 0 && (

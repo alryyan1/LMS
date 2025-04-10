@@ -67,6 +67,7 @@ import { PharmacyLayoutPros } from "../../types/pharmacy";
 import { Barcode, Plus, Printer } from "lucide-react";
 import { useStateContext } from "../../appContext";
 import { socket } from "../../socket";
+import { toast } from "react-toastify";
 // import Calculator from "../../components/calculator/Calculator";
 
 function SellDrug() {
@@ -80,6 +81,8 @@ function SellDrug() {
   const [userSettings, setUserSettings] = useState(null);
   const [clients, setClients] = useState([]);
   const [barcodeVal, setBarcodeVal] = useState(null);
+  const locationRef = useRef('');
+  const factoryRef = useRef('');
 
   const [updater, setUpdater] = useState(0);
   const [searchOption, setSearchOption] = useState("market_name");
@@ -217,7 +220,7 @@ function SellDrug() {
         }
       });
   };
-
+  console.log(locationRef,'locationRef')
   //socket
     const [isConnected, setIsConnected] = useState(socket.connected);
   
@@ -260,6 +263,41 @@ function SellDrug() {
         socket.off("update deduct recieved", onDisconnect);
       };
     }, []);
+    const updateSellLocation = async () =>{
+      console.log(locationRef,'locationref')
+      try {
+        const response  = await    axiosClient.patch(`deduct/${activeSell?.id}`,{
+          colName: "location",
+          val: locationRef.current.value,
+        })
+
+        if(response.status == 200){
+            toast.success('تم التعديل بنجاح')
+        }
+      } catch (error) {
+        toast.error(error.toString())
+      }
+      
+    }
+    const updateFactoryNumber = async () =>{
+      try {
+        const response  = await    axiosClient.patch(`deduct/${activeSell?.id}`,{
+          colName: "factory_number",
+          val: factoryRef.current.value,
+        })
+
+        if(response.status == 200){
+            toast.success('تم التعديل بنجاح')
+        }
+      } catch (error) {
+        toast.error(error.toString())
+      }
+      
+    }
+    console.log(activeSell?.id,'activesell .id')
+   
+
+    
   return (
     <>
       <Stack direction={"row"} gap={1}>
@@ -479,6 +517,7 @@ function SellDrug() {
                   height={400}
                 />
               ) : (
+               <>
                 <Table
                   
                   className="white"
@@ -494,7 +533,7 @@ function SellDrug() {
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
-                      {/* <TableCell>Expire</TableCell> */}
+                      <TableCell>Expire</TableCell>
                       <TableCell>Inventory</TableCell>
                     </TableRow>
                   </thead>
@@ -598,12 +637,12 @@ function SellDrug() {
                           </LoadingButton>
                         </TableCell>
 
-                        {/* <TableCell>
+                        <TableCell>
                           <MyDateField2
                             val={deductedItem?.item.last_deposit_item?.expire}
                             item={deductedItem?.item.last_deposit_item}
                           />
-                        </TableCell> */}
+                        </TableCell>
                         <TableCell>
                           <CalculateInventory item_id={deductedItem.item.id} />
                         </TableCell>
@@ -611,10 +650,34 @@ function SellDrug() {
                     ))}
                   </TableBody>
                 </Table>
+         
+               </>
+                
               )}
+              
             </>
           )}
+              {/* {activeSell &&  <Stack gap={1} direction={'row'} justifyContent={'center'} alignItems={'center'}>
+                <Stack gap={1} direction={'column'}>
+                <TextField   key={activeSell?.id}  sx={{mt:2,width:'300px'}}  multiline defaultValue={activeSell?.location} inputRef={locationRef} label='الموقع'/>
+                <Button onClick={()=>{
+          updateSellLocation()
+        }}>حفظ الموقع</Button>
+                </Stack>
+                <Stack direction={'column'} gap={1}>
+
+                <TextField   key={activeSell?.id}  sx={{mt:2,width:'300px'}}  multiline defaultValue={activeSell?.factory_number} inputRef={factoryRef} label='رقم الفاتوره (المصنع)'/>
+                <Button onClick={()=>{
+          updateFactoryNumber()
+        }}>حفظ رقم فاتوره المصنع</Button>
+                </Stack>
+                
+           
+        
+                </Stack>} */}
+        
         </Card>
+       
 
         <Card
         key={activeSell?.id}
