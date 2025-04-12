@@ -155,7 +155,7 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
   };
 
   return (
-    <Paper sx={{ p: 1 }}>
+    <Paper sx={{ p: 1,width:'500px' }}>
       <Typography textAlign={"center"} variant="h5">
         {t('newEntry')} {/* Use translation */}
       </Typography>

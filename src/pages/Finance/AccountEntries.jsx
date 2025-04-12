@@ -5,6 +5,7 @@ import {
   IconButton,
   Paper,
   Skeleton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -27,12 +28,15 @@ import {
 } from "../constants.js";
 import DateComponent from "./DateComponent.tsx";
 import GeminiImageUploader from "./Gemini.tsx";
+import EmptyDialog from "../Dialogs/EmptyDialog.tsx";
+import { Eye, Plus } from "lucide-react";
 
 function AccountEntries() {
   // const [loading, setLoading] = useState(false);
   //create state variable to store all Accounts
   const [entries, setEntries] = useState([]);
   const [update, setUpdate] = useState(0);
+  const [show, setShow] = useState(0);
   const { dilog, setDialog } = useOutletContext();
 
   useEffect(() => {
@@ -67,8 +71,11 @@ function AccountEntries() {
   const [secondDate, setSecondDate] = useState(dayjs(new Date()));
   return (
     <Grid container spacing={2}>
-      <Grid item xs={8}>
+      <Grid item xs={12}>
         <Paper sx={{ p: 1 }}>
+          <Button onClick={()=>{
+            setShow(true)
+          }}><Plus/></Button>
           <DateComponent
             api={`financeEntries?first=${firstDate.format("YYYY/MM/DD")}&second=${secondDate.format("YYYY/MM/DD")}`}
             setData={setEntries}
@@ -150,7 +157,8 @@ function AccountEntries() {
                               entry.debit.length + entry.credit.length + 2
                             }
                           >
-                            <Button
+                         <Stack direction={'column'} gap={1}>
+                         <Button
                               disabled={entry.hasPetty}
                               variant="contained"
                               onClick={() => {
@@ -197,8 +205,23 @@ function AccountEntries() {
                                 }
                               }}
                             >
-                              انشاء اذن الصرف
+                               اذن الصرف
                             </Button>
+                          {entry.file_name != null ? <Button href={entry.file_name}><Eye/></Button>:  <input type="file" accept="application/pdf" onChange={(e)=>{
+                              console.log(e.target.files[0])
+                              let file = e.target.files[0]
+                              if(file){
+                                let formData = new FormData()
+                                formData.append('file',file)
+                                formData.append('entry_id',entry.id)
+                                axiosClient.post('handleIncomeProoveFile',formData,{
+                                  headers:{
+                                    'Content-Type':'multipart/form-data'
+                                  }
+                                })
+                              }
+                            }} />}
+                         </Stack>
                           </TableCell>{" "}
                         </TableRow>
                         {entry.debit.map((e, debitIndex) => {
@@ -321,15 +344,17 @@ function AccountEntries() {
           )}
         </Paper>
       </Grid>
-      <Grid item xs={4}>
-        <AddEntryForm
+      
+      <EmptyDialog setShow={setShow} show={show}>
+      <AddEntryForm
+      
           setUpdate={setUpdate}
           setEntries={setEntries}
           loading={loading}
           setDialog={setDialog}
           setLoading={setLoading}
         />
-      </Grid>
+      </EmptyDialog>
     </Grid>
   );
 }
