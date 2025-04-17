@@ -90,7 +90,7 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
 
         {/* create table with all clients */}
       { selectedAccount && selectedAccount.debits.length > 0 || selectedAccount?.credits.length > 0 ? <TableContainer key={selectedAccount?.id}>
-         <Typography textAlign={'center'} variant="h3"> {selectedAccount?.name}</Typography>
+         <Typography textAlign={'center'} variant="h5"> {selectedAccount?.name}</Typography>
            
            <IconButton onClick={()=>{
             setDialog((prev)=>{
@@ -157,9 +157,9 @@ import DebitsAndCreditsRow from "./DebitsAndCreditsRow.js";
               }) }
             </TableBody>
           </Table>
-        </TableContainer>  : <Typography textAlign={'center'} variant="h4">  لا يوجد قيود في هذا الحساب</Typography>}
+        </TableContainer>  : <Typography textAlign={'center'} variant="h4">       </Typography>}
         {selectedAccount?.children?.length > 0 &&   <TableContainer >
-         <Typography textAlign={'center'} variant="h3"> {selectedAccount?.name}</Typography>
+         <Typography textAlign={'center'} variant="h5"> {selectedAccount?.name}</Typography>
            
            <IconButton onClick={()=>{
             setDialog((prev)=>{
