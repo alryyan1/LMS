@@ -365,7 +365,15 @@ function Sample() {
                   axiosClient
                     .get(`patient/sampleCollected/${activePatient.patient.id}`)
                     .then(({ data }) => {
-                      setShift(data.shift);
+                      setPatients((prev)=>{
+                        return prev?.map((p)=>{
+                          if(p.id == data.data.id){
+                            return data.data
+                          }else{
+                            return p
+                          }
+                        })
+                      });
                     });
 
                   axiosClient

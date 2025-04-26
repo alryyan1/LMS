@@ -96,6 +96,7 @@ function Reception() {
   const [value, setValue] = useState(0);
   const [settings, setSettings] = useState(null);
   const [fileMode, setFileMode] = useState(false);
+  const [doctorvisitIsLoading, setDoctorvisitIsLoading] = useState(false);
 
   const [patients,setPatients] = useState<DoctorVisit[]>([]);
   useEffect(()=>{
@@ -651,6 +652,8 @@ function Reception() {
               <Slide direction="up" in mountOnEnter unmountOnExit>
                 <div>
                   <RequestedServices
+                  doctorvisitIsLoading={doctorvisitIsLoading}
+                  setDoctorvisitIsLoading={setDoctorvisitIsLoading}
                     setAllMoneyUpdated={setAllMoneyUpdated}
                     update={update}
                     user={user}
@@ -733,6 +736,7 @@ function Reception() {
                     .map((visit) => {
                       return (
                         <PatientReception
+                        setDoctorvisitIsLoading={setDoctorvisitIsLoading}
                         fileMode={fileMode}
                         setFileMode={setFileMode}
                         setPatients={setPatients}

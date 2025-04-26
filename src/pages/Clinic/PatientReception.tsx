@@ -33,7 +33,8 @@ function PatientReception(props: PatientReceptinPros) {
     setShowServicePanel,
     activeShift,
     setShowTestPanel,
-    setShowLabTests
+    setShowLabTests,
+    setDoctorvisitIsLoading
     
     
   } = useOutletContext<ReceptionLayoutProps>();

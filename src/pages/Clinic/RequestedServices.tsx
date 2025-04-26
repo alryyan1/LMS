@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CircularProgress,
   Divider,
   FormControlLabel,
   IconButton,
@@ -61,6 +62,8 @@ function RequestedServices({
   activeShift,
   companies,
   user,
+  doctorvisitIsLoading,
+  setDoctorvisitIsLoading,
   update,
   setActivePatient,
 }: RequestedServiceProps) {
@@ -145,6 +148,8 @@ function RequestedServices({
 
     const fetchData = async () => {
       try {
+        
+        setDoctorvisitIsLoading(true)
         const response = await axiosClient.post(
           "doctorvisitById",
           { id: actviePatient.id },
@@ -155,11 +160,15 @@ function RequestedServices({
         console.log(response.data, "daaaaaaaaaata");
         setActivePatient(response.data);
       } catch (error) {
+        
         if (axios.isCancel(error)) {
           console.log("Request canceled:", error.message);
         } else {
           console.error("Error fetching data:", error);
         }
+      }
+      finally{
+        setDoctorvisitIsLoading(false)
       }
     };
 
@@ -186,8 +195,8 @@ function RequestedServices({
   let companyService;
   console.log(actviePatient, "active patient");
   return (
-    <>
-      <div className="requested-tests">
+     <>
+    {doctorvisitIsLoading ? <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}><CircularProgress/> </div> :  <div className="requested-tests">
         <div className="requested-table">
           <Typography>Medical Services</Typography>
           <TableContainer component={Card}>
@@ -293,7 +302,7 @@ function RequestedServices({
                         >
                           {formatNumber(price)}
                         </MyTableCell>
-                        <DiscountDropdown  update={update} value={service.discount_per} id={service.id}/>
+                        <DiscountDropdown disabled={service.deposits.length > 0}  update={update} value={service.discount_per} id={service.id}/>
                         <MyTableCell
                           key={service.updated_at}
                           colName={"discount"}
@@ -425,7 +434,7 @@ function RequestedServices({
             total_endurance={total_endurance}
           />
         )} */}
-      </div>
+      </div>}
       {selectedRequestedService && (
         <EmptyDialog
           title={selectedRequestedService.service.name}

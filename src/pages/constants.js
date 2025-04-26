@@ -10,9 +10,9 @@ export function onlyAdmin(user, action) {
   }
 }
 // export const host = 'sahara-pharma.com'
-export const schema = "https";
-export const host = "intaj-starstechnology.com";
-export const projectFolder = "jawda";
+export const schema = "http";
+export const host = "127.0.0.1";
+export const projectFolder = "laravel-react-app";
 // export const host = 'server1'مركز النعيم
 
 export function blurForNoramlUsers() {

@@ -119,7 +119,7 @@ export default function useResult(): ResultProps {
 
   useEffect(() => {
     setPatientsLoading(true);
-    axiosClient.get(`shiftWith?with=patients`).then(({ data: data }) => {
+    axiosClient.get(`lab-patients`).then(({ data: data }) => {
       setShift(data);
       setPatients(data.patients);
       setPatientsLoading(false);

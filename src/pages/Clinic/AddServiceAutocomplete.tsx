@@ -40,11 +40,11 @@ function AddServiceAutocomplete({
       console.log(payload, "payload");
 
       if (activeShift) {
-        // alert('s')
-        // alert('ss')
+        // 
+       
 
         if (!settings.disable_doctor_service_check) {
-          alert("ss");
+          // alert("ss");
 
           if (activeShift.doctor.services.length == 0) {
             toast.error("لا توجد خدمات معرفه لهذا الطبيب");
@@ -68,15 +68,15 @@ function AddServiceAutocomplete({
               .includes(s);
           });
           if (payload.length == 0) {
-            alert("ss");
+            // alert("ss");
 
             setLoading(false);
             return;
           }
         }
-        // alert('ss')
+       
       }
-      // alert('s')
+      // 
       setLoading(true);
       if (patient) {
         // alert("patient");
@@ -130,7 +130,7 @@ function AddServiceAutocomplete({
       setLoading(false);
       console.log(error)
     }
-    // alert('ss')
+   
 
     setSelectedServices([]);
   };

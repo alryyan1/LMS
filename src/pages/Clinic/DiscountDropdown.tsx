@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axiosClient from "../../../axios-client";
 
-const DiscountDropdown = ({ value ,id,update}) => {
+const DiscountDropdown = ({ value ,id,update,disabled = false}) => {
   const discountOptions = Array.from({ length: 10 }, (_, i) => (i + 1) * 10); // 10% to 100%
 
   return (
     <FormControl fullWidth>
       <InputLabel></InputLabel>
-      <Select size="small" value={value} onChange={(e) => {
+      <Select  disabled={disabled} size="small" value={value} onChange={(e) => {
         axiosClient.patch(`requestedService/discountPerc/${id}`,{
           perc:e.target.value
         }).then(({data})=>{
