@@ -38,6 +38,7 @@ import { LabLayoutPros } from "../../LabLayout";
 import { DoctorVisit } from "../../types/Patient";
 import { socket } from "../../socket";
 import { Printer, Settings } from "lucide-react";
+import SearchDialogLab from "../Dialogs/searchDialogLab";
 
 function AddPatient() {
   const { user } = useStateContext();
@@ -95,7 +96,7 @@ function AddPatient() {
   //  console.log(setActivePatient, "setActviePatient");
   useEffect(() => {
     setPatientsLoading(true);
-    axiosClient.get(`shiftWith?with=patients`).then(({ data }) => {
+    axiosClient.get(`lab-patients`).then(({ data }) => {
       // console.log(first)
       console.log(data, "last shift");
       // //add activeProperty to patient object
@@ -406,7 +407,7 @@ function AddPatient() {
       </div>
       <div style={{position:'absolute',top:'18px',zIndex:'3',right:'0px',maxWidth:'60vw'}}>
           {!actviePatient && dialog.showHistory && (
-              <SearchDialog hideForm={hideForm} update={update}  lab={true} />
+              <SearchDialogLab hideForm={hideForm} update={update}  lab={true} />
             )}
       </div>
     

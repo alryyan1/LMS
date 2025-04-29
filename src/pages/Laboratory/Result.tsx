@@ -335,7 +335,7 @@ function Result() {
                     onClick={() => {
                       //authentication event
                       setLoading(true);
-                      sendFinshedResult(actviePatient,setLoading)
+                      // sendFinshedResult(actviePatient,setLoading)
 
                       updateHandler(
                         1,

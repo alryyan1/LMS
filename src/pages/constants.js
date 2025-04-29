@@ -112,6 +112,12 @@ export const sendFinshedResult = (actviePatient, setLoading) => {
     .post(`sendFinshedResult/${actviePatient.id}`)
     .finally(() => setLoading(false));
 }
+export const sendMsg = (actviePatient, setLoading,msg) => {
+  setLoading(true);
+  axiosClient
+    .post(`sendMsg/${actviePatient.id}`,{msg})
+    .finally(() => setLoading(false));
+}
 export const updateHandler = (
   val,
   colName,

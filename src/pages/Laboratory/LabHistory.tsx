@@ -25,17 +25,17 @@ function LabHistory({ doctorVisit,setActiveDoctorVisit }: LabHistoryProbs) {
     setActiveDoctorVisit(event.target.value);
     console.log(event.target.value,'patient is select')
   };
-  useEffect(() => {
-    setLoading(true);
-    axiosClient
-      .get(`labHistory/${doctorVisit.id}`)
-      .then(({ data }) => {
-        setPatientWithFileHistory(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [doctorVisit]);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   axiosClient
+  //     .get(`labHistory/${doctorVisit.id}`)
+  //     .then(({ data }) => {
+  //       setPatientWithFileHistory(data);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }, [doctorVisit]);
   return (
     <div style={{width:'350px',overflow:'hidden',textAlign:'center'}}>
      

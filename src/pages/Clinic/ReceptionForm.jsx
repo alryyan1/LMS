@@ -15,11 +15,11 @@ import { Autocomplete, TextField, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axiosClient from "../../../axios-client";
-import { Item } from "../constants";
+import { Item, sendMsg } from "../constants";
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 import CountryAutocomplete from "../../components/addCountryAutocomplete";
 
-function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients ,setShowDetails}) {
+function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients ,setShowDetails,sendMsgLoading,setSendMsgLoading}) {
   const { t } = useTranslation('receptionForm'); // Initialize translation hook
 
   const [loading, setIsLoading] = useState(false);
@@ -155,6 +155,10 @@ function ReceptionForm({ hideForm, lab, settings, socket, update,setPatients ,se
           //this update patient list
           console.log(data.data.patient, "data data");
           update(data.data.patient);
+          if(settings?.send_welcome_message){
+
+            sendMsg(data.data.patient,setSendMsgLoading,settings?.welcome_message)
+          }
           setPatients((prev)=>{
             return [data.data.patient,...prev]
           })

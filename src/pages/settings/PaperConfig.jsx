@@ -335,6 +335,11 @@ function PaperConfig() {
                   defaultChecked={settings.is_header}
                   colName="is_header"
                 />
+                  <SettingsCheckbox
+                  label="ارسال الرساله الترحيبيه"
+                  defaultChecked={settings.send_welcome_message}
+                  colName="send_welcome_message"
+                />
                 <SettingsCheckbox
                   label="عرض الجنسية"
                   defaultChecked={settings.country}
@@ -471,7 +476,7 @@ function PaperConfig() {
               />
 
               <ImageUploadSection
-                label="صورة التذييل"
+                label="صورة الفوتر"
                 currentImage={settings.footer_base64}
                 onFileChange={handleFileChange}
                 colName="footer_base64"
@@ -500,9 +505,23 @@ function PaperConfig() {
               />
 
               <SettingsTextField
-                label="محتوى التذييل"
+                label="محتوى الفوتر"
                 defaultValue={settings.footer_content}
                 colName="footer_content"
+                multiline
+                rows={4}
+              />
+                  <SettingsTextField
+                label="محتوى الفوتر"
+                defaultValue={settings.footer_content}
+                colName="footer_content"
+                multiline
+                rows={4}
+              />
+                 <SettingsTextField
+                label="الرساله الترحيبيه "
+                defaultValue={settings.welcome_message}
+                colName="welcome_message"
                 multiline
                 rows={4}
               />

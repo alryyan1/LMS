@@ -89,6 +89,7 @@ function Reception() {
 
   const { user } = useStateContext();
   const [showNewShiftWarning, setShowNewShiftWarning] = useState(false);
+  const [sendMsgLoading, setSendMsgLoading] = useState(false);
   const [allMoneyUpdated, setAllMoneyUpdated] = useState(0);
   const [allMoneyUpdatedLab, setAllMoneyUpdatedLab] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
@@ -759,6 +760,7 @@ function Reception() {
               ""
             ) : (
               <ReceptionForm
+              sendMsgLoading={sendMsgLoading} setSendMsgLoading={setSendMsgLoading}
               setShowDetails={setShowDetails}
                 socket={socket}
                 settings={settings}

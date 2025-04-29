@@ -9,7 +9,7 @@ function InvoiceCardLab({actviePatient}) {
 
   return (
     <div className="  flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-small overflow-hidden">
+      <div className="w-full max-w-3xl rounded-2xl shadow-small overflow-hidden">
         {/* Header */}
         {/* <div className="bg-indigo-600 p-6 text-white">
       
