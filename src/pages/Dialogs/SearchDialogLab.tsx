@@ -60,7 +60,7 @@ function SearchDialogLab({setPatients, lab = false, user, update, isReception, h
     setLoading(true);
 
     const onlyLab = isReception ? 0 : 1;
-    const url = `patients/add-patient-by-history/${doctorvisit.patient.doctor.id}/${doctorvisit.patient.id}?onlyLab=${onlyLab}`;
+    const url = `patients/add-patient-by-history/${doctorvisit.patient.doctor.id}/${doctorvisit.patient.id}?onlyLab=${onlyLab}&file_id=${doctorvisit.file_id}`;
 
     axiosClient
       .post(url, {

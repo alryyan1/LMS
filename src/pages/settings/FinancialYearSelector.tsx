@@ -53,6 +53,7 @@ const FinancialYearSelector = ({ settings, handleFinancialYearChange }) => {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <DatePicker
+                 format="YYYY-MM-DD"
                   label="بدايه الفتره"
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
@@ -61,6 +62,7 @@ const FinancialYearSelector = ({ settings, handleFinancialYearChange }) => {
               </Grid>
               <Grid item xs={6}>
                 <DatePicker
+                 format="YYYY-MM-DD"
                   label="نهايه الفتره"
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}

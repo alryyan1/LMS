@@ -529,7 +529,7 @@ function SellDrug() {
                       <TableCell>No</TableCell>
                       <TableCell>Item</TableCell>
                       <TableCell>Price</TableCell>
-                      {/* <TableCell>Strips</TableCell> */}
+                      <TableCell>Strips</TableCell>
                       <TableCell>QYN</TableCell>
                       <TableCell>Subtotal</TableCell>
                       <TableCell width={"5%"}>action</TableCell>
@@ -577,7 +577,7 @@ function SellDrug() {
                           </MyTableCell>
                         )}
 
-                        {/* {activeSell.complete ? (
+                         {activeSell.complete ? (
                           <TableCell> {deductedItem.strips}</TableCell>
                         ) : (
                           <MyTableCell
@@ -591,7 +591,7 @@ function SellDrug() {
                           >
                             {deductedItem.strips}
                           </MyTableCell>
-                        )} */}
+                        )} 
                         {activeSell.complete ? (
                           <TableCell>{toFixed(deductedItem.box, 1)}</TableCell>
                         ) : (
