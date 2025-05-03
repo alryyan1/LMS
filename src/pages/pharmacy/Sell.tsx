@@ -496,10 +496,10 @@ function SellDrug() {
                     ></FormControlLabel>
                   </FormGroup>
                 )} */}
-                {/* <AutocompleteSearchPatientInsurance
+                <AutocompleteSearchPatientInsurance
                   setActiveSell={setActiveSell}
                   selectedDeduct={activeSell}
-                /> */}
+                />
                 <Box sx={{ flex: 1, textAlign: "center" }}>
                   {activeSell.doctorvisit && (
                     <Typography variant="h4">
@@ -861,7 +861,7 @@ function SellDrug() {
                     fullWidth
                     loading={loading}
                     onClick={() => {
-                        // printHandler()
+                        printHandler()
                       setLoading(true);
                       axiosClient
                         .get(

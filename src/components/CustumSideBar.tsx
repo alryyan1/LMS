@@ -81,7 +81,7 @@ function CustumSideBar({
           <Calculate />
         </IconButton>
       </Item> */}
-{/* 
+
       <Item>
         {user && (
           <IconButton
@@ -92,7 +92,7 @@ function CustumSideBar({
             <Print />
           </IconButton>
         )}
-      </Item> */}
+      </Item>
 
       <Item>
         {user && (

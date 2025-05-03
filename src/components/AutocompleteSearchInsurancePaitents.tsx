@@ -22,7 +22,7 @@ export default function AutocompleteSearchPatientInsurance({selectedDeduct,setAc
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<DoctorVisit[]>([]);
   const [search, setSearch] = React.useState<string>();
-
+  console.log(selectedDeduct,'selectedDeduct')
   React.useEffect(() => {
     if (search != '') {
        const timer = setTimeout(() => {
