@@ -179,8 +179,14 @@ function Result() {
                   let unfinshed_count = 0;
                   let allResultsFinished = true;
                   p.patient.labrequests.forEach((labRequest) => {
-                    unfinshed_count +=
-                      labRequest.unfinished_results_count.length;
+
+                    labRequest.requested_results.forEach((req) => {
+                      if (req.result == '') {
+                        unfinshed_count++;
+                        // allResultsFinished = false;
+                      }
+                    })
+                   
                   });
                   return (
                     <Patient
