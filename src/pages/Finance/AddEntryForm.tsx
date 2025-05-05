@@ -13,11 +13,23 @@ import DynamicTable from "./IncomeStatement";
 import { Account } from "../../types/type";
 import { host, schema } from "../constants";
 
-const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
-const initialCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
-
-function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate }) {
+// const initialDebitCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
+// const initialCreditEntry = { id: uuidv4(), account: null, amount: '' }; // Define initial debit/credit entry
+interface AddEntryFormProps {
+  setLoading: (loading: boolean) => void; // Function to set loading state
+  setDialog: (dialog: boolean) => void; // Function to set dialog state
+  loading: boolean; // Loading state
+  setEntries: (entries: any[]) => void; // Function to set entries state
+  setUpdate: (update: number) => void; // Function to set update state
+  desc?: string; // Optional description prop
+  amount?: number; // Optional amount prop
+  permissionId?: number; // Optional permission ID prop
+  setAllPermissions: (permissions: any[]) => void; // Function to set all permissions state
+}
+function AddEntryForm({ setLoading, setDialog, loading, setEntries, setUpdate,desc ,amount,permissionId,setAllPermissions}: AddEntryFormProps) {
   const [accounts, setAccounts] = useState([]);
+  const initialDebitCreditEntry = { id: uuidv4(), account: null, amount:amount }; // Define initial debit/credit entry
+  const initialCreditEntry = { id: uuidv4(), account: null, amount:amount }; // Define initial debit/credit entry
   const [balanceError, setBalanceError] = useState(''); // State for balance error message
   const { t } = useTranslation('addEntry'); // Initialize translation hook
 const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
@@ -32,14 +44,14 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
     trigger, // Import trigger
   } = useForm({
     defaultValues: {
-      amount: '',
-      description: '',
+      amount: amount || '', // Set default amount if provided
+      description: desc?.toString() || '',
       date: dayjs(), // Set default date to today
       debits: [initialDebitCreditEntry], // Initialize with one debit entry
       credits: [initialDebitCreditEntry], // Initialize with one credit entry
     },
   });
-
+  console.log(desc, 'desc', amount, 'amount')
   const [debitAccounts, setDebitAccounts] = useState([initialDebitCreditEntry]);
   const [creditAccounts, setCreditAccounts] = useState([initialDebitCreditEntry]);
 
@@ -77,11 +89,18 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
         date: formattedDate, // Send the formatted date
         debits: transformedDebits,
         credits: transformedCredits,
+        permission_id: permissionId,
       });
 
       console.log(data, "created");
       if (data.status) {
-        console.log(data.data, 'data');
+        console.log(data.data, 'data      ss s s ');
+        setAllPermissions((prev) => prev.map((p)=>{
+          if(p.id === permissionId){
+            return {...data.petty}
+          }
+          return p
+        }));
         // Reset the form to its initial state
         reset({
           amount: '',
@@ -92,28 +111,21 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
         });
         setSelectedAccounts([]);
         //send notification
-   
+        if(setEntries){
+
+          setEntries((prev)=>([data.data,...prev]));
+        }
 
         // Reset the local debit and credit account states
         setDebitAccounts([initialDebitCreditEntry]);
         setCreditAccounts([initialDebitCreditEntry]);
 
-        setUpdate((prev) => prev + 1);
-        setDialog((prev) => ({
-          ...prev,
-          color: "success",
-          open: true,
-          message: t('additionSuccess'), // Use translation for addition success message
-        }));
+        // setUpdate((prev) => prev + 1);
+      
         setLoading(false);
       }
-    } catch ({ response: { data } }) {
-      setDialog((prev) => ({
-        ...prev,
-        color: "error",
-        open: true,
-        message: data.message,
-      }));
+    } catch ( error ) {
+        console.log(error)
       setLoading(false);
     }
     setLoading(false);

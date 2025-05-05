@@ -18,8 +18,9 @@ import axiosClient from "../../../axios-client";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { GridVisibilityOffIcon } from "@mui/x-data-grid";
-import { DeleteIcon, EditIcon, Printer } from "lucide-react";
+import { DeleteIcon, EditIcon, Plus, Printer } from "lucide-react";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import AddEntryForm from "./AddEntryForm";
 // import { Account, Entry } from "../../types/type"; // Assuming types are defined correctly elsewhere or define basic ones here
 
 // Define the type for a single petty cash permission
@@ -64,12 +65,15 @@ interface SnackbarState {
 function PettyCashPermissionsTable() {
   const { t } = useTranslation("PettyCashTable");
   const [page, setPage] = useState(10); // Consider if pagination state needs adjustment with filtering
-
+  
   // --- Data States ---
   const [allPermissions, setAllPermissions] = useState<PettyCashPermission[]>([]); // Holds all fetched data
+  console.log(allPermissions,'allPermissions')
   const [links, setLinks] = useState([]); // For pagination
   const [entries, setEntires] = useState<Entry[]>([]); // For linking entry
   const [accounts, setAccounts] = useState<Account[]>([]); // For account filter
+
+  const [showAddEntryForm, setShowAddEntryForm] = useState(false); // For adding new entry
 
   // --- Filter States ---
   const [beneficiary, setBeneficiary] = useState<string | null>(null);
@@ -261,6 +265,7 @@ function PettyCashPermissionsTable() {
                               p.id === permissionId ? data.data : p
                           ));
                       });
+                    
                        // Send Notification
                       sendNotifications(data.data.id, `اعتماد ${actionType}`, `${data.data.description} \n المبلغ ${formatNumber(data.data.amount)}`);
                       showSnackbar(`تم اعتماد ${actionType} بنجاح`, "success");
@@ -301,10 +306,10 @@ function PettyCashPermissionsTable() {
              }
 
             // IMPORTANT: Use POST with _method=PATCH if backend expects it for FormData updates
-             formData.append("_method", "PATCH"); // Or PUT depending on backend route definition
+            //  formData.append("_method", "PATCH"); // Or PUT depending on backend route definition
 
             const response = await axiosClient.post( // Use POST with _method
-                `/petty-cash-permissions/${permissionToEdit.id}`, // Adjust endpoint if needed
+                `/update-petty-cash-permissions/${permissionToEdit.id}`, // Adjust endpoint if needed
                 formData,
                 {
                     headers: {
@@ -525,6 +530,8 @@ function PettyCashPermissionsTable() {
                  </IconButton>
                </Tooltip>
           </Grid>
+          <Button onClick={() => setShowAddForm(true)}><Plus/>اذن صرف جديد</Button>
+
         </Grid>
       </Paper>
 
@@ -532,19 +539,19 @@ function PettyCashPermissionsTable() {
         اذون الصرف {/* Better heading */}
       </Typography>
 
-      <TableContainer component={Paper}> {/* Wrap table in Paper */}
+      <TableContainer  style={{direction:'rtl'}} component={Paper}> {/* Wrap table in Paper */}
         {/* Add Button (Optional) */}
-         {/* <Button startIcon={<Plus/>} onClick={() => setShowAddForm(true)}>Add Permission</Button> */}
 
         <Table
           size="small"
+          className="table"
           stickyHeader // Keep header visible on scroll
           sx={{ minWidth: 1200 }} // Increase minWidth for more columns
           aria-label="petty cash permissions table"
         >
-          <TableHead>
+          <TableHead className="thead">
             <TableRow sx={{ '& th': { fontWeight: 'bold', backgroundColor: 'grey.200' } }}>
-              <TableCell>ID</TableCell>
+              <TableCell>رقم الاذن</TableCell>
               <TableCell>رقم القيد</TableCell> {/* Finance Entry ID */}
               <TableCell>{t("date")}</TableCell>
               <TableCell align="right">{t("amount")}</TableCell> {/* Align numbers */}
@@ -576,19 +583,23 @@ function PettyCashPermissionsTable() {
                 <TableCell>
                  {/* Logic to link Finance Entry */}
                  {permission.finance_entry_id == null ? (
-                    <Autocomplete
-                       size="small"
-                       sx={{ width: "150px" }} // Adjust width
-                       options={entries.filter((e)=>!e.hasPetty)} // Show only unlinked entries
-                       getOptionLabel={(option) => String(option.id) || ""}
-                       isOptionEqualToValue={(option, value) => option.id === value.id}
-                       onChange={(e, newVal) => {
-                           handleUpdateEntryLink(permission.id, newVal?.id ?? null);
-                       }}
-                       renderInput={(params) => (
-                          <TextField {...params} label={"ربط قيد"} />
-                       )}
-                     />
+                    // <Autocomplete
+                    //    size="small"
+                    //    sx={{ width: "150px" }} // Adjust width
+                    //    options={entries.filter((e)=>!e.hasPetty)} // Show only unlinked entries
+                    //    getOptionLabel={(option) => String(option.id) || ""}
+                    //    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    //    onChange={(e, newVal) => {
+                    //        handleUpdateEntryLink(permission.id, newVal?.id ?? null);
+                    //    }}
+                    //    renderInput={(params) => (
+                    //       <TextField {...params} label={"ربط قيد"} />
+                    //    )}
+                    //  />
+                    <Button onClick={()=>{
+                      setShowAddEntryForm(true);
+                      setPermissionToEdit(permission);
+                    }}>انشاء قيد</Button>
                    ) : (
                        <Typography variant="body2">{permission.finance_entry_id}</Typography>
                    )}
@@ -671,13 +682,7 @@ function PettyCashPermissionsTable() {
                          </IconButton>
                        </span>
                      </Tooltip>
-                     <Tooltip title={t("delete")}>
-                        <span> {/* Span needed for tooltip on disabled button */}
-                           <IconButton size="small" color="error" onClick={() => handleDelete(permission.id)} disabled={!!permission.user_approved_time || !!permission.auditor_approved_time}>
-                             <DeleteIcon fontSize="inherit"/>
-                           </IconButton>
-                        </span>
-                     </Tooltip>
+                   
                   </Stack>
                 </TableCell>
               </TableRow>
@@ -723,6 +728,7 @@ function PettyCashPermissionsTable() {
       {/* Add Form Dialog (using EmptyDialog) */}
         <EmptyDialog show={showAddForm} setShow={setShowAddForm}>
           <PettyCashPermissionForm
+          setAllPermissions={setAllPermissions}
               onSuccess={() => { // Add onSuccess callback
                 setShowAddForm(false);
                 fetchInitialPermissions(); // Refetch data after adding
@@ -730,7 +736,19 @@ function PettyCashPermissionsTable() {
                onClose={() => setShowAddForm(false)} // Add onClose callback
           />
         </EmptyDialog>
+        <EmptyDialog   show={showAddEntryForm} setShow={setShowAddEntryForm}>
+          <AddEntryForm
+          setAllPermissions={setAllPermissions}
+          setLoading={setLoading}
+          setDialog={()=>{}}
+            setUpdate={()=>{}}
+            loading={loading}
+            permissionId={permissionToEdit?.id || 0}
 
+              amount={permissionToEdit?.amount || 0}
+              desc={permissionToEdit?.description || ''}
+          />
+        </EmptyDialog>
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirmationOpen} onClose={cancelDelete}>
         {/* ... (keep content the same) ... */}
@@ -761,12 +779,14 @@ function PettyCashPermissionsTable() {
                 <Stack spacing={2} sx={{ mt: 1 }}>
                   {/* Display ID and Entry ID if needed, but likely not editable */}
                    <TextField
+                    disabled
                        label="ID"
                        defaultValue={permissionToEdit.id}
                        InputProps={{ readOnly: true }}
                        variant="filled" size="small"
                     />
                      <TextField
+                      disabled
                        label="رقم القيد"
                        defaultValue={permissionToEdit.finance_entry_id || 'N/A'}
                        InputProps={{ readOnly: true }}

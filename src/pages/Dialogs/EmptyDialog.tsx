@@ -23,12 +23,7 @@ function EmptyDialog({ show, setShow, children, title }: EmptyDialogProbs) {
   return (
     <div>
       <Dialog
-        PaperProps={{
-          sx: {
-            width: "auto", // Adjust width
-            maxWidth: "90%", // Optional: Limit width to avoid overflow
-          },
-        }}
+      
         fullWidth
         open={show}
       >
