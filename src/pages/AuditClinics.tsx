@@ -67,7 +67,17 @@ function AuditClinics({
       })
       .finally(() => setIsLoading(false));
   };
-
+  useEffect(()=>{
+    setCashAmount(0)
+    setBankAmount(0)
+    if(selectedDoctorShift){
+      axiosClient.get(`doctor/moneyCash/${selectedDoctorShift?.id}`).then(({data})=>{
+        setCashAmount(data)
+        setTemp(data)
+     })
+    }
+  
+   },[selectedDoctorShift?.id])
   useEffect(() => {
     setLoading(true);
     //update latest patients for doctor

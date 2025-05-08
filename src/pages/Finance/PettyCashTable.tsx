@@ -363,7 +363,7 @@ function PettyCashPermissionsTable() {
 
     const handleViewPdf = (filename: string) => {
        // Ensure the base URL is correct
-       window.open(`${webUrl}storage/petty_cash/${filename}`, "_blank"); // Adjust path if needed (e.g., /storage/..)
+       window.open(`${webUrl}uploads/petty_cash/${filename}`, "_blank"); // Adjust path if needed (e.g., /storage/..)
     };
 
      const showSnackbar = (
