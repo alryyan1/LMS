@@ -645,9 +645,8 @@ function PettyCashPermissionsTable() {
                        size="small"
                        color="secondary"
                        onClick={() => handleApprove(permission.id, 'auditor_approved_time')}
-                       disabled={loading || !permission.user_approved_time} // Disable if manager not approved or loading
+                   
                        // Add tooltip explaining why it might be disabled
-                       title={!permission.user_approved_time ? "يجب اعتماد المدير أولاً" : ""}
                     >
                        اعتماد
                     </Button>
