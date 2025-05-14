@@ -600,6 +600,7 @@ interface Subroute {
   lastShift: LastShift;
   services: Service[];
   specialist: Specialist;
+  calc_insurance: number;
 }
 
 interface Specialist {
