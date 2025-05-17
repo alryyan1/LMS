@@ -30,6 +30,7 @@ import AddDoctorForm from "./AddDoctorForm";
 import { useTranslation } from "react-i18next";
 import EmptyDialog from "../Dialogs/EmptyDialog";
 import { Plus } from "lucide-react";
+import MySelectTableCell from "../inventory/MySelectTableCell";
 
 function Doctors() {
   const { specialists, doctorUpdater, setDialog } = useOutletContext();
@@ -292,6 +293,7 @@ function Doctors() {
                     {/* <TableCell> {t("fixed")} </TableCell> */}
                     <TableCell>{t("services")}</TableCell>
                     <TableCell>{t("costs")}</TableCell>
+                    <TableCell>احتساب التامين</TableCell>
                   </TableRow>
                 </thead>
                 <TableBody>
@@ -376,6 +378,16 @@ function Doctors() {
                           {t("costs")}
                         </Button>
                       </TableCell>
+                      <TableCell>
+                          <MySelectTableCell
+                                                item={doctor}
+
+                        
+                                                myVal={doctor.calc_insurance}
+                                                table="doctors"
+                                                colName={"calc_insurance"}
+                                              ></MySelectTableCell>
+                        </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

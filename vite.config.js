@@ -1,6 +1,7 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+ import tailWindcss from "@tailwindcss/vite";
  
 export default defineConfig({
   optimizeDeps:{
@@ -13,7 +14,7 @@ export default defineConfig({
   build :{
     outDir:'c:/app/dist'
   },
-  plugins: [react()],
+  plugins: [react(),tailWindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

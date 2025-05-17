@@ -17,6 +17,7 @@ function Patient({
   unfinshed_count,
   actviePatient,
 }: PatientProps) {
+  console.log(unfinshed_count,'unfinshed_count');
   let patientState = "";
   if (patient.patient.result_print_date == null) {
     switch (unfinshed_count) {

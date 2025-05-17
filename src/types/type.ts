@@ -297,6 +297,7 @@ interface Doctor {
   updated_at: string;
   lastShift: LastShift;
   services: any[];
+  calc_insurance: number;
 }
 
 interface LastShift {

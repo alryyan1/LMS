@@ -180,10 +180,13 @@ function Audit() {
 
               {selectedShift && (
                 <Box>
+                  
                   <a href={`${webUrl}clinics/all?shift=${selectedShift.id}`}>
                     التقرير العام للورديه رقم {selectedShift.id}
                   </a>
-
+     <a href={`${webUrl}clinics2/all?shift=${selectedShift.id}`}>
+                    التقرير العام (الجديد) للورديه رقم {selectedShift.id}
+                  </a>
                   <Divider></Divider>
                   <a href={`${webUrl}lab/report?shift=${selectedShift.id}`}>
                     تقرير المختبر {selectedShift.id}

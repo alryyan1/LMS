@@ -19,6 +19,7 @@ import EmptyDialog from "../Dialogs/EmptyDialog";
 import DoctorShiftAddictionalCosts from "../../components/DoctorShiftAddictionalCosts";
 import { formatNumber } from "../constants";
 import { Shift } from "../../types/Shift";
+import { DoctorShift } from "@/types/Patient";
 
 function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
   
@@ -29,7 +30,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
   const [showCashReclaimDialog, setShowCashReclaimDialog] = useState(false);
   const [update, setUpdate] = useState(0);
   const [showAdditonalCosts, setShowAdditonalCosts] = useState(false);
-  const [selectedDoctorShift, setSelectedDoctorShift] = useState(null);
+  const [selectedDoctorShift, setSelectedDoctorShift] = useState<DoctorShift|null>(null);
 
   const [unifiedShift, setUnifiedShift] = useState<Shift | null>(null);
 
@@ -105,7 +106,8 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
       setCashAmount(0)
       setBankAmount(0)
       if(selectedDoctorShift){
-        axiosClient.get(`doctor/moneyCash/${selectedDoctorShift?.id}`).then(({data})=>{
+        let api =   selectedDoctorShift.doctor.calc_insurance ? 'doctor/totalMoney' : 'doctor/moneyCash'
+        axiosClient.get(`${api}/${selectedDoctorShift?.id}`).then(({data})=>{
           setCashAmount(data)
           setTemp(data)
        })

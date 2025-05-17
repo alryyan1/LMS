@@ -95,12 +95,21 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
       console.log(data, "created");
       if (data.status) {
         console.log(data.data, 'data      ss s s ');
+<<<<<<< HEAD
         // setAllPermissions((prev) => prev.map((p)=>{
         //   if(p.id === permissionId){
         //     return {...data.petty}
         //   }
         //   return p
         // }));
+=======
+        setAllPermissions((prev) => prev.map((p)=>{
+          if(p.id === permissionId){
+            return {...data.petty}
+          }
+          return p
+        }));
+>>>>>>> aa4d1bf09e7f697da4ca9bcf521ef7ba83f4a465
         // Reset the form to its initial state
         reset({
           amount: '',
@@ -112,8 +121,12 @@ const [selectedAccounts,setSelectedAccounts]= useState<Account[]>([])
         setSelectedAccounts([]);
         //send notification
         if(setEntries){
+<<<<<<< HEAD
           // alert('j')
           
+=======
+
+>>>>>>> aa4d1bf09e7f697da4ca9bcf521ef7ba83f4a465
           setEntries((prev)=>([data.data,...prev]));
         }
 

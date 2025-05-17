@@ -97,7 +97,7 @@ export const getDoctorVisitById = (pid, controller) => {
 };
 export const sendResult = (actviePatient, setLoading) => {
   axiosClient
-    .get(`result?pid=${actviePatient.id}&base64=1`)
+    .get(`result?pid=${actviePatient.id}&base64=1&header=1`)
     .then(({ data }) => {
       const pdfData = data.data.slice(data.data.indexOf("JVB"));
       axiosClient

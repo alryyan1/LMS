@@ -13,7 +13,7 @@ import { Suspense } from "react";
 import { CircularProgress } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
+// import "./index.css";
 // console.log = function() {}
 
 createRoot(document.querySelector("#root")).render(
