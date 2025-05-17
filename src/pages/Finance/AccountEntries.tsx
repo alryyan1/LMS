@@ -41,7 +41,7 @@ import {
 import DateComponent from "./DateComponent.js"; // Ensure correct path if needed
 // import GeminiImageUploader from "./Gemini.tsx"; // Uncomment if needed
 import EmptyDialog from "../Dialogs/EmptyDialog.js"; // Ensure correct path if needed
-import { Eye, Plus, XCircle, RotateCcw, Receipt, FileUp } from "lucide-react"; // Added more specific icons
+import { Eye, Plus, XCircle, RotateCcw, Receipt, FileUp, Delete } from "lucide-react"; // Added more specific icons
 
 // --- Define expected types (optional but recommended) ---
 interface Account {
@@ -335,6 +335,27 @@ function AccountEntries() {
     }
   }
 
+  const deleteEntry = (entry) =>{
+        const result = confirm("هل انت متأكد من حذف القيد؟");
+        if (result) {
+            setLoading(true);
+            axiosClient
+            .delete(`financeEntries/${entry.id}`)
+            .then(({ data }) => {
+                    // Update master list
+                    const updatedAllEntries = allEntries.filter((e) => e.id !== entry.id);
+                    setAllEntries(updatedAllEntries);
+                    alert("تم حذف القيد بنجاح.");
+                
+            })
+            .catch(err => {
+                console.error("Failed to delete entry:", err);
+                alert("فشل حذف القيد.");
+            })
+            .finally(() => setLoading(false));
+        }   
+  }
+
   const clearFilters = () => {
     setSelectedAccountId(null);
     setFilterHasPetty('all');
@@ -539,11 +560,11 @@ function AccountEntries() {
                                                     variant="outlined"
                                                     color="error"
                                                     disabled={entry.cancel}
-                                                    onClick={() => handleReverseEntry(entry)}
-                                                    startIcon={<RotateCcw size={14}/>}
+                                                    onClick={() => deleteEntry(entry)}
+                                                    startIcon={<Delete size={14}/>}
                                                     sx={{width: '120px', fontSize: '0.75rem'}}
                                                     >
-                                                    {entry.cancel ? "القيد ملغي" : "عكس القيد"}
+                                                    حذف القيد
                                                     </Button>
                                                 </Stack>
                                             </TableCell>
