@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axiosClient from "../../../axios-client";
+import CodeEditor from "../doctor/CodeMirror";
 function OrganismChildPanel(props) {
-  const { children, value, index, organism, setActivePatient, ...other } =
+  const { children, value, index, organism,biotics,setBiotics, setActivePatient,patient, ...other } =
     props;
 
   const [sensitive, setSensitive] = useState(organism.sensitive);
@@ -60,20 +61,19 @@ function OrganismChildPanel(props) {
                       Setname(e.target.value);
                       axiosClient
                         .patch(`editOrganism/${organism.id}`, {
-                          val: e.target.value,
-                          colName: "organism",
+                          "organism":e.target.value,
                         })
                         .then(({ data }) => {
                           console.log(data);
                         });
                     }}
                   />
-                </TableCell>{" "}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Sensitive</TableCell>
                 <TableCell>
-                  <TextField
+                  {/* <TextField
                     rows={4}
                     multiline
                     value={sensitive}
@@ -88,13 +88,15 @@ function OrganismChildPanel(props) {
                           console.log(data);
                         });
                     }}
-                  />
+                  /> */}
+                                       <CodeEditor  changeUrl={true} height='20px' tableName={'drugs'} setOptions={setBiotics} options={biotics} init={sensitive} patient={patient} setActiveDoctorVisit={setActivePatient}  colName={'sensitive'} apiUrl={`editOrganism/${organism.id}`}/>
+                  
                 </TableCell>{" "}
               </TableRow>
               <TableRow>
                 <TableCell>Resistant</TableCell>
                 <TableCell>
-                  <TextField
+                  {/* <TextField
                     rows={4}
                     multiline
                     value={resistant}
@@ -109,7 +111,8 @@ function OrganismChildPanel(props) {
                           console.log(data);
                         });
                     }}
-                  />
+                  /> */}
+                    <CodeEditor  changeUrl={true} height='20px' tableName={'drugs'} setOptions={setBiotics} options={biotics} init={resistant} patient={patient} setActiveDoctorVisit={setActivePatient}  colName={'resistant'} apiUrl={`editOrganism/${organism.id}`}/>
                 </TableCell>
               </TableRow>
             </TableBody>

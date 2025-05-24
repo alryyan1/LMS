@@ -94,11 +94,17 @@ function Result() {
     setCurrentFocusIndex(0)
   },[selectedTest])
       const [complains, setComplains] = useState([]);
+      const [biotics, setBiotics] = useState([]);
       useEffect(() => {
         // alert('start of use effect')
         axiosClient.get("complains").then(({ data }) => {
           // console.log(data);
           setComplains(data.map((c) => ({ label: c.name, type: c.name })));
+        });
+
+        axiosClient.get("biotics").then(({ data }) => {
+          // console.log(data);
+          setBiotics(data.map((c) => ({ label: c.name, type: c.name })));
         });
       }, []);
   return (
@@ -251,6 +257,7 @@ function Result() {
         <Card key={actviePatient?.id} sx={{  overflow: "auto", p: 1 }}>
           {actviePatient &&(
             <ResultSection
+            biotics={biotics} setBiotics={setBiotics}
             complains={complains} setComplains={setComplains}
             handleKeyDown={handleKeyDown}
             addRef={addRef}
@@ -274,14 +281,14 @@ function Result() {
               {" "}
               <PatientDetail key={actviePatient.id} patient={actviePatient} />
               <Stack>
-             {/* <Button
+             <Button
                   sx={{ mb: 1 }}
                   disabled={actviePatient.patient.result_is_locked == 1}
                   href={`${webUrl}result?pid=${actviePatient.id}`}
                   variant="contained"
                 >
                   print
-                </Button>  */}
+                </Button> 
                 {actviePatient.patient.result_auth ? (
                   <Button
                     sx={{ mt: 1 }}
