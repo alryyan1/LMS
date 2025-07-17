@@ -101,7 +101,7 @@ function AddTestAutoComplete({ actviePatient, setActiveDoctorVisit,selectedTests
                       console.log("enter pressed");
                       //get test from tests using find
                       const enteredId = e.target.value;
-
+                      console.log(enteredId)
                       const foundedTest = autoCompleteTests.find(
                         (test) => test.id === parseInt(enteredId)
                       );

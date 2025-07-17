@@ -101,14 +101,19 @@ function AccountManager() {
   };
 
   const convertToTreeData = (accounts) => {
+    if (!Array.isArray(accounts)) {
+      console.warn('convertToTreeData: accounts is not an array', accounts);
+      return [{ name: "Accounts", children: [] }];
+    }
+    
     const accountMap = new Map(
       accounts.map((account) => {
-        const totalCredits = account.credits.reduce(
-          (acc, curr) => acc + curr.amount,
+        const totalCredits = (account.credits || []).reduce(
+          (acc, curr) => acc + (curr?.amount || 0),
           0
         );
-        const totalDebits = account.debits.reduce(
-          (acc, curr) => acc + curr.amount,
+        const totalDebits = (account.debits || []).reduce(
+          (acc, curr) => acc + (curr?.amount || 0),
           0
         );
         const balance = totalCredits - totalDebits;
@@ -118,8 +123,8 @@ function AccountManager() {
             name: account.name,
             id: account.id,
             code: account.code,
-            credits: account.credits,
-            debits: account.debits,
+            credits: account.credits || [],
+            debits: account.debits || [],
             description: account.description,
             balance: formatNumber(Math.abs(balance)),
             totalCredits: formatNumber(totalCredits),
@@ -137,19 +142,21 @@ function AccountManager() {
       const node = accountMap.get(account.id);
       //   console.log(node,'node in foreach')
 
-      node.attributes = {
-        balance: account.balance,
-        credits: account.totalCredits,
-        debits: account.balance,
-      };
+      if (node) {
+        node.attributes = {
+          balance: account.balance,
+          credits: account.totalCredits,
+          debits: account.balance,
+        };
 
-      if (account.parents.length > 0) {
-        const parentNode = accountMap.get(account.parents[0].id);
-        if (parentNode) {
-          parentNode.children.push(node);
+        if (account.parents && account.parents.length > 0) {
+          const parentNode = accountMap.get(account.parents[0].id);
+          if (parentNode) {
+            parentNode.children.push(node);
+          }
+        } else {
+          treeData.push(node);
         }
-      } else {
-        treeData.push(node);
       }
     });
 
@@ -157,16 +164,21 @@ function AccountManager() {
   };
 
   const convertToTreeDataSortable = (accounts) => {
+    if (!Array.isArray(accounts)) {
+      console.warn('convertToTreeDataSortable: accounts is not an array', accounts);
+      return [];
+    }
+    
     const accountMap = new Map(
       accounts.map((account) => {
         let totalCreditSum = 0;
         let totalDebitSum = 0;
-        let totalCredits = account.credits.reduce(
-          (accum, current) => accum + current.amount,
+        let totalCredits = (account.credits || []).reduce(
+          (accum, current) => accum + (current?.amount || 0),
           0
         );
-        let totalDebits = account.debits.reduce(
-          (accum, current) => accum + current.amount,
+        let totalDebits = (account.debits || []).reduce(
+          (accum, current) => accum + (current?.amount || 0),
           0
         );
         totalCreditSum += totalCredits;
@@ -206,15 +218,17 @@ function AccountManager() {
     accounts.forEach((account) => {
       const node = accountMap.get(account.id);
 
-      if (account.parents.length > 0) {
-        const parentNode = accountMap.get(account.parents[0].id);
-        if (parentNode) {
-          parentNode.children.push(node);
+      if (node) {
+        if (account.parents && account.parents.length > 0) {
+          const parentNode = accountMap.get(account.parents[0].id);
+          if (parentNode) {
+            parentNode.children.push(node);
+          } else {
+            treeData.push(node);
+          }
         } else {
           treeData.push(node);
         }
-      } else {
-        treeData.push(node);
       }
     });
     return treeData; // Return the array of root nodes

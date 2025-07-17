@@ -12,14 +12,17 @@ import {
     Box
 } from '@mui/material';
 
-function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
+function AccountForm({ account, parentAccount, onAccountAdded, onAccountUpdated, onCancel }) {
     const { t } = useTranslation('acountForm');  // Get the translation function
 
     const [code, setCode] = useState(account ? account.code : '');
     const [name, setName] = useState(account ? account.name : '');
     const [description, setDescription] = useState(account ? account.description : '');
     const [parents, setParents] = useState([]);
-    const [parentId, setParentId] = useState(account?.parents[0]?.id || '');
+    const [parentId, setParentId] = useState(
+        account?.parents[0]?.id || 
+        (parentAccount ? parentAccount.id : '')
+    );
 
 
     useEffect(() => {
@@ -32,12 +35,15 @@ function AccountForm({ account, onAccountAdded, onAccountUpdated, onCancel }) {
             }
         };
         fetchParents();
+        
+        // Set parent ID based on account or parentAccount prop
         if (account && account.parent) {
             setParentId(account.parent.id);
+        } else if (parentAccount && !account) {
+            setParentId(parentAccount.id);
         }
 
-
-    }, [account, t]);
+    }, [account, parentAccount, t]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

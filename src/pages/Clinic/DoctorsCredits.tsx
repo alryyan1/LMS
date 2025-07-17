@@ -19,18 +19,37 @@ import EmptyDialog from "../Dialogs/EmptyDialog";
 import DoctorShiftAddictionalCosts from "../../components/DoctorShiftAddictionalCosts";
 import { formatNumber } from "../constants";
 import { Shift } from "../../types/Shift";
-import { DoctorShift } from "@/types/Patient";
+import { DoctorShift, Doctor } from "@/types/Patient";
 
-function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
+interface User {
+  id: number;
+  isAdmin: boolean;
+}
+
+interface DoctorShiftItem extends DoctorShift {
+  user_id: number;
+  is_cash_revenue_prooved: boolean;
+  is_cash_reclaim_prooved: boolean;
+  is_company_revenue_prooved: boolean;
+  is_company_reclaim_prooved: boolean;
+  created_at: string;
+}
+
+interface DoctorsCreditsProps {
+  setAllMoneyUpdatedLab: (update: (prev: number) => number) => void;
+  user: User;
+}
+
+function DoctorsCredits({ setAllMoneyUpdatedLab, user }: DoctorsCreditsProps) {
   
-  const [cashAmount, setCashAmount] = useState(0);
-  const [temp, setTemp] = useState(0);
-  const [bankAmount, setBankAmount] = useState(0);
-  const [doctorShifts, setDoctorShifts] = useState([]);
+  const [cashAmount, setCashAmount] = useState<number>(0);
+  const [temp, setTemp] = useState<number>(0);
+  const [bankAmount, setBankAmount] = useState<number>(0);
+  const [doctorShifts, setDoctorShifts] = useState<DoctorShiftItem[]>([]);
   const [showCashReclaimDialog, setShowCashReclaimDialog] = useState(false);
   const [update, setUpdate] = useState(0);
   const [showAdditonalCosts, setShowAdditonalCosts] = useState(false);
-  const [selectedDoctorShift, setSelectedDoctorShift] = useState<DoctorShift|null>(null);
+  const [selectedDoctorShift, setSelectedDoctorShift] = useState<DoctorShiftItem | null>(null);
 
   const [unifiedShift, setUnifiedShift] = useState<Shift | null>(null);
 
@@ -50,15 +69,15 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
       console.log(data);
     });
   }, [update]);
-  const addCost = (id,bankAmount,setIsLoading) => {
+  const addCost = (id: number, bankAmount: number, setIsLoading: (loading: boolean) => void) => {
     setIsLoading(true);
     axiosClient
-      .post(`costForDoctor/${id}`, { shiftId: id ,bankAmount})
+      .post(`costForDoctor/${id}`, { shiftId: id, bankAmount })
       .then(({ data }) => {
         console.log(data);
-        setDoctorShifts((prev)=>{
+        setDoctorShifts((prev) => {
           return prev.map((item) =>
-            item.id === id?  data.data : item
+            item.id === id ? data.data : item
           );
         })
       })
@@ -67,39 +86,36 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
         setUpdate((prev) => prev + 1);
         setIsLoading(false)
         setAllMoneyUpdatedLab((prev) => prev + 1);
-      })
-      .finally(() => setIsLoading(false));
+      });
   };
-  const prooveRevenue = (id, setIsLoading) => {
+  const prooveRevenue = (id: number, setIsLoading: (loading: boolean) => void) => {
     setIsLoading(true);
     axiosClient
       .get(`prooveRevenue/${id}`)
       .then(({ data }) => {
         console.log(data);
-        setDoctorShifts((prev)=>{
+        setDoctorShifts((prev) => {
           return prev.map((item) =>
-            item.id === id?  data.data : item
+            item.id === id ? data.data : item
           );
         })
       })
       .catch((err) => console.log(err))
-    
       .finally(() => setIsLoading(false));
   };
-  const prooveCompanyRevenue = (id, setIsLoading) => {
+  const prooveCompanyRevenue = (id: number, setIsLoading: (loading: boolean) => void) => {
     setIsLoading(true);
     axiosClient
       .post(`prooveCompanyRevenue/${id}`)
       .then(({ data }) => {
         console.log(data);
-        setDoctorShifts((prev)=>{
+        setDoctorShifts((prev) => {
           return prev.map((item) =>
-            item.id === id?  data.data : item
+            item.id === id ? data.data : item
           );
         })
       })
       .catch((err) => console.log(err))
-    
       .finally(() => setIsLoading(false));
   };
      useEffect(()=>{
@@ -114,11 +130,15 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
       }
     
      },[selectedDoctorShift?.id])
-  const prooveCashReclaim = (setIsLoading) => {
+  const prooveCashReclaim = (setIsLoading: (loading: boolean) => void) => {
    let r =  confirm('هل انت متاكد من اثبات استحقاق الطبيب')
+   if(!r) {
+     setIsLoading(false);
+     return;
+   }
    setIsLoading(true)
-   if(!r) return
-   addCost(selectedDoctorShift?.id,bankAmount,setIsLoading)
+   if(!selectedDoctorShift?.id) return;
+   addCost(selectedDoctorShift.id, bankAmount, setIsLoading)
 
     axiosClient
       .post(`prooveCashReclaim/${selectedDoctorShift?.id}`,{
@@ -128,17 +148,20 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
       .then(({ data }) => {
         console.log(data);
         setShowCashReclaimDialog(false);
-        setDoctorShifts((prev)=>{
+        setDoctorShifts((prev) => {
           return prev.map((item) =>
-            item.id == selectedDoctorShift?.id ?  data.data : item
+            item.id == selectedDoctorShift?.id ? data.data : item
           );
         })
-        addCost(selectedDoctorShift?.id,bankAmount,setIsLoading)
+        if(selectedDoctorShift?.id) {
+          addCost(selectedDoctorShift.id, bankAmount, setIsLoading)
+        }
       })
       .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
     
   };
-  const prooveCompanyReclaim = (setIsLoading) => {
+  const prooveCompanyReclaim = (setIsLoading: (loading: boolean) => void) => {
     setIsLoading(true)
     axiosClient
       .post(`prooveDoctorCompanyReclaim/${selectedDoctorShift?.id}`,{
@@ -148,9 +171,9 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
       .then(({ data }) => {
         console.log(data);
         setShowCashReclaimDialog(false);
-        setDoctorShifts((prev)=>{
+        setDoctorShifts((prev) => {
           return prev.map((item) =>
-            item.id == selectedDoctorShift?.id ?  data.data : item
+            item.id == selectedDoctorShift?.id ? data.data : item
           );
         })
       })
@@ -205,7 +228,6 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                     onClick={(setIsLoading) => {
                       addCost(shift.id, setIsLoading);
                     }}
-                    variant="contained"
                   >
                     خصم
                   </MyCustomLoadingButton>
@@ -213,14 +235,15 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                 <TableCell>
                   <MyCustomLoadingButton
                   disabled={shift.is_cash_revenue_prooved}
-                    onClick={(setIsLoading) => {
+                    onClick={(setIsLoading: (loading: boolean) => void) => {
                       setIsLoading(true)
                       let result = confirm('هل انت متاكد من اثبات الايراد النقدي')
                       if(result){
                         prooveRevenue(shift.id, setIsLoading);
+                      } else {
+                        setIsLoading(false);
                       }
                     }}
-                    variant="contained"
                   >
                     اثبات الايراد النقدي
                   </MyCustomLoadingButton>
@@ -229,7 +252,7 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                   <MyCustomLoadingButton
                   disabled={shift.is_cash_revenue_prooved == false || shift.is_cash_reclaim_prooved}
 
-                    onClick={(setIsLoading) => {
+                    onClick={(setIsLoading: (loading: boolean) => void) => {
 
                       //confirm
                       
@@ -237,7 +260,6 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                       setSelectedDoctorShift(shift)
 
                     }}
-                    variant="contained"
                   >
                     اثبات الاستحقاق النقدي
                   </MyCustomLoadingButton>
@@ -245,15 +267,16 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                 <TableCell>
                   <MyCustomLoadingButton
                   disabled={ shift.is_company_revenue_prooved }
-                    onClick={(setIsLoading) => {
+                    onClick={(setIsLoading: (loading: boolean) => void) => {
                       let result = confirm('هل انت متاكد من اثبات ايراد   التامين ')
                       if(result){
                       setIsLoading(true)
 
                       prooveCompanyRevenue(shift.id, setIsLoading);
+                      } else {
+                        setIsLoading(false);
                       }
                     }}
-                    variant="contained"
                   >
                     اثبات الايراد من التامين
                   </MyCustomLoadingButton>
@@ -262,22 +285,23 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
                 <TableCell>
                   <MyCustomLoadingButton
                   disabled={shift.is_company_revenue_prooved  == false ||shift.is_company_reclaim_prooved}
-                    onClick={(setIsLoading) => {
+                    onClick={(setIsLoading: (loading: boolean) => void) => {
                       // setIsLoading(true)
 
                       let result = confirm('هل انت متاكد من اثبات استحقاق الطبيب من التامين ')
                       if(result){
                       setSelectedDoctorShift(shift)
                       prooveCompanyReclaim(setIsLoading);
+                      } else {
+                        setIsLoading(false);
                       }
                     }}
-                    variant="contained"
                   >
                     اثبات الاستحقاق من التامين
                   </MyCustomLoadingButton>
                 </TableCell>
                 <TableCell>
-                  <Button variant="" onClick={() => {
+                  <Button onClick={() => {
                     setSelectedDoctorShift(shift)
                     setShowAdditonalCosts(true);
                   }}>
@@ -289,19 +313,21 @@ function DoctorsCredits({ setAllMoneyUpdatedLab ,user}) {
           })}
         </TableBody>
       </Table>
-      {selectedDoctorShift && <EmptyDialog setShow={setShowAdditonalCosts} show={showAdditonalCosts}>
-        <DoctorShiftAddictionalCosts doctorShift={selectedDoctorShift} />
+      {selectedDoctorShift && <EmptyDialog title="التكاليف الإضافية" setShow={setShowAdditonalCosts} show={showAdditonalCosts}>
+        <DoctorShiftAddictionalCosts selectedDoctorShift={selectedDoctorShift} addCost={addCost} doctorShift={selectedDoctorShift} />
       </EmptyDialog>}
 
-      <EmptyDialog show={showCashReclaimDialog} setShow={setShowCashReclaimDialog}>
+      <EmptyDialog title="اثبات الاستحقاق النقدي" show={showCashReclaimDialog} setShow={setShowCashReclaimDialog}>
           <Stack direction={'column'} gap={1} sx={{p:1}}>
               <TextField sx={{fontSize:'19px'}} value={cashAmount} onChange={(e)=>{
-                setCashAmount(e.target.value)
-                setBankAmount(temp - e.target.value)
+                const value = Number(e.target.value);
+                setCashAmount(value)
+                setBankAmount(temp - value)
               }} label='الصندوق'/>
               <TextField value={bankAmount} onChange={(e)=>{
-                setBankAmount(e.target.value)
-                setCashAmount(temp - e.target.value)
+                const value = Number(e.target.value);
+                setBankAmount(value)
+                setCashAmount(temp - value)
 
               }} label='البنك'/>
               <MyCustomLoadingButton onClick={prooveCashReclaim} >خصم  الاستحقاق النقدي</MyCustomLoadingButton>

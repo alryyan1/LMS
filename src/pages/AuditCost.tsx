@@ -3,6 +3,7 @@ import AddCostForm from '../components/AddCostForm';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import MyCustomLoadingButton from '../components/MyCustomLoadingButton';
 import axiosClient from '../../axios-client';
+import { formatNumber } from './constants';
 
 function AuditCost({selectedShift,setSelectedShift}) {
   return (
@@ -45,7 +46,7 @@ function AuditCost({selectedShift,setSelectedShift}) {
                   }
                   key={cost.id}
                 >
-                  <ListItemIcon>{cost.amount}</ListItemIcon>
+                  <ListItemIcon>{formatNumber(cost.amount )}</ListItemIcon>
                   <ListItemButton 
                     style={{
                       marginBottom: "2px",
